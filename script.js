@@ -1,30 +1,18 @@
-import { supabase } from './supabaseClient.js';
+document.getElementById("dataForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-async function loadNotes() {
-  const { data, error } = await supabase
-    .from('notes')
-    .select('*')
-    .order('created_at', { ascending: false });
+  const data = {
+    name: document.getElementById("name").value,
+    message: document.getElementById("message").value
+  };
 
-  if (error) {
-    console.error(error);
-    return;
-  }
+  // Panggil API backend
+  const response = await fetch("/save", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
 
-  document.getElementById('notesList').innerHTML =
-    data.map(note => `<p>${note.content}</p>`).join('');
-}
-
-export async function addNote() {
-  const input = document.getElementById('noteInput');
-  const { error } = await supabase
-    .from('notes')
-    .insert([{ content: input.value }]);
-
-  if (!error) {
-    input.value = '';
-    loadNotes();
-  }
-}
-
-loadNotes();
+  const result = await response.json();
+  document.getElementById("output").innerText = "Data disimpan: " + JSON.stringify(result);
+});
