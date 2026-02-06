@@ -10,6 +10,6 @@ Projek minimal frontend + backend menggunakan:
 2. Railway → Import repo dari GitHub.
 3. Railway auto build & run (baca package.json).
 4. Railway inject `.env` → backend sambung ke MongoDB internal.
-5. Akses app di URL Railway (contoh: https://nh-up.railway.app).
+5. Akses app di URL Railway (contoh: https://nh.up.railway.app).
 
 Hazzaq Style: Dari tanah ke cahaya 🌙
