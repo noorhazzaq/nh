@@ -1,12 +1,13 @@
-import { kv } from "@vercel/kv";
+import { list, get } from "@vercel/blob";
 
 export default async function handler(req, res) {
-  // ambil semua key yang bermula dengan "entry:"
-  const keys = await kv.list({ prefix: "entry:" });
+  // Senarai semua blob dengan prefix "hazzaq-"
+  const blobs = await list({ prefix: "hazzaq-" });
   const data = [];
 
-  for (const key of keys.keys) {
-    const value = await kv.get(key.name);
+  for (const blob of blobs.blobs) {
+    const response = await fetch(blob.url);
+    const value = await response.json();
     data.push(value);
   }
 
