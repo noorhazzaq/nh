@@ -5,14 +5,14 @@ export default async function handler(req, res) {
     const { name, message } = req.body;
     const entry = { name, message, timestamp: Date.now() };
 
-    // Ambil fail utama (hazzaq-data.json) kalau ada
+    // Ambil fail utama dari Blob
     let current = [];
     try {
       const response = await get("hazzaq-data.json");
       if (response) {
         current = await response.json();
       }
-    } catch (err) {
+    } catch {
       current = [];
     }
 
