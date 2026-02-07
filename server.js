@@ -7,7 +7,6 @@ app.use(express.json());
 
 const filePath = path.join(__dirname, "data.json");
 
-// Pastikan fail wujud
 if (!fs.existsSync(filePath)) {
   fs.writeFileSync(filePath, JSON.stringify([]));
 }
@@ -31,7 +30,6 @@ app.get("/all", (req, res) => {
   res.json(getAllData());
 });
 
-// Serve frontend
 app.use(express.static(path.join(__dirname)));
 
-app.listen(process.env.PORT || 3000, () => console.log("Hazzaq Style API berjalan, data kekal dalam fail JSON"));
+module.exports = app;
