@@ -1,15 +1,14 @@
-import { list, get } from "@vercel/blob";
+import { get } from "@vercel/blob";
 
 export default async function handler(req, res) {
-  // Senarai semua blob dengan prefix "hazzaq-"
-  const blobs = await list({ prefix: "hazzaq-" });
-  const data = [];
-
-  for (const blob of blobs.blobs) {
-    const response = await fetch(blob.url);
-    const value = await response.json();
-    data.push(value);
+  try {
+    const response = await get("hazzaq-data.json");
+    if (!response) {
+      return res.status(200).json([]);
+    }
+    const data = await response.json();
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(200).json([]);
   }
-
-  res.status(200).json(data);
 }
