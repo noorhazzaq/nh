@@ -2,57 +2,67 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hazzaq Style ✨ Self-Writing Page</title>
+  <title>Hazzaq Style ✨</title>
   <style>
     body {
-      font-family: monospace;
+      font-family: Arial, sans-serif;
       background: #0f0f0f;
-      color: #00ffcc;
+      color: #f0f0f0;
+      text-align: center;
       padding: 40px;
     }
-    #writer {
-      white-space: pre-wrap;
-      font-size: 18px;
-      line-height: 1.5;
-    }
     h1 {
-      color: #ffcc00;
+      color: #00ffcc;
+    }
+    form {
+      margin: 20px auto;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 8px;
+      width: 300px;
+    }
+    input, button {
+      margin: 10px;
+      padding: 10px;
+      width: 90%;
+      border: none;
+      border-radius: 4px;
+    }
+    input {
+      background: #333;
+      color: #fff;
+    }
+    button {
+      background: #00ffcc;
+      color: #000;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    #output {
+      margin-top: 30px;
+      text-align: left;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
     }
   </style>
 </head>
 <body>
   <h1>Hazzaq Style ✨</h1>
-  <div id="writer">Menunggu 11 saat untuk mula menulis...</div>
+  <form id="hazzaqForm">
+    <input type="text" id="name" placeholder="Masukkan nama" required>
+    <input type="text" id="message" placeholder="Masukkan mesej" required>
+    <button type="submit">Simpan</button>
+  </form>
 
-  <script>
-    const writer = document.getElementById("writer");
-    let counter = 0;
+  <div id="output">
+    <h2>Data Terkini</h2>
+    <ul id="dataList"></ul>
+  </div>
 
-    const messages = [
-      "Hazzaq Style: Dari tanah ke cahaya 🌙",
-      "Node.js berjalan tanpa database, tapi tetap bergaya ✨",
-      "Data boleh hidup dalam memori, fail JS, atau JSON 📂",
-      "Setiap 11 saat, halaman ini menulis dirinya sendiri 🔮",
-      "Kau cipta gaya, aku bantu jalankan 🚀"
-    ];
-
-    function typeWriter(text) {
-      let i = 0;
-      function typing() {
-        if (i < text.length) {
-          writer.textContent += text.charAt(i);
-          i++;
-          setTimeout(typing, 100); // kelajuan menaip (100ms per huruf)
-        }
-      }
-      typing();
-    }
-
-    setInterval(() => {
-      writer.textContent += "\n"; // baris baru
-      typeWriter(messages[counter % messages.length]);
-      counter++;
-    }, 11000); // setiap 11 saat
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
