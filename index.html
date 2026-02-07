@@ -15,6 +15,9 @@
       font-size: 18px;
       line-height: 1.5;
     }
+    h1 {
+      color: #ffcc00;
+    }
   </style>
 </head>
 <body>
@@ -33,8 +36,21 @@
       "Kau cipta gaya, aku bantu jalankan 🚀"
     ];
 
+    function typeWriter(text) {
+      let i = 0;
+      function typing() {
+        if (i < text.length) {
+          writer.textContent += text.charAt(i);
+          i++;
+          setTimeout(typing, 100); // kelajuan menaip (100ms per huruf)
+        }
+      }
+      typing();
+    }
+
     setInterval(() => {
-      writer.textContent += "\n" + messages[counter % messages.length];
+      writer.textContent += "\n"; // baris baru
+      typeWriter(messages[counter % messages.length]);
       counter++;
     }, 11000); // setiap 11 saat
   </script>
