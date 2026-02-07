@@ -6,7 +6,7 @@ form.addEventListener("submit", async (e) => {
   const name = document.getElementById("name").value;
   const message = document.getElementById("message").value;
 
-  await fetch("/save", {
+  await fetch("/api/save", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, message })
@@ -16,7 +16,7 @@ form.addEventListener("submit", async (e) => {
 });
 
 async function loadData() {
-  const res = await fetch("/all");
+  const res = await fetch("/api/all");
   const data = await res.json();
   dataList.innerHTML = "";
   data.forEach(item => {
