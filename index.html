@@ -2,19 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Hazzaq Style ✨</title>
+  <title>Hazzaq Style ✨ Self-Writing Page</title>
+  <style>
+    body {
+      font-family: monospace;
+      background: #0f0f0f;
+      color: #00ffcc;
+      padding: 40px;
+    }
+    #writer {
+      white-space: pre-wrap;
+      font-size: 18px;
+      line-height: 1.5;
+    }
+  </style>
 </head>
 <body>
   <h1>Hazzaq Style ✨</h1>
-  
-  <form id="dataForm">
-    <input type="text" id="name" placeholder="Nama">
-    <input type="text" id="message" placeholder="Mesej">
-    <button type="submit">Hantar</button>
-  </form>
+  <div id="writer">Menunggu 11 saat untuk mula menulis...</div>
 
-  <div id="output"></div>
+  <script>
+    const writer = document.getElementById("writer");
+    let counter = 0;
 
-  <script src="script.js"></script>
+    const messages = [
+      "Hazzaq Style: Dari tanah ke cahaya 🌙",
+      "Node.js berjalan tanpa database, tapi tetap bergaya ✨",
+      "Data boleh hidup dalam memori, fail JS, atau JSON 📂",
+      "Setiap 11 saat, halaman ini menulis dirinya sendiri 🔮",
+      "Kau cipta gaya, aku bantu jalankan 🚀"
+    ];
+
+    setInterval(() => {
+      writer.textContent += "\n" + messages[counter % messages.length];
+      counter++;
+    }, 11000); // setiap 11 saat
+  </script>
 </body>
 </html>
