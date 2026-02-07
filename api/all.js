@@ -1,9 +1,14 @@
-import fs from "fs";
-import path from "path";
+import { kv } from "@vercel/kv";
 
-const filePath = path.join(process.cwd(), "data.json");
+export default async function handler(req, res) {
+  // ambil semua key yang bermula dengan "entry:"
+  const keys = await kv.list({ prefix: "entry:" });
+  const data = [];
 
-export default function handler(req, res) {
-  const data = JSON.parse(fs.readFileSync(filePath));
+  for (const key of keys.keys) {
+    const value = await kv.get(key.name);
+    data.push(value);
+  }
+
   res.status(200).json(data);
 }
