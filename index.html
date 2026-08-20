@@ -12,7 +12,7 @@
     }
 
     body {
-      background-color: #05050f;
+      background-color: #03030a;
       color: #ffffff;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
@@ -26,43 +26,81 @@
       padding: 20px 0;
     }
 
-    /* Background Nebula Effect */
-    .nebula {
+    /* Star Canvas for Animated Universe */
+    #space-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Background Nebula Effects */
+    .nebula-1 {
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.4) 0%, rgba(0, 212, 255, 0.2) 50%, transparent 70%);
+      filter: blur(70px);
+      animation: float1 12s infinite ease-in-out alternate;
+      z-index: 2;
+    }
+
+    .nebula-2 {
       position: absolute;
       width: 300px;
       height: 300px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(138, 43, 226, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, transparent 70%);
-      filter: blur(60px);
-      animation: float 10s infinite ease-in-out alternate;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(147, 51, 234, 0.15) 50%, transparent 70%);
+      filter: blur(65px);
+      animation: float2 15s infinite ease-in-out alternate;
+      z-index: 2;
     }
 
-    @keyframes float {
-      0% { transform: translate(-50px, -50px) scale(0.9); }
-      100% { transform: translate(50px, 50px) scale(1.1); }
+    @keyframes float1 {
+      0% { transform: translate(-80px, -60px) scale(0.9); }
+      100% { transform: translate(60px, 70px) scale(1.2); }
+    }
+
+    @keyframes float2 {
+      0% { transform: translate(70px, 80px) scale(1.1); }
+      100% { transform: translate(-60px, -50px) scale(0.85); }
     }
 
     /* Content Card */
     .card {
       position: relative;
       z-index: 10;
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(15, 15, 30, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 2rem 1.5rem;
       border-radius: 20px;
       max-width: 90%;
       width: 380px;
-      box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.05);
     }
 
     h1 {
-      font-size: 2.3rem;
-      background: linear-gradient(135deg, #a855f7, #38bdf8);
+      font-size: 2.1rem;
+      background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.8rem;
       letter-spacing: 1px;
+      line-height: 1.25;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     p {
@@ -79,7 +117,8 @@
       height: 0;
       overflow: hidden;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
     }
 
     .video-container iframe {
@@ -91,19 +130,32 @@
     }
 
     .stars {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       margin-top: 1rem;
+      letter-spacing: 4px;
+      animation: pulseStars 2s infinite alternate ease-in-out;
+    }
+
+    @keyframes pulseStars {
+      0% { opacity: 0.7; transform: scale(0.98); }
+      100% { opacity: 1; transform: scale(1.05); }
     }
   </style>
 </head>
 <body>
 
-  <div class="nebula"></div>
+  <!-- Animated Dynamic Canvas for Stars & Galaxies -->
+  <canvas id="space-canvas"></canvas>
 
+  <!-- Glowing Nebulas -->
+  <div class="nebula-1"></div>
+  <div class="nebula-2"></div>
+
+  <!-- Main Universe Card -->
   <div class="card">
     <h1>Terima Kasih Haji Alhamdulillah Abu Kassim!</h1>
     <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
-    
+
     <!-- Embedded Small YouTube Video Frame -->
     <div class="video-container">
       <iframe 
@@ -115,8 +167,77 @@
       </iframe>
     </div>
 
-    <div class="stars">✨ 🪐 🚀</div>
+    <div class="stars">✨ 🪐 🚀 🌌 ⭐</div>
   </div>
+
+  <script>
+    // Live Dynamic Universe & Star Field Script
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height, stars = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      createStars();
+    }
+
+    function createStars() {
+      stars = [];
+      const count = Math.floor((width * height) / 2500); // Dynamic star density
+      
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.6 + 0.3,
+          color: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.8 + 0.2})`,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          alpha: Math.random()
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+
+      stars.forEach(star => {
+        // Move star slightly
+        star.x += star.speedX;
+        star.y += star.speedY;
+
+        // Wrap around screen edges
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height;
+        if (star.y > height) star.y = 0;
+
+        // Twinkle effect
+        star.alpha += star.twinkleSpeed;
+        if (star.alpha > 1 || star.alpha < 0.1) {
+          star.twinkleSpeed = -star.twinkleSpeed;
+        }
+
+        // Render Star
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = Math.abs(star.alpha);
+        ctx.shadowBlur = star.radius > 1.2 ? 8 : 0;
+        ctx.shadowColor = '#38bdf8';
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawStars();
+  </script>
 
 </body>
 </html>
