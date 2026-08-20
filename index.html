@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #05050f;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Background Nebula Effect */
+    .nebula {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, transparent 70%);
+      filter: blur(60px);
+      animation: float 10s infinite ease-in-out alternate;
+    }
+
+    @keyframes float {
+      0% { transform: translate(-50px, -50px) scale(0.9); }
+      100% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    /* Content Card */
+    .card {
+      position: relative;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 2.5rem 1.5rem;
+      border-radius: 20px;
+      max-width: 90%;
+      width: 380px;
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.2);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(135deg, #a855f7, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .stars {
+      font-size: 1.5rem;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nebula"></div>
+
+  <div class="card">
+    <h1>Terima Kasih!</h1>
+    <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
+    <div class="stars">✨ 🪐 🚀</div>
+  </div>
+
+</body>
+</html>
