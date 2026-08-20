@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universe - Terima Kasih</title>
+  <title>Universe</title>
   <style>
     * {
       margin: 0;
@@ -68,6 +68,43 @@
     @keyframes float2 {
       0% { transform: translate(70px, 80px) scale(1.1); }
       100% { transform: translate(-60px, -50px) scale(0.85); }
+    }
+
+    /* Floating Ship Animation Settings */
+    .ship-container {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      top: 25%;
+      left: -100px;
+      z-index: 3;
+      pointer-events: none;
+      animation: sailAcross 22s linear infinite;
+    }
+
+    .ship-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+    }
+
+    /* Keyframes for smooth floating and wave bobbing */
+    @keyframes sailAcross {
+      0% {
+        transform: translateX(0vw) translateY(0px) rotate(-6deg);
+      }
+      25% {
+        transform: translateX(30vw) translateY(-35px) rotate(8deg);
+      }
+      50% {
+        transform: translateX(60vw) translateY(25px) rotate(-8deg);
+      }
+      75% {
+        transform: translateX(85vw) translateY(-20px) rotate(6deg);
+      }
+      100% {
+        transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg);
+      }
     }
 
     /* Content Card */
@@ -150,6 +187,22 @@
   <!-- Glowing Nebulas -->
   <div class="nebula-1"></div>
   <div class="nebula-2"></div>
+
+  <!-- Animated Floating Small Sailing Ship with Red Flag -->
+  <div class="ship-container">
+    <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <!-- Ship Hull -->
+      <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
+      <!-- Mast -->
+      <rect x="31" y="8" width="2" height="34" fill="#A0522D"/>
+      <!-- Main White Sail -->
+      <path d="M33 12 L48 25 L33 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
+      <!-- Front White Sail -->
+      <path d="M30 14 L16 38 L30 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
+      <!-- Red Flag at Top -->
+      <path d="M31 8 L18 4 L31 0 Z" fill="#FF2222" stroke="#CC0000" stroke-width="1"/>
+    </svg>
+  </div>
 
   <!-- Main Universe Card -->
   <div class="card">
