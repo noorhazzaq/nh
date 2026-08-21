@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universe - Ultimate Dynamic Experience</title>
+  <title>Universe - IP Address Features</title>
   <style>
     * {
       margin: 0;
@@ -11,7 +11,6 @@
       box-sizing: border-box;
     }
 
-    /* CSS Custom Variables for Smooth Theme Transitions */
     :root {
       --nebula-1-color: rgba(138, 43, 226, 0.4);
       --nebula-1-secondary: rgba(0, 212, 255, 0.2);
@@ -44,9 +43,9 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      overflow: hidden;
+      overflow-x: hidden;
       position: relative;
-      padding: 20px 0;
+      padding: 40px 0;
       user-select: none;
     }
 
@@ -79,8 +78,6 @@
       z-index: 20;
       display: flex;
       gap: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
     }
 
     .stat-badge {
@@ -98,7 +95,7 @@
       border-color: rgba(56, 189, 248, 0.3);
     }
 
-    /* Flash Effect Canvas Overlay */
+    /* Flash Effect Overlay */
     #flash-overlay {
       position: absolute;
       top: 0;
@@ -114,7 +111,7 @@
 
     /* Toast Notification */
     .cosmic-toast {
-      position: absolute;
+      position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%) translateY(100px);
@@ -136,7 +133,7 @@
 
     /* Canvas Elements */
     #space-canvas, #effects-canvas {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -149,7 +146,7 @@
 
     /* Nebulas */
     .nebula-1, .nebula-2 {
-      position: absolute;
+      position: fixed;
       border-radius: 50%;
       cursor: pointer;
       z-index: 2;
@@ -238,55 +235,6 @@
       100% { transform: translateX(-220vw) translateY(0px); }
     }
 
-    /* Orbiting Planets */
-    .orbit-container {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      z-index: 9;
-      pointer-events: none;
-    }
-
-    .planet {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      border-radius: 50%;
-    }
-
-    @keyframes orbitPlanet {
-      from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-x)) rotate(0deg); }
-      to { transform: translate(-50%, -50%) rotate(1turn) translateX(var(--orbit-x)) rotate(-1turn); }
-    }
-
-    #planet-pink {
-      --orbit-x: 230px;
-      width: 28px;
-      height: 28px;
-      background: radial-gradient(circle at 30% 30%, #f472b6 0%, #a82e70 70%);
-      box-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
-      animation: orbitPlanet calc(15s / var(--orbit-speed-mult)) linear infinite;
-    }
-
-    #planet-blue {
-      --orbit-x: 290px;
-      width: 38px;
-      height: 38px;
-      background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #116892 70%);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
-      animation: orbitPlanet calc(20s / var(--orbit-speed-mult)) linear infinite reverse;
-    }
-
-    #planet-purple {
-      --orbit-x: 190px;
-      width: 20px;
-      height: 20px;
-      background: radial-gradient(circle at 30% 30%, #c084fc 0%, #6e1cda 70%);
-      box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
-      animation: orbitPlanet calc(12s / var(--orbit-speed-mult)) ease-in-out infinite alternate;
-    }
-
     /* Card Layout */
     .card {
       position: relative;
@@ -294,7 +242,7 @@
       padding: 3px;
       border-radius: 20px;
       max-width: 90%;
-      width: 400px;
+      width: 550px;
       margin-top: 55px;
       overflow: hidden;
       box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
@@ -323,11 +271,11 @@
       height: 100%;
       border-radius: 17px;
       z-index: 2;
-      padding: 1.8rem 1.2rem;
+      padding: 1.8rem 1.5rem;
     }
 
     h1 {
-      font-size: 1.85rem;
+      font-size: 1.75rem;
       background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
       background-size: 200% 200%;
       animation: gradientShift 6s ease infinite;
@@ -335,7 +283,6 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.8rem;
       letter-spacing: 1px;
-      line-height: 1.25;
     }
 
     @keyframes gradientShift {
@@ -344,29 +291,39 @@
       100% { background-position: 0% 50%; }
     }
 
-    p {
-      color: #cbd5e1;
-      font-size: 0.95rem;
-      line-height: 1.5;
+    /* IP Features List */
+    .ip-features-list {
+      text-align: left;
+      margin: 1.2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 8px;
     }
 
-    .video-container {
-      margin-top: 1rem;
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    .ip-features-list::-webkit-scrollbar {
+      width: 6px;
     }
 
-    .video-container iframe {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+    .ip-features-list::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.4);
+      border-radius: 4px;
+    }
+
+    .feature-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+      color: #e2e8f0;
+    }
+
+    .feature-item strong {
+      color: #38bdf8;
     }
 
     .stars {
@@ -431,13 +388,12 @@
 
   <!-- Live Dynamic Clock Banner -->
   <div class="last-updated-banner" id="live-clock">
-    Live MYT: August 22, 2026, 3:29:22 AM
+    Live MYT: August 22, 2026, 3:34:00 AM
   </div>
 
   <!-- Top Stats Bar -->
   <div class="top-stats-bar">
     <div class="stat-badge">⭐ Score: <span id="score">0</span></div>
-    <div class="stat-badge">👀 Live Visitors: <span id="visitor-count">1,024</span></div>
     <div class="stat-badge ip-badge">🌐 Your IP: <span id="user-ip">Loading...</span></div>
   </div>
 
@@ -482,25 +438,44 @@
     </svg>
   </div>
 
-  <div class="orbit-container">
-    <div class="planet" id="planet-pink"></div>
-    <div class="planet" id="planet-blue"></div>
-    <div class="planet" id="planet-purple"></div>
-  </div>
-
   <div class="card">
     <div class="card-content">
-      <h1>Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
-      <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
+      <h1>🌐 11 Key Features of IP Addresses</h1>
 
-      <div class="video-container">
-        <iframe 
-          src="https://www.youtube.com/embed/z_uOB_Gsyis" 
-          title="Cinta Satu Malam (DJ Remix Tahun Baru 2026) | Party Night Vibes 🔥" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
+      <div class="ip-features-list">
+        <div class="feature-item">
+          <strong>1. Unique Identification:</strong> Acts as a unique numeric label assigned to every device connected to a computer network.
+        </div>
+        <div class="feature-item">
+          <strong>2. Location Identification:</strong> Enables network devices to pinpoint destination routes for sending and receiving data packets.
+        </div>
+        <div class="feature-item">
+          <strong>3. Dual Versions (IPv4 vs. IPv6):</strong> Uses 32-bit IPv4 addresses (4.3B limit) alongside 128-bit IPv6 addresses for infinite scalability.
+        </div>
+        <div class="feature-item">
+          <strong>4. Public vs. Private Addressing:</strong> Public IPs are accessible globally over the internet, while Private IPs are restricted within local networks.
+        </div>
+        <div class="feature-item">
+          <strong>5. Dynamic Allocation (DHCP):</strong> Allows devices to automatically obtain temporary IP addresses whenever connecting to a network.
+        </div>
+        <div class="feature-item">
+          <strong>6. Static IP Assignment:</strong> Provides fixed, permanent IP addresses critical for hosting servers, web applications, and VPNs.
+        </div>
+        <div class="feature-item">
+          <strong>7. Geolocation Mapping:</strong> Helps web services approximate physical locations (country, region, ISP) without precise GPS data.
+        </div>
+        <div class="feature-item">
+          <strong>8. Network Segmentation (Subnetting):</strong> Divides larger networks into smaller, manageable sub-networks to optimize traffic and boost security.
+        </div>
+        <div class="feature-item">
+          <strong>9. Security & Access Control:</strong> Serves as a foundation for firewalls, IP blocking, whitelist filtering, and intrusion detection.
+        </div>
+        <div class="feature-item">
+          <strong>10. DNS Resolution Link:</strong> Pairs human-readable domain names (e.g., google.com) directly to machine-readable IP destinations.
+        </div>
+        <div class="feature-item">
+          <strong>11. Routing Protocol Support:</strong> Interacts with core routing protocols (like BGP and OSPF) to guide global internet traffic efficiently.
+        </div>
       </div>
 
       <div class="stars">✨ 🪐 🚀 🌌 ⭐</div>
@@ -509,57 +484,12 @@
         <button class="theme-btn" onclick="setNebulaTheme('cosmic')">🔮 Cosmic</button>
         <button class="theme-btn" onclick="setNebulaTheme('emerald')">🌌 Emerald</button>
         <button class="theme-btn" onclick="setNebulaTheme('supernova')">💥 Supernova</button>
-        <button class="action-btn" id="bgm-btn" onclick="toggleBGM()">🎵 Audio: OFF</button>
-        <button class="action-btn" onclick="toggleWarpSpeed()">⚡ Warp Speed</button>
         <button class="party-btn" onclick="fireFestiveConfetti()">🎉 Celebrate!</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Audio Synthesizer via Web Audio API
-    let audioCtx;
-    let bgmOsc = null, bgmGain = null, bgmPlaying = false;
-
-    function playCosmicTone(freq = 440, type = 'sine', duration = 0.15) {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = type;
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    // Interactive Audio Toggle
-    function toggleBGM() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const btn = document.getElementById('bgm-btn');
-      
-      if (!bgmPlaying) {
-        bgmOsc = audioCtx.createOscillator();
-        bgmGain = audioCtx.createGain();
-        bgmOsc.type = 'triangle';
-        bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
-        bgmGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
-        bgmOsc.connect(bgmGain);
-        bgmGain.connect(audioCtx.destination);
-        bgmOsc.start();
-        bgmPlaying = true;
-        btn.innerText = "🎵 Audio: ON";
-        showToast("🔊 Cosmic Ambient Audio Activated!");
-      } else {
-        if (bgmOsc) bgmOsc.stop();
-        bgmPlaying = false;
-        btn.innerText = "🎵 Audio: OFF";
-        showToast("🔇 Audio Muted");
-      }
-    }
-
     // Custom Toast Notification System
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -576,24 +506,7 @@
     }
     setInterval(updateClock, 1000);
 
-    // Live Visitor Counter
-    let liveVisitors = parseInt(localStorage.getItem('cosmic_live_visitors')) || 1024;
-    liveVisitors += 1;
-    localStorage.setItem('cosmic_live_visitors', liveVisitors);
-
-    function updateVisitorDisplay() {
-      const el = document.getElementById('visitor-count');
-      if (el) el.innerText = liveVisitors.toLocaleString();
-    }
-    updateVisitorDisplay();
-
-    setInterval(() => {
-      liveVisitors += Math.floor(Math.random() * 3) + 1;
-      localStorage.setItem('cosmic_live_visitors', liveVisitors);
-      updateVisitorDisplay();
-    }, 5000);
-
-    // Fetch Real-time Live Visitor Public IP
+    // Fetch Public IP Address
     async function fetchUserIP() {
       const ipElem = document.getElementById('user-ip');
       try {
@@ -606,19 +519,9 @@
     }
     fetchUserIP();
 
-    // Orbit Warp Speed Controller
-    let warpActive = false;
-    function toggleWarpSpeed() {
-      warpActive = !warpActive;
-      document.documentElement.style.setProperty('--orbit-speed-mult', warpActive ? '4' : '1');
-      playCosmicTone(900, 'sawtooth', 0.2);
-      showToast(warpActive ? "⚡ Warp Speed Engaged!" : "🐢 Standard Orbit Speed");
-    }
-
     // Pulsing Nebula Glow
     function pulseNebula(el) {
       el.style.transform = "scale(1.4)";
-      playCosmicTone(220, 'sine', 0.4);
       setTimeout(() => el.style.transform = "", 500);
       showToast("🌌 Nebula Energy Pulsed!");
     }
@@ -630,7 +533,6 @@
       "🚀 'To infinity and beyond!'"
     ];
     function triggerAstronautQuote() {
-      playCosmicTone(650, 'triangle', 0.2);
       const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
       showToast(randomQuote);
     }
@@ -745,8 +647,7 @@
     }, 4000);
 
     window.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON' || e.target.closest('.ufo-container') || e.target.closest('.astronaut-container')) return;
-      playCosmicTone(600 + Math.random() * 400, 'sine', 0.1);
+      if (e.target.tagName === 'BUTTON' || e.target.closest('.ufo-container') || e.target.closest('.astronaut-container') || e.target.closest('.ip-features-list')) return;
       
       shockwaves.push({
         x: e.clientX,
@@ -762,7 +663,6 @@
           shootingStars.splice(i, 1);
           score += 10;
           document.getElementById('score').innerText = score;
-          playCosmicTone(880, 'triangle', 0.3);
           showToast("⭐ Caught a Shooting Star! +10 Points");
           break;
         }
@@ -774,7 +674,6 @@
           asteroids.splice(i, 1);
           score += 25;
           document.getElementById('score').innerText = score;
-          playCosmicTone(350, 'sawtooth', 0.2);
           showToast("💥 Asteroid Smashed! +25 Points");
           break;
         }
@@ -809,9 +708,6 @@
 
     function fireFestiveConfetti() {
       triggerSupernovaFlash();
-      playCosmicTone(523.25, 'square', 0.2);
-      setTimeout(() => playCosmicTone(659.25, 'square', 0.2), 100);
-      setTimeout(() => playCosmicTone(783.99, 'square', 0.3), 200);
       showToast("🎉 Cosmic Celebration Launched!");
 
       for (let i = 0; i < 100; i++) {
@@ -831,7 +727,6 @@
 
     function triggerUFOEvent() {
       triggerSupernovaFlash();
-      playCosmicTone(300, 'sawtooth', 0.5);
       showToast("👽 Alien Space Cruiser Contacted! +50 Points!");
       score += 50;
       document.getElementById('score').innerText = score;
@@ -918,7 +813,6 @@
     }
 
     function setNebulaTheme(themeName) {
-      playCosmicTone(700, 'sine', 0.15);
       document.documentElement.setAttribute('data-theme', themeName);
       showToast(`🎨 Theme Switched: ${themeName.toUpperCase()}`);
     }
