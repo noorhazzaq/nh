@@ -242,7 +242,7 @@
       padding: 3px;
       border-radius: 20px;
       max-width: 90%;
-      width: 550px;
+      width: 580px;
       margin-top: 55px;
       overflow: hidden;
       box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
@@ -298,7 +298,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-height: 380px;
+      max-height: 420px;
       overflow-y: auto;
       padding-right: 8px;
     }
@@ -451,6 +451,7 @@
       <h1>🌐 Complete IP & Network Information</h1>
 
       <div class="ip-features-list">
+        <!-- Original 10 Features -->
         <div class="feature-item">
           <span class="feature-label">IP Address</span>
           <span class="feature-value" id="feat-ip">Fetching...</span>
@@ -472,10 +473,6 @@
           <span class="feature-value" id="feat-city">Fetching...</span>
         </div>
         <div class="feature-item">
-          <span class="feature-label">Latitude / Longitude</span>
-          <span class="feature-value" id="feat-coords">Fetching...</span>
-        </div>
-        <div class="feature-item">
           <span class="feature-label">ISP / Network</span>
           <span class="feature-value" id="feat-isp">Fetching...</span>
         </div>
@@ -490,6 +487,52 @@
         <div class="feature-item">
           <span class="feature-label">Connection Protocol</span>
           <span class="feature-value" id="feat-protocol">HTTPS / Secure</span>
+        </div>
+
+        <!-- 11 NEW Features Added Below -->
+        <div class="feature-item">
+          <span class="feature-label">Local Time</span>
+          <span class="feature-value" id="feat-localtime">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Country Code</span>
+          <span class="feature-value" id="feat-countrycode">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Currency</span>
+          <span class="feature-value" id="feat-currency">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Calling Code</span>
+          <span class="feature-value" id="feat-callingcode">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Latitude</span>
+          <span class="feature-value" id="feat-lat">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Longitude</span>
+          <span class="feature-value" id="feat-lon">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Postal / Zip Code</span>
+          <span class="feature-value" id="feat-postal">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">ASN (Autonomous System)</span>
+          <span class="feature-value" id="feat-asn">Fetching...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Screen Resolution</span>
+          <span class="feature-value" id="feat-resolution">Detecting...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Browser Language</span>
+          <span class="feature-value" id="feat-language">Detecting...</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-label">Online Status</span>
+          <span class="feature-value" id="feat-status" style="color: #4ade80;">Online 🟢</span>
         </div>
       </div>
 
@@ -527,17 +570,28 @@
         const response = await fetch('https://ipapi.co/json/');
         const data = await response.json();
 
+        // Original 10 Features
         document.getElementById('top-ip-badge').innerText = data.ip || 'Available';
         document.getElementById('feat-ip').innerText = data.ip || 'N/A';
         document.getElementById('feat-version').innerText = data.ip && data.ip.includes(':') ? 'IPv6' : 'IPv4';
         document.getElementById('feat-country').innerText = `${data.country_name || 'N/A'} (${data.country_code || ''})`;
         document.getElementById('feat-region').innerText = data.region || 'N/A';
         document.getElementById('feat-city').innerText = data.city || 'N/A';
-        document.getElementById('feat-coords').innerText = data.latitude ? `${data.latitude}, ${data.longitude}` : 'N/A';
         document.getElementById('feat-isp').innerText = data.org || data.asn || 'N/A';
         document.getElementById('feat-tz').innerText = data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        // Populate 11 NEW Features
+        const localTimeStr = data.timezone ? new Date().toLocaleString('en-US', { timeZone: data.timezone, hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString();
+        document.getElementById('feat-localtime').innerText = localTimeStr;
+        document.getElementById('feat-countrycode').innerText = data.country_code || 'N/A';
+        document.getElementById('feat-currency').innerText = data.currency ? `${data.currency_name || data.currency} (${data.currency})` : 'N/A';
+        document.getElementById('feat-callingcode').innerText = data.country_calling_code || 'N/A';
+        document.getElementById('feat-lat').innerText = data.latitude ? data.latitude.toString() : 'N/A';
+        document.getElementById('feat-lon').innerText = data.longitude ? data.longitude.toString() : 'N/A';
+        document.getElementById('feat-postal').innerText = data.postal || 'N/A';
+        document.getElementById('feat-asn').innerText = data.asn || 'N/A';
+
       } catch (err) {
-        // Fallback using direct IP API
         fetch('https://api.ipify.org?format=json')
           .then(res => res.json())
           .then(data => {
@@ -550,8 +604,11 @@
           });
       }
 
-      // Populate User Agent
+      // Populate System Features
       document.getElementById('feat-ua').innerText = navigator.userAgent.split(' ')[0] || 'Browser Client';
+      document.getElementById('feat-resolution').innerText = `${window.screen.width} x ${window.screen.height}`;
+      document.getElementById('feat-language').innerText = navigator.language || 'en-US';
+      document.getElementById('feat-status').innerText = navigator.onLine ? 'Online 🟢' : 'Offline 🔴';
     }
     fetchCompleteIPDetails();
 
