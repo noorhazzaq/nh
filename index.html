@@ -46,9 +46,10 @@
       overflow: hidden;
       position: relative;
       padding: 20px 0;
+      user-select: none;
     }
 
-    /* Last Updated Banner */
+    /* Live Clock Banner */
     .last-updated-banner {
       position: absolute;
       top: 15px;
@@ -57,14 +58,31 @@
       z-index: 20;
       font-size: 0.85rem;
       letter-spacing: 0.5px;
-      color: #94a3b8;
-      background: rgba(15, 23, 42, 0.7);
-      padding: 6px 16px;
+      color: #38bdf8;
+      background: rgba(15, 23, 42, 0.75);
+      padding: 6px 18px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       white-space: nowrap;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Score Counter Badge */
+    .score-badge {
+      position: absolute;
+      top: 55px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.75rem;
+      color: #f472b6;
+      background: rgba(15, 23, 42, 0.75);
+      padding: 4px 14px;
+      border-radius: 15px;
+      border: 1px solid rgba(244, 114, 182, 0.3);
+      backdrop-filter: blur(8px);
     }
 
     /* Canvas Elements */
@@ -80,7 +98,7 @@
     #space-canvas { z-index: 1; }
     #effects-canvas { z-index: 15; }
 
-    /* Nebulas with color transition */
+    /* Nebulas */
     .nebula-1 {
       position: absolute;
       width: 350px;
@@ -141,6 +159,29 @@
       100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
     }
 
+    /* Interactive Floating UFO Easter Egg */
+    .ufo-container {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      bottom: 20%;
+      right: -80px;
+      z-index: 12;
+      cursor: pointer;
+      animation: ufoFly 18s ease-in-out infinite;
+      transition: transform 0.2s ease;
+    }
+
+    .ufo-container:hover {
+      transform: scale(1.3) !important;
+    }
+
+    @keyframes ufoFly {
+      0% { transform: translateX(0vw) translateY(0px); }
+      50% { transform: translateX(-110vw) translateY(-80px) rotate(15deg); }
+      100% { transform: translateX(-220vw) translateY(0px); }
+    }
+
     /* Orbiting Planets */
     .orbit-container {
       position: absolute;
@@ -190,15 +231,15 @@
       animation: orbitPlanet 12s ease-in-out infinite alternate;
     }
 
-    /* Main Card with Rotating Gradient Border */
+    /* Card Layout */
     .card {
       position: relative;
       z-index: 10;
       padding: 3px;
       border-radius: 20px;
       max-width: 90%;
-      width: 380px;
-      margin-top: 20px;
+      width: 400px;
+      margin-top: 55px;
       overflow: hidden;
       box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
     }
@@ -221,7 +262,7 @@
 
     .card-content {
       position: relative;
-      background: rgba(15, 15, 30, 0.85);
+      background: rgba(15, 15, 30, 0.88);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       width: 100%;
@@ -232,7 +273,7 @@
     }
 
     h1 {
-      font-size: 2.1rem;
+      font-size: 1.9rem;
       background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
       background-size: 200% 200%;
       animation: gradientShift 6s ease infinite;
@@ -255,8 +296,32 @@
       line-height: 1.5;
     }
 
+    /* Custom Greeting Name Input */
+    .greeting-input-box {
+      margin-top: 0.8rem;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .greeting-input-box input {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      padding: 5px 12px;
+      color: #fff;
+      font-size: 0.8rem;
+      text-align: center;
+      outline: none;
+      width: 65%;
+    }
+
+    .greeting-input-box input::placeholder {
+      color: #94a3b8;
+    }
+
     .video-container {
-      margin-top: 1.2rem;
+      margin-top: 1rem;
       position: relative;
       padding-bottom: 56.25%;
       height: 0;
@@ -276,7 +341,7 @@
 
     .stars {
       font-size: 1.4rem;
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       letter-spacing: 4px;
       animation: pulseStars 2s infinite alternate ease-in-out;
     }
@@ -286,16 +351,16 @@
       100% { opacity: 1; transform: scale(1.05); }
     }
 
-    /* Theme Controls */
+    /* Buttons Group */
     .theme-controls {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       justify-content: center;
-      margin-top: 1.2rem;
+      margin-top: 1rem;
       flex-wrap: wrap;
     }
 
-    .theme-btn {
+    .theme-btn, .party-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff;
@@ -307,18 +372,30 @@
       transition: all 0.3s ease;
     }
 
-    .theme-btn:hover {
-      background: rgba(255, 255, 255, 0.25);
+    .party-btn {
+      background: linear-gradient(135deg, #f472b6, #c084fc);
+      border: none;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
+    }
+
+    .theme-btn:hover, .party-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
     }
   </style>
 </head>
 <body>
 
-  <!-- Updated Timestamp Banner -->
-  <div class="last-updated-banner">
-    Last Updated: August 22, 2026 at 3:12 AM MYT
+  <!-- Live Dynamic Clock Banner (Updated Initial Time) -->
+  <div class="last-updated-banner" id="live-clock">
+    Live MYT: August 22, 2026, 3:18:21 AM
+  </div>
+
+  <!-- Interactive Shooting Stars Score Badge -->
+  <div class="score-badge" id="score-badge">
+    ⭐ Cosmic Catch Score: <span id="score">0</span>
   </div>
 
   <!-- Background Starfield Canvas -->
@@ -330,6 +407,7 @@
   <div class="nebula-1"></div>
   <div class="nebula-2"></div>
 
+  <!-- Floating Ship -->
   <div class="ship-container">
     <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
@@ -337,6 +415,17 @@
       <path d="M33 12 L48 25 L33 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
       <path d="M30 14 L16 38 L30 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
       <path d="M31 8 L18 4 L31 0 Z" fill="#FF2222" stroke="#CC0000" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- Clickable UFO Easter Egg -->
+  <div class="ufo-container" id="ufo-easter-egg" onclick="triggerUFOEvent()">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="32" cy="36" rx="24" ry="8" fill="#94a3b8" stroke="#38bdf8" stroke-width="1.5"/>
+      <path d="M20 34 C20 20, 44 20, 44 34 Z" fill="rgba(56, 189, 248, 0.6)" stroke="#38bdf8"/>
+      <circle cx="20" cy="36" r="2" fill="#f472b6"/>
+      <circle cx="32" cy="38" r="2" fill="#facc15"/>
+      <circle cx="44" cy="36" r="2" fill="#4ade80"/>
     </svg>
   </div>
 
@@ -348,8 +437,13 @@
 
   <div class="card">
     <div class="card-content">
-      <h1>Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
+      <h1 id="greeting-title">Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
       <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
+
+      <!-- Custom Name Input -->
+      <div class="greeting-input-box">
+        <input type="text" id="name-input" placeholder="Type your name to personalize..." oninput="updateGreeting(this.value)">
+      </div>
 
       <div class="video-container">
         <iframe 
@@ -367,12 +461,47 @@
         <button class="theme-btn" onclick="setNebulaTheme('cosmic')">🔮 Cosmic</button>
         <button class="theme-btn" onclick="setNebulaTheme('emerald')">🌌 Emerald</button>
         <button class="theme-btn" onclick="setNebulaTheme('supernova')">💥 Supernova</button>
+        <button class="party-btn" onclick="fireFestiveConfetti()">🎉 Celebrate!</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Starfield Background Canvas
+    // Audio Synthesizer via Web Audio API
+    let audioCtx;
+    function playCosmicTone(freq = 440, type = 'sine', duration = 0.15) {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    // Live Dynamic Clock
+    function updateClock() {
+      const now = new Date();
+      const options = { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('live-clock').innerText = `Live MYT: ${now.toLocaleString('en-US', options)}`;
+    }
+    setInterval(updateClock, 1000);
+
+    // Custom Greeting Personalization
+    function updateGreeting(name) {
+      const title = document.getElementById('greeting-title');
+      if (name.trim() === "") {
+        title.innerText = "Terima Kasih Alhamdulillah Haji Abu Kassim!";
+      } else {
+        title.innerText = `Terima Kasih Alhamdulillah ${name}!`;
+      }
+    }
+
+    // Canvas Starfield Background
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
     let width, height, stars = [];
@@ -421,11 +550,13 @@
       requestAnimationFrame(drawStars);
     }
 
-    // Interactive Shooting Stars & Mouse Trail Canvas
+    // Interactive Overlay Canvas
     const fxCanvas = document.getElementById('effects-canvas');
     const fxCtx = fxCanvas.getContext('2d');
     let particles = [];
     let shootingStars = [];
+    let confetti = [];
+    let score = 0;
 
     function resizeFxCanvas() {
       fxCanvas.width = window.innerWidth;
@@ -433,7 +564,7 @@
     }
 
     window.addEventListener('mousemove', (e) => {
-      for (let i = 0; i < 3; i++) {
+      for (let i = 0; i < 2; i++) {
         particles.push({
           x: e.clientX,
           y: e.clientY,
@@ -442,6 +573,40 @@
           speedY: (Math.random() - 0.5) * 2,
           color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
           life: 1
+        });
+      }
+    });
+
+    // Click Fireworks
+    window.addEventListener('click', (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.closest('.ufo-container')) return;
+      playCosmicTone(600 + Math.random() * 400, 'sine', 0.1);
+      
+      let caught = false;
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        let s = shootingStars[i];
+        let dist = Math.hypot(e.clientX - s.x, e.clientY - s.y);
+        if (dist < 40) {
+          shootingStars.splice(i, 1);
+          score += 10;
+          document.getElementById('score').innerText = score;
+          playCosmicTone(880, 'triangle', 0.3);
+          caught = true;
+          break;
+        }
+      }
+
+      for (let i = 0; i < 25; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 5 + 2;
+        particles.push({
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 4 + 2,
+          speedX: Math.cos(angle) * speed,
+          speedY: Math.sin(angle) * speed,
+          color: caught ? '#facc15' : `hsl(${Math.random() * 360}, 100%, 70%)`,
+          life: 1.2
         });
       }
     });
@@ -459,7 +624,37 @@
 
     setInterval(() => {
       if (Math.random() < 0.6) addShootingStar();
-    }, 2500);
+    }, 2200);
+
+    // Festive Confetti Cannon
+    function fireFestiveConfetti() {
+      playCosmicTone(523.25, 'square', 0.2);
+      setTimeout(() => playCosmicTone(659.25, 'square', 0.2), 100);
+      setTimeout(() => playCosmicTone(783.99, 'square', 0.3), 200);
+
+      for (let i = 0; i < 100; i++) {
+        confetti.push({
+          x: fxCanvas.width / 2,
+          y: fxCanvas.height / 2 + 100,
+          size: Math.random() * 8 + 4,
+          speedX: (Math.random() - 0.5) * 16,
+          speedY: Math.random() * -14 - 4,
+          color: `hsl(${Math.random() * 360}, 100%, 65%)`,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10,
+          life: 2.5
+        });
+      }
+    }
+
+    // UFO Easter Egg Click Event
+    function triggerUFOEvent() {
+      playCosmicTone(300, 'sawtooth', 0.5);
+      alert("👽 You contacted the Alien Space Cruiser! +50 Cosmic Points!");
+      score += 50;
+      document.getElementById('score').innerText = score;
+      fireFestiveConfetti();
+    }
 
     function animateEffects() {
       fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
@@ -478,6 +673,28 @@
         fxCtx.fillStyle = p.color;
         fxCtx.globalAlpha = p.life;
         fxCtx.fill();
+      }
+
+      for (let i = confetti.length - 1; i >= 0; i--) {
+        let c = confetti[i];
+        c.x += c.speedX;
+        c.y += c.speedY;
+        c.speedY += 0.2;
+        c.rotation += c.rotationSpeed;
+        c.life -= 0.01;
+
+        if (c.life <= 0 || c.y > fxCanvas.height) {
+          confetti.splice(i, 1);
+          continue;
+        }
+
+        fxCtx.save();
+        fxCtx.translate(c.x, c.y);
+        fxCtx.rotate((c.rotation * Math.PI) / 180);
+        fxCtx.fillStyle = c.color;
+        fxCtx.globalAlpha = c.life;
+        fxCtx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size);
+        fxCtx.restore();
       }
 
       for (let i = shootingStars.length - 1; i >= 0; i--) {
@@ -502,15 +719,16 @@
         fxCtx.moveTo(s.x, s.y);
         fxCtx.lineTo(tailX, tailY);
         fxCtx.strokeStyle = gradient;
-        fxCtx.lineWidth = 2;
+        fxCtx.lineWidth = 2.5;
         fxCtx.stroke();
       }
 
       requestAnimationFrame(animateEffects);
     }
 
-    // Theme Handler
+    // Theme Switcher
     function setNebulaTheme(themeName) {
+      playCosmicTone(700, 'sine', 0.15);
       document.documentElement.setAttribute('data-theme', themeName);
     }
 
