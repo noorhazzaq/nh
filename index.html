@@ -95,33 +95,64 @@
   </div>
 
   <script>
+    const DB_NAME = 'Zack360DB';
+    const STORE_NAME = 'videos';
+    let db;
     let feedData = [];
-
-    // Safely retrieve feed data from localStorage
-    try {
-      feedData = JSON.parse(localStorage.getItem('z360_feed')) || [];
-    } catch (e) {
-      feedData = [];
-    }
 
     const feed = document.getElementById('feed');
     const modal = document.getElementById('modal');
 
-    function saveAndRender() {
-      try {
-        localStorage.setItem('z360_feed', JSON.stringify(feedData));
-      } catch (e) {
-        alert('Video file is too large for local browser storage. Please upload a smaller video clip.');
-      }
+    // Initialize IndexedDB to store actual Blob objects without localStorage limits
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => {
+          db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve();
+        };
+        request.onerror = (e) => reject(e);
+      });
+    }
 
+    async function loadFeed() {
+      const tx = db.transaction(STORE_NAME, 'readonly');
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.getAll();
+
+      request.onsuccess = () => {
+        feedData = request.result || [];
+        renderFeed();
+      };
+    }
+
+    function saveVideoToDB(videoObj) {
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        store.put(videoObj);
+        tx.oncomplete = () => resolve();
+      });
+    }
+
+    function renderFeed() {
       feed.innerHTML = feedData.length ? '' : `<div class="empty-state"><h2>No videos on Zack360</h2><p>Click <strong>+ Upload</strong> to post!</p></div>`;
       
       feedData.forEach((v, i) => {
+        // Convert stored Blob back to a usable URL safely on each render
+        const videoURL = v.fileBlob ? URL.createObjectURL(v.fileBlob) : v.url;
+
         const el = document.createElement('div');
         el.className = 'video-item';
         el.innerHTML = `
           <div class="video-card">
-            <video loop playsinline src="${v.url}"></video>
+            <video loop playsinline src="${videoURL}"></video>
             <div class="video-info"><div class="author">${v.author}</div><div class="desc">${v.caption}</div></div>
             <div class="actions">
               <button class="action-btn ${v.liked ? 'active' : ''}" onclick="toggleLike(${i})">
@@ -160,19 +191,21 @@
       });
     }
 
-    window.toggleLike = (i) => {
+    window.toggleLike = async (i) => {
       feedData[i].liked = !feedData[i].liked;
       feedData[i].likes += feedData[i].liked ? 1 : -1;
-      saveAndRender();
+      await saveVideoToDB(feedData[i]);
+      renderFeed();
     };
 
     window.toggleDrawer = (id) => document.getElementById(`d-${id}`).classList.toggle('open');
 
-    window.addComment = (i, id) => {
+    window.addComment = async (i, id) => {
       const input = document.getElementById(`in-${id}`);
       if (input.value.trim()) {
         feedData[i].comments.push(input.value.trim());
-        saveAndRender();
+        await saveVideoToDB(feedData[i]);
+        renderFeed();
         setTimeout(() => toggleDrawer(id), 50);
       }
     };
@@ -180,36 +213,32 @@
     document.getElementById('openModal').onclick = () => modal.style.display = 'flex';
     document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
     
-    document.getElementById('submitUpload').onclick = () => {
+    document.getElementById('submitUpload').onclick = async () => {
       const file = document.getElementById('fileIn').files[0];
       if (!file) return alert('Select a video file.');
 
-      const reader = new FileReader();
-      
-      reader.onload = function(e) {
-        const base64Video = e.target.result;
-
-        feedData.unshift({
-          id: 'z_' + Date.now(),
-          author: document.getElementById('userIn').value || '@zack360',
-          caption: document.getElementById('descIn').value || '',
-          url: base64Video,
-          likes: 0,
-          liked: false,
-          comments: []
-        });
-
-        saveAndRender();
-        modal.style.display = 'none';
-        document.getElementById('fileIn').value = '';
-        document.getElementById('userIn').value = '';
-        document.getElementById('descIn').value = '';
+      const newVideo = {
+        id: 'z_' + Date.now(),
+        author: document.getElementById('userIn').value || '@zack360',
+        caption: document.getElementById('descIn').value || '',
+        fileBlob: file, // Store raw Blob in IndexedDB
+        likes: 0,
+        liked: false,
+        comments: []
       };
 
-      reader.readAsDataURL(file);
+      await saveVideoToDB(newVideo);
+      feedData.unshift(newVideo);
+      renderFeed();
+      
+      modal.style.display = 'none';
+      document.getElementById('fileIn').value = '';
+      document.getElementById('userIn').value = '';
+      document.getElementById('descIn').value = '';
     };
 
-    saveAndRender();
+    // Initialize application
+    initDB().then(() => loadFeed());
   </script>
 </body>
 </html>
