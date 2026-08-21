@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universe with Global Chat</title>
+  <title>Universe with Voice & Media Chat</title>
   
   <!-- Firebase SDKs via CDN -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -128,7 +128,7 @@
       gap: 20px;
       z-index: 10;
       width: 100%;
-      max-width: 420px;
+      max-width: 440px;
     }
 
     .card {
@@ -188,7 +188,7 @@
     .chat-card {
       display: flex;
       flex-direction: column;
-      height: 380px;
+      height: 480px;
       text-align: left;
     }
 
@@ -279,7 +279,7 @@
       font-size: 0.75rem;
       font-weight: bold;
       color: #c084fc;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
     }
@@ -292,6 +292,22 @@
 
     .chat-msg .text {
       color: #f1f5f9;
+    }
+
+    .chat-msg img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 8px;
+      margin-top: 6px;
+      display: block;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .chat-msg audio {
+      width: 100%;
+      height: 36px;
+      margin-top: 6px;
+      outline: none;
     }
 
     /* Chat Controls */
@@ -321,14 +337,50 @@
     }
 
     #username-input {
-      width: 35%;
+      width: 32%;
     }
 
     #message-input {
       flex: 1;
     }
 
+    .chat-actions-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
+    .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .recording {
+      background: rgba(239, 68, 68, 0.6) !important;
+      border-color: #ef4444 !important;
+      animation: pulse 1s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { opacity: 0.7; }
+      to { opacity: 1; }
+    }
+
     button.send-btn {
+      flex: 1;
       background: linear-gradient(135deg, #a855f7, #06b6d4);
       border: none;
       color: white;
@@ -353,7 +405,7 @@
 
   <!-- Top Timestamp Banner -->
   <div class="last-updated-banner">
-    Last Updated: August 22, 2026 at 4:33 AM MYT
+    Last Updated: August 22, 2026 at 5:07 AM MYT
   </div>
 
   <!-- Animated Dynamic Canvas -->
@@ -411,9 +463,16 @@
       <form class="chat-form" id="chat-form">
         <div class="chat-inputs">
           <input type="text" id="username-input" placeholder="Name" maxlength="15" required>
-          <input type="text" id="message-input" placeholder="Type a message..." maxlength="200" required autocomplete="off">
+          <input type="text" id="message-input" placeholder="Type a message..." maxlength="200" autocomplete="off">
         </div>
-        <button type="submit" class="send-btn">Send Message ✨</button>
+        
+        <div class="chat-actions-row">
+          <!-- Hidden Image File Input -->
+          <input type="file" id="media-input" accept="image/*" style="display: none;">
+          <button type="button" class="icon-btn" id="attach-btn" title="Attach Image">📷</button>
+          <button type="button" class="icon-btn" id="voice-btn" title="Record Voice Note">🎙️</button>
+          <button type="submit" class="send-btn">Send Message ✨</button>
+        </div>
       </form>
     </div>
   </div>
@@ -491,8 +550,15 @@
     const usernameInput = document.getElementById('username-input');
     const messageInput = document.getElementById('message-input');
     const clearBtn = document.getElementById('clear-chat-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const mediaInput = document.getElementById('media-input');
+    const voiceBtn = document.getElementById('voice-btn');
 
-    // Load saved username if present
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
+
+    // Load saved username
     if (localStorage.getItem('cosmic_username')) {
       usernameInput.value = localStorage.getItem('cosmic_username');
     }
@@ -500,7 +566,7 @@
     // Listen for incoming new messages
     chatRef.limitToLast(50).on("child_added", (snapshot) => {
       const data = snapshot.val();
-      appendMessage(data.username, data.message, data.timestamp);
+      appendMessage(data);
     });
 
     // Wipe local screen immediately when database is cleared
@@ -510,7 +576,7 @@
       }
     });
 
-    // Handle sending message
+    // Handle text message submission
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = usernameInput.value.trim();
@@ -529,6 +595,80 @@
       }
     });
 
+    // Handle Image Attachment
+    attachBtn.addEventListener('click', () => mediaInput.click());
+
+    mediaInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const name = usernameInput.value.trim();
+
+      if (!name) {
+        alert('Please enter your name first!');
+        return;
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const base64Image = event.target.result;
+          
+          chatRef.push({
+            username: name,
+            image: base64Image,
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          });
+        };
+        reader.readAsDataURL(file);
+        mediaInput.value = '';
+      }
+    });
+
+    // Handle Voice Note Recording
+    voiceBtn.addEventListener('click', async () => {
+      const name = usernameInput.value.trim();
+      if (!name) {
+        alert('Please enter your name first!');
+        return;
+      }
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+
+          mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+          
+          mediaRecorder.onstop = () => {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              const base64Audio = reader.result;
+              chatRef.push({
+                username: name,
+                audio: base64Audio,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              });
+            };
+            reader.readAsDataURL(audioBlob);
+            stream.getTracks().forEach(track => track.stop());
+          };
+
+          mediaRecorder.start();
+          isRecording = true;
+          voiceBtn.classList.add('recording');
+          voiceBtn.innerText = '🛑';
+        } catch (err) {
+          alert('Microphone access denied or not supported.');
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        voiceBtn.classList.remove('recording');
+        voiceBtn.innerText = '🎙️';
+      }
+    });
+
     // Clear Chat Authorization
     clearBtn.addEventListener('click', () => {
       const name = usernameInput.value.trim().toLowerCase();
@@ -544,24 +684,36 @@
       }
     });
 
-    function appendMessage(user, msg, time) {
+    function appendMessage(data) {
       const msgDiv = document.createElement('div');
       msgDiv.className = 'chat-msg';
+      
+      let contentHtml = '';
+      if (data.message) {
+        contentHtml += `<div class="text">${escapeHTML(data.message)}</div>`;
+      }
+      if (data.image) {
+        contentHtml += `<img src="${data.image}" alt="shared media">`;
+      }
+      if (data.audio) {
+        contentHtml += `<audio controls src="${data.audio}"></audio>`;
+      }
+
       msgDiv.innerHTML = `
         <div class="author">
-          <span>${escapeHTML(user)}</span>
-          <span class="time">${time || ''}</span>
+          <span>${escapeHTML(data.username)}</span>
+          <span class="time">${data.timestamp || ''}</span>
         </div>
-        <div class="text">${escapeHTML(msg)}</div>
+        ${contentHtml}
       `;
       chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
+      return str ? str.replace(/[&<>'"]/g, 
         tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
+      ) : '';
     }
   </script>
 </body>
