@@ -396,7 +396,7 @@
 
   <!-- Live Dynamic Clock Banner -->
   <div class="last-updated-banner" id="live-clock">
-    Live MYT: August 22, 2026, 3:36:00 AM
+    Live Time: Fetching...
   </div>
 
   <!-- Top Stats Bar -->
@@ -451,14 +451,13 @@
       <h1>🌐 Complete IP & Network Information</h1>
 
       <div class="ip-features-list">
-        <!-- Original 10 Features -->
         <div class="feature-item">
           <span class="feature-label">IP Address</span>
           <span class="feature-value" id="feat-ip">Fetching...</span>
         </div>
         <div class="feature-item">
           <span class="feature-label">IP Version</span>
-          <span class="feature-value" id="feat-version">IPv4</span>
+          <span class="feature-value" id="feat-version">Detecting...</span>
         </div>
         <div class="feature-item">
           <span class="feature-label">Country</span>
@@ -486,10 +485,8 @@
         </div>
         <div class="feature-item">
           <span class="feature-label">Connection Protocol</span>
-          <span class="feature-value" id="feat-protocol">HTTPS / Secure</span>
+          <span class="feature-value" id="feat-protocol">Detecting...</span>
         </div>
-
-        <!-- 11 NEW Features Added Below -->
         <div class="feature-item">
           <span class="feature-label">Local Time</span>
           <span class="feature-value" id="feat-localtime">Fetching...</span>
@@ -532,7 +529,7 @@
         </div>
         <div class="feature-item">
           <span class="feature-label">Online Status</span>
-          <span class="feature-value" id="feat-status" style="color: #4ade80;">Online 🟢</span>
+          <span class="feature-value" id="feat-status">Detecting...</span>
         </div>
       </div>
 
@@ -557,58 +554,120 @@
     }
 
     // Live Dynamic Clock
+    let targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     function updateClock() {
       const now = new Date();
-      const options = { timeZone: 'Asia/Kuala_Lumpur', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      document.getElementById('live-clock').innerText = `Live MYT: ${now.toLocaleString('en-US', options)}`;
+      const options = { timeZone: targetTimezone, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+      document.getElementById('live-clock').innerText = `Live: ${now.toLocaleString('en-US', options)}`;
     }
     setInterval(updateClock, 1000);
 
-    // Fetch Full User IP & Geolocation Features
+    // Multi-Provider Real-Time Fetching System
     async function fetchCompleteIPDetails() {
-      try {
-        const response = await fetch('https://ipapi.co/json/');
-        const data = await response.json();
-
-        // Original 10 Features
-        document.getElementById('top-ip-badge').innerText = data.ip || 'Available';
-        document.getElementById('feat-ip').innerText = data.ip || 'N/A';
-        document.getElementById('feat-version').innerText = data.ip && data.ip.includes(':') ? 'IPv6' : 'IPv4';
-        document.getElementById('feat-country').innerText = `${data.country_name || 'N/A'} (${data.country_code || ''})`;
-        document.getElementById('feat-region').innerText = data.region || 'N/A';
-        document.getElementById('feat-city').innerText = data.city || 'N/A';
-        document.getElementById('feat-isp').innerText = data.org || data.asn || 'N/A';
-        document.getElementById('feat-tz').innerText = data.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-        // Populate 11 NEW Features
-        const localTimeStr = data.timezone ? new Date().toLocaleString('en-US', { timeZone: data.timezone, hour: '2-digit', minute: '2-digit' }) : new Date().toLocaleTimeString();
-        document.getElementById('feat-localtime').innerText = localTimeStr;
-        document.getElementById('feat-countrycode').innerText = data.country_code || 'N/A';
-        document.getElementById('feat-currency').innerText = data.currency ? `${data.currency_name || data.currency} (${data.currency})` : 'N/A';
-        document.getElementById('feat-callingcode').innerText = data.country_calling_code || 'N/A';
-        document.getElementById('feat-lat').innerText = data.latitude ? data.latitude.toString() : 'N/A';
-        document.getElementById('feat-lon').innerText = data.longitude ? data.longitude.toString() : 'N/A';
-        document.getElementById('feat-postal').innerText = data.postal || 'N/A';
-        document.getElementById('feat-asn').innerText = data.asn || 'N/A';
-
-      } catch (err) {
-        fetch('https://api.ipify.org?format=json')
-          .then(res => res.json())
-          .then(data => {
-            document.getElementById('top-ip-badge').innerText = data.ip;
-            document.getElementById('feat-ip').innerText = data.ip;
-          })
-          .catch(() => {
-            document.getElementById('top-ip-badge').innerText = 'Connected';
-            document.getElementById('feat-ip').innerText = 'Direct Client';
-          });
-      }
-
-      // Populate System Features
+      // Hardware and Browser APIs (Instant client-side execution)
       document.getElementById('feat-ua').innerText = navigator.userAgent.split(' ')[0] || 'Browser Client';
       document.getElementById('feat-resolution').innerText = `${window.screen.width} x ${window.screen.height}`;
       document.getElementById('feat-language').innerText = navigator.language || 'en-US';
+      document.getElementById('feat-protocol').innerText = window.location.protocol === 'https:' ? 'HTTPS / Secure' : 'HTTP / Unsecure';
       document.getElementById('feat-status').innerText = navigator.onLine ? 'Online 🟢' : 'Offline 🔴';
+
+      // Live Geolocation API Endpoints
+      const providers = [
+        {
+          url: 'https://ipapi.co/json/',
+          parse: (data) => ({
+            ip: data.ip,
+            country: data.country_name,
+            countryCode: data.country_code,
+            region: data.region,
+            city: data.city,
+            isp: data.org || data.asn,
+            tz: data.timezone,
+            currency: data.currency ? `${data.currency_name || data.currency} (${data.currency})` : null,
+            callingCode: data.country_calling_code,
+            lat: data.latitude,
+            lon: data.longitude,
+            postal: data.postal,
+            asn: data.asn
+          })
+        },
+        {
+          url: 'https://ipwho.is/',
+          parse: (data) => ({
+            ip: data.ip,
+            country: data.country,
+            countryCode: data.country_code,
+            region: data.region,
+            city: data.city,
+            isp: data.connection?.isp || data.connection?.org,
+            tz: data.timezone?.id,
+            currency: data.currency?.code ? `${data.currency.name} (${data.currency.code})` : null,
+            callingCode: data.calling_code ? `+${data.calling_code}` : null,
+            lat: data.latitude,
+            lon: data.longitude,
+            postal: data.postal,
+            asn: data.connection?.asn ? `AS${data.connection.asn}` : null
+          })
+        },
+        {
+          url: 'https://ip-api.com/json/?fields=status,country,countryCode,regionName,city,zip,lat,lon,timezone,currency,isp,as,query',
+          parse: (data) => ({
+            ip: data.query,
+            country: data.country,
+            countryCode: data.countryCode,
+            region: data.regionName,
+            city: data.city,
+            isp: data.isp,
+            tz: data.timezone,
+            currency: data.currency,
+            callingCode: 'N/A',
+            lat: data.lat,
+            lon: data.lon,
+            postal: data.zip,
+            asn: data.as
+          })
+        }
+      ];
+
+      for (const provider of providers) {
+        try {
+          const response = await fetch(provider.url);
+          if (!response.ok) continue;
+          const rawData = await response.json();
+          if (rawData.status === false || rawData.error) continue;
+
+          const data = provider.parse(rawData);
+
+          // Update UI with real-time payload
+          document.getElementById('top-ip-badge').innerText = data.ip || 'Available';
+          document.getElementById('feat-ip').innerText = data.ip || 'N/A';
+          document.getElementById('feat-version').innerText = data.ip && data.ip.includes(':') ? 'IPv6' : 'IPv4';
+          document.getElementById('feat-country').innerText = `${data.country || 'N/A'} (${data.countryCode || ''})`;
+          document.getElementById('feat-region').innerText = data.region || 'N/A';
+          document.getElementById('feat-city').innerText = data.city || 'N/A';
+          document.getElementById('feat-isp').innerText = data.isp || 'N/A';
+          
+          if (data.tz) {
+            targetTimezone = data.tz;
+            document.getElementById('feat-tz').innerText = data.tz;
+            document.getElementById('feat-localtime').innerText = new Date().toLocaleString('en-US', { timeZone: data.tz, hour: '2-digit', minute: '2-digit' });
+          }
+
+          document.getElementById('feat-countrycode').innerText = data.countryCode || 'N/A';
+          document.getElementById('feat-currency').innerText = data.currency || 'N/A';
+          document.getElementById('feat-callingcode').innerText = data.callingCode || 'N/A';
+          document.getElementById('feat-lat').innerText = data.lat !== undefined ? data.lat.toString() : 'N/A';
+          document.getElementById('feat-lon').innerText = data.lon !== undefined ? data.lon.toString() : 'N/A';
+          document.getElementById('feat-postal').innerText = data.postal || 'N/A';
+          document.getElementById('feat-asn').innerText = data.asn || 'N/A';
+
+          return; // Successfully fetched from provider, exit loop
+        } catch (e) {
+          console.warn(`Provider ${provider.url} failed. Trying next provider...`);
+        }
+      }
+
+      showToast("⚠️ API blocked or offline. Displaying local client info.");
     }
     fetchCompleteIPDetails();
 
