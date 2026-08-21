@@ -3,981 +3,310 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universe - Complete IP & Network Information</title>
+  <title>IP Address & Network Leak Test</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     :root {
-      --nebula-1-color: rgba(138, 43, 226, 0.4);
-      --nebula-1-secondary: rgba(0, 212, 255, 0.2);
-      --nebula-2-color: rgba(236, 72, 153, 0.35);
-      --nebula-2-secondary: rgba(147, 51, 234, 0.15);
-      --orbit-speed-mult: 1;
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --border-color: #30363d;
+      --text-main: #c9d1d9;
+      --text-muted: #8b949e;
+      --accent-blue: #58a6ff;
+      --accent-green: #3fb950;
+      --accent-red: #f85149;
     }
 
-    [data-theme="emerald"] {
-      --nebula-1-color: rgba(16, 185, 129, 0.4);
-      --nebula-1-secondary: rgba(6, 182, 212, 0.2);
-      --nebula-2-color: rgba(52, 211, 153, 0.35);
-      --nebula-2-secondary: rgba(59, 130, 246, 0.15);
-    }
-
-    [data-theme="supernova"] {
-      --nebula-1-color: rgba(245, 158, 11, 0.45);
-      --nebula-1-secondary: rgba(239, 68, 68, 0.25);
-      --nebula-2-color: rgba(244, 63, 94, 0.4);
-      --nebula-2-secondary: rgba(217, 70, 239, 0.2);
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: #03030a;
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow-x: hidden;
-      position: relative;
-      padding: 40px 0;
-      user-select: none;
+      gap: 20px;
     }
 
-    /* Live Clock Banner */
-    .last-updated-banner {
-      position: absolute;
-      top: 12px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      font-size: 0.85rem;
-      letter-spacing: 0.5px;
-      color: #38bdf8;
-      background: rgba(15, 23, 42, 0.75);
-      padding: 6px 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      white-space: nowrap;
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
-    }
-
-    /* Top Stats Bar */
-    .top-stats-bar {
-      position: absolute;
-      top: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 20;
-      display: flex;
-      gap: 12px;
-    }
-
-    .stat-badge {
-      font-size: 0.75rem;
-      color: #f472b6;
-      background: rgba(15, 23, 42, 0.75);
-      padding: 4px 12px;
-      border-radius: 15px;
-      border: 1px solid rgba(244, 114, 182, 0.3);
-      backdrop-filter: blur(8px);
-    }
-
-    .stat-badge.ip-badge {
-      color: #38bdf8;
-      border-color: rgba(56, 189, 248, 0.3);
-    }
-
-    /* Flash Effect Overlay */
-    #flash-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 30;
-      background: white;
-      opacity: 0;
-      transition: opacity 0.4s ease-out;
-    }
-
-    /* Toast Notification */
-    .cosmic-toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid #c084fc;
-      color: #e2e8f0;
-      padding: 10px 20px;
-      border-radius: 25px;
-      font-size: 0.85rem;
-      z-index: 100;
-      box-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
-      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      pointer-events: none;
-    }
-
-    .cosmic-toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    /* Canvas Elements */
-    #space-canvas, #effects-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    #space-canvas { z-index: 1; }
-    #effects-canvas { z-index: 15; }
-
-    /* Nebulas */
-    .nebula-1, .nebula-2 {
-      position: fixed;
-      border-radius: 50%;
-      cursor: pointer;
-      z-index: 2;
-      transition: transform 0.5s ease, background 1.5s ease-in-out;
-    }
-
-    .nebula-1 {
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, var(--nebula-1-color) 0%, var(--nebula-1-secondary) 50%, transparent 70%);
-      filter: blur(70px);
-      animation: float1 12s infinite ease-in-out alternate;
-    }
-
-    .nebula-2 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, var(--nebula-2-color) 0%, var(--nebula-2-secondary) 50%, transparent 70%);
-      filter: blur(65px);
-      animation: float2 15s infinite ease-in-out alternate;
-    }
-
-    @keyframes float1 {
-      0% { transform: translate(-80px, -60px) scale(0.9); }
-      100% { transform: translate(60px, 70px) scale(1.2); }
-    }
-
-    @keyframes float2 {
-      0% { transform: translate(70px, 80px) scale(1.1); }
-      100% { transform: translate(-60px, -50px) scale(0.85); }
-    }
-
-    /* Floating Ship & Astronaut */
-    .ship-container {
-      position: absolute;
-      width: 70px;
-      height: 70px;
-      top: 22%;
-      left: -100px;
-      z-index: 3;
-      pointer-events: none;
-      animation: sailAcross 22s linear infinite;
-    }
-
-    .astronaut-container {
-      position: absolute;
-      width: 45px;
-      height: 45px;
-      top: 70%;
-      left: -60px;
-      z-index: 12;
-      cursor: pointer;
-      animation: floatAstronaut 26s linear infinite;
-    }
-
-    @keyframes sailAcross {
-      0% { transform: translateX(0vw) translateY(0px) rotate(-6deg); }
-      50% { transform: translateX(60vw) translateY(25px) rotate(-8deg); }
-      100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
-    }
-
-    @keyframes floatAstronaut {
-      0% { transform: translateX(0vw) rotate(0deg); }
-      50% { transform: translateX(50vw) translateY(-60px) rotate(180deg); }
-      100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
-    }
-
-    /* UFO Easter Egg */
-    .ufo-container {
-      position: absolute;
-      width: 50px;
-      height: 50px;
-      bottom: 20%;
-      right: -80px;
-      z-index: 12;
-      cursor: pointer;
-      animation: ufoFly 18s ease-in-out infinite;
-      transition: transform 0.2s ease;
-    }
-
-    .ufo-container:hover { transform: scale(1.3) !important; }
-
-    @keyframes ufoFly {
-      0% { transform: translateX(0vw) translateY(0px); }
-      50% { transform: translateX(-110vw) translateY(-80px) rotate(15deg); }
-      100% { transform: translateX(-220vw) translateY(0px); }
-    }
-
-    /* Card Layout */
-    .card {
-      position: relative;
-      z-index: 10;
-      padding: 3px;
-      border-radius: 20px;
-      max-width: 90%;
-      width: 580px;
-      margin-top: 55px;
-      overflow: hidden;
-      box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
-    }
-
-    .card::after {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg, #f472b6, #38bdf8, #c084fc, #f472b6);
-      animation: rotateBorder 6s linear infinite;
-      z-index: 1;
-    }
-
-    @keyframes rotateBorder { to { transform: rotate(1turn); } }
-
-    .card-content {
-      position: relative;
-      background: rgba(15, 15, 30, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      width: 100%;
-      height: 100%;
-      border-radius: 17px;
-      z-index: 2;
-      padding: 1.8rem 1.5rem;
+    header {
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 15px;
     }
 
     h1 {
-      font-size: 1.75rem;
-      background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
-      background-size: 200% 200%;
-      animation: gradientShift 6s ease infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.8rem;
-      letter-spacing: 1px;
+      font-size: 1.5rem;
+      color: var(--accent-blue);
+      margin-bottom: 5px;
     }
 
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* IP Features Grid Container */
-    .ip-features-list {
-      text-align: left;
-      margin: 1.2rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 8px;
-    }
-
-    .ip-features-list::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .ip-features-list::-webkit-scrollbar-thumb {
-      background: rgba(56, 189, 248, 0.4);
-      border-radius: 4px;
-    }
-
-    .feature-item {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 14px;
-      border-radius: 10px;
+    .subtitle {
       font-size: 0.85rem;
-      line-height: 1.4;
-      color: #e2e8f0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      color: var(--text-muted);
     }
 
-    .feature-label {
-      color: #38bdf8;
+    .panel {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 10px 15px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--accent-blue);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    td {
+      padding: 10px 15px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .label {
+      width: 30%;
+      color: var(--text-muted);
       font-weight: 600;
     }
 
-    .feature-value {
-      color: #f472b6;
-      font-family: monospace;
-      font-size: 0.9rem;
+    .value {
+      width: 70%;
       word-break: break-all;
-      text-align: right;
-      padding-left: 10px;
+      font-family: monospace;
     }
 
-    .stars {
-      font-size: 1.4rem;
-      margin-top: 0.8rem;
-      letter-spacing: 4px;
-      animation: pulseStars 2s infinite alternate ease-in-out;
-    }
-
-    @keyframes pulseStars {
-      0% { opacity: 0.7; transform: scale(0.98); }
-      100% { opacity: 1; transform: scale(1.05); }
-    }
-
-    /* Controls Group */
-    .theme-controls {
-      display: flex;
-      gap: 6px;
-      justify-content: center;
-      margin-top: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .theme-btn, .party-btn {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      padding: 6px 12px;
-      border-radius: 20px;
+    .tag {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 0.75rem;
-      cursor: pointer;
-      backdrop-filter: blur(5px);
-      transition: all 0.3s ease;
-    }
-
-    .party-btn {
-      background: linear-gradient(135deg, #f472b6, #c084fc);
-      border: none;
       font-weight: bold;
-      box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
     }
 
-    .theme-btn:hover, .party-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: translateY(-2px);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+    .tag-green { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
+    .tag-red { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+
+    .loading {
+      color: var(--text-muted);
+      font-style: italic;
     }
   </style>
 </head>
 <body>
 
-  <!-- Supernova Flash Overlay -->
-  <div id="flash-overlay"></div>
+<div class="container">
+  <header>
+    <h1>IP Address & Leak Test</h1>
+    <div class="subtitle">Real-time network location, WebRTC detection, and client fingerprinting.</div>
+  </header>
 
-  <!-- Cosmic Toast Notification System -->
-  <div class="cosmic-toast" id="toast">Welcome to the Cosmic Experience!</div>
-
-  <!-- Live Dynamic Clock Banner -->
-  <div class="last-updated-banner" id="live-clock">
-    Live Time: Fetching...
+  <!-- Main IP Location Panel -->
+  <div class="panel">
+    <div class="panel-header">IPv4 / Location Data</div>
+    <table>
+      <tr>
+        <td class="label">IP Address</td>
+        <td class="value" id="ip-address"><span class="loading">Testing...</span></td>
+      </tr>
+      <tr>
+        <td class="label">Hostname</td>
+        <td class="value" id="hostname"><span class="loading">Testing...</span></td>
+      </tr>
+      <tr>
+        <td class="label">ISP / ASN</td>
+        <td class="value" id="isp"><span class="loading">Testing...</span></td>
+      </tr>
+      <tr>
+        <td class="label">Location</td>
+        <td class="value" id="location"><span class="loading">Testing...</span></td>
+      </tr>
+      <tr>
+        <td class="label">Coordinates</td>
+        <td class="value" id="coordinates"><span class="loading">Testing...</span></td>
+      </tr>
+      <tr>
+        <td class="label">Timezone</td>
+        <td class="value" id="timezone"><span class="loading">Testing...</span></td>
+      </tr>
+    </table>
   </div>
 
-  <!-- Top Stats Bar -->
-  <div class="top-stats-bar">
-    <div class="stat-badge">⭐ Score: <span id="score">0</span></div>
-    <div class="stat-badge ip-badge">🌐 Your IP: <span id="top-ip-badge">Fetching...</span></div>
+  <!-- WebRTC Leak Detection Panel -->
+  <div class="panel">
+    <div class="panel-header">WebRTC Leak Test</div>
+    <table>
+      <tr>
+        <td class="label">WebRTC Status</td>
+        <td class="value" id="webrtc-status"><span class="loading">Detecting...</span></td>
+      </tr>
+      <tr>
+        <td class="label">Public IP (WebRTC)</td>
+        <td class="value" id="webrtc-public">None detected</td>
+      </tr>
+      <tr>
+        <td class="label">Local IP (LAN)</td>
+        <td class="value" id="webrtc-local">Protected / mDNS</td>
+      </tr>
+    </table>
   </div>
 
-  <!-- Canvas Elements -->
-  <canvas id="space-canvas"></canvas>
-  <canvas id="effects-canvas"></canvas>
-
-  <!-- Interactive Nebulas -->
-  <div class="nebula-1" onclick="pulseNebula(this)"></div>
-  <div class="nebula-2" onclick="pulseNebula(this)"></div>
-
-  <!-- Floating Ship -->
-  <div class="ship-container">
-    <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
-      <rect x="31" y="8" width="2" height="34" fill="#A0522D"/>
-      <path d="M33 12 L48 25 L33 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
-      <path d="M30 14 L16 38 L30 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
-      <path d="M31 8 L18 4 L31 0 Z" fill="#FF2222" stroke="#CC0000" stroke-width="1"/>
-    </svg>
+  <!-- Browser / Client Fingerprint -->
+  <div class="panel">
+    <div class="panel-header">Browser & Environment Data</div>
+    <table>
+      <tr>
+        <td class="label">User Agent</td>
+        <td class="value" id="user-agent"></td>
+      </tr>
+      <tr>
+        <td class="label">Screen Resolution</td>
+        <td class="value" id="screen-res"></td>
+      </tr>
+      <tr>
+        <td class="label">GPU Renderer</td>
+        <td class="value" id="gpu-renderer"><span class="loading">Detecting...</span></td>
+      </tr>
+      <tr>
+        <td class="label">System Language</td>
+        <td class="value" id="language"></td>
+      </tr>
+    </table>
   </div>
+</div>
 
-  <!-- Clickable Floating Astronaut -->
-  <div class="astronaut-container" onclick="triggerAstronautQuote()">
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="32" cy="20" r="12" fill="#e2e8f0"/>
-      <circle cx="32" cy="20" r="8" fill="#38bdf8"/>
-      <rect x="22" y="32" width="20" height="24" rx="5" fill="#f8fafc"/>
-      <rect x="14" y="34" width="8" height="18" rx="3" fill="#cbd5e1"/>
-      <rect x="42" y="34" width="8" height="18" rx="3" fill="#cbd5e1"/>
-    </svg>
-  </div>
-
-  <!-- Clickable UFO Easter Egg -->
-  <div class="ufo-container" onclick="triggerUFOEvent()">
-    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="32" cy="36" rx="24" ry="8" fill="#94a3b8" stroke="#38bdf8" stroke-width="1.5"/>
-      <path d="M20 34 C20 20, 44 20, 44 34 Z" fill="rgba(56, 189, 248, 0.6)" stroke="#38bdf8"/>
-      <circle cx="20" cy="36" r="2" fill="#f472b6"/>
-      <circle cx="32" cy="38" r="2" fill="#facc15"/>
-      <circle cx="44" cy="36" r="2" fill="#4ade80"/>
-    </svg>
-  </div>
-
-  <div class="card">
-    <div class="card-content">
-      <h1>🌐 Complete IP & Network Information</h1>
-
-      <div class="ip-features-list">
-        <div class="feature-item">
-          <span class="feature-label">IP Address</span>
-          <span class="feature-value" id="feat-ip">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">IP Version</span>
-          <span class="feature-value" id="feat-version">Detecting...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Country</span>
-          <span class="feature-value" id="feat-country">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Region</span>
-          <span class="feature-value" id="feat-region">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">City</span>
-          <span class="feature-value" id="feat-city">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">ISP / Network</span>
-          <span class="feature-value" id="feat-isp">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Timezone</span>
-          <span class="feature-value" id="feat-tz">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">User Agent</span>
-          <span class="feature-value" id="feat-ua">Detecting...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Connection Protocol</span>
-          <span class="feature-value" id="feat-protocol">Detecting...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Local Time</span>
-          <span class="feature-value" id="feat-localtime">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Country Code</span>
-          <span class="feature-value" id="feat-countrycode">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Currency</span>
-          <span class="feature-value" id="feat-currency">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Calling Code</span>
-          <span class="feature-value" id="feat-callingcode">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Latitude</span>
-          <span class="feature-value" id="feat-lat">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Longitude</span>
-          <span class="feature-value" id="feat-lon">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Postal / Zip Code</span>
-          <span class="feature-value" id="feat-postal">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">ASN (Autonomous System)</span>
-          <span class="feature-value" id="feat-asn">Fetching...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Screen Resolution</span>
-          <span class="feature-value" id="feat-resolution">Detecting...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Browser Language</span>
-          <span class="feature-value" id="feat-language">Detecting...</span>
-        </div>
-        <div class="feature-item">
-          <span class="feature-label">Online Status</span>
-          <span class="feature-value" id="feat-status">Detecting...</span>
-        </div>
-      </div>
-
-      <div class="stars">✨ 🪐 🚀 🌌 ⭐</div>
-
-      <div class="theme-controls">
-        <button class="theme-btn" onclick="setNebulaTheme('cosmic')">🔮 Cosmic</button>
-        <button class="theme-btn" onclick="setNebulaTheme('emerald')">🌌 Emerald</button>
-        <button class="theme-btn" onclick="setNebulaTheme('supernova')">💥 Supernova</button>
-        <button class="party-btn" onclick="fireFestiveConfetti()">🎉 Celebrate!</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Custom Toast Notification System
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerText = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 3000);
-    }
-
-    // Live Dynamic Clock
-    let targetTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    function updateClock() {
-      const now = new Date();
-      const options = { timeZone: targetTimezone, year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
-      document.getElementById('live-clock').innerText = `Live: ${now.toLocaleString('en-US', options)}`;
-    }
-    setInterval(updateClock, 1000);
-
-    // Multi-Provider Real-Time Fetching System
-    async function fetchCompleteIPDetails() {
-      // Hardware and Browser APIs (Instant client-side execution)
-      document.getElementById('feat-ua').innerText = navigator.userAgent.split(' ')[0] || 'Browser Client';
-      document.getElementById('feat-resolution').innerText = `${window.screen.width} x ${window.screen.height}`;
-      document.getElementById('feat-language').innerText = navigator.language || 'en-US';
-      document.getElementById('feat-protocol').innerText = window.location.protocol === 'https:' ? 'HTTPS / Secure' : 'HTTP / Unsecure';
-      document.getElementById('feat-status').innerText = navigator.onLine ? 'Online 🟢' : 'Offline 🔴';
-
-      // Live Geolocation API Endpoints
-      const providers = [
-        {
-          url: 'https://ipapi.co/json/',
-          parse: (data) => ({
-            ip: data.ip,
-            country: data.country_name,
-            countryCode: data.country_code,
-            region: data.region,
-            city: data.city,
-            isp: data.org || data.asn,
-            tz: data.timezone,
-            currency: data.currency ? `${data.currency_name || data.currency} (${data.currency})` : null,
-            callingCode: data.country_calling_code,
-            lat: data.latitude,
-            lon: data.longitude,
-            postal: data.postal,
-            asn: data.asn
-          })
-        },
-        {
-          url: 'https://ipwho.is/',
-          parse: (data) => ({
-            ip: data.ip,
-            country: data.country,
-            countryCode: data.country_code,
-            region: data.region,
-            city: data.city,
-            isp: data.connection?.isp || data.connection?.org,
-            tz: data.timezone?.id,
-            currency: data.currency?.code ? `${data.currency.name} (${data.currency.code})` : null,
-            callingCode: data.calling_code ? `+${data.calling_code}` : null,
-            lat: data.latitude,
-            lon: data.longitude,
-            postal: data.postal,
-            asn: data.connection?.asn ? `AS${data.connection.asn}` : null
-          })
-        },
-        {
-          url: 'https://ip-api.com/json/?fields=status,country,countryCode,regionName,city,zip,lat,lon,timezone,currency,isp,as,query',
-          parse: (data) => ({
-            ip: data.query,
-            country: data.country,
-            countryCode: data.countryCode,
-            region: data.regionName,
-            city: data.city,
-            isp: data.isp,
-            tz: data.timezone,
-            currency: data.currency,
-            callingCode: 'N/A',
-            lat: data.lat,
-            lon: data.lon,
-            postal: data.zip,
-            asn: data.as
-          })
-        }
-      ];
-
-      for (const provider of providers) {
-        try {
-          const response = await fetch(provider.url);
-          if (!response.ok) continue;
-          const rawData = await response.json();
-          if (rawData.status === false || rawData.error) continue;
-
-          const data = provider.parse(rawData);
-
-          // Update UI with real-time payload
-          document.getElementById('top-ip-badge').innerText = data.ip || 'Available';
-          document.getElementById('feat-ip').innerText = data.ip || 'N/A';
-          document.getElementById('feat-version').innerText = data.ip && data.ip.includes(':') ? 'IPv6' : 'IPv4';
-          document.getElementById('feat-country').innerText = `${data.country || 'N/A'} (${data.countryCode || ''})`;
-          document.getElementById('feat-region').innerText = data.region || 'N/A';
-          document.getElementById('feat-city').innerText = data.city || 'N/A';
-          document.getElementById('feat-isp').innerText = data.isp || 'N/A';
-          
-          if (data.tz) {
-            targetTimezone = data.tz;
-            document.getElementById('feat-tz').innerText = data.tz;
-            document.getElementById('feat-localtime').innerText = new Date().toLocaleString('en-US', { timeZone: data.tz, hour: '2-digit', minute: '2-digit' });
-          }
-
-          document.getElementById('feat-countrycode').innerText = data.countryCode || 'N/A';
-          document.getElementById('feat-currency').innerText = data.currency || 'N/A';
-          document.getElementById('feat-callingcode').innerText = data.callingCode || 'N/A';
-          document.getElementById('feat-lat').innerText = data.lat !== undefined ? data.lat.toString() : 'N/A';
-          document.getElementById('feat-lon').innerText = data.lon !== undefined ? data.lon.toString() : 'N/A';
-          document.getElementById('feat-postal').innerText = data.postal || 'N/A';
-          document.getElementById('feat-asn').innerText = data.asn || 'N/A';
-
-          return; // Successfully fetched from provider, exit loop
-        } catch (e) {
-          console.warn(`Provider ${provider.url} failed. Trying next provider...`);
-        }
+<script>
+  // 1. Fetch IP & Network Location
+  async function fetchIPData() {
+    const providers = [
+      {
+        url: 'https://ipwho.is/',
+        parse: res => ({
+          ip: res.ip,
+          hostname: res.connection?.domain || 'N/A',
+          isp: `${res.connection?.isp || 'N/A'} (AS${res.connection?.asn || ''})`,
+          location: `${res.city}, ${res.region}, ${res.country}`,
+          coords: `${res.latitude}, ${res.longitude}`,
+          tz: res.timezone?.id
+        })
+      },
+      {
+        url: 'https://ipapi.co/json/',
+        parse: res => ({
+          ip: res.ip,
+          hostname: res.version,
+          isp: `${res.org} (${res.asn})`,
+          location: `${res.city}, ${res.region}, ${res.country_name}`,
+          coords: `${res.latitude}, ${res.longitude}`,
+          tz: res.timezone
+        })
       }
-
-      showToast("⚠️ API blocked or offline. Displaying local client info.");
-    }
-    fetchCompleteIPDetails();
-
-    // Pulsing Nebula Glow
-    function pulseNebula(el) {
-      el.style.transform = "scale(1.4)";
-      setTimeout(() => el.style.transform = "", 500);
-      showToast("🌌 Nebula Energy Pulsed!");
-    }
-
-    // Floating Astronaut Quotes
-    const quotes = [
-      "👩‍🚀 'Space is vast, keep exploring!'",
-      "👨‍🚀 'Greetings from Orbit!'",
-      "🚀 'To infinity and beyond!'"
     ];
-    function triggerAstronautQuote() {
-      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
-      showToast(randomQuote);
-    }
 
-    // Supernova Flash Overlay
-    function triggerSupernovaFlash() {
-      const flash = document.getElementById('flash-overlay');
-      flash.style.opacity = '0.6';
-      setTimeout(() => flash.style.opacity = '0', 300);
-    }
+    for (const provider of providers) {
+      try {
+        const response = await fetch(provider.url);
+        if (!response.ok) continue;
+        const raw = await response.json();
+        const data = provider.parse(raw);
 
-    // Canvas Starfield Background
-    const canvas = document.getElementById('space-canvas');
-    const ctx = canvas.getContext('2d');
-    let width, height, stars = [];
-    let mouseX = -1000, mouseY = -1000;
-
-    function resizeSpaceCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      createStars();
-    }
-
-    function createStars() {
-      stars = [];
-      const count = Math.floor((width * height) / 2500);
-      for (let i = 0; i < count; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          radius: Math.random() * 1.6 + 0.3,
-          color: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.8 + 0.2})`,
-          speedX: (Math.random() - 0.5) * 0.3,
-          speedY: (Math.random() - 0.5) * 0.3,
-          twinkleSpeed: Math.random() * 0.02 + 0.005,
-          alpha: Math.random()
-        });
+        document.getElementById('ip-address').innerHTML = `<span class="tag tag-green">${data.ip}</span>`;
+        document.getElementById('hostname').innerText = data.hostname;
+        document.getElementById('isp').innerText = data.isp;
+        document.getElementById('location').innerText = data.location;
+        document.getElementById('coordinates').innerText = data.coords;
+        document.getElementById('timezone').innerText = data.tz;
+        return;
+      } catch (e) {
+        console.warn('Primary IP API failed, attempting backup...');
       }
     }
 
-    function drawStars() {
-      ctx.clearRect(0, 0, width, height);
-      stars.forEach((star) => {
-        star.x += star.speedX; star.y += star.speedY;
-        if (star.x < 0) star.x = width;
-        if (star.x > width) star.x = 0;
-        if (star.y < 0) star.y = height;
-        if (star.y > height) star.y = 0;
-        star.alpha += star.twinkleSpeed;
-        if (star.alpha > 1 || star.alpha < 0.1) star.twinkleSpeed = -star.twinkleSpeed;
+    document.getElementById('ip-address').innerHTML = `<span class="tag tag-red">Blocked / Failed</span>`;
+  }
 
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
-        ctx.globalAlpha = Math.abs(star.alpha);
-        ctx.fill();
+  // 2. WebRTC Leak Test
+  function testWebRTC() {
+    const statusEl = document.getElementById('webrtc-status');
+    const publicEl = document.getElementById('webrtc-public');
+    const localEl = document.getElementById('webrtc-local');
 
-        let dist = Math.hypot(mouseX - star.x, mouseY - star.y);
-        if (dist < 100) {
-          ctx.beginPath();
-          ctx.moveTo(star.x, star.y);
-          ctx.lineTo(mouseX, mouseY);
-          ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 100})`;
-          ctx.lineWidth = 0.6;
-          ctx.stroke();
-        }
-      });
-      requestAnimationFrame(drawStars);
+    const RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+
+    if (!RTCPeerConnection) {
+      statusEl.innerHTML = `<span class="tag tag-green">Disabled / Not Supported</span>`;
+      return;
     }
 
-    // Interactive Overlay Canvas
-    const fxCanvas = document.getElementById('effects-canvas');
-    const fxCtx = fxCanvas.getContext('2d');
-    let particles = [];
-    let shootingStars = [];
-    let confetti = [];
-    let shockwaves = [];
-    let asteroids = [];
-    let score = 0;
+    statusEl.innerHTML = `<span class="tag tag-green">Enabled (No Leaks)</span>`;
 
-    function resizeFxCanvas() {
-      fxCanvas.width = window.innerWidth;
-      fxCanvas.height = window.innerHeight;
-    }
+    const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+    pc.createDataChannel('');
 
-    window.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      for (let i = 0; i < 2; i++) {
-        particles.push({
-          x: e.clientX,
-          y: e.clientY,
-          size: Math.random() * 3 + 1,
-          speedX: (Math.random() - 0.5) * 2,
-          speedY: (Math.random() - 0.5) * 2,
-          color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
-          life: 1
-        });
-      }
-    });
+    pc.onicecandidate = (e) => {
+      if (!e.candidate) return;
+      const candidate = e.candidate.candidate;
+      const ipMatch = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(candidate);
 
-    setInterval(() => {
-      if (asteroids.length < 5) {
-        asteroids.push({
-          x: Math.random() * fxCanvas.width,
-          y: -20,
-          size: Math.random() * 12 + 8,
-          speedX: (Math.random() - 0.5) * 2,
-          speedY: Math.random() * 2 + 1
-        });
-      }
-    }, 4000);
-
-    window.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON' || e.target.closest('.ufo-container') || e.target.closest('.astronaut-container') || e.target.closest('.ip-features-list')) return;
-      
-      shockwaves.push({
-        x: e.clientX,
-        y: e.clientY,
-        radius: 2,
-        maxRadius: 60,
-        opacity: 1
-      });
-
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        let s = shootingStars[i];
-        if (Math.hypot(e.clientX - s.x, e.clientY - s.y) < 40) {
-          shootingStars.splice(i, 1);
-          score += 10;
-          document.getElementById('score').innerText = score;
-          showToast("⭐ Caught a Shooting Star! +10 Points");
-          break;
+      if (ipMatch) {
+        const detectedIP = ipMatch[1];
+        if (detectedIP.endsWith('.local')) {
+          localEl.innerText = `${detectedIP} (mDNS Hidden)`;
+        } else if (detectedIP.match(/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01]))/)) {
+          localEl.innerText = detectedIP;
+          statusEl.innerHTML = `<span class="tag tag-red">Local IP Exposed</span>`;
+        } else {
+          publicEl.innerText = detectedIP;
+          statusEl.innerHTML = `<span class="tag tag-red">Public IP Exposed</span>`;
         }
       }
+    };
 
-      for (let i = asteroids.length - 1; i >= 0; i--) {
-        let a = asteroids[i];
-        if (Math.hypot(e.clientX - a.x, e.clientY - a.y) < a.size + 15) {
-          asteroids.splice(i, 1);
-          score += 25;
-          document.getElementById('score').innerText = score;
-          showToast("💥 Asteroid Smashed! +25 Points");
-          break;
-        }
+    pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => {});
+  }
+
+  // 3. Client & GPU Fingerprinting
+  function fetchClientSpecs() {
+    document.getElementById('user-agent').innerText = navigator.userAgent;
+    document.getElementById('screen-res').innerText = `${window.screen.width} x ${window.screen.height} (${window.screen.colorDepth}-bit)`;
+    document.getElementById('language').innerText = navigator.language;
+
+    try {
+      const canvas = document.createElement('canvas');
+      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+      if (gl) {
+        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+        document.getElementById('gpu-renderer').innerText = renderer || 'Generic WebGL Engine';
+      } else {
+        document.getElementById('gpu-renderer').innerText = 'WebGL Disabled';
       }
-
-      for (let i = 0; i < 20; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 5 + 2;
-        particles.push({
-          x: e.clientX,
-          y: e.clientY,
-          size: Math.random() * 4 + 2,
-          speedX: Math.cos(angle) * speed,
-          speedY: Math.sin(angle) * speed,
-          color: `hsl(${Math.random() * 360}, 100%, 70%)`,
-          life: 1.2
-        });
-      }
-    });
-
-    function addShootingStar() {
-      shootingStars.push({
-        x: Math.random() * fxCanvas.width,
-        y: Math.random() * (fxCanvas.height / 2),
-        length: Math.random() * 80 + 40,
-        speed: Math.random() * 10 + 6,
-        angle: Math.PI / 4,
-        opacity: 1
-      });
+    } catch (e) {
+      document.getElementById('gpu-renderer').innerText = 'Blocked';
     }
-    setInterval(() => { if (Math.random() < 0.6) addShootingStar(); }, 2200);
+  }
 
-    function fireFestiveConfetti() {
-      triggerSupernovaFlash();
-      showToast("🎉 Cosmic Celebration Launched!");
-
-      for (let i = 0; i < 100; i++) {
-        confetti.push({
-          x: fxCanvas.width / 2,
-          y: fxCanvas.height / 2 + 100,
-          size: Math.random() * 8 + 4,
-          speedX: (Math.random() - 0.5) * 16,
-          speedY: Math.random() * -14 - 4,
-          color: `hsl(${Math.random() * 360}, 100%, 65%)`,
-          rotation: Math.random() * 360,
-          rotationSpeed: (Math.random() - 0.5) * 10,
-          life: 2.5
-        });
-      }
-    }
-
-    function triggerUFOEvent() {
-      triggerSupernovaFlash();
-      showToast("👽 Alien Space Cruiser Contacted! +50 Points!");
-      score += 50;
-      document.getElementById('score').innerText = score;
-      fireFestiveConfetti();
-    }
-
-    function animateEffects() {
-      fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
-
-      for (let i = shockwaves.length - 1; i >= 0; i--) {
-        let sw = shockwaves[i];
-        sw.radius += 3;
-        sw.opacity -= 0.04;
-        if (sw.opacity <= 0) { shockwaves.splice(i, 1); continue; }
-        fxCtx.beginPath();
-        fxCtx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
-        fxCtx.strokeStyle = `rgba(56, 189, 248, ${sw.opacity})`;
-        fxCtx.lineWidth = 2;
-        fxCtx.stroke();
-      }
-
-      for (let i = asteroids.length - 1; i >= 0; i--) {
-        let a = asteroids[i];
-        a.x += a.speedX;
-        a.y += a.speedY;
-        if (a.y > fxCanvas.height + 30) { asteroids.splice(i, 1); continue; }
-        fxCtx.beginPath();
-        fxCtx.arc(a.x, a.y, a.size, 0, Math.PI * 2);
-        fxCtx.fillStyle = '#64748b';
-        fxCtx.fill();
-        fxCtx.strokeStyle = '#94a3b8';
-        fxCtx.stroke();
-      }
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        let p = particles[i];
-        p.x += p.speedX; p.y += p.speedY;
-        p.life -= 0.02;
-        if (p.life <= 0) { particles.splice(i, 1); continue; }
-        fxCtx.beginPath();
-        fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        fxCtx.fillStyle = p.color;
-        fxCtx.globalAlpha = p.life;
-        fxCtx.fill();
-      }
-
-      for (let i = confetti.length - 1; i >= 0; i--) {
-        let c = confetti[i];
-        c.x += c.speedX; c.y += c.speedY; c.speedY += 0.2;
-        c.rotation += c.rotationSpeed; c.life -= 0.01;
-        if (c.life <= 0 || c.y > fxCanvas.height) { confetti.splice(i, 1); continue; }
-        fxCtx.save();
-        fxCtx.translate(c.x, c.y);
-        fxCtx.rotate((c.rotation * Math.PI) / 180);
-        fxCtx.fillStyle = c.color;
-        fxCtx.globalAlpha = c.life;
-        fxCtx.fillRect(-c.size / 2, -c.size / 2, c.size, c.size);
-        fxCtx.restore();
-      }
-
-      for (let i = shootingStars.length - 1; i >= 0; i--) {
-        let s = shootingStars[i];
-        s.x += Math.cos(s.angle) * s.speed;
-        s.y += Math.sin(s.angle) * s.speed;
-        s.opacity -= 0.015;
-        if (s.opacity <= 0 || s.x > fxCanvas.width || s.y > fxCanvas.height) { shootingStars.splice(i, 1); continue; }
-
-        let tailX = s.x - Math.cos(s.angle) * s.length;
-        let tailY = s.y - Math.sin(s.angle) * s.length;
-
-        let gradient = fxCtx.createLinearGradient(s.x, s.y, tailX, tailY);
-        gradient.addColorStop(0, `rgba(255, 255, 255, ${s.opacity})`);
-        gradient.addColorStop(1, `rgba(56, 189, 248, 0)`);
-
-        fxCtx.beginPath();
-        fxCtx.moveTo(s.x, s.y);
-        fxCtx.lineTo(tailX, tailY);
-        fxCtx.strokeStyle = gradient;
-        fxCtx.lineWidth = 2.5;
-        fxCtx.stroke();
-      }
-
-      requestAnimationFrame(animateEffects);
-    }
-
-    function setNebulaTheme(themeName) {
-      document.documentElement.setAttribute('data-theme', themeName);
-      showToast(`🎨 Theme Switched: ${themeName.toUpperCase()}`);
-    }
-
-    window.addEventListener('resize', () => {
-      resizeSpaceCanvas();
-      resizeFxCanvas();
-    });
-
-    resizeSpaceCanvas();
-    resizeFxCanvas();
-    drawStars();
-    animateEffects();
-  </script>
+  // Execute
+  fetchIPData();
+  testWebRTC();
+  fetchClientSpecs();
+</script>
 </body>
 </html>
