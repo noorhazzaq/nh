@@ -3,310 +3,383 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IP Address & Network Leak Test</title>
+  <title>TikTok - Make Your Day</title>
   <style>
     :root {
-      --bg-color: #0d1117;
-      --card-bg: #161b22;
-      --border-color: #30363d;
-      --text-main: #c9d1d9;
-      --text-muted: #8b949e;
-      --accent-blue: #58a6ff;
-      --accent-green: #3fb950;
-      --accent-red: #f85149;
+      --bg-main: #000000;
+      --bg-panel: #121212;
+      --text-main: #ffffff;
+      --text-muted: #a6a6a6;
+      --accent-pink: #fe2c55;
+      --accent-cyan: #25f4ee;
+      --border-color: rgba(255, 255, 255, 0.12);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Proxima Nova", "Segoe UI", Roboto, sans-serif;
+    }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg-main);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 900px;
+      height: 100vh;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 20px;
     }
 
+    /* --- TOP NAVBAR --- */
     header {
+      height: 60px;
       border-bottom: 1px solid var(--border-color);
-      padding-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background-color: var(--bg-main);
+      z-index: 100;
     }
 
-    h1 {
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       font-size: 1.5rem;
-      color: var(--accent-blue);
-      margin-bottom: 5px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      cursor: pointer;
     }
 
-    .subtitle {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .panel {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-pink));
       border-radius: 6px;
-      overflow: hidden;
     }
 
-    .panel-header {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 10px 15px;
-      font-weight: bold;
-      font-size: 0.9rem;
-      border-bottom: 1px solid var(--border-color);
-      color: var(--accent-blue);
+    .search-bar {
+      width: 320px;
+      background-color: rgba(255, 255, 255, 0.12);
+      border-radius: 92px;
+      display: flex;
+      align-items: center;
+      padding: 8px 16px;
     }
 
-    table {
+    .search-bar input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
       width: 100%;
-      border-collapse: collapse;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
     }
 
-    td {
-      padding: 10px 15px;
-      border-bottom: 1px solid var(--border-color);
-      vertical-align: top;
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
-    tr:last-child td { border-bottom: none; }
-
-    .label {
-      width: 30%;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-
-    .value {
-      width: 70%;
-      word-break: break-all;
-      font-family: monospace;
-    }
-
-    .tag {
-      display: inline-block;
-      padding: 2px 6px;
+    .btn-upload {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      border: none;
+      padding: 8px 16px;
       border-radius: 4px;
-      font-size: 0.75rem;
-      font-weight: bold;
+      font-weight: 600;
+      cursor: pointer;
     }
 
-    .tag-green { background: rgba(63, 185, 80, 0.15); color: var(--accent-green); }
-    .tag-red { background: rgba(248, 81, 73, 0.15); color: var(--accent-red); }
+    .btn-primary {
+      background-color: var(--accent-pink);
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
-    .loading {
+    /* --- MAIN LAYOUT --- */
+    .app-container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 60px);
+    }
+
+    /* --- SIDEBAR --- */
+    aside {
+      width: 240px;
+      border-right: 1px solid var(--border-color);
+      padding: 20px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .nav-item.active {
+      color: var(--accent-pink);
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    /* --- FEED CONTAINER (MIMICS TIKTOK SCROLL) --- */
+    main {
+      flex: 1;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .feed-item {
+      scroll-snap-align: start;
+      height: calc(100vh - 60px);
+      width: 100%;
+      max-width: 580px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 0;
+    }
+
+    .video-card {
+      position: relative;
+      height: 100%;
+      max-height: 680px;
+      aspect-ratio: 9/16;
+      background: var(--bg-panel);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* OVERLAY METADATA */
+    .video-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .author-info {
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .video-desc {
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .audio-track {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      font-style: italic;
+    }
+
+    /* SIDE ACTION BAR */
+    .action-bar {
+      position: absolute;
+      right: 12px;
+      bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .action-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    .icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+
+    .action-btn:hover .icon-circle {
+      transform: scale(1.1);
+    }
+
+    .action-btn.liked .icon-circle {
+      color: var(--accent-pink);
+    }
+
+    .action-count {
+      font-size: 0.75rem;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
+  <!-- TOP BAR -->
   <header>
-    <h1>IP Address & Leak Test</h1>
-    <div class="subtitle">Real-time network location, WebRTC detection, and client fingerprinting.</div>
+    <div class="logo">
+      <div class="logo-icon"></div>
+      <span>TikTok</span>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" placeholder="Search accounts and videos...">
+    </div>
+
+    <div class="header-actions">
+      <button class="btn-upload">+ Upload</button>
+      <button class="btn-primary">Log in</button>
+    </div>
   </header>
 
-  <!-- Main IP Location Panel -->
-  <div class="panel">
-    <div class="panel-header">IPv4 / Location Data</div>
-    <table>
-      <tr>
-        <td class="label">IP Address</td>
-        <td class="value" id="ip-address"><span class="loading">Testing...</span></td>
-      </tr>
-      <tr>
-        <td class="label">Hostname</td>
-        <td class="value" id="hostname"><span class="loading">Testing...</span></td>
-      </tr>
-      <tr>
-        <td class="label">ISP / ASN</td>
-        <td class="value" id="isp"><span class="loading">Testing...</span></td>
-      </tr>
-      <tr>
-        <td class="label">Location</td>
-        <td class="value" id="location"><span class="loading">Testing...</span></td>
-      </tr>
-      <tr>
-        <td class="label">Coordinates</td>
-        <td class="value" id="coordinates"><span class="loading">Testing...</span></td>
-      </tr>
-      <tr>
-        <td class="label">Timezone</td>
-        <td class="value" id="timezone"><span class="loading">Testing...</span></td>
-      </tr>
-    </table>
+  <!-- APP CORE -->
+  <div class="app-container">
+    
+    <!-- LEFT NAVIGATION -->
+    <aside>
+      <a class="nav-item active">🏠 For You</a>
+      <a class="nav-item">👥 Following</a>
+      <a class="nav-item">🧭 Explore</a>
+      <a class="nav-item">LIVE</a>
+      <a class="nav-item">👤 Profile</a>
+    </aside>
+
+    <!-- CENTER VERTICAL FEED -->
+    <main id="video-feed">
+
+      <!-- ITEM 1 -->
+      <div class="feed-item">
+        <div class="video-card">
+          <video loop muted playsinline autoplay src="https://assets.mixkit.co/videos/preview/mixkit-tokyo-street-at-night-4022-large.mp4"></video>
+          
+          <div class="video-overlay">
+            <div class="author-info">@tokyonights</div>
+            <div class="video-desc">Walking through Shinjuku under the rain 🌧️✨ #tokyo #japan #cyberpunk</div>
+            <div class="audio-track">🎵 Original Sound - Tokyo Vibe Beats</div>
+          </div>
+
+          <div class="action-bar">
+            <button class="action-btn" onclick="toggleLike(this)">
+              <div class="icon-circle">❤️</div>
+              <span class="action-count">124.5K</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">💬</div>
+              <span class="action-count">1,832</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">🔖</div>
+              <span class="action-count">8,410</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">↪️</div>
+              <span class="action-count">3,200</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITEM 2 -->
+      <div class="feed-item">
+        <div class="video-card">
+          <video loop muted playsinline src="https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-craftsman-working-on-leather-41528-large.mp4"></video>
+          
+          <div class="video-overlay">
+            <div class="author-info">@leathercraft_studio</div>
+            <div class="video-desc">Crafting a handmade cardholder from scratch. Rate this color! 🛠️</div>
+            <div class="audio-track">🎵 Relaxing Lofi Beats - Crafting Lab</div>
+          </div>
+
+          <div class="action-bar">
+            <button class="action-btn" onclick="toggleLike(this)">
+              <div class="icon-circle">❤️</div>
+              <span class="action-count">45.2K</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">💬</div>
+              <span class="action-count">412</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">🔖</div>
+              <span class="action-count">2,105</span>
+            </button>
+            <button class="action-btn">
+              <div class="icon-circle">↪️</div>
+              <span class="action-count">512</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 
-  <!-- WebRTC Leak Detection Panel -->
-  <div class="panel">
-    <div class="panel-header">WebRTC Leak Test</div>
-    <table>
-      <tr>
-        <td class="label">WebRTC Status</td>
-        <td class="value" id="webrtc-status"><span class="loading">Detecting...</span></td>
-      </tr>
-      <tr>
-        <td class="label">Public IP (WebRTC)</td>
-        <td class="value" id="webrtc-public">None detected</td>
-      </tr>
-      <tr>
-        <td class="label">Local IP (LAN)</td>
-        <td class="value" id="webrtc-local">Protected / mDNS</td>
-      </tr>
-    </table>
-  </div>
-
-  <!-- Browser / Client Fingerprint -->
-  <div class="panel">
-    <div class="panel-header">Browser & Environment Data</div>
-    <table>
-      <tr>
-        <td class="label">User Agent</td>
-        <td class="value" id="user-agent"></td>
-      </tr>
-      <tr>
-        <td class="label">Screen Resolution</td>
-        <td class="value" id="screen-res"></td>
-      </tr>
-      <tr>
-        <td class="label">GPU Renderer</td>
-        <td class="value" id="gpu-renderer"><span class="loading">Detecting...</span></td>
-      </tr>
-      <tr>
-        <td class="label">System Language</td>
-        <td class="value" id="language"></td>
-      </tr>
-    </table>
-  </div>
-</div>
-
-<script>
-  // 1. Fetch IP & Network Location
-  async function fetchIPData() {
-    const providers = [
-      {
-        url: 'https://ipwho.is/',
-        parse: res => ({
-          ip: res.ip,
-          hostname: res.connection?.domain || 'N/A',
-          isp: `${res.connection?.isp || 'N/A'} (AS${res.connection?.asn || ''})`,
-          location: `${res.city}, ${res.region}, ${res.country}`,
-          coords: `${res.latitude}, ${res.longitude}`,
-          tz: res.timezone?.id
-        })
-      },
-      {
-        url: 'https://ipapi.co/json/',
-        parse: res => ({
-          ip: res.ip,
-          hostname: res.version,
-          isp: `${res.org} (${res.asn})`,
-          location: `${res.city}, ${res.region}, ${res.country_name}`,
-          coords: `${res.latitude}, ${res.longitude}`,
-          tz: res.timezone
-        })
-      }
-    ];
-
-    for (const provider of providers) {
-      try {
-        const response = await fetch(provider.url);
-        if (!response.ok) continue;
-        const raw = await response.json();
-        const data = provider.parse(raw);
-
-        document.getElementById('ip-address').innerHTML = `<span class="tag tag-green">${data.ip}</span>`;
-        document.getElementById('hostname').innerText = data.hostname;
-        document.getElementById('isp').innerText = data.isp;
-        document.getElementById('location').innerText = data.location;
-        document.getElementById('coordinates').innerText = data.coords;
-        document.getElementById('timezone').innerText = data.tz;
-        return;
-      } catch (e) {
-        console.warn('Primary IP API failed, attempting backup...');
-      }
+  <script>
+    // Toggle Heart Like Color
+    function toggleLike(btn) {
+      btn.classList.toggle('liked');
     }
 
-    document.getElementById('ip-address').innerHTML = `<span class="tag tag-red">Blocked / Failed</span>`;
-  }
-
-  // 2. WebRTC Leak Test
-  function testWebRTC() {
-    const statusEl = document.getElementById('webrtc-status');
-    const publicEl = document.getElementById('webrtc-public');
-    const localEl = document.getElementById('webrtc-local');
-
-    const RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-
-    if (!RTCPeerConnection) {
-      statusEl.innerHTML = `<span class="tag tag-green">Disabled / Not Supported</span>`;
-      return;
-    }
-
-    statusEl.innerHTML = `<span class="tag tag-green">Enabled (No Leaks)</span>`;
-
-    const pc = new RTCPeerConnection({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-    pc.createDataChannel('');
-
-    pc.onicecandidate = (e) => {
-      if (!e.candidate) return;
-      const candidate = e.candidate.candidate;
-      const ipMatch = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/.exec(candidate);
-
-      if (ipMatch) {
-        const detectedIP = ipMatch[1];
-        if (detectedIP.endsWith('.local')) {
-          localEl.innerText = `${detectedIP} (mDNS Hidden)`;
-        } else if (detectedIP.match(/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01]))/)) {
-          localEl.innerText = detectedIP;
-          statusEl.innerHTML = `<span class="tag tag-red">Local IP Exposed</span>`;
+    // Auto-play / pause video on scroll intersection (TikTok style)
+    const videos = document.querySelectorAll('video');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.play().catch(() => {});
         } else {
-          publicEl.innerText = detectedIP;
-          statusEl.innerHTML = `<span class="tag tag-red">Public IP Exposed</span>`;
+          entry.target.pause();
         }
-      }
-    };
+      });
+    }, { threshold: 0.6 });
 
-    pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => {});
-  }
-
-  // 3. Client & GPU Fingerprinting
-  function fetchClientSpecs() {
-    document.getElementById('user-agent').innerText = navigator.userAgent;
-    document.getElementById('screen-res').innerText = `${window.screen.width} x ${window.screen.height} (${window.screen.colorDepth}-bit)`;
-    document.getElementById('language').innerText = navigator.language;
-
-    try {
-      const canvas = document.createElement('canvas');
-      const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-      if (gl) {
-        const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-        const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-        document.getElementById('gpu-renderer').innerText = renderer || 'Generic WebGL Engine';
-      } else {
-        document.getElementById('gpu-renderer').innerText = 'WebGL Disabled';
-      }
-    } catch (e) {
-      document.getElementById('gpu-renderer').innerText = 'Blocked';
-    }
-  }
-
-  // Execute
-  fetchIPData();
-  testWebRTC();
-  fetchClientSpecs();
-</script>
+    videos.forEach(video => observer.observe(video));
+  </script>
 </body>
 </html>
