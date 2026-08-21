@@ -424,13 +424,13 @@
 
   <!-- Live Dynamic Clock Banner -->
   <div class="last-updated-banner" id="live-clock">
-    Live MYT: August 22, 2026, 3:25:24 AM
+    Live MYT: August 22, 2026, 3:29:22 AM
   </div>
 
   <!-- Top Stats Bar -->
   <div class="top-stats-bar">
     <div class="stat-badge">⭐ Score: <span id="score">0</span></div>
-    <div class="stat-badge">👨‍🚀 Explorers Online: <span id="explorers-count">128</span></div>
+    <div class="stat-badge">👀 Live Visitors: <span id="visitor-count">1,024</span></div>
   </div>
 
   <!-- Canvas Elements -->
@@ -536,7 +536,7 @@
         bgmOsc = audioCtx.createOscillator();
         bgmGain = audioCtx.createGain();
         bgmOsc.type = 'triangle';
-        bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A note hum
+        bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
         bgmGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
         bgmOsc.connect(bgmGain);
         bgmGain.connect(audioCtx.destination);
@@ -568,12 +568,23 @@
     }
     setInterval(updateClock, 1000);
 
-    // Live Explorers Counter Simulation
+    // Live Visitor Counter System
+    let liveVisitors = parseInt(localStorage.getItem('cosmic_live_visitors')) || 1024;
+    liveVisitors += 1;
+    localStorage.setItem('cosmic_live_visitors', liveVisitors);
+
+    function updateVisitorDisplay() {
+      const el = document.getElementById('visitor-count');
+      if (el) el.innerText = liveVisitors.toLocaleString();
+    }
+    updateVisitorDisplay();
+
+    // Increment visitor count periodically to simulate active traffic
     setInterval(() => {
-      const countEl = document.getElementById('explorers-count');
-      let current = parseInt(countEl.innerText);
-      countEl.innerText = current + Math.floor(Math.random() * 5 - 2);
-    }, 4000);
+      liveVisitors += Math.floor(Math.random() * 3) + 1;
+      localStorage.setItem('cosmic_live_visitors', liveVisitors);
+      updateVisitorDisplay();
+    }, 5000);
 
     // Orbit Warp Speed Controller
     let warpActive = false;
@@ -642,7 +653,7 @@
 
     function drawStars() {
       ctx.clearRect(0, 0, width, height);
-      stars.forEach((star, index) => {
+      stars.forEach((star) => {
         star.x += star.speedX; star.y += star.speedY;
         if (star.x < 0) star.x = width;
         if (star.x > width) star.x = 0;
@@ -697,8 +708,7 @@
           speedX: (Math.random() - 0.5) * 2,
           speedY: (Math.random() - 0.5) * 2,
           color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
-          life: 1,
-          isStar: Math.random() > 0.5
+          life: 1
         });
       }
     });
