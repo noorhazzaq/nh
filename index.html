@@ -17,6 +17,7 @@
       --nebula-1-secondary: rgba(0, 212, 255, 0.2);
       --nebula-2-color: rgba(236, 72, 153, 0.35);
       --nebula-2-secondary: rgba(147, 51, 234, 0.15);
+      --orbit-speed-mult: 1;
     }
 
     [data-theme="emerald"] {
@@ -52,7 +53,7 @@
     /* Live Clock Banner */
     .last-updated-banner {
       position: absolute;
-      top: 15px;
+      top: 12px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
@@ -69,20 +70,61 @@
       box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
 
-    /* Score Counter Badge */
-    .score-badge {
+    /* Top Stats Bar */
+    .top-stats-bar {
       position: absolute;
-      top: 55px;
+      top: 50px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 20;
+      display: flex;
+      gap: 12px;
+    }
+
+    .stat-badge {
       font-size: 0.75rem;
       color: #f472b6;
       background: rgba(15, 23, 42, 0.75);
-      padding: 4px 14px;
+      padding: 4px 12px;
       border-radius: 15px;
       border: 1px solid rgba(244, 114, 182, 0.3);
       backdrop-filter: blur(8px);
+    }
+
+    /* Flash Effect Canvas Overlay */
+    #flash-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 30;
+      background: white;
+      opacity: 0;
+      transition: opacity 0.4s ease-out;
+    }
+
+    /* Toast Notification */
+    .cosmic-toast {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid #c084fc;
+      color: #e2e8f0;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      z-index: 100;
+      box-shadow: 0 0 20px rgba(192, 132, 252, 0.5);
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+    }
+
+    .cosmic-toast.show {
+      transform: translateX(-50%) translateY(0);
     }
 
     /* Canvas Elements */
@@ -99,28 +141,28 @@
     #effects-canvas { z-index: 15; }
 
     /* Nebulas */
-    .nebula-1 {
+    .nebula-1, .nebula-2 {
       position: absolute;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2;
+      transition: transform 0.5s ease, background 1.5s ease-in-out;
+    }
+
+    .nebula-1 {
       width: 350px;
       height: 350px;
-      border-radius: 50%;
       background: radial-gradient(circle, var(--nebula-1-color) 0%, var(--nebula-1-secondary) 50%, transparent 70%);
       filter: blur(70px);
       animation: float1 12s infinite ease-in-out alternate;
-      z-index: 2;
-      transition: background 1.5s ease-in-out;
     }
 
     .nebula-2 {
-      position: absolute;
       width: 300px;
       height: 300px;
-      border-radius: 50%;
       background: radial-gradient(circle, var(--nebula-2-color) 0%, var(--nebula-2-secondary) 50%, transparent 70%);
       filter: blur(65px);
       animation: float2 15s infinite ease-in-out alternate;
-      z-index: 2;
-      transition: background 1.5s ease-in-out;
     }
 
     @keyframes float1 {
@@ -133,33 +175,42 @@
       100% { transform: translate(-60px, -50px) scale(0.85); }
     }
 
-    /* Floating Ship */
+    /* Floating Ship & Astronaut */
     .ship-container {
       position: absolute;
       width: 70px;
       height: 70px;
-      top: 25%;
+      top: 22%;
       left: -100px;
       z-index: 3;
       pointer-events: none;
       animation: sailAcross 22s linear infinite;
     }
 
-    .ship-svg {
-      width: 100%;
-      height: 100%;
-      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+    .astronaut-container {
+      position: absolute;
+      width: 45px;
+      height: 45px;
+      top: 70%;
+      left: -60px;
+      z-index: 12;
+      cursor: pointer;
+      animation: floatAstronaut 26s linear infinite;
     }
 
     @keyframes sailAcross {
       0% { transform: translateX(0vw) translateY(0px) rotate(-6deg); }
-      25% { transform: translateX(30vw) translateY(-35px) rotate(8deg); }
       50% { transform: translateX(60vw) translateY(25px) rotate(-8deg); }
-      75% { transform: translateX(85vw) translateY(-20px) rotate(6deg); }
       100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
     }
 
-    /* Interactive Floating UFO Easter Egg */
+    @keyframes floatAstronaut {
+      0% { transform: translateX(0vw) rotate(0deg); }
+      50% { transform: translateX(50vw) translateY(-60px) rotate(180deg); }
+      100% { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+    }
+
+    /* UFO Easter Egg */
     .ufo-container {
       position: absolute;
       width: 50px;
@@ -172,9 +223,7 @@
       transition: transform 0.2s ease;
     }
 
-    .ufo-container:hover {
-      transform: scale(1.3) !important;
-    }
+    .ufo-container:hover { transform: scale(1.3) !important; }
 
     @keyframes ufoFly {
       0% { transform: translateX(0vw) translateY(0px); }
@@ -210,7 +259,7 @@
       height: 28px;
       background: radial-gradient(circle at 30% 30%, #f472b6 0%, #a82e70 70%);
       box-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
-      animation: orbitPlanet 15s linear infinite;
+      animation: orbitPlanet calc(15s / var(--orbit-speed-mult)) linear infinite;
     }
 
     #planet-blue {
@@ -219,7 +268,7 @@
       height: 38px;
       background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #116892 70%);
       box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
-      animation: orbitPlanet 20s linear infinite reverse;
+      animation: orbitPlanet calc(20s / var(--orbit-speed-mult)) linear infinite reverse;
     }
 
     #planet-purple {
@@ -228,7 +277,7 @@
       height: 20px;
       background: radial-gradient(circle at 30% 30%, #c084fc 0%, #6e1cda 70%);
       box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
-      animation: orbitPlanet 12s ease-in-out infinite alternate;
+      animation: orbitPlanet calc(12s / var(--orbit-speed-mult)) ease-in-out infinite alternate;
     }
 
     /* Card Layout */
@@ -256,9 +305,7 @@
       z-index: 1;
     }
 
-    @keyframes rotateBorder {
-      to { transform: rotate(1turn); }
-    }
+    @keyframes rotateBorder { to { transform: rotate(1turn); } }
 
     .card-content {
       position: relative;
@@ -273,7 +320,7 @@
     }
 
     h1 {
-      font-size: 1.9rem;
+      font-size: 1.85rem;
       background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
       background-size: 200% 200%;
       animation: gradientShift 6s ease infinite;
@@ -294,30 +341,6 @@
       color: #cbd5e1;
       font-size: 0.95rem;
       line-height: 1.5;
-    }
-
-    /* Custom Greeting Name Input */
-    .greeting-input-box {
-      margin-top: 0.8rem;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .greeting-input-box input {
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      padding: 5px 12px;
-      color: #fff;
-      font-size: 0.8rem;
-      text-align: center;
-      outline: none;
-      width: 65%;
-    }
-
-    .greeting-input-box input::placeholder {
-      color: #94a3b8;
     }
 
     .video-container {
@@ -351,7 +374,7 @@
       100% { opacity: 1; transform: scale(1.05); }
     }
 
-    /* Buttons Group */
+    /* Controls Group */
     .theme-controls {
       display: flex;
       gap: 6px;
@@ -360,7 +383,7 @@
       flex-wrap: wrap;
     }
 
-    .theme-btn, .party-btn {
+    .theme-btn, .party-btn, .action-btn {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.2);
       color: #ffffff;
@@ -379,7 +402,12 @@
       box-shadow: 0 0 10px rgba(244, 114, 182, 0.5);
     }
 
-    .theme-btn:hover, .party-btn:hover {
+    .action-btn {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    .theme-btn:hover, .party-btn:hover, .action-btn:hover {
       background: rgba(255, 255, 255, 0.3);
       transform: translateY(-2px);
       box-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
@@ -388,24 +416,30 @@
 </head>
 <body>
 
-  <!-- Live Dynamic Clock Banner (Updated Initial Time) -->
+  <!-- Supernova Flash Overlay -->
+  <div id="flash-overlay"></div>
+
+  <!-- Cosmic Toast Notification System -->
+  <div class="cosmic-toast" id="toast">Welcome to the Cosmic Experience!</div>
+
+  <!-- Live Dynamic Clock Banner -->
   <div class="last-updated-banner" id="live-clock">
-    Live MYT: August 22, 2026, 3:18:21 AM
+    Live MYT: August 22, 2026, 3:25:24 AM
   </div>
 
-  <!-- Interactive Shooting Stars Score Badge -->
-  <div class="score-badge" id="score-badge">
-    ⭐ Cosmic Catch Score: <span id="score">0</span>
+  <!-- Top Stats Bar -->
+  <div class="top-stats-bar">
+    <div class="stat-badge">⭐ Score: <span id="score">0</span></div>
+    <div class="stat-badge">👨‍🚀 Explorers Online: <span id="explorers-count">128</span></div>
   </div>
 
-  <!-- Background Starfield Canvas -->
+  <!-- Canvas Elements -->
   <canvas id="space-canvas"></canvas>
-  
-  <!-- Interactive Overlay Canvas -->
   <canvas id="effects-canvas"></canvas>
 
-  <div class="nebula-1"></div>
-  <div class="nebula-2"></div>
+  <!-- Interactive Nebulas -->
+  <div class="nebula-1" onclick="pulseNebula(this)"></div>
+  <div class="nebula-2" onclick="pulseNebula(this)"></div>
 
   <!-- Floating Ship -->
   <div class="ship-container">
@@ -418,8 +452,19 @@
     </svg>
   </div>
 
+  <!-- Clickable Floating Astronaut -->
+  <div class="astronaut-container" onclick="triggerAstronautQuote()">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="20" r="12" fill="#e2e8f0"/>
+      <circle cx="32" cy="20" r="8" fill="#38bdf8"/>
+      <rect x="22" y="32" width="20" height="24" rx="5" fill="#f8fafc"/>
+      <rect x="14" y="34" width="8" height="18" rx="3" fill="#cbd5e1"/>
+      <rect x="42" y="34" width="8" height="18" rx="3" fill="#cbd5e1"/>
+    </svg>
+  </div>
+
   <!-- Clickable UFO Easter Egg -->
-  <div class="ufo-container" id="ufo-easter-egg" onclick="triggerUFOEvent()">
+  <div class="ufo-container" onclick="triggerUFOEvent()">
     <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <ellipse cx="32" cy="36" rx="24" ry="8" fill="#94a3b8" stroke="#38bdf8" stroke-width="1.5"/>
       <path d="M20 34 C20 20, 44 20, 44 34 Z" fill="rgba(56, 189, 248, 0.6)" stroke="#38bdf8"/>
@@ -437,13 +482,8 @@
 
   <div class="card">
     <div class="card-content">
-      <h1 id="greeting-title">Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
+      <h1>Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
       <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
-
-      <!-- Custom Name Input -->
-      <div class="greeting-input-box">
-        <input type="text" id="name-input" placeholder="Type your name to personalize..." oninput="updateGreeting(this.value)">
-      </div>
 
       <div class="video-container">
         <iframe 
@@ -461,6 +501,8 @@
         <button class="theme-btn" onclick="setNebulaTheme('cosmic')">🔮 Cosmic</button>
         <button class="theme-btn" onclick="setNebulaTheme('emerald')">🌌 Emerald</button>
         <button class="theme-btn" onclick="setNebulaTheme('supernova')">💥 Supernova</button>
+        <button class="action-btn" id="bgm-btn" onclick="toggleBGM()">🎵 Audio: OFF</button>
+        <button class="action-btn" onclick="toggleWarpSpeed()">⚡ Warp Speed</button>
         <button class="party-btn" onclick="fireFestiveConfetti()">🎉 Celebrate!</button>
       </div>
     </div>
@@ -469,6 +511,8 @@
   <script>
     // Audio Synthesizer via Web Audio API
     let audioCtx;
+    let bgmOsc = null, bgmGain = null, bgmPlaying = false;
+
     function playCosmicTone(freq = 440, type = 'sine', duration = 0.15) {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const osc = audioCtx.createOscillator();
@@ -483,6 +527,39 @@
       osc.stop(audioCtx.currentTime + duration);
     }
 
+    // Interactive Audio Toggle (Ambient Synth Drone BGM)
+    function toggleBGM() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const btn = document.getElementById('bgm-btn');
+      
+      if (!bgmPlaying) {
+        bgmOsc = audioCtx.createOscillator();
+        bgmGain = audioCtx.createGain();
+        bgmOsc.type = 'triangle';
+        bgmOsc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A note hum
+        bgmGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+        bgmOsc.connect(bgmGain);
+        bgmGain.connect(audioCtx.destination);
+        bgmOsc.start();
+        bgmPlaying = true;
+        btn.innerText = "🎵 Audio: ON";
+        showToast("🔊 Cosmic Ambient Audio Activated!");
+      } else {
+        if (bgmOsc) bgmOsc.stop();
+        bgmPlaying = false;
+        btn.innerText = "🎵 Audio: OFF";
+        showToast("🔇 Audio Muted");
+      }
+    }
+
+    // Custom Toast Notification System
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
     // Live Dynamic Clock
     function updateClock() {
       const now = new Date();
@@ -491,20 +568,54 @@
     }
     setInterval(updateClock, 1000);
 
-    // Custom Greeting Personalization
-    function updateGreeting(name) {
-      const title = document.getElementById('greeting-title');
-      if (name.trim() === "") {
-        title.innerText = "Terima Kasih Alhamdulillah Haji Abu Kassim!";
-      } else {
-        title.innerText = `Terima Kasih Alhamdulillah ${name}!`;
-      }
+    // Live Explorers Counter Simulation
+    setInterval(() => {
+      const countEl = document.getElementById('explorers-count');
+      let current = parseInt(countEl.innerText);
+      countEl.innerText = current + Math.floor(Math.random() * 5 - 2);
+    }, 4000);
+
+    // Orbit Warp Speed Controller
+    let warpActive = false;
+    function toggleWarpSpeed() {
+      warpActive = !warpActive;
+      document.documentElement.style.setProperty('--orbit-speed-mult', warpActive ? '4' : '1');
+      playCosmicTone(900, 'sawtooth', 0.2);
+      showToast(warpActive ? "⚡ Warp Speed Engaged!" : "🐢 Standard Orbit Speed");
     }
 
-    // Canvas Starfield Background
+    // Pulsing Nebula Glow
+    function pulseNebula(el) {
+      el.style.transform = "scale(1.4)";
+      playCosmicTone(220, 'sine', 0.4);
+      setTimeout(() => el.style.transform = "", 500);
+      showToast("🌌 Nebula Energy Pulsed!");
+    }
+
+    // Floating Astronaut Quotes
+    const quotes = [
+      "👩‍🚀 'Space is vast, keep exploring!'",
+      "👨‍🚀 'Greetings from Orbit!'",
+      "🚀 'To infinity and beyond!'"
+    ];
+    function triggerAstronautQuote() {
+      playCosmicTone(650, 'triangle', 0.2);
+      const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      showToast(randomQuote);
+    }
+
+    // Supernova Flash Overlay
+    function triggerSupernovaFlash() {
+      const flash = document.getElementById('flash-overlay');
+      flash.style.opacity = '0.6';
+      setTimeout(() => flash.style.opacity = '0', 300);
+    }
+
+    // Canvas Starfield Background & Constellations
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
     let width, height, stars = [];
+    let mouseX = -1000, mouseY = -1000;
 
     function resizeSpaceCanvas() {
       width = canvas.width = window.innerWidth;
@@ -531,7 +642,7 @@
 
     function drawStars() {
       ctx.clearRect(0, 0, width, height);
-      stars.forEach(star => {
+      stars.forEach((star, index) => {
         star.x += star.speedX; star.y += star.speedY;
         if (star.x < 0) star.x = width;
         if (star.x > width) star.x = 0;
@@ -539,23 +650,35 @@
         if (star.y > height) star.y = 0;
         star.alpha += star.twinkleSpeed;
         if (star.alpha > 1 || star.alpha < 0.1) star.twinkleSpeed = -star.twinkleSpeed;
+
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
         ctx.globalAlpha = Math.abs(star.alpha);
-        ctx.shadowBlur = star.radius > 1.2 ? 8 : 0;
-        ctx.shadowColor = '#38bdf8';
         ctx.fill();
+
+        // Constellation Lines Bridge near cursor
+        let dist = Math.hypot(mouseX - star.x, mouseY - star.y);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(star.x, star.y);
+          ctx.lineTo(mouseX, mouseY);
+          ctx.strokeStyle = `rgba(56, 189, 248, ${1 - dist / 100})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
+        }
       });
       requestAnimationFrame(drawStars);
     }
 
-    // Interactive Overlay Canvas
+    // Interactive Overlay Canvas (Fireworks, Lasers, Star Trail, & Asteroids)
     const fxCanvas = document.getElementById('effects-canvas');
     const fxCtx = fxCanvas.getContext('2d');
     let particles = [];
     let shootingStars = [];
     let confetti = [];
+    let shockwaves = [];
+    let asteroids = [];
     let score = 0;
 
     function resizeFxCanvas() {
@@ -564,6 +687,8 @@
     }
 
     window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
       for (let i = 0; i < 2; i++) {
         particles.push({
           x: e.clientX,
@@ -572,31 +697,67 @@
           speedX: (Math.random() - 0.5) * 2,
           speedY: (Math.random() - 0.5) * 2,
           color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
-          life: 1
+          life: 1,
+          isStar: Math.random() > 0.5
         });
       }
     });
 
-    // Click Fireworks
+    // Space Debris / Asteroids Spawners
+    setInterval(() => {
+      if (asteroids.length < 5) {
+        asteroids.push({
+          x: Math.random() * fxCanvas.width,
+          y: -20,
+          size: Math.random() * 12 + 8,
+          speedX: (Math.random() - 0.5) * 2,
+          speedY: Math.random() * 2 + 1
+        });
+      }
+    }, 4000);
+
+    // Laser Pulses & Explosions on Click
     window.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT' || e.target.closest('.ufo-container')) return;
+      if (e.target.tagName === 'BUTTON' || e.target.closest('.ufo-container') || e.target.closest('.astronaut-container')) return;
       playCosmicTone(600 + Math.random() * 400, 'sine', 0.1);
       
-      let caught = false;
+      // Laser Shockwave Ring
+      shockwaves.push({
+        x: e.clientX,
+        y: e.clientY,
+        radius: 2,
+        maxRadius: 60,
+        opacity: 1
+      });
+
+      // Catch Shooting Stars
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         let s = shootingStars[i];
-        let dist = Math.hypot(e.clientX - s.x, e.clientY - s.y);
-        if (dist < 40) {
+        if (Math.hypot(e.clientX - s.x, e.clientY - s.y) < 40) {
           shootingStars.splice(i, 1);
           score += 10;
           document.getElementById('score').innerText = score;
           playCosmicTone(880, 'triangle', 0.3);
-          caught = true;
+          showToast("⭐ Caught a Shooting Star! +10 Points");
           break;
         }
       }
 
-      for (let i = 0; i < 25; i++) {
+      // Smash Asteroids
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        let a = asteroids[i];
+        if (Math.hypot(e.clientX - a.x, e.clientY - a.y) < a.size + 15) {
+          asteroids.splice(i, 1);
+          score += 25;
+          document.getElementById('score').innerText = score;
+          playCosmicTone(350, 'sawtooth', 0.2);
+          showToast("💥 Asteroid Smashed! +25 Points");
+          break;
+        }
+      }
+
+      // Particles Burst
+      for (let i = 0; i < 20; i++) {
         const angle = Math.random() * Math.PI * 2;
         const speed = Math.random() * 5 + 2;
         particles.push({
@@ -605,7 +766,7 @@
           size: Math.random() * 4 + 2,
           speedX: Math.cos(angle) * speed,
           speedY: Math.sin(angle) * speed,
-          color: caught ? '#facc15' : `hsl(${Math.random() * 360}, 100%, 70%)`,
+          color: `hsl(${Math.random() * 360}, 100%, 70%)`,
           life: 1.2
         });
       }
@@ -621,16 +782,15 @@
         opacity: 1
       });
     }
+    setInterval(() => { if (Math.random() < 0.6) addShootingStar(); }, 2200);
 
-    setInterval(() => {
-      if (Math.random() < 0.6) addShootingStar();
-    }, 2200);
-
-    // Festive Confetti Cannon
+    // Festive Confetti
     function fireFestiveConfetti() {
+      triggerSupernovaFlash();
       playCosmicTone(523.25, 'square', 0.2);
       setTimeout(() => playCosmicTone(659.25, 'square', 0.2), 100);
       setTimeout(() => playCosmicTone(783.99, 'square', 0.3), 200);
+      showToast("🎉 Cosmic Celebration Launched!");
 
       for (let i = 0; i < 100; i++) {
         confetti.push({
@@ -647,10 +807,11 @@
       }
     }
 
-    // UFO Easter Egg Click Event
+    // UFO Click Event
     function triggerUFOEvent() {
+      triggerSupernovaFlash();
       playCosmicTone(300, 'sawtooth', 0.5);
-      alert("👽 You contacted the Alien Space Cruiser! +50 Cosmic Points!");
+      showToast("👽 Alien Space Cruiser Contacted! +50 Points!");
       score += 50;
       document.getElementById('score').innerText = score;
       fireFestiveConfetti();
@@ -659,15 +820,39 @@
     function animateEffects() {
       fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
 
+      // Render Shockwave Rings
+      for (let i = shockwaves.length - 1; i >= 0; i--) {
+        let sw = shockwaves[i];
+        sw.radius += 3;
+        sw.opacity -= 0.04;
+        if (sw.opacity <= 0) { shockwaves.splice(i, 1); continue; }
+        fxCtx.beginPath();
+        fxCtx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        fxCtx.strokeStyle = `rgba(56, 189, 248, ${sw.opacity})`;
+        fxCtx.lineWidth = 2;
+        fxCtx.stroke();
+      }
+
+      // Render Floating Asteroids
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        let a = asteroids[i];
+        a.x += a.speedX;
+        a.y += a.speedY;
+        if (a.y > fxCanvas.height + 30) { asteroids.splice(i, 1); continue; }
+        fxCtx.beginPath();
+        fxCtx.arc(a.x, a.y, a.size, 0, Math.PI * 2);
+        fxCtx.fillStyle = '#64748b';
+        fxCtx.fill();
+        fxCtx.strokeStyle = '#94a3b8';
+        fxCtx.stroke();
+      }
+
+      // Render Particles & Glitters
       for (let i = particles.length - 1; i >= 0; i--) {
         let p = particles[i];
-        p.x += p.speedX;
-        p.y += p.speedY;
+        p.x += p.speedX; p.y += p.speedY;
         p.life -= 0.02;
-        if (p.life <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
+        if (p.life <= 0) { particles.splice(i, 1); continue; }
         fxCtx.beginPath();
         fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         fxCtx.fillStyle = p.color;
@@ -675,19 +860,12 @@
         fxCtx.fill();
       }
 
+      // Render Confetti
       for (let i = confetti.length - 1; i >= 0; i--) {
         let c = confetti[i];
-        c.x += c.speedX;
-        c.y += c.speedY;
-        c.speedY += 0.2;
-        c.rotation += c.rotationSpeed;
-        c.life -= 0.01;
-
-        if (c.life <= 0 || c.y > fxCanvas.height) {
-          confetti.splice(i, 1);
-          continue;
-        }
-
+        c.x += c.speedX; c.y += c.speedY; c.speedY += 0.2;
+        c.rotation += c.rotationSpeed; c.life -= 0.01;
+        if (c.life <= 0 || c.y > fxCanvas.height) { confetti.splice(i, 1); continue; }
         fxCtx.save();
         fxCtx.translate(c.x, c.y);
         fxCtx.rotate((c.rotation * Math.PI) / 180);
@@ -697,16 +875,13 @@
         fxCtx.restore();
       }
 
+      // Render Shooting Stars
       for (let i = shootingStars.length - 1; i >= 0; i--) {
         let s = shootingStars[i];
         s.x += Math.cos(s.angle) * s.speed;
         s.y += Math.sin(s.angle) * s.speed;
         s.opacity -= 0.015;
-
-        if (s.opacity <= 0 || s.x > fxCanvas.width || s.y > fxCanvas.height) {
-          shootingStars.splice(i, 1);
-          continue;
-        }
+        if (s.opacity <= 0 || s.x > fxCanvas.width || s.y > fxCanvas.height) { shootingStars.splice(i, 1); continue; }
 
         let tailX = s.x - Math.cos(s.angle) * s.length;
         let tailY = s.y - Math.sin(s.angle) * s.length;
@@ -730,6 +905,7 @@
     function setNebulaTheme(themeName) {
       playCosmicTone(700, 'sine', 0.15);
       document.documentElement.setAttribute('data-theme', themeName);
+      showToast(`🎨 Theme Switched: ${themeName.toUpperCase()}`);
     }
 
     window.addEventListener('resize', () => {
