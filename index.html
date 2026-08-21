@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universe with Global Chat</title>
+  
+  <!-- Firebase SDKs via CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #03030a;
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow-x: hidden;
+      position: relative;
+      padding: 60px 10px 20px 10px;
+    }
+
+    /* Top Timestamp Banner */
+    .last-updated-banner {
+      position: fixed;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 30;
+      font-size: 0.8rem;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.8);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+
+    /* Star Canvas */
+    #space-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Background Nebulas */
+    .nebula-1, .nebula-2 {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .nebula-1 {
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, transparent 70%);
+      filter: blur(70px);
+      animation: float1 12s infinite ease-in-out alternate;
+    }
+
+    .nebula-2 {
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, rgba(147, 51, 234, 0.12) 50%, transparent 70%);
+      filter: blur(65px);
+      animation: float2 15s infinite ease-in-out alternate;
+    }
+
+    @keyframes float1 {
+      0% { transform: translate(-80px, -60px) scale(0.9); }
+      100% { transform: translate(60px, 70px) scale(1.2); }
+    }
+
+    @keyframes float2 {
+      0% { transform: translate(70px, 80px) scale(1.1); }
+      100% { transform: translate(-60px, -50px) scale(0.85); }
+    }
+
+    /* Floating Ship */
+    .ship-container {
+      position: fixed;
+      width: 70px;
+      height: 70px;
+      top: 18%;
+      left: -100px;
+      z-index: 3;
+      pointer-events: none;
+      animation: sailAcross 22s linear infinite;
+    }
+
+    .ship-svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+    }
+
+    @keyframes sailAcross {
+      0% { transform: translateX(0vw) translateY(0px) rotate(-6deg); }
+      25% { transform: translateX(30vw) translateY(-35px) rotate(8deg); }
+      50% { transform: translateX(60vw) translateY(25px) rotate(-8deg); }
+      75% { transform: translateX(85vw) translateY(-20px) rotate(6deg); }
+      100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
+    }
+
+    /* Main Card Layout */
+    .main-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      z-index: 10;
+      width: 100%;
+      max-width: 420px;
+    }
+
+    .card {
+      background: rgba(15, 15, 30, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      padding: 1.5rem;
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.05);
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6);
+      background-size: 200% 200%;
+      animation: gradientShift 6s ease infinite;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.6rem;
+      letter-spacing: 1px;
+      line-height: 1.25;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.4;
+    }
+
+    /* Responsive YouTube Frame Container */
+    .video-container {
+      margin-top: 1rem;
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Global Live Chat Component */
+    .chat-card {
+      display: flex;
+      flex-direction: column;
+      height: 380px;
+      text-align: left;
+    }
+
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .chat-header h2 {
+      font-size: 1.1rem;
+      color: #38bdf8;
+    }
+
+    .online-indicator {
+      font-size: 0.75rem;
+      color: #4ade80;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .online-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #4ade80;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #4ade80;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-right: 5px;
+      margin-bottom: 12px;
+    }
+
+    /* Custom Scrollbar for Chat */
+    .chat-messages::-webkit-scrollbar {
+      width: 4px;
+    }
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .chat-msg {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.85rem;
+      word-wrap: break-word;
+    }
+
+    .chat-msg .author {
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: #c084fc;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .chat-msg .time {
+      font-size: 0.65rem;
+      color: #64748b;
+      font-weight: normal;
+    }
+
+    .chat-msg .text {
+      color: #f1f5f9;
+    }
+
+    /* Chat Controls */
+    .chat-form {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-inputs {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"] {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: #38bdf8;
+    }
+
+    #username-input {
+      width: 35%;
+    }
+
+    #message-input {
+      flex: 1;
+    }
+
+    button.send-btn {
+      background: linear-gradient(135deg, #a855f7, #06b6d4);
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    button.send-btn:hover {
+      opacity: 0.9;
+    }
+
+    button.send-btn:active {
+      transform: scale(0.96);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Timestamp Banner -->
+  <div class="last-updated-banner">
+    Last Updated: August 22, 2026 at 4:20 AM MYT
+  </div>
+
+  <!-- Animated Dynamic Canvas -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- Glowing Nebulas -->
+  <div class="nebula-1"></div>
+  <div class="nebula-2"></div>
+
+  <!-- Sailing Ship Container -->
+  <div class="ship-container">
+    <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
+      <rect x="31" y="8" width="2" height="34" fill="#A0522D"/>
+      <path d="M33 12 L48 25 L33 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
+      <path d="M30 14 L16 38 L30 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
+      <path d="M31 8 L18 4 L31 0 Z" fill="#FF2222" stroke="#CC0000" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="main-container">
+    <!-- Universe Card -->
+    <div class="card">
+      <h1>Terima Kasih Haji Abu Kassim!</h1>
+      <p>Welcome to the cosmic hub. Enjoy the global stream and jump into the chat below!</p>
+
+      <div class="video-container">
+        <iframe 
+          src="https://www.youtube.com/embed/z_uOB_Gsyis" 
+          title="Cinta Satu Malam (DJ Remix Tahun Baru 2026) | Party Night Vibes 🔥" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+
+    <!-- Global Live Chat Card -->
+    <div class="card chat-card">
+      <div class="chat-header">
+        <h2>🌌 Global Cosmic Chat</h2>
+        <div class="online-indicator">
+          <div class="online-dot"></div>
+          <span>Live Sync</span>
+        </div>
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <!-- Messages populate here dynamically -->
+      </div>
+
+      <form class="chat-form" id="chat-form">
+        <div class="chat-inputs">
+          <input type="text" id="username-input" placeholder="Name" maxlength="15" required>
+          <input type="text" id="message-input" placeholder="Type a message..." maxlength="200" required autocomplete="off">
+        </div>
+        <button type="submit" class="send-btn">Send Message ✨</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // 1. STAR CANVAS SCRIPT
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height, stars = [];
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+      createStars();
+    }
+
+    function createStars() {
+      stars = [];
+      const count = Math.floor((width * height) / 2500);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.6 + 0.3,
+          color: `rgba(${Math.floor(Math.random() * 100 + 155)}, ${Math.floor(Math.random() * 100 + 155)}, 255, ${Math.random() * 0.8 + 0.2})`,
+          speedX: (Math.random() - 0.5) * 0.3,
+          speedY: (Math.random() - 0.5) * 0.3,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          alpha: Math.random()
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, width, height);
+      stars.forEach(star => {
+        star.x += star.speedX;
+        star.y += star.speedY;
+        if (star.x < 0) star.x = width;
+        if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height;
+        if (star.y > height) star.y = 0;
+
+        star.alpha += star.twinkleSpeed;
+        if (star.alpha > 1 || star.alpha < 0.1) {
+          star.twinkleSpeed = -star.twinkleSpeed;
+        }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = star.color;
+        ctx.globalAlpha = Math.abs(star.alpha);
+        ctx.shadowBlur = star.radius > 1.2 ? 8 : 0;
+        ctx.shadowColor = '#38bdf8';
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawStars();
+
+    // 2. FIREBASE REALTIME GLOBAL CHAT SCRIPT
+    // Standard Demo Public Firebase Instance Config
+    const firebaseConfig = {
+      databaseURL: "https://express-chat-demo-default-rtdb.firebaseio.com/"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const chatRef = db.ref("global_cosmic_chat");
+
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const usernameInput = document.getElementById('username-input');
+    const messageInput = document.getElementById('message-input');
+
+    // Load saved username if present
+    if (localStorage.getItem('cosmic_username')) {
+      usernameInput.value = localStorage.getItem('cosmic_username');
+    }
+
+    // Listen for new messages from Firebase
+    chatRef.limitToLast(50).on("child_added", (snapshot) => {
+      const data = snapshot.val();
+      appendMessage(data.username, data.message, data.timestamp);
+    });
+
+    // Handle sending message
+    chatForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = usernameInput.value.trim();
+      const text = messageInput.value.trim();
+
+      if (name && text) {
+        localStorage.setItem('cosmic_username', name);
+        
+        chatRef.push({
+          username: name,
+          message: text,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+
+        messageInput.value = '';
+      }
+    });
+
+    function appendMessage(user, msg, time) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'chat-msg';
+      msgDiv.innerHTML = `
+        <div class="author">
+          <span>${escapeHTML(user)}</span>
+          <span class="time">${time || ''}</span>
+        </div>
+        <div class="text">${escapeHTML(msg)}</div>
+      `;
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+  </script>
+</body>
+</html>
