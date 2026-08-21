@@ -3,551 +3,192 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zack360 - Make Your Day</title>
+  <title>Zack360</title>
   <style>
     :root {
-      --bg-black: #121212;
-      --bg-card: #000000;
-      --text-main: #ffffff;
-      --text-muted: #a6a6a6;
-      --primary-red: #fe2c55;
-      --border-color: rgba(255, 255, 255, 0.15);
+      --bg: #121212;
+      --card-bg: #000;
+      --text: #fff;
+      --muted: #a6a6a6;
+      --accent: #fe2c55;
+      --border: rgba(255, 255, 255, 0.15);
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-    body {
-      background-color: var(--bg-black);
-      color: var(--text-main);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
+    /* HEADER */
+    header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
+    .brand { display: flex; align-items: center; gap: 8px; font-size: 1.4rem; font-weight: 800; }
+    .badge { width: 20px; height: 20px; background: linear-gradient(135deg, #25f4ee, var(--accent)); border-radius: 4px; }
+    .btn { padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: var(--text); }
+    .btn-accent { background: var(--accent); color: #fff; }
 
-    /* --- TOP NAVBAR --- */
-    header {
-      height: 60px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      background-color: var(--bg-black);
-      z-index: 100;
-    }
+    /* LAYOUT */
+    .app-body { display: flex; flex: 1; height: calc(100vh - 60px); }
+    aside { width: 220px; border-right: 1px solid var(--border); padding: 16px 8px; display: flex; flex-direction: column; gap: 4px; }
+    .nav-item { padding: 12px 16px; border-radius: 8px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .nav-item.active { color: var(--accent); }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 1.4rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
+    /* FEED */
+    main { flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory; display: flex; flex-direction: column; align-items: center; }
+    .empty-state { margin-auto: 0; text-align: center; color: var(--muted); padding-top: 100px; }
+    
+    .video-item { scroll-snap-align: start; height: calc(100vh - 60px); width: 100%; max-width: 480px; padding: 12px 0; display: flex; justify-content: center; position: relative; }
+    .video-card { position: relative; width: 100%; height: 100%; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
+    video { width: 100%; height: 100%; object-fit: cover; cursor: pointer; }
 
-    .brand-badge {
-      width: 24px;
-      height: 24px;
-      background: linear-gradient(135deg, #25f4ee, var(--primary-red));
-      border-radius: 4px;
-    }
+    .video-info { position: absolute; bottom: 0; left: 0; right: 60px; padding: 16px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); pointer-events: none; }
+    .author { font-weight: 700; }
+    .desc { font-size: 0.85rem; margin-top: 4px; }
 
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .actions { position: absolute; right: 12px; bottom: 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
+    .action-btn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+    .action-btn.active .icon { color: var(--accent); background: rgba(254, 44, 85, 0.2); }
 
-    .btn {
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.2s;
-    }
+    /* COMMENTS DRAWER */
+    .drawer { position: absolute; bottom: 0; inset-x: 0; height: 60%; background: #1e1e1e; border-radius: 16px 16px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.2s; z-index: 20; }
+    .drawer.open { transform: translateY(0); }
+    .drawer-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-weight: 700; }
+    .comment-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
+    .comment-input { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+    .comment-input input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 20px; padding: 8px 12px; color: #fff; outline: none; }
 
-    .btn:hover { opacity: 0.85; }
-    .btn-upload { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
-    .btn-primary { background: var(--primary-red); color: white; }
+    /* MODAL */
+    .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-card { background: #1e1e1e; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
+    .modal-card input, .modal-card textarea { background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 6px; padding: 8px; color: #fff; outline: none; }
 
-    /* --- MAIN APP CONTAINER --- */
-    .app-viewport {
-      display: flex;
-      flex: 1;
-      height: calc(100vh - 60px);
-    }
-
-    /* SIDEBAR */
-    aside {
-      width: 240px;
-      border-right: 1px solid var(--border-color);
-      padding: 20px 8px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .nav-link {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text-main);
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .nav-link.active { color: var(--primary-red); }
-    .nav-link:hover { background: rgba(255, 255, 255, 0.05); }
-
-    /* FEED CONTAINER */
-    main {
-      flex: 1;
-      overflow-y: scroll;
-      scroll-snap-type: y mandatory;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-
-    .empty-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      gap: 16px;
-      color: var(--text-muted);
-      text-align: center;
-      padding: 20px;
-    }
-
-    .empty-icon {
-      font-size: 3rem;
-    }
-
-    .video-snap-item {
-      scroll-snap-align: start;
-      height: calc(100vh - 60px);
-      width: 100%;
-      max-width: 500px;
-      padding: 16px 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-    }
-
-    .video-card {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg-card);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-    }
-
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      cursor: pointer;
-    }
-
-    /* OVERLAY METADATA */
-    .video-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 70px;
-      padding: 20px;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .video-author { font-weight: 700; font-size: 1.1rem; }
-    .video-desc { font-size: 0.9rem; line-height: 1.3; }
-
-    /* ACTION BAR */
-    .action-sidebar {
-      position: absolute;
-      right: 12px;
-      bottom: 30px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
-      z-index: 10;
-    }
-
-    .action-btn {
-      background: none;
-      border: none;
-      color: var(--text-main);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .icon-bubble {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      transition: transform 0.2s, background-color 0.2s;
-    }
-
-    .action-btn:hover .icon-bubble { transform: scale(1.1); }
-    .action-btn.active .icon-bubble { color: var(--primary-red); background: rgba(254, 44, 85, 0.2); }
-    .action-label { font-size: 0.75rem; font-weight: 600; }
-
-    /* COMMENT DRAWER */
-    .comment-drawer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60%;
-      background: #1e1e1e;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      transform: translateY(100%);
-      transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-      z-index: 20;
-    }
-
-    .comment-drawer.open { transform: translateY(0); }
-
-    .drawer-header {
-      padding: 16px;
-      border-bottom: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-    }
-
-    .close-btn { background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
-
-    .comment-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .comment-item { font-size: 0.85rem; line-height: 1.3; }
-    .comment-user { font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
-
-    .comment-input-area {
-      padding: 12px 16px;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      gap: 8px;
-    }
-
-    .comment-input-area input {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 8px 16px;
-      color: white;
-      outline: none;
-    }
-
-    /* UPLOAD MODAL */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    .modal-card {
-      background: #1e1e1e;
-      border-radius: 12px;
-      width: 90%;
-      max-width: 450px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .modal-card input, .modal-card textarea {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 10px;
-      color: white;
-      outline: none;
-    }
-
-    @media (max-width: 768px) {
-      aside { display: none; }
-      .video-snap-item { max-width: 100%; padding: 0; }
-      .video-card { border-radius: 0; }
-    }
+    @media (max-width: 768px) { aside { display: none; } .video-item { padding: 0; } .video-card { border-radius: 0; } }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
   <header>
-    <div class="brand">
-      <div class="brand-badge"></div>
-      <span>Zack360</span>
-    </div>
-    <div class="header-actions">
-      <button class="btn btn-upload" id="openUploadModal">+ Upload</button>
-      <button class="btn btn-primary">Log In</button>
-    </div>
+    <div class="brand"><div class="badge"></div>Zack360</div>
+    <button class="btn" id="openModal">+ Upload</button>
   </header>
 
-  <!-- VIEWPORT LAYOUT -->
-  <div class="app-viewport">
-    
-    <!-- SIDE NAVIGATION -->
+  <div class="app-body">
     <aside>
-      <a class="nav-link active">🏠 For You</a>
-      <a class="nav-link">👥 Following</a>
-      <a class="nav-link">🧭 Explore</a>
-      <a class="nav-link">🔴 LIVE</a>
-      <a class="nav-link">👤 Profile</a>
+      <a class="nav-item active">🏠 For You</a>
+      <a class="nav-item">👥 Following</a>
+      <a class="nav-item">🧭 Explore</a>
+      <a class="nav-item">👤 Profile</a>
     </aside>
 
-    <!-- MAIN FEED -->
-    <main id="videoFeed">
-      <!-- Dynamic contents or empty state -->
-    </main>
-
+    <main id="feed"></main>
   </div>
 
-  <!-- UPLOAD VIDEO MODAL -->
-  <div class="modal-overlay" id="uploadModal">
+  <div class="modal" id="modal">
     <div class="modal-card">
-      <h3>Upload Video to Zack360</h3>
-      <input type="file" id="videoFileInput" accept="video/*">
-      <input type="text" id="authorInput" placeholder="@username">
-      <textarea id="captionInput" placeholder="Write a caption..." rows="3"></textarea>
-      <div style="display: flex; justify-content: flex-end; gap: 8px;">
-        <button class="btn btn-upload" id="closeUploadModal">Cancel</button>
-        <button class="btn btn-primary" id="submitUpload">Publish</button>
+      <h3>Upload Video</h3>
+      <input type="file" id="fileIn" accept="video/*">
+      <input type="text" id="userIn" placeholder="@username">
+      <textarea id="descIn" placeholder="Caption..." rows="2"></textarea>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="btn" id="closeModal">Cancel</button>
+        <button class="btn btn-accent" id="submitUpload">Publish</button>
       </div>
     </div>
   </div>
 
   <script>
-    // Completely clear out existing local post data and brand storage
-    localStorage.removeItem('tiktok_feed_data');
-    localStorage.removeItem('zack360_feed_data');
+    let feedData = JSON.parse(localStorage.getItem('z360_feed')) || [];
+    const feed = document.getElementById('feed');
+    const modal = document.getElementById('modal');
 
-    // Empty initial video list (all user posts cleared)
-    let feedData = [];
-
-    function saveState() {
-      localStorage.setItem('zack360_feed_data', JSON.stringify(feedData));
-    }
-
-    const feedContainer = document.getElementById('videoFeed');
-
-    function renderFeed() {
-      feedContainer.innerHTML = '';
-
-      if (feedData.length === 0) {
-        feedContainer.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-icon">📹</div>
-            <h2>No videos yet on Zack360</h2>
-            <p>Click the <strong>+ Upload</strong> button above to publish your first video!</p>
-          </div>
-        `;
-        return;
-      }
-
-      feedData.forEach((video, index) => {
-        const item = document.createElement('div');
-        item.className = 'video-snap-item';
-        item.innerHTML = `
+    function saveAndRender() {
+      localStorage.setItem('z360_feed', JSON.stringify(feedData));
+      feed.innerHTML = feedData.length ? '' : `<div class="empty-state"><h2>No videos on Zack360</h2><p>Click <strong>+ Upload</strong> to post!</p></div>`;
+      
+      feedData.forEach((v, i) => {
+        const el = document.createElement('div');
+        el.className = 'video-item';
+        el.innerHTML = `
           <div class="video-card">
-            <video loop playsinline src="${video.url}" data-index="${index}"></video>
-            
-            <div class="video-info">
-              <div class="video-author">${video.author}</div>
-              <div class="video-desc">${video.caption}</div>
-            </div>
-
-            <div class="action-sidebar">
-              <button class="action-btn ${video.liked ? 'active' : ''}" onclick="toggleLike(${index})">
-                <div class="icon-bubble">❤️</div>
-                <span class="action-label">${video.likes}</span>
+            <video loop playsinline src="${v.url}"></video>
+            <div class="video-info"><div class="author">${v.author}</div><div class="desc">${v.caption}</div></div>
+            <div class="actions">
+              <button class="action-btn ${v.liked ? 'active' : ''}" onclick="toggleLike(${i})">
+                <div class="icon">❤️</div><span>${v.likes}</span>
               </button>
-              
-              <button class="action-btn" onclick="toggleComments('${video.id}')">
-                <div class="icon-bubble">💬</div>
-                <span class="action-label">${video.comments.length}</span>
-              </button>
-
-              <button class="action-btn" onclick="shareVideo('${video.id}')">
-                <div class="icon-bubble">↪️</div>
-                <span class="action-label">Share</span>
+              <button class="action-btn" onclick="toggleDrawer('${v.id}')">
+                <div class="icon">💬</div><span>${v.comments.length}</span>
               </button>
             </div>
-
-            <div class="comment-drawer" id="drawer-${video.id}">
-              <div class="drawer-header">
-                <span>Comments (${video.comments.length})</span>
-                <button class="close-btn" onclick="toggleComments('${video.id}')">✕</button>
-              </div>
-              <div class="comment-list" id="comment-list-${video.id}">
-                ${video.comments.map(c => `
-                  <div class="comment-item">
-                    <div class="comment-user">User</div>
-                    <div>${c}</div>
-                  </div>
-                `).join('')}
-              </div>
-              <div class="comment-input-area">
-                <input type="text" id="input-${video.id}" placeholder="Add comment...">
-                <button class="btn btn-primary" onclick="addComment(${index}, '${video.id}')">Post</button>
+            <div class="drawer" id="d-${v.id}">
+              <div class="drawer-head"><span>Comments</span><button class="btn" onclick="toggleDrawer('${v.id}')" style="padding:2px 8px;">✕</button></div>
+              <div class="comment-list">${v.comments.map(c => `<div><strong>User:</strong> ${c}</div>`).join('')}</div>
+              <div class="comment-input">
+                <input type="text" id="in-${v.id}" placeholder="Add comment...">
+                <button class="btn btn-accent" onclick="addComment(${i}, '${v.id}')">Post</button>
               </div>
             </div>
-
-          </div>
-        `;
-        feedContainer.appendChild(item);
+          </div>`;
+        feed.appendChild(el);
       });
 
-      setupObserver();
+      setupAutoplay();
     }
 
-    function setupObserver() {
-      const videos = document.querySelectorAll('video');
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          const video = entry.target;
-          if (entry.isIntersecting) {
-            video.play().catch(() => {});
-          } else {
-            video.pause();
-            video.currentTime = 0;
-          }
+    function setupAutoplay() {
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          const v = e.target;
+          e.isIntersecting ? v.play().catch(()=>{}) : (v.pause(), v.currentTime = 0);
         });
       }, { threshold: 0.6 });
 
-      videos.forEach(video => {
-        observer.observe(video);
-        video.addEventListener('click', () => {
-          if (video.paused) video.play();
-          else video.pause();
-        });
+      document.querySelectorAll('video').forEach(v => {
+        observer.observe(v);
+        v.onclick = () => v.paused ? v.play() : v.pause();
       });
     }
 
-    window.toggleLike = function(index) {
-      if (feedData[index].liked) {
-        feedData[index].likes--;
-        feedData[index].liked = false;
-      } else {
-        feedData[index].likes++;
-        feedData[index].liked = true;
-      }
-      saveState();
-      renderFeed();
+    window.toggleLike = (i) => {
+      feedData[i].liked = !feedData[i].liked;
+      feedData[i].likes += feedData[i].liked ? 1 : -1;
+      saveAndRender();
     };
 
-    window.toggleComments = function(videoId) {
-      const drawer = document.getElementById(`drawer-${videoId}`);
-      drawer.classList.toggle('open');
-    };
+    window.toggleDrawer = (id) => document.getElementById(`d-${id}`).classList.toggle('open');
 
-    window.addComment = function(index, videoId) {
-      const input = document.getElementById(`input-${videoId}`);
-      const text = input.value.trim();
-      if (text) {
-        feedData[index].comments.push(text);
-        saveState();
-        renderFeed();
-        setTimeout(() => toggleComments(videoId), 50);
+    window.addComment = (i, id) => {
+      const input = document.getElementById(`in-${id}`);
+      if (input.value.trim()) {
+        feedData[i].comments.push(input.value.trim());
+        saveAndRender();
+        setTimeout(() => toggleDrawer(id), 50);
       }
     };
 
-    window.shareVideo = function(videoId) {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Zack360 video link copied to clipboard!');
-    };
-
-    // Modal Control
-    const uploadModal = document.getElementById('uploadModal');
-    document.getElementById('openUploadModal').onclick = () => uploadModal.style.display = 'flex';
-    document.getElementById('closeUploadModal').onclick = () => uploadModal.style.display = 'none';
-
+    document.getElementById('openModal').onclick = () => modal.style.display = 'flex';
+    document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
+    
     document.getElementById('submitUpload').onclick = () => {
-      const fileInput = document.getElementById('videoFileInput');
-      const authorInput = document.getElementById('authorInput');
-      const captionInput = document.getElementById('captionInput');
+      const file = document.getElementById('fileIn').files[0];
+      if (!file) return alert('Select a video file.');
 
-      if (fileInput.files.length === 0) {
-        alert('Please select a video file.');
-        return;
-      }
-
-      const file = fileInput.files[0];
-      const videoURL = URL.createObjectURL(file);
-
-      const newVideo = {
-        id: 'z360_' + Date.now(),
-        author: authorInput.value || '@zack360_user',
-        caption: captionInput.value || 'New video on Zack360!',
-        url: videoURL,
+      feedData.unshift({
+        id: 'z_' + Date.now(),
+        author: document.getElementById('userIn').value || '@zack360',
+        caption: document.getElementById('descIn').value || '',
+        url: URL.createObjectURL(file),
         likes: 0,
         liked: false,
         comments: []
-      };
+      });
 
-      feedData.unshift(newVideo);
-      saveState();
-      renderFeed();
-
-      uploadModal.style.display = 'none';
-      authorInput.value = '';
-      captionInput.value = '';
-      fileInput.value = '';
+      saveAndRender();
+      modal.style.display = 'none';
+      document.getElementById('fileIn').value = '';
+      document.getElementById('userIn').value = '';
+      document.getElementById('descIn').value = '';
     };
 
-    renderFeed();
+    saveAndRender();
   </script>
 </body>
 </html>
