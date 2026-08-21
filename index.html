@@ -17,22 +17,19 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
 
-    /* HEADER */
     header { height: 60px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 20px; z-index: 100; }
     .brand { display: flex; align-items: center; gap: 8px; font-size: 1.4rem; font-weight: 800; }
     .badge { width: 20px; height: 20px; background: linear-gradient(135deg, #25f4ee, var(--accent)); border-radius: 4px; }
     .btn { padding: 8px 16px; border-radius: 4px; font-weight: 600; cursor: pointer; border: none; background: rgba(255,255,255,0.1); color: var(--text); }
     .btn-accent { background: var(--accent); color: #fff; }
 
-    /* LAYOUT */
     .app-body { display: flex; flex: 1; height: calc(100vh - 60px); }
     aside { width: 220px; border-right: 1px solid var(--border); padding: 16px 8px; display: flex; flex-direction: column; gap: 4px; }
     .nav-item { padding: 12px 16px; border-radius: 8px; font-weight: 700; color: var(--text); text-decoration: none; }
     .nav-item.active { color: var(--accent); }
 
-    /* FEED */
     main { flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory; display: flex; flex-direction: column; align-items: center; }
-    .empty-state { text-align: center; color: var(--muted); padding-top: 100px; }
+    .empty-state { text-align: center; color: var(--muted); padding-top: 100px; padding-left: 20px; padding-right: 20px; }
     
     .video-item { scroll-snap-align: start; height: calc(100vh - 60px); width: 100%; max-width: 480px; padding: 12px 0; display: flex; justify-content: center; position: relative; }
     .video-card { position: relative; width: 100%; height: 100%; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
@@ -45,17 +42,7 @@
     .actions { position: absolute; right: 12px; bottom: 20px; display: flex; flex-direction: column; gap: 16px; align-items: center; }
     .action-btn { background: none; border: none; color: var(--text); cursor: pointer; font-size: 0.75rem; display: flex; flex-direction: column; align-items: center; gap: 4px; }
     .icon { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-    .action-btn.active .icon { color: var(--accent); background: rgba(254, 44, 85, 0.2); }
 
-    /* COMMENTS DRAWER */
-    .drawer { position: absolute; bottom: 0; inset-x: 0; height: 60%; background: #1e1e1e; border-radius: 16px 16px 0 0; display: flex; flex-direction: column; transform: translateY(100%); transition: transform 0.2s; z-index: 20; }
-    .drawer.open { transform: translateY(0); }
-    .drawer-head { padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; font-weight: 700; }
-    .comment-list { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; font-size: 0.85rem; }
-    .comment-input { padding: 12px; border-top: 1px solid var(--border); display: flex; gap: 8px; }
-    .comment-input input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 20px; padding: 8px 12px; color: #fff; outline: none; }
-
-    /* MODAL */
     .modal { position: fixed; inset: 0; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 100; }
     .modal-card { background: #1e1e1e; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; display: flex; flex-direction: column; gap: 12px; }
     .modal-card input, .modal-card textarea { background: rgba(255,255,255,0.1); border: 1px solid var(--border); border-radius: 6px; padding: 8px; color: #fff; outline: none; }
@@ -83,7 +70,7 @@
 
   <div class="modal" id="modal">
     <div class="modal-card">
-      <h3>Upload Video</h3>
+      <h3>Upload Global Video</h3>
       <input type="file" id="fileIn" accept="video/*">
       <input type="text" id="userIn" placeholder="@username">
       <textarea id="descIn" placeholder="Caption..." rows="2"></textarea>
@@ -95,80 +82,48 @@
   </div>
 
   <script>
-    const DB_NAME = 'Zack360DB';
-    const STORE_NAME = 'videos';
-    let db;
     let feedData = [];
-
     const feed = document.getElementById('feed');
     const modal = document.getElementById('modal');
 
-    // Initialize IndexedDB to store actual Blob objects without localStorage limits
-    function initDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, 1);
-        request.onupgradeneeded = (e) => {
-          db = e.target.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-          }
-        };
-        request.onsuccess = (e) => {
-          db = e.target.result;
-          resolve();
-        };
-        request.onerror = (e) => reject(e);
-      });
-    }
+    function loadSharedGlobalVideo() {
+      const params = new URLSearchParams(window.location.search);
+      const videoUrl = params.get('v');
+      const author = params.get('u');
+      const caption = params.get('c');
 
-    async function loadFeed() {
-      const tx = db.transaction(STORE_NAME, 'readonly');
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.getAll();
-
-      request.onsuccess = () => {
-        feedData = request.result || [];
-        renderFeed();
-      };
-    }
-
-    function saveVideoToDB(videoObj) {
-      return new Promise((resolve) => {
-        const tx = db.transaction(STORE_NAME, 'readwrite');
-        const store = tx.objectStore(STORE_NAME);
-        store.put(videoObj);
-        tx.oncomplete = () => resolve();
-      });
+      if (videoUrl) {
+        feedData = [{
+          id: 'z_' + Date.now(),
+          author: author || '@zack360',
+          caption: caption || '',
+          url: videoUrl
+        }];
+      }
+      renderFeed();
     }
 
     function renderFeed() {
-      feed.innerHTML = feedData.length ? '' : `<div class="empty-state"><h2>No videos on Zack360</h2><p>Click <strong>+ Upload</strong> to post!</p></div>`;
+      feed.innerHTML = feedData.length ? '' : `
+        <div class="empty-state">
+          <h2>No Global Video Loaded</h2>
+          <p style="margin-top:8px;">Click <strong>+ Upload</strong> to host a video globally and share it across all devices!</p>
+        </div>`;
       
-      feedData.forEach((v, i) => {
-        // Convert stored Blob back to a usable URL safely on each render
-        const videoURL = v.fileBlob ? URL.createObjectURL(v.fileBlob) : v.url;
-
+      feedData.forEach((v) => {
         const el = document.createElement('div');
         el.className = 'video-item';
         el.innerHTML = `
           <div class="video-card">
-            <video loop playsinline src="${videoURL}"></video>
-            <div class="video-info"><div class="author">${v.author}</div><div class="desc">${v.caption}</div></div>
-            <div class="actions">
-              <button class="action-btn ${v.liked ? 'active' : ''}" onclick="toggleLike(${i})">
-                <div class="icon">❤️</div><span>${v.likes}</span>
-              </button>
-              <button class="action-btn" onclick="toggleDrawer('${v.id}')">
-                <div class="icon">💬</div><span>${v.comments.length}</span>
-              </button>
+            <video loop playsinline src="${v.url}"></video>
+            <div class="video-info">
+              <div class="author">${v.author}</div>
+              <div class="desc">${v.caption}</div>
             </div>
-            <div class="drawer" id="d-${v.id}">
-              <div class="drawer-head"><span>Comments</span><button class="btn" onclick="toggleDrawer('${v.id}')" style="padding:2px 8px;">✕</button></div>
-              <div class="comment-list">${v.comments.map(c => `<div><strong>User:</strong> ${c}</div>`).join('')}</div>
-              <div class="comment-input">
-                <input type="text" id="in-${v.id}" placeholder="Add comment...">
-                <button class="btn btn-accent" onclick="addComment(${i}, '${v.id}')">Post</button>
-              </div>
+            <div class="actions">
+              <button class="action-btn" onclick="shareVideo('${v.url}', '${v.author}', '${v.caption}')">
+                <div class="icon">🔗</div><span>Share</span>
+              </button>
             </div>
           </div>`;
         feed.appendChild(el);
@@ -191,23 +146,10 @@
       });
     }
 
-    window.toggleLike = async (i) => {
-      feedData[i].liked = !feedData[i].liked;
-      feedData[i].likes += feedData[i].liked ? 1 : -1;
-      await saveVideoToDB(feedData[i]);
-      renderFeed();
-    };
-
-    window.toggleDrawer = (id) => document.getElementById(`d-${id}`).classList.toggle('open');
-
-    window.addComment = async (i, id) => {
-      const input = document.getElementById(`in-${id}`);
-      if (input.value.trim()) {
-        feedData[i].comments.push(input.value.trim());
-        await saveVideoToDB(feedData[i]);
-        renderFeed();
-        setTimeout(() => toggleDrawer(id), 50);
-      }
+    window.shareVideo = (url, user, cap) => {
+      const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(url)}&u=${encodeURIComponent(user)}&c=${encodeURIComponent(cap)}`;
+      navigator.clipboard.writeText(shareUrl);
+      alert('Global Link Copied!\nSend this link to any phone to view the video.');
     };
 
     document.getElementById('openModal').onclick = () => modal.style.display = 'flex';
@@ -217,28 +159,44 @@
       const file = document.getElementById('fileIn').files[0];
       if (!file) return alert('Select a video file.');
 
-      const newVideo = {
-        id: 'z_' + Date.now(),
-        author: document.getElementById('userIn').value || '@zack360',
-        caption: document.getElementById('descIn').value || '',
-        fileBlob: file, // Store raw Blob in IndexedDB
-        likes: 0,
-        liked: false,
-        comments: []
-      };
+      const btn = document.getElementById('submitUpload');
+      btn.innerText = 'Uploading...';
+      btn.disabled = true;
 
-      await saveVideoToDB(newVideo);
-      feedData.unshift(newVideo);
-      renderFeed();
-      
-      modal.style.display = 'none';
-      document.getElementById('fileIn').value = '';
-      document.getElementById('userIn').value = '';
-      document.getElementById('descIn').value = '';
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+          method: 'POST',
+          body: formData
+        });
+
+        const data = await res.json();
+        
+        if (data.status === 'success') {
+          const directUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+          const user = document.getElementById('userIn').value || '@zack360';
+          const cap = document.getElementById('descIn').value || '';
+
+          const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(directUrl)}&u=${encodeURIComponent(user)}&c=${encodeURIComponent(cap)}`;
+          window.history.pushState({}, '', shareUrl);
+          
+          loadSharedGlobalVideo();
+          modal.style.display = 'none';
+          alert('Upload complete! Click "Share" to copy the global link for other devices.');
+        } else {
+          alert('Upload failed. Try a smaller video file.');
+        }
+      } catch (e) {
+        alert('Network error during global upload.');
+      } finally {
+        btn.innerText = 'Publish';
+        btn.disabled = false;
+      }
     };
 
-    // Initialize application
-    initDB().then(() => loadFeed());
+    loadSharedGlobalVideo();
   </script>
 </body>
 </html>
