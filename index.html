@@ -206,6 +206,31 @@
       color: #38bdf8;
     }
 
+    .chat-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .clear-btn {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid #ef4444;
+      color: #f87171;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .clear-btn:hover {
+      background: rgba(239, 68, 68, 0.35);
+    }
+
+    .clear-btn:active {
+      transform: scale(0.95);
+    }
+
     .online-indicator {
       font-size: 0.75rem;
       color: #4ade80;
@@ -370,9 +395,12 @@
     <div class="card chat-card">
       <div class="chat-header">
         <h2>🌌 Global Cosmic Chat</h2>
-        <div class="online-indicator">
-          <div class="online-dot"></div>
-          <span>Live Sync</span>
+        <div class="chat-header-actions">
+          <button id="clear-chat-btn" class="clear-btn">Clear Chat</button>
+          <div class="online-indicator">
+            <div class="online-dot"></div>
+            <span>Live Sync</span>
+          </div>
         </div>
       </div>
 
@@ -450,7 +478,6 @@
     drawStars();
 
     // 2. FIREBASE REALTIME GLOBAL CHAT SCRIPT
-    // Updated with your Firebase Asia-Southeast1 Database Instance
     const firebaseConfig = {
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
@@ -463,16 +490,24 @@
     const chatForm = document.getElementById('chat-form');
     const usernameInput = document.getElementById('username-input');
     const messageInput = document.getElementById('message-input');
+    const clearBtn = document.getElementById('clear-chat-btn');
 
     // Load saved username if present
     if (localStorage.getItem('cosmic_username')) {
       usernameInput.value = localStorage.getItem('cosmic_username');
     }
 
-    // Listen for new messages from Firebase
+    // Listen for incoming new messages
     chatRef.limitToLast(50).on("child_added", (snapshot) => {
       const data = snapshot.val();
       appendMessage(data.username, data.message, data.timestamp);
+    });
+
+    // Wipe local screen immediately when database is cleared
+    chatRef.on("value", (snapshot) => {
+      if (!snapshot.exists()) {
+        chatMessages.innerHTML = '';
+      }
     });
 
     // Handle sending message
@@ -491,6 +526,21 @@
         });
 
         messageInput.value = '';
+      }
+    });
+
+    // Clear Chat Authorization
+    clearBtn.addEventListener('click', () => {
+      const name = usernameInput.value.trim().toLowerCase();
+
+      if (name === 'zack') {
+        if (confirm('Are you sure you want to clear all messages?')) {
+          chatRef.remove()
+            .then(() => alert('Chat has been wiped!'))
+            .catch(err => alert('Failed to clear: ' + err.message));
+        }
+      } else {
+        alert('Only zack can clear all chat.');
       }
     });
 
