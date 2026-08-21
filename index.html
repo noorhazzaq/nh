@@ -26,6 +26,25 @@
       padding: 20px 0;
     }
 
+    /* Last Updated Banner at top */
+    .last-updated-banner {
+      position: absolute;
+      top: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      font-size: 0.85rem;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.7);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+
     /* Star Canvas for Animated Universe */
     #space-canvas {
       position: absolute;
@@ -120,6 +139,7 @@
       max-width: 90%;
       width: 380px;
       box-shadow: 0 0 40px rgba(138, 43, 226, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.05);
+      margin-top: 20px;
     }
 
     h1 {
@@ -180,6 +200,11 @@
   </style>
 </head>
 <body>
+
+  <!-- Top Timestamp Banner -->
+  <div class="last-updated-banner">
+    Last Updated: August 21, 2026 at 9:21 PM MYT
+  </div>
 
   <!-- Animated Dynamic Canvas for Stars & Galaxies -->
   <canvas id="space-canvas"></canvas>
