@@ -29,7 +29,6 @@
     .nav-item.active { color: var(--accent); }
 
     main { flex: 1; overflow-y: scroll; scroll-snap-type: y mandatory; display: flex; flex-direction: column; align-items: center; }
-    .empty-state { text-align: center; color: var(--muted); padding-top: 100px; padding-left: 20px; padding-right: 20px; }
     
     .video-item { scroll-snap-align: start; height: calc(100vh - 60px); width: 100%; max-width: 480px; padding: 12px 0; display: flex; justify-content: center; position: relative; }
     .video-card { position: relative; width: 100%; height: 100%; background: var(--card-bg); border-radius: 12px; overflow: hidden; }
@@ -82,6 +81,13 @@
   </div>
 
   <script>
+    // Fallback sample video to prevent blank screens
+    const DEFAULT_VIDEO = {
+      author: '@zack360',
+      caption: 'Welcome to Zack360 Global! Upload your video to test.',
+      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
+    };
+
     let feedData = [];
     const feed = document.getElementById('feed');
     const modal = document.getElementById('modal');
@@ -92,30 +98,26 @@
       const author = params.get('u');
       const caption = params.get('c');
 
-      if (videoUrl) {
+      if (videoUrl && videoUrl.startsWith('http')) {
         feedData = [{
-          id: 'z_' + Date.now(),
           author: author || '@zack360',
-          caption: caption || '',
-          url: videoUrl
+          caption: caption || 'Shared Video',
+          url: decodeURIComponent(videoUrl)
         }];
+      } else {
+        feedData = [DEFAULT_VIDEO];
       }
       renderFeed();
     }
 
     function renderFeed() {
-      feed.innerHTML = feedData.length ? '' : `
-        <div class="empty-state">
-          <h2>No Global Video Loaded</h2>
-          <p style="margin-top:8px;">Click <strong>+ Upload</strong> to host a video globally and share it across all devices!</p>
-        </div>`;
-      
+      feed.innerHTML = '';
       feedData.forEach((v) => {
         const el = document.createElement('div');
         el.className = 'video-item';
         el.innerHTML = `
           <div class="video-card">
-            <video loop playsinline src="${v.url}"></video>
+            <video loop playsinline controls src="${v.url}"></video>
             <div class="video-info">
               <div class="author">${v.author}</div>
               <div class="desc">${v.caption}</div>
@@ -128,28 +130,12 @@
           </div>`;
         feed.appendChild(el);
       });
-
-      setupAutoplay();
-    }
-
-    function setupAutoplay() {
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-          const v = e.target;
-          e.isIntersecting ? v.play().catch(()=>{}) : (v.pause(), v.currentTime = 0);
-        });
-      }, { threshold: 0.6 });
-
-      document.querySelectorAll('video').forEach(v => {
-        observer.observe(v);
-        v.onclick = () => v.paused ? v.play() : v.pause();
-      });
     }
 
     window.shareVideo = (url, user, cap) => {
       const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(url)}&u=${encodeURIComponent(user)}&c=${encodeURIComponent(cap)}`;
       navigator.clipboard.writeText(shareUrl);
-      alert('Global Link Copied!\nSend this link to any phone to view the video.');
+      alert('Global Video Link Copied!\nPaste this on any phone browser to watch.');
     };
 
     document.getElementById('openModal').onclick = () => modal.style.display = 'flex';
@@ -167,29 +153,26 @@
         const formData = new FormData();
         formData.append('file', file);
 
-        const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+        // Upload using file.io public API with CORS support
+        const res = await fetch('https://file.io', {
           method: 'POST',
           body: formData
         });
 
         const data = await res.json();
         
-        if (data.status === 'success') {
-          const directUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+        if (data.success) {
+          const directUrl = data.link;
           const user = document.getElementById('userIn').value || '@zack360';
           const cap = document.getElementById('descIn').value || '';
 
           const shareUrl = `${window.location.origin}${window.location.pathname}?v=${encodeURIComponent(directUrl)}&u=${encodeURIComponent(user)}&c=${encodeURIComponent(cap)}`;
-          window.history.pushState({}, '', shareUrl);
-          
-          loadSharedGlobalVideo();
-          modal.style.display = 'none';
-          alert('Upload complete! Click "Share" to copy the global link for other devices.');
+          window.location.href = shareUrl;
         } else {
-          alert('Upload failed. Try a smaller video file.');
+          alert('Upload limit reached or file too large.');
         }
       } catch (e) {
-        alert('Network error during global upload.');
+        alert('Network CORS blocked host. Try a smaller video.');
       } finally {
         btn.innerText = 'Publish';
         btn.disabled = false;
