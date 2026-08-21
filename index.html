@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TikTok Web App</title>
+  <title>Zack360 - Make Your Day</title>
   <style>
     :root {
       --bg-black: #121212;
@@ -111,7 +111,7 @@
     .nav-link.active { color: var(--primary-red); }
     .nav-link:hover { background: rgba(255, 255, 255, 0.05); }
 
-    /* FEED CONTAINER (VERTICAL SNAP SCROLL) */
+    /* FEED CONTAINER */
     main {
       flex: 1;
       overflow-y: scroll;
@@ -120,6 +120,22 @@
       flex-direction: column;
       align-items: center;
       position: relative;
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      gap: 16px;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 20px;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
     }
 
     .video-snap-item {
@@ -168,7 +184,7 @@
     .video-author { font-weight: 700; font-size: 1.1rem; }
     .video-desc { font-size: 0.9rem; line-height: 1.3; }
 
-    /* ACTION BAR (RIGHT SIDE) */
+    /* ACTION BAR */
     .action-sidebar {
       position: absolute;
       right: 12px;
@@ -312,7 +328,7 @@
   <header>
     <div class="brand">
       <div class="brand-badge"></div>
-      <span>TikTok</span>
+      <span>Zack360</span>
     </div>
     <div class="header-actions">
       <button class="btn btn-upload" id="openUploadModal">+ Upload</button>
@@ -332,9 +348,9 @@
       <a class="nav-link">👤 Profile</a>
     </aside>
 
-    <!-- MAIN DYNAMIC FEED -->
+    <!-- MAIN FEED -->
     <main id="videoFeed">
-      <!-- Video Snap Items dynamically rendered by JavaScript -->
+      <!-- Dynamic contents or empty state -->
     </main>
 
   </div>
@@ -342,7 +358,7 @@
   <!-- UPLOAD VIDEO MODAL -->
   <div class="modal-overlay" id="uploadModal">
     <div class="modal-card">
-      <h3>Upload Video to Feed</h3>
+      <h3>Upload Video to Zack360</h3>
       <input type="file" id="videoFileInput" accept="video/*">
       <input type="text" id="authorInput" placeholder="@username">
       <textarea id="captionInput" placeholder="Write a caption..." rows="3"></textarea>
@@ -354,40 +370,33 @@
   </div>
 
   <script>
-    // --- 1. INITIAL DATABASE / FEED DATA ---
-    const initialVideos = [
-      {
-        id: "v1",
-        author: "@cyber_tokyo",
-        caption: "Shinjuku rain vibes 🌧️✨ #tokyo #japan #cyberpunk",
-        url: "https://assets.mixkit.co/videos/preview/mixkit-tokyo-street-at-night-4022-large.mp4",
-        likes: 12400,
-        liked: false,
-        comments: ["Amazing video quality!", "I need to visit Japan ASAP!"]
-      },
-      {
-        id: "v2",
-        author: "@craftsman_lab",
-        caption: "Handmade leather crafting process 🛠️ #craft #diy #satisfying",
-        url: "https://assets.mixkit.co/videos/preview/mixkit-hands-of-a-craftsman-working-on-leather-41528-large.mp4",
-        likes: 8520,
-        liked: false,
-        comments: ["So satisfying to watch.", "What tools are you using?"]
-      }
-    ];
+    // Completely clear out existing local post data and brand storage
+    localStorage.removeItem('tiktok_feed_data');
+    localStorage.removeItem('zack360_feed_data');
 
-    // Load feed state from LocalStorage
-    let feedData = JSON.parse(localStorage.getItem('tiktok_feed_data')) || initialVideos;
+    // Empty initial video list (all user posts cleared)
+    let feedData = [];
 
     function saveState() {
-      localStorage.setItem('tiktok_feed_data', JSON.stringify(feedData));
+      localStorage.setItem('zack360_feed_data', JSON.stringify(feedData));
     }
 
-    // --- 2. RENDER FEED SYSTEM ---
     const feedContainer = document.getElementById('videoFeed');
 
     function renderFeed() {
       feedContainer.innerHTML = '';
+
+      if (feedData.length === 0) {
+        feedContainer.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📹</div>
+            <h2>No videos yet on Zack360</h2>
+            <p>Click the <strong>+ Upload</strong> button above to publish your first video!</p>
+          </div>
+        `;
+        return;
+      }
+
       feedData.forEach((video, index) => {
         const item = document.createElement('div');
         item.className = 'video-snap-item';
@@ -417,7 +426,6 @@
               </button>
             </div>
 
-            <!-- COMMENTS DRAWER -->
             <div class="comment-drawer" id="drawer-${video.id}">
               <div class="drawer-header">
                 <span>Comments (${video.comments.length})</span>
@@ -445,7 +453,6 @@
       setupObserver();
     }
 
-    // --- 3. INTERSECTION OBSERVER (AUTOPLAY / AUTOPAUSE CONTROL) ---
     function setupObserver() {
       const videos = document.querySelectorAll('video');
       const observer = new IntersectionObserver((entries) => {
@@ -469,7 +476,6 @@
       });
     }
 
-    // --- 4. INTERACTION FUNCTIONS ---
     window.toggleLike = function(index) {
       if (feedData[index].liked) {
         feedData[index].likes--;
@@ -494,17 +500,16 @@
         feedData[index].comments.push(text);
         saveState();
         renderFeed();
-        // Re-open drawer after render
         setTimeout(() => toggleComments(videoId), 50);
       }
     };
 
     window.shareVideo = function(videoId) {
       navigator.clipboard.writeText(window.location.href);
-      alert('Video link copied to clipboard!');
+      alert('Zack360 video link copied to clipboard!');
     };
 
-    // --- 5. VIDEO UPLOAD CONTROLLER ---
+    // Modal Control
     const uploadModal = document.getElementById('uploadModal');
     document.getElementById('openUploadModal').onclick = () => uploadModal.style.display = 'flex';
     document.getElementById('closeUploadModal').onclick = () => uploadModal.style.display = 'none';
@@ -523,9 +528,9 @@
       const videoURL = URL.createObjectURL(file);
 
       const newVideo = {
-        id: 'v_' + Date.now(),
-        author: authorInput.value || '@anonymous',
-        caption: captionInput.value || 'New video upload!',
+        id: 'z360_' + Date.now(),
+        author: authorInput.value || '@zack360_user',
+        caption: captionInput.value || 'New video on Zack360!',
         url: videoURL,
         likes: 0,
         liked: false,
@@ -542,7 +547,6 @@
       fileInput.value = '';
     };
 
-    // Run Initial Load
     renderFeed();
   </script>
 </body>
