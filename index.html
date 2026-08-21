@@ -3,12 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Universe</title>
+  <title>Universe - Ultimate Dynamic Experience</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    /* CSS Custom Variables for Smooth Theme Transitions */
+    :root {
+      --nebula-1-color: rgba(138, 43, 226, 0.4);
+      --nebula-1-secondary: rgba(0, 212, 255, 0.2);
+      --nebula-2-color: rgba(236, 72, 153, 0.35);
+      --nebula-2-secondary: rgba(147, 51, 234, 0.15);
+    }
+
+    [data-theme="emerald"] {
+      --nebula-1-color: rgba(16, 185, 129, 0.4);
+      --nebula-1-secondary: rgba(6, 182, 212, 0.2);
+      --nebula-2-color: rgba(52, 211, 153, 0.35);
+      --nebula-2-secondary: rgba(59, 130, 246, 0.15);
+    }
+
+    [data-theme="supernova"] {
+      --nebula-1-color: rgba(245, 158, 11, 0.45);
+      --nebula-1-secondary: rgba(239, 68, 68, 0.25);
+      --nebula-2-color: rgba(244, 63, 94, 0.4);
+      --nebula-2-secondary: rgba(217, 70, 239, 0.2);
     }
 
     body {
@@ -26,7 +48,7 @@
       padding: 20px 0;
     }
 
-    /* Last Updated Banner at top */
+    /* Last Updated Banner */
     .last-updated-banner {
       position: absolute;
       top: 15px;
@@ -45,27 +67,30 @@
       white-space: nowrap;
     }
 
-    /* Star Canvas for Animated Universe */
-    #space-canvas {
+    /* Canvas Elements */
+    #space-canvas, #effects-canvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 1;
       pointer-events: none;
     }
 
-    /* Background Nebula Effects */
+    #space-canvas { z-index: 1; }
+    #effects-canvas { z-index: 15; }
+
+    /* Nebulas with color transition */
     .nebula-1 {
       position: absolute;
       width: 350px;
       height: 350px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(138, 43, 226, 0.4) 0%, rgba(0, 212, 255, 0.2) 50%, transparent 70%);
+      background: radial-gradient(circle, var(--nebula-1-color) 0%, var(--nebula-1-secondary) 50%, transparent 70%);
       filter: blur(70px);
       animation: float1 12s infinite ease-in-out alternate;
       z-index: 2;
+      transition: background 1.5s ease-in-out;
     }
 
     .nebula-2 {
@@ -73,10 +98,11 @@
       width: 300px;
       height: 300px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(147, 51, 234, 0.15) 50%, transparent 70%);
+      background: radial-gradient(circle, var(--nebula-2-color) 0%, var(--nebula-2-secondary) 50%, transparent 70%);
       filter: blur(65px);
       animation: float2 15s infinite ease-in-out alternate;
       z-index: 2;
+      transition: background 1.5s ease-in-out;
     }
 
     @keyframes float1 {
@@ -89,7 +115,7 @@
       100% { transform: translate(-60px, -50px) scale(0.85); }
     }
 
-    /* Floating Ship Animation Settings */
+    /* Floating Ship */
     .ship-container {
       position: absolute;
       width: 70px;
@@ -107,39 +133,102 @@
       filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
     }
 
-    /* Keyframes for smooth floating and wave bobbing */
     @keyframes sailAcross {
-      0% {
-        transform: translateX(0vw) translateY(0px) rotate(-6deg);
-      }
-      25% {
-        transform: translateX(30vw) translateY(-35px) rotate(8deg);
-      }
-      50% {
-        transform: translateX(60vw) translateY(25px) rotate(-8deg);
-      }
-      75% {
-        transform: translateX(85vw) translateY(-20px) rotate(6deg);
-      }
-      100% {
-        transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg);
-      }
+      0% { transform: translateX(0vw) translateY(0px) rotate(-6deg); }
+      25% { transform: translateX(30vw) translateY(-35px) rotate(8deg); }
+      50% { transform: translateX(60vw) translateY(25px) rotate(-8deg); }
+      75% { transform: translateX(85vw) translateY(-20px) rotate(6deg); }
+      100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
     }
 
-    /* Content Card */
+    /* Orbiting Planets */
+    .orbit-container {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .planet {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+    }
+
+    @keyframes orbitPlanet {
+      from { transform: translate(-50%, -50%) rotate(0deg) translateX(var(--orbit-x)) rotate(0deg); }
+      to { transform: translate(-50%, -50%) rotate(1turn) translateX(var(--orbit-x)) rotate(-1turn); }
+    }
+
+    #planet-pink {
+      --orbit-x: 230px;
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(circle at 30% 30%, #f472b6 0%, #a82e70 70%);
+      box-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
+      animation: orbitPlanet 15s linear infinite;
+    }
+
+    #planet-blue {
+      --orbit-x: 290px;
+      width: 38px;
+      height: 38px;
+      background: radial-gradient(circle at 30% 30%, #38bdf8 0%, #116892 70%);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.7);
+      animation: orbitPlanet 20s linear infinite reverse;
+    }
+
+    #planet-purple {
+      --orbit-x: 190px;
+      width: 20px;
+      height: 20px;
+      background: radial-gradient(circle at 30% 30%, #c084fc 0%, #6e1cda 70%);
+      box-shadow: 0 0 12px rgba(192, 132, 252, 0.5);
+      animation: orbitPlanet 12s ease-in-out infinite alternate;
+    }
+
+    /* Main Card with Rotating Gradient Border */
     .card {
       position: relative;
       z-index: 10;
-      background: rgba(15, 15, 30, 0.45);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 2rem 1.5rem;
+      padding: 3px;
       border-radius: 20px;
       max-width: 90%;
       width: 380px;
-      box-shadow: 0 0 40px rgba(138, 43, 226, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.05);
       margin-top: 20px;
+      overflow: hidden;
+      box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, #f472b6, #38bdf8, #c084fc, #f472b6);
+      animation: rotateBorder 6s linear infinite;
+      z-index: 1;
+    }
+
+    @keyframes rotateBorder {
+      to { transform: rotate(1turn); }
+    }
+
+    .card-content {
+      position: relative;
+      background: rgba(15, 15, 30, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      width: 100%;
+      height: 100%;
+      border-radius: 17px;
+      z-index: 2;
+      padding: 1.8rem 1.2rem;
     }
 
     h1 {
@@ -166,11 +255,10 @@
       line-height: 1.5;
     }
 
-    /* Responsive YouTube Frame Container */
     .video-container {
       margin-top: 1.2rem;
       position: relative;
-      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      padding-bottom: 56.25%;
       height: 0;
       overflow: hidden;
       border-radius: 12px;
@@ -197,65 +285,99 @@
       0% { opacity: 0.7; transform: scale(0.98); }
       100% { opacity: 1; transform: scale(1.05); }
     }
+
+    /* Theme Controls */
+    .theme-controls {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 1.2rem;
+      flex-wrap: wrap;
+    }
+
+    .theme-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s ease;
+    }
+
+    .theme-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
   </style>
 </head>
 <body>
 
-  <!-- Top Timestamp Banner -->
+  <!-- Updated Timestamp Banner -->
   <div class="last-updated-banner">
-    Last Updated: August 21, 2026 at 9:21 PM MYT
+    Last Updated: August 22, 2026 at 3:12 AM MYT
   </div>
 
-  <!-- Animated Dynamic Canvas for Stars & Galaxies -->
+  <!-- Background Starfield Canvas -->
   <canvas id="space-canvas"></canvas>
+  
+  <!-- Interactive Overlay Canvas -->
+  <canvas id="effects-canvas"></canvas>
 
-  <!-- Glowing Nebulas -->
   <div class="nebula-1"></div>
   <div class="nebula-2"></div>
 
-  <!-- Animated Floating Small Sailing Ship with Red Flag -->
   <div class="ship-container">
     <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-      <!-- Ship Hull -->
       <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
-      <!-- Mast -->
       <rect x="31" y="8" width="2" height="34" fill="#A0522D"/>
-      <!-- Main White Sail -->
       <path d="M33 12 L48 25 L33 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
-      <!-- Front White Sail -->
       <path d="M30 14 L16 38 L30 38 Z" fill="#F0F8FF" stroke="#DCDCDC" stroke-width="1"/>
-      <!-- Red Flag at Top -->
       <path d="M31 8 L18 4 L31 0 Z" fill="#FF2222" stroke="#CC0000" stroke-width="1"/>
     </svg>
   </div>
 
-  <!-- Main Universe Card -->
+  <div class="orbit-container">
+    <div class="planet" id="planet-pink"></div>
+    <div class="planet" id="planet-blue"></div>
+    <div class="planet" id="planet-purple"></div>
+  </div>
+
   <div class="card">
-    <h1>Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
-    <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
+    <div class="card-content">
+      <h1>Terima Kasih Alhamdulillah Haji Abu Kassim!</h1>
+      <p>Thank you for exploring the cosmic web. May your journeys across the digital universe be limitlessly bright.</p>
 
-    <!-- Embedded Small YouTube Video Frame -->
-    <div class="video-container">
-      <iframe 
-        src="https://www.youtube.com/embed/z_uOB_Gsyis" 
-        title="Cinta Satu Malam (DJ Remix Tahun Baru 2026) | Party Night Vibes 🔥" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen>
-      </iframe>
+      <div class="video-container">
+        <iframe 
+          src="https://www.youtube.com/embed/z_uOB_Gsyis" 
+          title="Cinta Satu Malam (DJ Remix Tahun Baru 2026) | Party Night Vibes 🔥" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div class="stars">✨ 🪐 🚀 🌌 ⭐</div>
+
+      <div class="theme-controls">
+        <button class="theme-btn" onclick="setNebulaTheme('cosmic')">🔮 Cosmic</button>
+        <button class="theme-btn" onclick="setNebulaTheme('emerald')">🌌 Emerald</button>
+        <button class="theme-btn" onclick="setNebulaTheme('supernova')">💥 Supernova</button>
+      </div>
     </div>
-
-    <div class="stars">✨ 🪐 🚀 🌌 ⭐</div>
   </div>
 
   <script>
-    // Live Dynamic Universe & Star Field Script
+    // Starfield Background Canvas
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-
     let width, height, stars = [];
 
-    function resizeCanvas() {
+    function resizeSpaceCanvas() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
       createStars();
@@ -263,8 +385,7 @@
 
     function createStars() {
       stars = [];
-      const count = Math.floor((width * height) / 2500); // Dynamic star density
-      
+      const count = Math.floor((width * height) / 2500);
       for (let i = 0; i < count; i++) {
         stars.push({
           x: Math.random() * width,
@@ -281,25 +402,14 @@
 
     function drawStars() {
       ctx.clearRect(0, 0, width, height);
-
       stars.forEach(star => {
-        // Move star slightly
-        star.x += star.speedX;
-        star.y += star.speedY;
-
-        // Wrap around screen edges
+        star.x += star.speedX; star.y += star.speedY;
         if (star.x < 0) star.x = width;
         if (star.x > width) star.x = 0;
         if (star.y < 0) star.y = height;
         if (star.y > height) star.y = 0;
-
-        // Twinkle effect
         star.alpha += star.twinkleSpeed;
-        if (star.alpha > 1 || star.alpha < 0.1) {
-          star.twinkleSpeed = -star.twinkleSpeed;
-        }
-
-        // Render Star
+        if (star.alpha > 1 || star.alpha < 0.1) star.twinkleSpeed = -star.twinkleSpeed;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
@@ -308,14 +418,111 @@
         ctx.shadowColor = '#38bdf8';
         ctx.fill();
       });
-
       requestAnimationFrame(drawStars);
     }
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    drawStars();
-  </script>
+    // Interactive Shooting Stars & Mouse Trail Canvas
+    const fxCanvas = document.getElementById('effects-canvas');
+    const fxCtx = fxCanvas.getContext('2d');
+    let particles = [];
+    let shootingStars = [];
 
+    function resizeFxCanvas() {
+      fxCanvas.width = window.innerWidth;
+      fxCanvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 3; i++) {
+        particles.push({
+          x: e.clientX,
+          y: e.clientY,
+          size: Math.random() * 3 + 1,
+          speedX: (Math.random() - 0.5) * 2,
+          speedY: (Math.random() - 0.5) * 2,
+          color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
+          life: 1
+        });
+      }
+    });
+
+    function addShootingStar() {
+      shootingStars.push({
+        x: Math.random() * fxCanvas.width,
+        y: Math.random() * (fxCanvas.height / 2),
+        length: Math.random() * 80 + 40,
+        speed: Math.random() * 10 + 6,
+        angle: Math.PI / 4,
+        opacity: 1
+      });
+    }
+
+    setInterval(() => {
+      if (Math.random() < 0.6) addShootingStar();
+    }, 2500);
+
+    function animateEffects() {
+      fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        let p = particles[i];
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.life -= 0.02;
+        if (p.life <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        fxCtx.beginPath();
+        fxCtx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        fxCtx.fillStyle = p.color;
+        fxCtx.globalAlpha = p.life;
+        fxCtx.fill();
+      }
+
+      for (let i = shootingStars.length - 1; i >= 0; i--) {
+        let s = shootingStars[i];
+        s.x += Math.cos(s.angle) * s.speed;
+        s.y += Math.sin(s.angle) * s.speed;
+        s.opacity -= 0.015;
+
+        if (s.opacity <= 0 || s.x > fxCanvas.width || s.y > fxCanvas.height) {
+          shootingStars.splice(i, 1);
+          continue;
+        }
+
+        let tailX = s.x - Math.cos(s.angle) * s.length;
+        let tailY = s.y - Math.sin(s.angle) * s.length;
+
+        let gradient = fxCtx.createLinearGradient(s.x, s.y, tailX, tailY);
+        gradient.addColorStop(0, `rgba(255, 255, 255, ${s.opacity})`);
+        gradient.addColorStop(1, `rgba(56, 189, 248, 0)`);
+
+        fxCtx.beginPath();
+        fxCtx.moveTo(s.x, s.y);
+        fxCtx.lineTo(tailX, tailY);
+        fxCtx.strokeStyle = gradient;
+        fxCtx.lineWidth = 2;
+        fxCtx.stroke();
+      }
+
+      requestAnimationFrame(animateEffects);
+    }
+
+    // Theme Handler
+    function setNebulaTheme(themeName) {
+      document.documentElement.setAttribute('data-theme', themeName);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeSpaceCanvas();
+      resizeFxCanvas();
+    });
+
+    resizeSpaceCanvas();
+    resizeFxCanvas();
+    drawStars();
+    animateEffects();
+  </script>
 </body>
 </html>
