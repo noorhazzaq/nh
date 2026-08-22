@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Cosmic Space Hub - Android Edition</title>
+  <title>Cosmic Space Hub - Android Gesture Edition</title>
   
   <!-- External Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -26,7 +26,8 @@
       margin: 0; 
       padding: 0; 
       box-sizing: border-box; 
-      -webkit-tap-highlight-color: transparent; /* Removes blue box highlight on Android tap */
+      -webkit-tap-highlight-color: transparent;
+      touch-action: none; /* Disables browser default drag/pinch so gesture listeners take full control */
     }
 
     body {
@@ -41,7 +42,7 @@
       align-items: center;
       padding: 60px 12px 20px;
       overflow-x: hidden;
-      touch-action: manipulation;
+      overflow-y: auto;
     }
 
     @keyframes ambientBg {
@@ -50,7 +51,7 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Fixed Background Canvas */
+    /* Fixed Canvas for 99 Multi-Touch Engine */
     #space-canvas {
       position: fixed;
       inset: 0;
@@ -67,6 +68,7 @@
       gap: 12px;
       align-items: center;
       animation: floatUI 4s ease-in-out infinite;
+      pointer-events: auto;
     }
 
     .badge {
@@ -81,7 +83,7 @@
       backdrop-filter: blur(8px);
     }
 
-    /* Main Grid Layout Container */
+    /* Main Container */
     .layout-container {
       position: relative;
       z-index: 10;
@@ -92,7 +94,7 @@
       gap: 16px;
     }
 
-    /* Modular Android Cards */
+    /* Interactive Gesture Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
@@ -100,17 +102,18 @@
       border-radius: 16px;
       padding: 1rem;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      transition: transform 0.1s ease-out, opacity 0.3s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      transform-origin: center center;
+      will-change: transform;
     }
 
-    /* Android Touch Tap Effect */
-    .card:active {
+    /* Gesture Highlight Classes */
+    .card.touch-held {
       border-color: var(--accent-cyan);
-      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
-      transform: scale(0.98);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.8);
     }
 
-    /* Content Card Header */
+    /* Card Content */
     h1 {
       font-size: 1.25rem;
       background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), #f472b6);
@@ -119,9 +122,10 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 10px;
       animation: textFlow 5s linear infinite;
+      pointer-events: none;
     }
 
-    /* Media Player Wrap */
+    /* Video Box Frame */
     .video-box {
       position: relative;
       padding-bottom: 56.25%;
@@ -129,6 +133,7 @@
       overflow: hidden;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.1);
+      touch-action: auto;
     }
 
     .video-box iframe {
@@ -144,6 +149,7 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 10px;
+      pointer-events: none;
     }
 
     .chat-box {
@@ -154,6 +160,7 @@
       flex-direction: column;
       gap: 8px;
       padding-right: 4px;
+      touch-action: pan-y;
     }
 
     .chat-box::-webkit-scrollbar { width: 4px; }
@@ -172,11 +179,12 @@
 
     .chat-msg b { color: var(--accent-cyan); }
 
-    /* Input Actions Form */
+    /* Inputs */
     .inputs {
       display: flex;
       gap: 8px;
       margin-top: 10px;
+      touch-action: auto;
     }
 
     input {
@@ -187,17 +195,13 @@
       border-radius: 8px;
       font-size: 0.85rem;
       outline: none;
-      transition: border-color 0.3s ease;
+      touch-action: auto;
     }
 
-    input:focus {
-      border-color: var(--accent-green);
-    }
-
+    input:focus { border-color: var(--accent-green); }
     input[type="text"]:first-child { width: 32%; }
     input[type="text"]:last-child { flex: 1; }
 
-    /* Android Rainbow Pulse Button */
     .btn {
       background: linear-gradient(45deg, #ff007f, #7928ca, #00dfd8);
       background-size: 200% 200%;
@@ -209,14 +213,10 @@
       font-weight: bold;
       cursor: pointer;
       animation: rainbowBtn 3s ease infinite;
-      transition: transform 0.1s ease;
+      touch-action: auto;
     }
 
-    .btn:active {
-      transform: scale(0.92);
-    }
-
-    /* Keyframe Animations */
+    /* Keyframes */
     @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 12px rgba(56,189,248,0.5); } }
     @keyframes textFlow { to { background-position: 200% center; } }
@@ -228,19 +228,16 @@
 </head>
 <body>
 
-  <!-- App Header -->
   <header class="app-header">
     <div class="badge" id="clock">🕒 --:--:--</div>
   </header>
 
-  <!-- Interactive Space Canvas -->
   <canvas id="space-canvas"></canvas>
 
-  <!-- Main Content Grid -->
   <main class="layout-container">
     
-    <!-- Primary Video Card -->
-    <section class="card">
+    <!-- Gesture Frame 1 -->
+    <section class="card gesture-frame">
       <h1>Terima Kasih Haji Abu Kassim!</h1>
       <div class="video-box">
         <iframe 
@@ -253,8 +250,8 @@
       </div>
     </section>
 
-    <!-- Global Live Chat Card -->
-    <section class="card">
+    <!-- Gesture Frame 2 -->
+    <section class="card gesture-frame">
       <div class="chat-header">
         <h2 style="font-size:1rem; font-weight: 600;">🌌 Global Chat</h2>
         <span style="font-size:0.75rem; color: var(--accent-green);" id="status">● Online</span>
@@ -271,30 +268,23 @@
 
   </main>
 
-  <!-- Core Android Optimized Script -->
   <script>
     // Live Clock
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // Canvas Engine
+    // Canvas Engine Setup
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
     let w, h, stars = [], particles = [], fireflies = [], meteors = [];
     let time = 0;
 
-    // Mobile-optimized resize function
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      
-      // Scale star count for Android mobile battery saving
       const isMobile = w < 600;
-      const starCount = isMobile ? 65 : 120;
-      
-      stars = Array.from({ length: starCount }, () => ({ 
-        x: Math.random() * w, y: Math.random() * h, z: Math.random() * w, 
-        size: Math.random() * 1.5 + 0.5 
+      stars = Array.from({ length: isMobile ? 65 : 120 }, () => ({ 
+        x: Math.random() * w, y: Math.random() * h, z: Math.random() * w, size: Math.random() * 1.5 + 0.5 
       }));
       fireflies = Array.from({ length: isMobile ? 8 : 15 }, () => ({
         x: Math.random() * w, y: Math.random() * h, offset: Math.random() * 100, speed: Math.random() * 0.02 + 0.01
@@ -303,24 +293,45 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // Android Touch Effect: Spawns particles where fingers touch/drag
-    window.addEventListener('touchmove', (e) => {
-      const touch = e.touches[0];
-      if (particles.length < 30) {
-        for (let i = 0; i < 2; i++) {
-          particles.push({ 
-            x: touch.clientX, 
-            y: touch.clientY, 
-            alpha: 1, 
-            vx: (Math.random() - 0.5) * 3, 
-            vy: (Math.random() - 0.5) * 3,
-            color: Math.random() > 0.5 ? '#38bdf8' : '#4ade80'
-          });
+    // ==========================================
+    // 1. 99 MULTI-TOUCH PARTICLE SYSTEM ENGINE
+    // ==========================================
+    const activeTouches = new Map();
+
+    const spawnParticlesForTouches = (touches) => {
+      // Loop over every touch point (up to 99 multi-touch fingers)
+      for (let i = 0; i < touches.length; i++) {
+        const t = touches[i];
+        activeTouches.set(t.identifier, { x: t.clientX, y: t.clientY });
+
+        // Generate dynamic multi-color particle explosion per touch
+        for (let p = 0; p < 2; p++) {
+          if (particles.length < 150) {
+            particles.push({
+              x: t.clientX,
+              y: t.clientY,
+              alpha: 1,
+              vx: (Math.random() - 0.5) * 4,
+              vy: (Math.random() - 0.5) * 4,
+              color: `hsl(${(t.identifier * 45 + Math.random() * 60) % 360}, 100%, 70%)`
+            });
+          }
         }
       }
-    });
+    };
 
-    // Render Canvas Loop
+    window.addEventListener('touchstart', (e) => spawnParticlesForTouches(e.changedTouches), { passive: true });
+    window.addEventListener('touchmove', (e) => spawnParticlesForTouches(e.changedTouches), { passive: true });
+    
+    const removeTouches = (touches) => {
+      for (let i = 0; i < touches.length; i++) {
+        activeTouches.delete(touches[i].identifier);
+      }
+    };
+    window.addEventListener('touchend', (e) => removeTouches(e.changedTouches), { passive: true });
+    window.addEventListener('touchcancel', (e) => removeTouches(e.changedTouches), { passive: true });
+
+    // Render Canvas Frame
     function render() {
       ctx.fillStyle = '#020208';
       ctx.fillRect(0, 0, w, h);
@@ -356,23 +367,32 @@
         ctx.beginPath(); ctx.arc(f.x, f.y, 1.8, 0, Math.PI * 2); ctx.fill();
       });
 
-      // Touch Particles & Constellations
+      // Render Active Multi-Touch Indicators & Constellation Web
+      activeTouches.forEach((pos, id) => {
+        ctx.strokeStyle = `hsl(${(id * 45) % 360}, 100%, 65%)`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(pos.x, pos.y, 18, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+
+      // Render Touch Particles
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
-        ctx.fillRect(p.x, p.y, 2, 2);
+        ctx.fillRect(p.x, p.y, 2.5, 2.5);
         
         for (let j = i - 1; j >= 0; j--) {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 40) {
-            ctx.strokeStyle = `rgba(192, 132, 252, ${0.2 * p.alpha})`;
+          if (dist < 45) {
+            ctx.strokeStyle = `rgba(192, 132, 252, ${0.25 * p.alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
           }
         }
 
-        p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
+        p.x += p.vx; p.y += p.vy; p.alpha -= 0.025;
         if (p.alpha <= 0) particles.splice(i, 1);
       }
       ctx.globalAlpha = 1.0;
@@ -381,7 +401,112 @@
     }
     render();
 
-    // Firebase Database Sync & Android Haptic Feedback
+    // ==========================================
+    // 2. GESTURE CONTROLS ENGINE FOR ALL FRAMES
+    // ==========================================
+    document.querySelectorAll('.gesture-frame').forEach(card => {
+      let scale = 1;
+      let startDist = 0;
+      let startX = 0, startY = 0;
+      let translateX = 0, translateY = 0;
+      let isDragging = false;
+      let holdTimer = null;
+      let lastTapTime = 0;
+
+      const updateTransform = () => {
+        card.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      };
+
+      card.addEventListener('touchstart', (e) => {
+        // Press and Hold Glow
+        holdTimer = setTimeout(() => {
+          card.classList.add('touch-held');
+          if (navigator.vibrate) navigator.vibrate([30, 50, 30]);
+        }, 500);
+
+        // Double-tap Zoom Gesture
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTapTime;
+        if (tapLength < 250 && tapLength > 0) {
+          scale = scale === 1 ? 1.15 : 1;
+          translateX = 0;
+          translateY = 0;
+          updateTransform();
+          if (navigator.vibrate) navigator.vibrate(25);
+          e.preventDefault();
+        }
+        lastTapTime = currentTime;
+
+        // Two-Finger Pinch Gesture Setup
+        if (e.touches.length === 2) {
+          startDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+        }
+
+        // Single Finger Swipe / Drag Setup
+        if (e.touches.length === 1) {
+          isDragging = true;
+          startX = e.touches[0].clientX - translateX;
+          startY = e.touches[0].clientY - translateY;
+        }
+      });
+
+      card.addEventListener('touchmove', (e) => {
+        clearTimeout(holdTimer);
+
+        // Pinch Zoom Handling
+        if (e.touches.length === 2 && startDist > 0) {
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const factor = currentDist / startDist;
+          scale = Math.min(Math.max(0.8, scale * factor), 1.5);
+          startDist = currentDist;
+          updateTransform();
+        }
+
+        // Swipe Drag Handling
+        if (e.touches.length === 1 && isDragging) {
+          translateX = e.touches[0].clientX - startX;
+          translateY = e.touches[0].clientY - startY;
+          updateTransform();
+        }
+      });
+
+      const resetGestureState = () => {
+        clearTimeout(holdTimer);
+        card.classList.remove('touch-held');
+        isDragging = false;
+
+        // Swipe-to-Dismiss / Reset Position Logic
+        if (Math.abs(translateX) > 180) {
+          // Swipe far horizontally hides card temporarily, then snaps back
+          card.style.opacity = '0.2';
+          if (navigator.vibrate) navigator.vibrate(50);
+          setTimeout(() => {
+            translateX = 0;
+            translateY = 0;
+            scale = 1;
+            card.style.opacity = '1';
+            updateTransform();
+          }, 800);
+        } else {
+          // Snap back to natural position smoothly
+          translateX = 0;
+          translateY = 0;
+          scale = 1;
+          updateTransform();
+        }
+      };
+
+      card.addEventListener('touchend', resetGestureState);
+      card.addEventListener('touchcancel', resetGestureState);
+    });
+
+    // Firebase Database & Haptics
     if (typeof firebase !== 'undefined' && firebase.initializeApp) {
       try {
         firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
@@ -393,9 +518,7 @@
           const m = document.getElementById('msg').value.trim();
           
           if (u && m) {
-            // Android Haptic Vibration on Tap
             if (navigator.vibrate) navigator.vibrate(40);
-
             db.push({ u, m });
             if (/space|love|fire/i.test(m) && typeof confetti === 'function') confetti({ particleCount: 35 });
             document.getElementById('msg').value = '';
