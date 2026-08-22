@@ -3,520 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>99-Effect Merrier Cosmic Universe</title>
-  
+  <title>Cosmic Space Hub</title>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
-      background-color: #020208;
-      color: #ffffff;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      overflow-x: hidden;
-      position: relative;
-      padding: 80px 10px 40px 10px;
-      cursor: crosshair;
+      background: #020208; color: #fff; font-family: system-ui, sans-serif;
+      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+      padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair;
     }
-
-    /* 66. Holographic Animated Outer Border */
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border: 4px solid transparent;
-      border-image: linear-gradient(45deg, #c084fc, #38bdf8, #f472b6, #4ade80, #facc15, #a855f7) 1;
-      pointer-events: none;
-      z-index: 100;
-      animation: rainbowBorder 10s linear infinite;
+    #top-bar {
+      position: fixed; top: 10px; z-index: 30; display: flex; gap: 10px; align-items: center;
     }
-
-    @keyframes rainbowBorder {
-      0% { filter: hue-rotate(0deg); }
-      100% { filter: hue-rotate(360deg); }
+    .badge {
+      background: rgba(15, 23, 42, 0.85); color: #38bdf8; padding: 6px 14px;
+      border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.8rem;
     }
-
-    /* Live Clock Banner */
-    .last-updated-banner {
-      position: fixed;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 30;
-      font-size: 0.8rem;
-      letter-spacing: 0.5px;
-      color: #38bdf8;
-      background: rgba(15, 23, 42, 0.85);
-      padding: 6px 18px;
-      border-radius: 20px;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      backdrop-filter: blur(10px);
-      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    .btn {
+      background: rgba(168, 85, 247, 0.3); border: 1px solid #c084fc; color: #c084fc;
+      padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
     }
-
-    /* Controls Header Bar */
-    .controls-bar {
-      position: fixed;
-      top: 15px;
-      right: 20px;
-      z-index: 30;
-      display: flex;
-      gap: 8px;
-    }
-
-    .ctrl-btn {
-      background: rgba(168, 85, 247, 0.25);
-      border: 1px solid rgba(168, 85, 247, 0.5);
-      color: #c084fc;
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s ease;
-    }
-
-    .ctrl-btn:hover {
-      background: rgba(168, 85, 247, 0.5);
-      transform: scale(1.05);
-      box-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
-    }
-
-    #space-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    /* Aurora Wave Effect (#1) */
-    .aurora-bg {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(125deg, rgba(138,43,226,0.15), rgba(0,212,255,0.15), rgba(236,72,153,0.15));
-      background-size: 400% 400%;
-      animation: auroraShift 15s ease infinite;
-      z-index: 2;
-      pointer-events: none;
-    }
-
-    @keyframes auroraShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Floating Astronaut Mascot (#49) */
-    .astronaut-mascot {
-      position: fixed;
-      bottom: 25px; left: 20px;
-      width: 60px; height: 60px;
-      z-index: 25;
-      font-size: 2.8rem;
-      animation: floatAstronaut 4s ease-in-out infinite alternate;
-      user-select: none;
-      filter: drop-shadow(0 0 15px rgba(192, 132, 252, 0.8));
-      cursor: pointer;
-    }
-
-    @keyframes floatAstronaut {
-      0% { transform: translateY(0px) rotate(-5deg); }
-      100% { transform: translateY(-20px) rotate(8deg); }
-    }
-
-    .main-container {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      z-index: 10;
-      width: 100%;
-      max-width: 480px;
-      perspective: 1000px;
-    }
-
+    #space-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
     .card {
-      background: rgba(15, 15, 30, 0.7);
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      padding: 1.5rem;
-      border-radius: 24px;
-      box-shadow: 0 0 45px rgba(138, 43, 226, 0.3);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative; z-index: 10; width: 100%; max-width: 440px; margin-bottom: 15px;
+      background: rgba(15, 15, 30, 0.75); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
     }
-
-    .card:hover {
-      transform: translateY(-4px) rotateX(2deg);
-      box-shadow: 0 0 55px rgba(56, 189, 248, 0.4);
-    }
-
     h1 {
-      font-size: 1.8rem;
-      background: linear-gradient(135deg, #c084fc, #38bdf8, #f472b6, #4ade80);
-      background-size: 300% 300%;
-      animation: gradientShift 6s ease infinite;
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 0.6rem;
+      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
     }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    .video-container {
-      margin-top: 1rem;
-      position: relative;
-      padding-bottom: 56.25%;
-      height: 0;
-      overflow: hidden;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .video-container iframe {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-    }
-
-    .chat-card {
-      display: flex;
-      flex-direction: column;
-      height: 560px;
-      text-align: left;
-    }
-
-    .chat-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 8px;
-    }
-
-    .online-indicator {
-      font-size: 0.75rem;
-      color: #4ade80;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .online-dot {
-      width: 8px; height: 8px;
-      background-color: #4ade80;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #4ade80;
-      animation: pulseDot 1.5s infinite;
-    }
-
-    @keyframes pulseDot {
-      0% { transform: scale(0.9); opacity: 0.8; }
-      50% { transform: scale(1.3); opacity: 1; }
-      100% { transform: scale(0.9); opacity: 0.8; }
-    }
-
-    .chat-messages {
-      flex: 1;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      padding-right: 5px;
-    }
-
-    .chat-msg {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 10px 12px;
-      font-size: 0.85rem;
-      animation: msgPop 0.3s ease-out;
-    }
-
-    @keyframes msgPop {
-      0% { transform: scale(0.95); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-
-    .author-name {
-      background: linear-gradient(90deg, #38bdf8, #f472b6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: bold;
-    }
-
-    .chat-actions-row { display: flex; gap: 8px; margin-top: 8px; }
-
-    input[type="text"] {
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      outline: none;
-    }
-
-    #username-input { width: 32%; }
-    #message-input { flex: 1; }
-
-    button.send-btn {
-      flex: 1;
-      background: linear-gradient(135deg, #a855f7, #06b6d4);
-      border: none; color: white; padding: 8px 16px;
-      border-radius: 8px; font-weight: bold; cursor: pointer;
-    }
-
-    .floating-particle {
-      position: fixed;
-      pointer-events: none;
-      z-index: 99;
-      animation: floatUp 2s ease-out forwards;
-    }
-
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateY(-130px) scale(1.6); }
-    }
+    .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; }
+    .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+    .chat-box { height: 200px; overflow-y: auto; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+    .chat-msg { background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px; }
+    .chat-msg b { color: #38bdf8; }
+    .inputs { display: flex; gap: 6px; }
+    input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.8rem; }
+    input[type="text"]:first-child { width: 30%; }
+    input[type="text"]:last-child { flex: 1; }
   </style>
 </head>
 <body>
 
-  <!-- Clock Header -->
-  <div class="last-updated-banner" id="live-clock">🕒 Loading Time...</div>
-
-  <!-- Action Controls Bar -->
-  <div class="controls-bar">
-    <button class="ctrl-btn" id="warp-btn">🚀 Warp Speed</button>
-    <button class="ctrl-btn" id="music-btn">🎵 Audio Synth: OFF</button>
+  <div id="top-bar">
+    <div class="badge" id="clock">🕒 --:--:--</div>
+    <button class="btn" id="warp-btn">🚀 Warp</button>
+    <button class="btn" id="synth-btn">🎵 Audio</button>
   </div>
 
-  <!-- Space Canvas & Aurora Background -->
   <canvas id="space-canvas"></canvas>
-  <div class="aurora-bg"></div>
 
-  <!-- Interactive Astronaut Mascot -->
-  <div class="astronaut-mascot" id="astro-mascot" title="Click me for a cosmic message!">👨‍🚀</div>
-
-  <div class="main-container">
-    <div class="card">
-      <h1>Terima Kasih Haji Abu Kassim!</h1>
-      <p>Welcome to the ultimate 99-Effect cosmic space hub!</p>
-
-      <div class="video-container">
-        <iframe 
-          src="https://www.youtube.com/embed/mnN866eQQFs" 
-          title="Jalur Gemilang (Video Lirik)" 
-          frameborder="0" 
-          allowfullscreen>
-        </iframe>
-      </div>
+  <main class="card">
+    <h1>Terima Kasih Haji Abu Kassim!</h1>
+    <div class="video-box">
+      <iframe src="https://www.youtube.com/embed/mnN866eQQFs" title="Video" frameborder="0" allowfullscreen></iframe>
     </div>
+  </main>
 
-    <!-- Cosmic Chat Card -->
-    <div class="card chat-card">
-      <div class="chat-header">
-        <h2>🌌 Global Cosmic Chat</h2>
-        <div class="online-indicator">
-          <div class="online-dot"></div>
-          <span id="visitor-count">Detecting IP...</span>
-        </div>
-      </div>
-
-      <div class="chat-messages" id="chat-messages"></div>
-
-      <form class="chat-form" id="chat-form" style="margin-top: 10px;">
-        <div style="display: flex; gap: 8px; margin-bottom: 8px;">
-          <input type="text" id="username-input" placeholder="Name" maxlength="15" required>
-          <input type="text" id="message-input" placeholder="Type a message..." maxlength="200" autocomplete="off">
-        </div>
-        
-        <div class="chat-actions-row">
-          <button type="submit" class="send-btn">Send ✨</button>
-        </div>
-      </form>
+  <div class="card">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 style="font-size:1rem;">🌌 Global Chat</h2>
+      <span style="font-size:0.75rem; color:#4ade80;" id="status">● Online</span>
     </div>
+    <div class="chat-box" id="chat"></div>
+    <form class="inputs" id="chat-form">
+      <input type="text" id="user" placeholder="Name" maxlength="12" required>
+      <input type="text" id="msg" placeholder="Type a message..." maxlength="150" required>
+      <button type="submit" class="btn">Send</button>
+    </form>
   </div>
 
   <script>
-    // 1. LIVE CLOCK
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('live-clock').innerText = `🕒 Time: ${now.toLocaleString('en-US', { timeZoneName: 'short' })}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+    // Live Clock
+    const clock = document.getElementById('clock');
+    setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // 2. CANVAS ENGINE WITH HYPER-SPEED WARP & PARTICLE PHYSICS
+    // Canvas Engine & Particle Pool
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height, stars = [], particles = [], isWarpSpeed = false;
+    let w, h, stars = [], particles = [], warp = false;
 
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 150 }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        z: Math.random() * width,
-        radius: Math.random() * 1.5 + 0.5,
-        color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`
-      }));
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      stars = Array.from({ length: 100 }, () => ({ x: Math.random() * w, y: Math.random() * h, z: Math.random() * w }));
     }
+    window.addEventListener('resize', resize);
+    resize();
 
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    document.getElementById('warp-btn').onclick = () => warp = !warp;
 
-    // Warp Speed Toggle Effect
-    document.getElementById('warp-btn').addEventListener('click', () => {
-      isWarpSpeed = !isWarpSpeed;
-      document.getElementById('warp-btn').innerText = isWarpSpeed ? '⚡ Normal Speed' : '🚀 Warp Speed';
-    });
-
-    // Particle Cursor Stardust Effect
     window.addEventListener('mousemove', (e) => {
-      particles.push({
-        x: e.clientX, y: e.clientY,
-        size: Math.random() * 4 + 1,
-        color: `hsl(${Math.random() * 360}, 100%, 70%)`,
-        alpha: 1, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2
-      });
+      if (particles.length < 40) {
+        particles.push({ x: e.clientX, y: e.clientY, alpha: 1, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 });
+      }
     });
 
-    function renderSpace() {
-      ctx.fillStyle = isWarpSpeed ? 'rgba(2, 2, 8, 0.2)' : 'rgba(2, 2, 8, 1)';
-      ctx.fillRect(0, 0, width, height);
+    function render() {
+      ctx.fillStyle = warp ? 'rgba(2, 2, 8, 0.2)' : '#020208';
+      ctx.fillRect(0, 0, w, h);
 
-      // Stars Physics
-      stars.forEach(star => {
-        star.z -= isWarpSpeed ? 12 : 0.5;
-        if (star.z <= 0) star.z = width;
-
-        const k = 128 / star.z;
-        const px = (star.x - width / 2) * k + width / 2;
-        const py = (star.y - height / 2) * k + height / 2;
-
-        if (px >= 0 && px <= width && py >= 0 && py <= height) {
-          const size = (1 - star.z / width) * 2.5;
-          ctx.beginPath();
-          ctx.arc(px, py, Math.max(size, 0.5), 0, Math.PI * 2);
-          ctx.fillStyle = star.color;
-          ctx.fill();
+      stars.forEach(s => {
+        s.z -= warp ? 8 : 0.5;
+        if (s.z <= 0) s.z = w;
+        const px = (s.x - w / 2) * (128 / s.z) + w / 2;
+        const py = (s.y - h / 2) * (128 / s.z) + h / 2;
+        if (px >= 0 && px <= w && py >= 0 && py <= h) {
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(px, py, 1.5, 1.5);
         }
       });
 
-      // Cursor Trail Physics
-      particles.forEach((p, idx) => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
-        if (p.alpha <= 0) particles.splice(idx, 1);
+      particles.forEach((p, i) => {
+        ctx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
+        ctx.fillRect(p.x, p.y, 3, 3);
+        p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
+        if (p.alpha <= 0) particles.splice(i, 1);
       });
 
-      requestAnimationFrame(renderSpace);
+      requestAnimationFrame(render);
     }
-    renderSpace();
+    render();
 
-    // 3. AUDIO SYNTH SOUND GENERATOR
-    let audioCtx, osc, gain, isAudioOn = false;
-    document.getElementById('music-btn').addEventListener('click', () => {
-      if (!isAudioOn) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        osc = audioCtx.createOscillator();
-        gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(120, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    // Safe Web Audio Synth
+    let actx, osc;
+    document.getElementById('synth-btn').onclick = () => {
+      if (!actx) {
+        actx = new (window.AudioContext || window.webkitAudioContext)();
+        osc = actx.createOscillator();
+        const gain = actx.createGain();
+        gain.gain.value = 0.02;
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(actx.destination);
         osc.start();
-        document.getElementById('music-btn').innerText = '🎵 Audio Synth: ON';
-        isAudioOn = true;
+        document.getElementById('synth-btn').innerText = '🎵 Audio ON';
       } else {
-        osc.stop();
-        document.getElementById('music-btn').innerText = '🎵 Audio Synth: OFF';
-        isAudioOn = false;
+        actx.state === 'running' ? actx.suspend() : actx.resume();
       }
-    });
+    };
 
-    // Astronaut Interactive Dialogue
-    document.getElementById('astro-mascot').addEventListener('click', () => {
-      confetti({ particleCount: 50, spread: 70, origin: { y: 0.8 } });
-      alert("👨‍🚀 Astronaut Says: 'Greetings, Space Explorer! Enjoy the 99 cosmic effects!'");
-    });
+    // Firebase Chat Handler
+    try {
+      firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
+      const db = firebase.database().ref("global_chat");
 
-    // FIREBASE CHAT & REAL-TIME IP TRACKING
-    const firebaseConfig = { databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const chatRef = db.ref("global_cosmic_chat");
-
-    // IP Visitor Detection
-    fetch('https://api.ipify.org?format=json')
-      .then(res => res.json())
-      .then(data => {
-        const sanitizedIP = data.ip.replace(/\./g, '_');
-        const presenceRef = db.ref(`active_ip_visitors/${sanitizedIP}`);
-        presenceRef.set({ ip: data.ip, online: true });
-        presenceRef.onDisconnect().remove();
-      })
-      .catch(() => {
-        const id = 'user_' + Math.random().toString(36).substring(2, 7);
-        db.ref(`active_ip_visitors/${id}`).set({ online: true });
-        db.ref(`active_ip_visitors/${id}`).onDisconnect().remove();
-      });
-
-    db.ref("active_ip_visitors").on("value", (snap) => {
-      const count = snap.exists() ? Object.keys(snap.val()).length : 1;
-      document.getElementById('visitor-count').innerText = `${count} Active IP${count > 1 ? 's' : ''}`;
-    });
-
-    // Submit Message with Emoji Rain Keyword Detection
-    document.getElementById('chat-form').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const name = document.getElementById('username-input').value.trim();
-      const text = document.getElementById('message-input').value.trim();
-
-      if (name && text) {
-        chatRef.push({ username: name, message: text, timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) });
-        
-        // Keyword Emoji Rain Effect
-        if (text.toLowerCase().includes('space') || text.toLowerCase().includes('love') || text.toLowerCase().includes('fire')) {
-          confetti({ particleCount: 80, spread: 100, origin: { y: 0.6 } });
+      document.getElementById('chat-form').onsubmit = (e) => {
+        e.preventDefault();
+        const u = document.getElementById('user').value.trim();
+        const m = document.getElementById('msg').value.trim();
+        if (u && m) {
+          db.push({ u, m });
+          if (/space|love|fire/i.test(m)) confetti({ particleCount: 40 });
+          document.getElementById('msg').value = '';
         }
+      };
 
-        document.getElementById('message-input').value = '';
-      }
-    });
-
-    // Append Message
-    chatRef.limitToLast(30).on("child_added", (snap) => {
-      const data = snap.val();
-      const msgDiv = document.createElement('div');
-      msgDiv.className = 'chat-msg';
-      msgDiv.innerHTML = `<span class="author-name">${data.username}</span>: <span>${data.message}</span>`;
-      const container = document.getElementById('chat-messages');
-      container.appendChild(msgDiv);
-      container.scrollTop = container.scrollHeight;
-    });
+      db.limitToLast(15).on("child_added", snap => {
+        const d = snap.val();
+        const div = document.createElement('div');
+        div.className = 'chat-msg';
+        div.innerHTML = `<b>${d.u}:</b> ${d.m}`;
+        const box = document.getElementById('chat');
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+      });
+    } catch (err) {
+      document.getElementById('status').innerText = '● Offline Mode';
+    }
   </script>
 </body>
 </html>
