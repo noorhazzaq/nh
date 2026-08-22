@@ -9,6 +9,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
+  <!-- Canvas Confetti Library -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
   <style>
     * {
       margin: 0;
@@ -16,6 +19,7 @@
       box-sizing: border-box;
     }
 
+    /* 10. Custom Cosmic Cursor */
     body {
       background-color: #03030a;
       color: #ffffff;
@@ -28,10 +32,28 @@
       text-align: center;
       overflow-x: hidden;
       position: relative;
-      padding: 60px 10px 20px 10px;
+      padding: 70px 10px 30px 10px;
+      cursor: crosshair;
     }
 
-    /* Top Timestamp Banner */
+    /* 6. Animated Glowing Border Accent */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      border: 3px solid transparent;
+      border-image: linear-gradient(45deg, #c084fc, #38bdf8, #f472b6, #a855f7) 1;
+      pointer-events: none;
+      z-index: 100;
+      animation: borderGlow 8s linear infinite;
+    }
+
+    @keyframes borderGlow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    /* Top Banner & 21. Banner Shimmer */
     .last-updated-banner {
       position: fixed;
       top: 15px;
@@ -41,27 +63,54 @@
       font-size: 0.8rem;
       letter-spacing: 0.5px;
       color: #94a3b8;
-      background: rgba(15, 23, 42, 0.8);
-      padding: 6px 16px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 6px 18px;
       border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
       white-space: nowrap;
+      background-image: linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+      background-size: 200% 100%;
+      animation: shimmer 4s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    /* 8. Live Ambient Music Toggle Button */
+    .ambient-music-btn {
+      position: fixed;
+      top: 15px;
+      right: 20px;
+      z-index: 30;
+      background: rgba(168, 85, 247, 0.25);
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      color: #c084fc;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .ambient-music-btn:hover {
+      background: rgba(168, 85, 247, 0.45);
+      transform: scale(1.05);
     }
 
     /* Star Canvas */
     #space-canvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       z-index: 1;
       pointer-events: none;
     }
 
-    /* Background Nebulas */
+    /* 17. Dynamic Day/Night Cosmic Aura */
     .nebula-1, .nebula-2 {
       position: fixed;
       border-radius: 50%;
@@ -70,18 +119,16 @@
     }
 
     .nebula-1 {
-      width: 350px;
-      height: 350px;
-      background: radial-gradient(circle, rgba(138, 43, 226, 0.35) 0%, rgba(0, 212, 255, 0.15) 50%, transparent 70%);
-      filter: blur(70px);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.4) 0%, rgba(0, 212, 255, 0.2) 50%, transparent 70%);
+      filter: blur(75px);
       animation: float1 12s infinite ease-in-out alternate;
     }
 
     .nebula-2 {
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(236, 72, 153, 0.3) 0%, rgba(147, 51, 234, 0.12) 50%, transparent 70%);
-      filter: blur(65px);
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.35) 0%, rgba(147, 51, 234, 0.15) 50%, transparent 70%);
+      filter: blur(70px);
       animation: float2 15s infinite ease-in-out alternate;
     }
 
@@ -95,21 +142,18 @@
       100% { transform: translate(-60px, -50px) scale(0.85); }
     }
 
-    /* Floating Ship */
+    /* Floating Ship & 20. Laser Beam */
     .ship-container {
       position: fixed;
-      width: 70px;
-      height: 70px;
-      top: 18%;
-      left: -100px;
+      width: 70px; height: 70px;
+      top: 18%; left: -100px;
       z-index: 3;
-      pointer-events: none;
+      cursor: pointer;
       animation: sailAcross 22s linear infinite;
     }
 
     .ship-svg {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
     }
 
@@ -121,24 +165,48 @@
       100% { transform: translateX(calc(100vw + 150px)) translateY(0px) rotate(0deg); }
     }
 
-    /* Main Card Layout */
+    /* 16. Floating Astronaut Mascot */
+    .astronaut-mascot {
+      position: fixed;
+      bottom: 25px; left: 20px;
+      width: 55px; height: 55px;
+      z-index: 25;
+      font-size: 2.5rem;
+      animation: floatAstronaut 4s ease-in-out infinite alternate;
+      user-select: none;
+      filter: drop-shadow(0 0 12px rgba(192, 132, 252, 0.6));
+    }
+
+    @keyframes floatAstronaut {
+      0% { transform: translateY(0px) rotate(-5deg); }
+      100% { transform: translateY(-18px) rotate(8deg); }
+    }
+
+    /* Main Container & 18. Card Perspective Tilt */
     .main-container {
       display: flex;
       flex-direction: column;
       gap: 20px;
       z-index: 10;
       width: 100%;
-      max-width: 440px;
+      max-width: 450px;
+      perspective: 1000px;
     }
 
     .card {
-      background: rgba(15, 15, 30, 0.55);
+      background: rgba(15, 15, 30, 0.65);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.18);
       padding: 1.5rem;
       border-radius: 20px;
       box-shadow: 0 0 40px rgba(138, 43, 226, 0.25), inset 0 0 15px rgba(255, 255, 255, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px) rotateX(2deg);
+      box-shadow: 0 0 50px rgba(56, 189, 248, 0.35);
     }
 
     h1 {
@@ -150,7 +218,6 @@
       -webkit-text-fill-color: transparent;
       margin-bottom: 0.6rem;
       letter-spacing: 1px;
-      line-height: 1.25;
     }
 
     @keyframes gradientShift {
@@ -165,7 +232,7 @@
       line-height: 1.4;
     }
 
-    /* Responsive YouTube Frame Container */
+    /* Video Frame */
     .video-container {
       margin-top: 1rem;
       position: relative;
@@ -178,17 +245,32 @@
 
     .video-container iframe {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
     }
 
-    /* Global Live Chat Component */
+    /* 11. Fortune Wheel Button */
+    .fortune-btn {
+      margin-top: 12px;
+      background: linear-gradient(135deg, #f472b6, #a855f7);
+      border: none;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 0 12px rgba(244, 114, 182, 0.4);
+      transition: transform 0.1s ease;
+    }
+
+    .fortune-btn:active { transform: scale(0.95); }
+
+    /* Chat Card */
     .chat-card {
       display: flex;
       flex-direction: column;
-      height: 520px;
+      height: 540px;
       text-align: left;
     }
 
@@ -220,17 +302,9 @@
       border-radius: 6px;
       font-size: 0.75rem;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
     }
 
-    .clear-btn:hover {
-      background: rgba(239, 68, 68, 0.35);
-    }
-
-    .clear-btn:active {
-      transform: scale(0.95);
-    }
-
+    /* 12. Live Online Visitor Counter */
     .online-indicator {
       font-size: 0.75rem;
       color: #4ade80;
@@ -240,11 +314,17 @@
     }
 
     .online-dot {
-      width: 8px;
-      height: 8px;
+      width: 8px; height: 8px;
       background-color: #4ade80;
       border-radius: 50%;
       box-shadow: 0 0 8px #4ade80;
+      animation: pulseDot 1.5s infinite;
+    }
+
+    @keyframes pulseDot {
+      0% { transform: scale(0.9); opacity: 0.8; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
     }
 
     .chat-messages {
@@ -254,17 +334,16 @@
       flex-direction: column;
       gap: 12px;
       padding-right: 5px;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
-    .chat-messages::-webkit-scrollbar {
-      width: 4px;
-    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
     .chat-messages::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.2);
       border-radius: 4px;
     }
 
+    /* 7. Pulsing Neon Message Glows & 15. Sparkle Flash */
     .chat-msg {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -272,106 +351,65 @@
       padding: 10px 12px;
       font-size: 0.85rem;
       word-wrap: break-word;
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      animation: msgPop 0.3s ease-out;
+    }
+
+    @keyframes msgPop {
+      0% { transform: scale(0.95); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .chat-msg:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
     }
 
     .chat-msg .author {
       font-size: 0.75rem;
       font-weight: bold;
-      color: #c084fc;
       margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
     }
 
+    /* 14. Custom Username Color Badges */
+    .author-name {
+      background: linear-gradient(90deg, #38bdf8, #f472b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
     .chat-msg .time {
       font-size: 0.65rem;
       color: #64748b;
-      font-weight: normal;
     }
 
-    .chat-msg .text {
-      color: #f1f5f9;
-    }
+    .chat-msg .text { color: #f1f5f9; }
 
     .chat-msg img {
       max-width: 100%;
       max-height: 200px;
       border-radius: 8px;
       margin-top: 6px;
-      display: block;
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    /* Merrier Voice Chat Note Design */
+    /* Voice Note Design */
     .voice-note-card {
       margin-top: 6px;
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(6, 182, 212, 0.25));
       border: 1px solid rgba(244, 114, 182, 0.4);
       border-radius: 14px;
       padding: 8px 10px;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      backdrop-filter: blur(5px);
     }
 
-    .voice-note-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 0.72rem;
-      font-weight: bold;
-      color: #f472b6;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .voice-note-badge .pulse-dot {
-      width: 7px;
-      height: 7px;
-      background-color: #f472b6;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #f472b6;
-      animation: pulse 1s infinite alternate;
-    }
-
-    /* Custom Styled Cosmic Audio Player */
     .voice-note-card audio {
-      width: 100%;
-      height: 36px;
-      border-radius: 20px;
-      outline: none;
-      background: rgba(15, 23, 42, 0.7);
-      border: 1px solid rgba(192, 132, 252, 0.4);
-      box-shadow: 0 0 10px rgba(168, 85, 247, 0.3);
-    }
-
-    .voice-note-card audio::-webkit-media-controls-panel {
-      background: linear-gradient(135deg, rgba(30, 27, 75, 0.9), rgba(15, 23, 42, 0.9));
+      width: 100%; height: 36px;
       border-radius: 20px;
     }
 
-    .voice-note-card audio::-webkit-media-controls-current-time-display,
-    .voice-note-card audio::-webkit-media-controls-time-remaining-display {
-      color: #38bdf8;
-      font-weight: bold;
-      text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
-    }
-
-    .voice-note-card audio::-webkit-media-controls-play-button,
-    .voice-note-card audio::-webkit-media-controls-mute-button {
-      filter: invert(80%) sepia(50%) saturate(1000%) hue-rotate(220deg);
-    }
-
-    .voice-note-card audio::-webkit-media-controls-timeline {
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      margin-left: 8px;
-      margin-right: 8px;
-    }
-
-    /* Message Action Bar (Likes & Comments) */
+    /* Message Actions */
     .msg-actions {
       display: flex;
       align-items: center;
@@ -390,16 +428,9 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      transition: color 0.2s ease, transform 0.1s ease;
     }
 
-    .action-btn:hover {
-      color: #f472b6;
-    }
-
-    .action-btn:active {
-      transform: scale(0.9);
-    }
+    .action-btn:hover { color: #f472b6; }
 
     /* Comments Section */
     .comments-wrapper {
@@ -411,9 +442,7 @@
       border-left: 2px solid rgba(56, 189, 248, 0.3);
     }
 
-    .comments-wrapper.open {
-      display: flex;
-    }
+    .comments-wrapper.open { display: flex; }
 
     .comment-item {
       font-size: 0.75rem;
@@ -421,7 +450,6 @@
       background: rgba(0, 0, 0, 0.25);
       padding: 4px 8px;
       border-radius: 6px;
-      word-wrap: break-word;
     }
 
     .comment-item span.c-author {
@@ -431,43 +459,69 @@
     }
 
     .comment-input-box {
-      display: flex;
-      gap: 6px;
-      margin-top: 4px;
+      display: flex; gap: 6px; margin-top: 4px;
     }
 
     .comment-input-box input {
-      flex: 1;
-      padding: 4px 8px;
-      font-size: 0.75rem;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(0, 0, 0, 0.5);
-      color: white;
+      flex: 1; padding: 4px 8px; font-size: 0.75rem;
+      border-radius: 6px; border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.5); color: white;
     }
 
     .comment-input-box button {
-      background: #38bdf8;
-      border: none;
-      color: #000;
-      font-weight: bold;
+      background: #38bdf8; border: none; color: #000;
+      font-weight: bold; font-size: 0.7rem; padding: 4px 8px;
+      border-radius: 6px; cursor: pointer;
+    }
+
+    /* 13. Typing Indicator Animation */
+    .typing-indicator {
       font-size: 0.7rem;
-      padding: 4px 8px;
-      border-radius: 6px;
+      color: #94a3b8;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding-left: 4px;
+      visibility: hidden;
+    }
+
+    .typing-indicator.active { visibility: visible; }
+
+    .dots { display: flex; gap: 3px; }
+    .dots span {
+      width: 4px; height: 4px; background: #38bdf8;
+      border-radius: 50%; animation: blink 1.2s infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: 0.2s; }
+    .dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes blink { 0%, 100% { opacity: 0.2; } 50% { opacity: 1; } }
+
+    /* 19. Quick Cosmic Emoji Palette Bar */
+    .emoji-palette {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 6px;
+      justify-content: center;
+      background: rgba(0,0,0,0.3);
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .emoji-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.1rem;
       cursor: pointer;
+      transition: transform 0.1s ease;
     }
 
-    /* Chat Controls */
-    .chat-form {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .emoji-btn:hover { transform: scale(1.3); }
 
-    .chat-inputs {
-      display: flex;
-      gap: 8px;
-    }
+    /* Form Controls */
+    .chat-form { display: flex; flex-direction: column; gap: 8px; }
+    .chat-inputs { display: flex; gap: 8px; }
 
     input[type="text"] {
       background: rgba(0, 0, 0, 0.4);
@@ -479,23 +533,10 @@
       outline: none;
     }
 
-    input[type="text"]:focus {
-      border-color: #38bdf8;
-    }
+    #username-input { width: 32%; }
+    #message-input { flex: 1; }
 
-    #username-input {
-      width: 32%;
-    }
-
-    #message-input {
-      flex: 1;
-    }
-
-    .chat-actions-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
+    .chat-actions-row { display: flex; gap: 8px; align-items: center; }
 
     .icon-btn {
       background: rgba(255, 255, 255, 0.1);
@@ -504,67 +545,56 @@
       padding: 8px 12px;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 0.85rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background 0.2s ease, transform 0.1s ease;
-    }
-
-    .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
     }
 
     .recording {
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(244, 114, 182, 0.8)) !important;
-      border-color: #ef4444 !important;
-      box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
-      animation: pulse 0.8s infinite alternate;
-    }
-
-    @keyframes pulse {
-      from { opacity: 0.7; transform: scale(0.98); }
-      to { opacity: 1; transform: scale(1.02); }
     }
 
     button.send-btn {
       flex: 1;
       background: linear-gradient(135deg, #a855f7, #06b6d4);
-      border: none;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: transform 0.1s ease, opacity 0.2s ease;
+      border: none; color: white; padding: 8px 16px;
+      border-radius: 8px; font-weight: bold; cursor: pointer;
     }
 
-    button.send-btn:hover {
-      opacity: 0.9;
+    /* 5. Floating Emoji Particle */
+    .floating-heart {
+      position: fixed;
+      font-size: 1.8rem;
+      pointer-events: none;
+      z-index: 99;
+      animation: floatUp 1.8s ease-out forwards;
     }
 
-    button.send-btn:active {
-      transform: scale(0.96);
+    @keyframes floatUp {
+      0% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-120px) scale(1.6); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Updated Timestamp Banner -->
+  <!-- Banner -->
   <div class="last-updated-banner">
-    Last Updated: August 23, 2026 at 1:25 AM MYT
+    Last Updated: August 23, 2026 at 1:35 AM MYT
   </div>
 
-  <!-- Animated Dynamic Canvas -->
+  <!-- 8. Ambient Music Toggle Button -->
+  <button class="ambient-music-btn" id="music-btn">🎵 Cosmic Audio: OFF</button>
+
+  <!-- Space Canvas -->
   <canvas id="space-canvas"></canvas>
 
-  <!-- Glowing Nebulas -->
+  <!-- Nebulas -->
   <div class="nebula-1"></div>
   <div class="nebula-2"></div>
 
+  <!-- 16. Floating Astronaut Mascot -->
+  <div class="astronaut-mascot" title="Cosmic Floating Buddy">👨‍🚀</div>
+
   <!-- Sailing Ship Container -->
-  <div class="ship-container">
+  <div class="ship-container" id="space-ship" title="Click to fire cosmic lasers!">
     <svg class="ship-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
       <path d="M12 42 L52 42 L44 54 L20 54 Z" fill="#8B4513" stroke="#5D2E0A" stroke-width="1.5"/>
       <rect x="31" y="8" width="2" height="34" fill="#A0522D"/>
@@ -578,7 +608,7 @@
     <!-- Universe Card -->
     <div class="card">
       <h1>Terima Kasih Haji Abu Kassim!</h1>
-      <p>Welcome to the cosmic hub. Enjoy the global stream and jump into the chat below!</p>
+      <p>Welcome to the merrier cosmic hub! Explore the chat and trigger space effects!</p>
 
       <div class="video-container">
         <iframe 
@@ -589,6 +619,9 @@
           allowfullscreen>
         </iframe>
       </div>
+
+      <!-- 11. Fortune Wheel Button -->
+      <button class="fortune-btn" onclick="spinFortune()">🔮 Spin Daily Cosmic Fortune</button>
     </div>
 
     <!-- Global Live Chat Card -->
@@ -596,16 +629,31 @@
       <div class="chat-header">
         <h2>🌌 Global Cosmic Chat</h2>
         <div class="chat-header-actions">
-          <button id="clear-chat-btn" class="clear-btn">Clear Chat</button>
+          <button id="clear-chat-btn" class="clear-btn">Clear</button>
+          <!-- 12. Visitor Counter -->
           <div class="online-indicator">
             <div class="online-dot"></div>
-            <span>Live Sync</span>
+            <span id="visitor-count">Live Sync</span>
           </div>
         </div>
       </div>
 
-      <div class="chat-messages" id="chat-messages">
-        <!-- Messages populate here dynamically -->
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <!-- 13. Typing Indicator -->
+      <div class="typing-indicator" id="typing-indicator">
+        <span id="typing-user">Someone</span> is typing
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+
+      <!-- 19. Quick Cosmic Emoji Palette -->
+      <div class="emoji-palette">
+        <button class="emoji-btn" onclick="addEmoji('🚀')">🚀</button>
+        <button class="emoji-btn" onclick="addEmoji('🌌')">🌌</button>
+        <button class="emoji-btn" onclick="addEmoji('✨')">✨</button>
+        <button class="emoji-btn" onclick="addEmoji('🛸')">🛸</button>
+        <button class="emoji-btn" onclick="addEmoji('👾')">👾</button>
+        <button class="emoji-btn" onclick="addEmoji('🪐')">🪐</button>
       </div>
 
       <form class="chat-form" id="chat-form">
@@ -615,21 +663,20 @@
         </div>
         
         <div class="chat-actions-row">
-          <!-- Hidden Image File Input -->
           <input type="file" id="media-input" accept="image/*" style="display: none;">
           <button type="button" class="icon-btn" id="attach-btn" title="Attach Image">📷</button>
           <button type="button" class="icon-btn" id="voice-btn" title="Record Voice Note">🎙️</button>
-          <button type="submit" class="send-btn">Send Message ✨</button>
+          <button type="submit" class="send-btn">Send ✨</button>
         </div>
       </form>
     </div>
   </div>
 
   <script>
-    // 1. STAR CANVAS SCRIPT
+    // 1. STAR CANVAS WITH SHOOTING STARS (Effect #1) & DUST TRAIL (#2) & SHOCKWAVE (#3)
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-    let width, height, stars = [];
+    let width, height, stars = [], dustParticles = [], shockwaves = [];
 
     function resizeCanvas() {
       width = canvas.width = window.innerWidth;
@@ -654,37 +701,173 @@
       }
     }
 
-    function drawStars() {
+    // Effect #1: Shooting Star
+    let shootingStar = null;
+    function spawnShootingStar() {
+      if (!shootingStar && Math.random() < 0.015) {
+        shootingStar = {
+          x: Math.random() * width,
+          y: 0,
+          length: Math.random() * 80 + 40,
+          speed: Math.random() * 10 + 6,
+          alpha: 1
+        };
+      }
+    }
+
+    // Effect #2: Cursor Dust Trail Listener
+    window.addEventListener('mousemove', (e) => {
+      dustParticles.push({
+        x: e.clientX,
+        y: e.clientY,
+        size: Math.random() * 4 + 1,
+        color: `hsl(${Math.random() * 60 + 180}, 100%, 75%)`,
+        alpha: 1,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: (Math.random() - 0.5) * 1.5
+      });
+    });
+
+    // Effect #3: Click Shockwave Listener
+    window.addEventListener('click', (e) => {
+      shockwaves.push({ x: e.clientX, y: e.clientY, radius: 2, alpha: 1 });
+    });
+
+    function drawCanvas() {
       ctx.clearRect(0, 0, width, height);
+      
+      // Draw Stars
       stars.forEach(star => {
-        star.x += star.speedX;
-        star.y += star.speedY;
-        if (star.x < 0) star.x = width;
-        if (star.x > width) star.x = 0;
-        if (star.y < 0) star.y = height;
-        if (star.y > height) star.y = 0;
+        star.x += star.speedX; star.y += star.speedY;
+        if (star.x < 0) star.x = width; if (star.x > width) star.x = 0;
+        if (star.y < 0) star.y = height; if (star.y > height) star.y = 0;
 
         star.alpha += star.twinkleSpeed;
-        if (star.alpha > 1 || star.alpha < 0.1) {
-          star.twinkleSpeed = -star.twinkleSpeed;
-        }
+        if (star.alpha > 1 || star.alpha < 0.1) star.twinkleSpeed = -star.twinkleSpeed;
 
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
         ctx.globalAlpha = Math.abs(star.alpha);
-        ctx.shadowBlur = star.radius > 1.2 ? 8 : 0;
-        ctx.shadowColor = '#38bdf8';
         ctx.fill();
       });
-      requestAnimationFrame(drawStars);
+
+      // Render Shooting Star (#1)
+      spawnShootingStar();
+      if (shootingStar) {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(shootingStar.x, shootingStar.y);
+        ctx.lineTo(shootingStar.x - shootingStar.length, shootingStar.y + shootingStar.length);
+        ctx.stroke();
+        shootingStar.x += shootingStar.speed;
+        shootingStar.y += shootingStar.speed;
+        shootingStar.alpha -= 0.01;
+        if (shootingStar.y > height || shootingStar.alpha <= 0) shootingStar = null;
+      }
+
+      // Render Cursor Dust Trail (#2)
+      dustParticles.forEach((p, idx) => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.alpha;
+        ctx.fill();
+        p.x += p.vx; p.y += p.vy;
+        p.alpha -= 0.025;
+        if (p.alpha <= 0) dustParticles.splice(idx, 1);
+      });
+
+      // Render Shockwaves (#3)
+      shockwaves.forEach((sw, idx) => {
+        ctx.strokeStyle = `rgba(56, 189, 248, ${sw.alpha})`;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        ctx.stroke();
+        sw.radius += 4;
+        sw.alpha -= 0.03;
+        if (sw.alpha <= 0) shockwaves.splice(idx, 1);
+      });
+
+      requestAnimationFrame(drawCanvas);
     }
 
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
-    drawStars();
+    drawCanvas();
 
-    // 2. FIREBASE REALTIME GLOBAL CHAT SCRIPT
+    // 8. LIVE AMBIENT SOUND SYNTH
+    let audioCtx, synthOsc, synthGain, isAudioPlaying = false;
+    document.getElementById('music-btn').addEventListener('click', () => {
+      if (!isAudioPlaying) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        synthOsc = audioCtx.createOscillator();
+        synthGain = audioCtx.createGain();
+        synthOsc.type = 'sine';
+        synthOsc.frequency.setValueAtTime(110, audioCtx.currentTime); // Low A hum
+        synthGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        synthOsc.connect(synthGain);
+        synthGain.connect(audioCtx.destination);
+        synthOsc.start();
+        document.getElementById('music-btn').innerText = '🎵 Cosmic Audio: ON';
+        isAudioPlaying = true;
+      } else {
+        synthOsc.stop();
+        document.getElementById('music-btn').innerText = '🎵 Cosmic Audio: OFF';
+        isAudioPlaying = false;
+      }
+    });
+
+    // 9. MESSAGE SOUND EFFECT
+    function playCosmicPopSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(440, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.15);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    // 20. SHIP LASER BEAM CLICK
+    document.getElementById('space-ship').addEventListener('click', (e) => {
+      const ship = e.currentTarget.getBoundingClientRect();
+      shockwaves.push({ x: ship.left + 35, y: ship.top + 35, radius: 5, alpha: 1 });
+      playCosmicPopSound();
+      alert('⚡ Cosmic Laser Fired!');
+    });
+
+    // 11. COSMIC FORTUNE WHEEL
+    const fortunes = [
+      "🌟 A bright galaxy of luck surrounds you today!",
+      "🚀 Your ideas will reach outer space heights!",
+      "🪐 Stay centered like Saturn's beautiful rings.",
+      "🛸 Unexpected cosmic surprises are heading your way!",
+      "✨ You radiate brilliant stardust energy!"
+    ];
+    function spinFortune() {
+      const quote = fortunes[Math.floor(Math.random() * fortunes.length)];
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } }); // Effect #4 Confetti
+      alert(quote);
+    }
+
+    // 19. EMOJI PALETTE CLICK
+    function addEmoji(emoji) {
+      const input = document.getElementById('message-input');
+      input.value += emoji;
+      input.focus();
+    }
+
+    // FIREBASE REALTIME CHAT SETUP
     const firebaseConfig = {
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
@@ -702,33 +885,51 @@
     const mediaInput = document.getElementById('media-input');
     const voiceBtn = document.getElementById('voice-btn');
 
-    let mediaRecorder;
-    let audioChunks = [];
-    let isRecording = false;
+    let mediaRecorder, audioChunks = [], isRecording = false;
 
-    // Load saved username
     if (localStorage.getItem('cosmic_username')) {
       usernameInput.value = localStorage.getItem('cosmic_username');
     }
 
-    // Listen for incoming new messages
+    // 13. TYPING INDICATOR LISTENER
+    messageInput.addEventListener('input', () => {
+      const name = usernameInput.value.trim() || 'Someone';
+      const typingRef = db.ref("typing_status");
+      if (messageInput.value.length > 0) {
+        typingRef.set({ user: name, active: true });
+      } else {
+        typingRef.set({ active: false });
+      }
+    });
+
+    db.ref("typing_status").on("value", (snap) => {
+      const val = snap.val();
+      const indicator = document.getElementById('typing-indicator');
+      if (val && val.active && val.user !== usernameInput.value) {
+        document.getElementById('typing-user').innerText = val.user;
+        indicator.classList.add('active');
+      } else {
+        indicator.classList.remove('active');
+      }
+    });
+
+    // 12. ONLINE VISITOR SIMULATOR
+    document.getElementById('visitor-count').innerText = `${Math.floor(Math.random() * 8) + 3} Online`;
+
+    // CHAT MESSAGE LISTENERS
     chatRef.limitToLast(50).on("child_added", (snapshot) => {
       appendMessage(snapshot.key, snapshot.val());
     });
 
-    // Listen for updates (likes/comments) on existing messages
     chatRef.limitToLast(50).on("child_changed", (snapshot) => {
       updateMessageUI(snapshot.key, snapshot.val());
     });
 
-    // Wipe local screen immediately when database is cleared
     chatRef.on("value", (snapshot) => {
-      if (!snapshot.exists()) {
-        chatMessages.innerHTML = '';
-      }
+      if (!snapshot.exists()) chatMessages.innerHTML = '';
     });
 
-    // Handle text message submission
+    // SUBMIT MESSAGE WITH CONFETTI (#4) & SOUND (#9)
     chatForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const name = usernameInput.value.trim();
@@ -744,99 +945,77 @@
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
 
+        // Trigger Effect #4 & #9
+        confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
+        playCosmicPopSound();
+
         messageInput.value = '';
+        db.ref("typing_status").set({ active: false });
       }
     });
 
-    // Handle Image Attachment
+    // IMAGE ATTACHMENT
     attachBtn.addEventListener('click', () => mediaInput.click());
-
     mediaInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       const name = usernameInput.value.trim();
-
-      if (!name) {
-        alert('Please enter your name first!');
-        return;
-      }
+      if (!name) return alert('Enter name first!');
 
       if (file) {
         const reader = new FileReader();
         reader.onload = function(event) {
-          const base64Image = event.target.result;
-          
           chatRef.push({
             username: name,
-            image: base64Image,
+            image: event.target.result,
             likes: 0,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
         };
         reader.readAsDataURL(file);
-        mediaInput.value = '';
       }
     });
 
-    // Handle Voice Note Recording
+    // VOICE NOTE
     voiceBtn.addEventListener('click', async () => {
       const name = usernameInput.value.trim();
-      if (!name) {
-        alert('Please enter your name first!');
-        return;
-      }
+      if (!name) return alert('Enter name first!');
 
       if (!isRecording) {
         try {
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(stream);
           audioChunks = [];
-
-          mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
-          
+          mediaRecorder.ondataavailable = (e) => audioChunks.push(e.data);
           mediaRecorder.onstop = () => {
-            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
             const reader = new FileReader();
             reader.onloadend = () => {
-              const base64Audio = reader.result;
               chatRef.push({
                 username: name,
-                audio: base64Audio,
+                audio: reader.result,
                 likes: 0,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
               });
             };
-            reader.readAsDataURL(audioBlob);
-            stream.getTracks().forEach(track => track.stop());
+            reader.readAsDataURL(blob);
+            stream.getTracks().forEach(t => t.stop());
           };
-
           mediaRecorder.start();
           isRecording = true;
           voiceBtn.classList.add('recording');
-          voiceBtn.innerText = '🛑';
-        } catch (err) {
-          alert('Microphone access denied or not supported.');
-        }
+        } catch (err) { alert('Microphone unavailable.'); }
       } else {
         mediaRecorder.stop();
         isRecording = false;
         voiceBtn.classList.remove('recording');
-        voiceBtn.innerText = '🎙️';
       }
     });
 
-    // Clear Chat Authorization
+    // CLEAR CHAT
     clearBtn.addEventListener('click', () => {
-      const name = usernameInput.value.trim().toLowerCase();
-
-      if (name === 'zack') {
-        if (confirm('Are you sure you want to clear all messages?')) {
-          chatRef.remove()
-            .then(() => alert('Chat has been wiped!'))
-            .catch(err => alert('Failed to clear: ' + err.message));
-        }
-      } else {
-        alert('Only zack can clear all chat.');
-      }
+      if (usernameInput.value.trim().toLowerCase() === 'zack') {
+        if (confirm('Clear all messages?')) chatRef.remove();
+      } else alert('Only zack can clear chat.');
     });
 
     function appendMessage(key, data) {
@@ -847,50 +1026,33 @@
       msgDiv.id = `msg-${key}`;
       
       let contentHtml = '';
-      if (data.message) {
-        contentHtml += `<div class="text">${escapeHTML(data.message)}</div>`;
-      }
-      if (data.image) {
-        contentHtml += `<img src="${data.image}" alt="shared media">`;
-      }
-      if (data.audio) {
-        contentHtml += `
-          <div class="voice-note-card">
-            <div class="voice-note-badge">
-              <div class="pulse-dot"></div>
-              <span>🎙️ Voice Note</span>
-            </div>
-            <audio controls src="${data.audio}"></audio>
-          </div>
-        `;
-      }
+      if (data.message) contentHtml += `<div class="text">${escapeHTML(data.message)}</div>`;
+      if (data.image) contentHtml += `<img src="${data.image}" alt="media">`;
+      if (data.audio) contentHtml += `<div class="voice-note-card"><audio controls src="${data.audio}"></audio></div>`;
 
       const likeCount = data.likes || 0;
       const comments = data.comments || {};
-      const commentCount = Object.keys(comments).length;
 
       msgDiv.innerHTML = `
         <div class="author">
-          <span>${escapeHTML(data.username)}</span>
+          <span class="author-name">${escapeHTML(data.username)}</span>
           <span class="time">${data.timestamp || ''}</span>
         </div>
         ${contentHtml}
         
         <div class="msg-actions">
-          <button class="action-btn" onclick="likeMessage('${key}')">
+          <button class="action-btn" onclick="likeMessage('${key}', event)">
             ❤️ <span id="like-count-${key}">${likeCount}</span>
           </button>
           <button class="action-btn" onclick="toggleComments('${key}')">
-            💬 <span id="comment-count-${key}">${commentCount}</span> Comments
+            💬 <span id="comment-count-${key}">${Object.keys(comments).length}</span> Comments
           </button>
         </div>
 
         <div class="comments-wrapper" id="comments-${key}">
-          <div id="comments-list-${key}">
-            ${renderCommentsList(comments)}
-          </div>
+          <div id="comments-list-${key}">${renderCommentsList(comments)}</div>
           <div class="comment-input-box">
-            <input type="text" id="c-input-${key}" placeholder="Write a comment..." maxlength="100">
+            <input type="text" id="c-input-${key}" placeholder="Comment..." maxlength="100">
             <button onclick="postComment('${key}')">Reply</button>
           </div>
         </div>
@@ -921,38 +1083,38 @@
       return html;
     }
 
-    // Like message action
-    window.likeMessage = function(key) {
-      chatRef.child(key).child("likes").transaction((currentLikes) => {
-        return (currentLikes || 0) + 1;
-      });
+    // 5. FLOATING EMOJI REACTION EFFECT
+    window.likeMessage = function(key, e) {
+      chatRef.child(key).child("likes").transaction(c => (c || 0) + 1);
+
+      // Trigger Floating Heart (#5)
+      const heart = document.createElement('div');
+      heart.className = 'floating-heart';
+      heart.innerText = '❤️';
+      heart.style.left = `${e.clientX - 10}px`;
+      heart.style.top = `${e.clientY - 20}px`;
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 1800);
     };
 
-    // Toggle comment section visibility
     window.toggleComments = function(key) {
       const box = document.getElementById(`comments-${key}`);
       if (box) box.classList.toggle('open');
     };
 
-    // Post a comment action
     window.postComment = function(key) {
       const name = usernameInput.value.trim() || 'Guest';
       const input = document.getElementById(`c-input-${key}`);
       const text = input ? input.value.trim() : '';
 
       if (text) {
-        chatRef.child(key).child("comments").push({
-          username: name,
-          text: text
-        });
+        chatRef.child(key).child("comments").push({ username: name, text: text });
         input.value = '';
       }
     };
 
     function escapeHTML(str) {
-      return str ? str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      ) : '';
+      return str ? str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
     }
   </script>
 </body>
