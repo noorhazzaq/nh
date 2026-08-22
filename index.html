@@ -188,7 +188,7 @@
     .chat-card {
       display: flex;
       flex-direction: column;
-      height: 480px;
+      height: 520px;
       text-align: left;
     }
 
@@ -252,12 +252,11 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       padding-right: 5px;
       margin-bottom: 12px;
     }
 
-    /* Custom Scrollbar for Chat */
     .chat-messages::-webkit-scrollbar {
       width: 4px;
     }
@@ -269,8 +268,8 @@
     .chat-msg {
       background: rgba(255, 255, 255, 0.05);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 8px 12px;
+      border-radius: 12px;
+      padding: 10px 12px;
       font-size: 0.85rem;
       word-wrap: break-word;
     }
@@ -372,6 +371,92 @@
       margin-right: 8px;
     }
 
+    /* Message Action Bar (Likes & Comments) */
+    .msg-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .action-btn {
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color 0.2s ease, transform 0.1s ease;
+    }
+
+    .action-btn:hover {
+      color: #f472b6;
+    }
+
+    .action-btn:active {
+      transform: scale(0.9);
+    }
+
+    /* Comments Section */
+    .comments-wrapper {
+      margin-top: 8px;
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      padding-left: 8px;
+      border-left: 2px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .comments-wrapper.open {
+      display: flex;
+    }
+
+    .comment-item {
+      font-size: 0.75rem;
+      color: #cbd5e1;
+      background: rgba(0, 0, 0, 0.25);
+      padding: 4px 8px;
+      border-radius: 6px;
+      word-wrap: break-word;
+    }
+
+    .comment-item span.c-author {
+      font-weight: bold;
+      color: #38bdf8;
+      margin-right: 4px;
+    }
+
+    .comment-input-box {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .comment-input-box input {
+      flex: 1;
+      padding: 4px 8px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+
+    .comment-input-box button {
+      background: #38bdf8;
+      border: none;
+      color: #000;
+      font-weight: bold;
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
     /* Chat Controls */
     .chat-form {
       display: flex;
@@ -466,9 +551,9 @@
 </head>
 <body>
 
-  <!-- Top Timestamp Banner -->
+  <!-- Updated Timestamp Banner -->
   <div class="last-updated-banner">
-    Last Updated: August 22, 2026 at 5:07 AM MYT
+    Last Updated: August 23, 2026 at 1:25 AM MYT
   </div>
 
   <!-- Animated Dynamic Canvas -->
@@ -628,8 +713,12 @@
 
     // Listen for incoming new messages
     chatRef.limitToLast(50).on("child_added", (snapshot) => {
-      const data = snapshot.val();
-      appendMessage(data);
+      appendMessage(snapshot.key, snapshot.val());
+    });
+
+    // Listen for updates (likes/comments) on existing messages
+    chatRef.limitToLast(50).on("child_changed", (snapshot) => {
+      updateMessageUI(snapshot.key, snapshot.val());
     });
 
     // Wipe local screen immediately when database is cleared
@@ -651,6 +740,7 @@
         chatRef.push({
           username: name,
           message: text,
+          likes: 0,
           timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
 
@@ -678,6 +768,7 @@
           chatRef.push({
             username: name,
             image: base64Image,
+            likes: 0,
             timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
           });
         };
@@ -710,6 +801,7 @@
               chatRef.push({
                 username: name,
                 audio: base64Audio,
+                likes: 0,
                 timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
               });
             };
@@ -747,9 +839,12 @@
       }
     });
 
-    function appendMessage(data) {
+    function appendMessage(key, data) {
+      if (document.getElementById(`msg-${key}`)) return;
+
       const msgDiv = document.createElement('div');
       msgDiv.className = 'chat-msg';
+      msgDiv.id = `msg-${key}`;
       
       let contentHtml = '';
       if (data.message) {
@@ -770,16 +865,89 @@
         `;
       }
 
+      const likeCount = data.likes || 0;
+      const comments = data.comments || {};
+      const commentCount = Object.keys(comments).length;
+
       msgDiv.innerHTML = `
         <div class="author">
           <span>${escapeHTML(data.username)}</span>
           <span class="time">${data.timestamp || ''}</span>
         </div>
         ${contentHtml}
+        
+        <div class="msg-actions">
+          <button class="action-btn" onclick="likeMessage('${key}')">
+            ❤️ <span id="like-count-${key}">${likeCount}</span>
+          </button>
+          <button class="action-btn" onclick="toggleComments('${key}')">
+            💬 <span id="comment-count-${key}">${commentCount}</span> Comments
+          </button>
+        </div>
+
+        <div class="comments-wrapper" id="comments-${key}">
+          <div id="comments-list-${key}">
+            ${renderCommentsList(comments)}
+          </div>
+          <div class="comment-input-box">
+            <input type="text" id="c-input-${key}" placeholder="Write a comment..." maxlength="100">
+            <button onclick="postComment('${key}')">Reply</button>
+          </div>
+        </div>
       `;
+
       chatMessages.appendChild(msgDiv);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
+
+    function updateMessageUI(key, data) {
+      const likeElem = document.getElementById(`like-count-${key}`);
+      if (likeElem) likeElem.innerText = data.likes || 0;
+
+      const commentElem = document.getElementById(`comment-count-${key}`);
+      const commentsListElem = document.getElementById(`comments-list-${key}`);
+      const comments = data.comments || {};
+
+      if (commentElem) commentElem.innerText = Object.keys(comments).length;
+      if (commentsListElem) commentsListElem.innerHTML = renderCommentsList(comments);
+    }
+
+    function renderCommentsList(comments) {
+      let html = '';
+      for (let cId in comments) {
+        const c = comments[cId];
+        html += `<div class="comment-item"><span class="c-author">${escapeHTML(c.username)}:</span>${escapeHTML(c.text)}</div>`;
+      }
+      return html;
+    }
+
+    // Like message action
+    window.likeMessage = function(key) {
+      chatRef.child(key).child("likes").transaction((currentLikes) => {
+        return (currentLikes || 0) + 1;
+      });
+    };
+
+    // Toggle comment section visibility
+    window.toggleComments = function(key) {
+      const box = document.getElementById(`comments-${key}`);
+      if (box) box.classList.toggle('open');
+    };
+
+    // Post a comment action
+    window.postComment = function(key) {
+      const name = usernameInput.value.trim() || 'Guest';
+      const input = document.getElementById(`c-input-${key}`);
+      const text = input ? input.value.trim() : '';
+
+      if (text) {
+        chatRef.child(key).child("comments").push({
+          username: name,
+          text: text
+        });
+        input.value = '';
+      }
+    };
 
     function escapeHTML(str) {
       return str ? str.replace(/[&<>'"]/g, 
