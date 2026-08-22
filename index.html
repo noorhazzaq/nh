@@ -9,42 +9,101 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
+    /* 1. Reset & Living Cursor */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      background: #020208; color: #fff; font-family: system-ui, sans-serif;
+      /* 2. Ambient Breathing Background */
+      background: linear-gradient(-45deg, #020208, #0a0a2a, #020211, #10002b);
+      background-size: 400% 400%;
+      animation: ambientBg 15s ease infinite;
+      color: #fff; font-family: system-ui, sans-serif;
       min-height: 100vh; display: flex; flex-direction: column; align-items: center;
       padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair;
     }
+    @keyframes ambientBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    /* 3. Floating Top Bar */
     #top-bar {
       position: fixed; top: 10px; z-index: 30; display: flex; gap: 10px; align-items: center;
+      animation: floatUI 4s ease-in-out infinite;
     }
+    @keyframes floatUI { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
+
+    /* 4. Pulsing Badge Shadow */
     .badge {
       background: rgba(15, 23, 42, 0.85); color: #38bdf8; padding: 6px 14px;
       border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.8rem;
+      animation: pulseGlow 3s infinite;
     }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 15px rgba(56,189,248,0.6); } }
+
+    /* 5. Breathing Buttons & 6. Liquid Hover */
     .btn {
       background: rgba(168, 85, 247, 0.3); border: 1px solid #c084fc; color: #c084fc;
       padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: breatheBtn 4s infinite alternate;
     }
+    .btn:hover { background: rgba(168, 85, 247, 0.7); color: #fff; transform: scale(1.05); box-shadow: 0 0 15px #c084fc; }
+    @keyframes breatheBtn { 0% { border-color: rgba(192,132,252,0.4); } 100% { border-color: rgba(192,132,252,1); } }
+
     #space-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* 7. Glassmorphism Highlight & 8. Gentle Card Float */
     .card {
       position: relative; z-index: 10; width: 100%; max-width: 440px; margin-bottom: 15px;
-      background: rgba(15, 15, 30, 0.75); backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
+      background: linear-gradient(135deg, rgba(25, 25, 45, 0.8), rgba(10, 10, 20, 0.6));
+      backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
+      animation: floatUI 6s ease-in-out infinite reverse;
+      transition: border-color 0.4s;
     }
+    .card:hover { border-color: rgba(56, 189, 248, 0.5); }
+
+    /* 9. Organic Flowing Text & 10. Breathing Letter Spacing */
     h1 {
-      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
+      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8, #f472b6, #c084fc);
+      background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 8px; animation: textFlow 5s linear infinite, spaceBreathe 4s ease-in-out infinite;
     }
-    .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; }
+    @keyframes textFlow { to { background-position: 300% center; } }
+    @keyframes spaceBreathe { 0%, 100% { letter-spacing: 0px; } 50% { letter-spacing: 0.5px; } }
+
+    /* 11. Morphing Video Border */
+    .video-box {
+      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
+      border-radius: 10px; animation: morphBorder 8s ease-in-out infinite;
+    }
+    @keyframes morphBorder { 0%, 100% { border-radius: 10px; } 50% { border-radius: 16px 8px 16px 8px; } }
     .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
-    .chat-box { height: 200px; overflow-y: auto; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
-    .chat-msg { background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px; }
-    .chat-msg b { color: #38bdf8; }
+
+    /* 12. Smooth Scroll Track */
+    .chat-box { height: 200px; overflow-y: auto; scroll-behavior: smooth; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; padding-right: 5px; }
+    .chat-box::-webkit-scrollbar { width: 4px; }
+    .chat-box::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.5); border-radius: 10px; }
+
+    /* 13. Slide-up Living Chat Messages */
+    .chat-msg {
+      background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px;
+      animation: msgBirth 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      transform-origin: bottom left;
+    }
+    @keyframes msgBirth { 0% { opacity: 0; transform: translateY(10px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    .chat-msg b { color: #38bdf8; transition: color 0.3s; }
+    .chat-msg:hover b { color: #c084fc; }
+
+    /* 14. Breathing Input Focus */
     .inputs { display: flex; gap: 6px; }
-    input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.8rem; }
+    input {
+      background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
+      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none; transition: all 0.3s ease;
+    }
+    input:focus { border-color: #4ade80; box-shadow: 0 0 10px rgba(74, 222, 128, 0.3); background: rgba(0, 0, 0, 0.7); }
     input[type="text"]:first-child { width: 30%; }
     input[type="text"]:last-child { flex: 1; }
+
+    /* 15. Blinking Status Dot */
+    #status { animation: blinkDot 2s infinite; }
+    @keyframes blinkDot { 0%, 100% { opacity: 1; text-shadow: 0 0 5px #4ade80; } 50% { opacity: 0.4; text-shadow: none; } }
   </style>
 </head>
 <body>
@@ -76,56 +135,97 @@
   </div>
 
   <script>
-    // Live Clock
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // Canvas Engine & Particle Pool
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-    let w, h, stars = [], particles = [];
+    let w, h, stars = [], particles = [], fireflies = [], meteors = [];
+    let time = 0;
 
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 100 }, () => ({ x: Math.random() * w, y: Math.random() * h, z: Math.random() * w }));
+      // 16. Parallax Star Layers
+      stars = Array.from({ length: 150 }, () => ({ 
+        x: Math.random() * w, y: Math.random() * h, z: Math.random() * w, 
+        size: Math.random() * 1.5 + 0.5 
+      }));
+      // 17. Organic Wandering Fireflies
+      fireflies = Array.from({ length: 20 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, offset: Math.random() * 100, speed: Math.random() * 0.02 + 0.01
+      }));
     }
     window.addEventListener('resize', resize);
     resize();
 
+    // 18. Interactive Mouse Trail
     window.addEventListener('mousemove', (e) => {
-      if (particles.length < 40) {
-        particles.push({ x: e.clientX, y: e.clientY, alpha: 1, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 });
+      if (particles.length < 50) {
+        particles.push({ 
+          x: e.clientX, y: e.clientY, alpha: 1, 
+          vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3,
+          color: Math.random() > 0.5 ? '#38bdf8' : '#c084fc'
+        });
       }
     });
 
     function render() {
-      ctx.fillStyle = '#020208';
-      ctx.fillRect(0, 0, w, h);
+      ctx.clearRect(0, 0, w, h);
+      time += 1;
 
+      // 19. Shooting Stars (Occasional Burst)
+      if (Math.random() < 0.02) meteors.push({ x: Math.random() * w, y: 0, speed: Math.random() * 5 + 5 });
+      meteors.forEach((m, i) => {
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 30, m.y + 30); ctx.stroke();
+        m.x -= m.speed; m.y += m.speed;
+        if (m.y > h) meteors.splice(i, 1);
+      });
+
+      // Stars Render
       stars.forEach(s => {
         s.z -= 0.5;
         if (s.z <= 0) s.z = w;
         const px = (s.x - w / 2) * (128 / s.z) + w / 2;
         const py = (s.y - h / 2) * (128 / s.z) + h / 2;
         if (px >= 0 && px <= w && py >= 0 && py <= h) {
-          ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(px, py, 1.5, 1.5);
+          ctx.fillStyle = `rgba(255, 255, 255, ${1 - s.z / w})`;
+          ctx.fillRect(px, py, s.size, s.size);
         }
       });
 
+      // 20. Rendering Fireflies (Sine Wave Movement)
+      fireflies.forEach(f => {
+        f.x += Math.sin(time * f.speed + f.offset) * 0.5;
+        f.y += Math.cos(time * f.speed + f.offset) * 0.5;
+        ctx.fillStyle = `rgba(74, 222, 128, ${Math.abs(Math.sin(time * 0.05 + f.offset)) * 0.6})`;
+        ctx.beginPath(); ctx.arc(f.x, f.y, 2, 0, Math.PI * 2); ctx.fill();
+      });
+
+      // 21. Constellation Particle Connections
       particles.forEach((p, i) => {
-        ctx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
-        ctx.fillRect(p.x, p.y, 3, 3);
-        p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
+        ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
+        ctx.fillRect(p.x, p.y, 2.5, 2.5);
+        
+        particles.slice(i + 1).forEach(p2 => {
+          const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+          if (dist < 60) {
+            ctx.strokeStyle = `rgba(192, 132, 252, ${0.3 * p.alpha})`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+          }
+        });
+
+        p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
         if (p.alpha <= 0) particles.splice(i, 1);
       });
+      ctx.globalAlpha = 1.0;
 
       requestAnimationFrame(render);
     }
     render();
 
-    // Firebase Chat Handler
     try {
       firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
       const db = firebase.database().ref("global_chat");
@@ -148,7 +248,7 @@
         div.innerHTML = `<b>${d.u}:</b> ${d.m}`;
         const box = document.getElementById('chat');
         box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
+        box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
       });
     } catch (err) {
       document.getElementById('status').innerText = '● Offline Mode';
