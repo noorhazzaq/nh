@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Space Hub - 36 Merrier Effects</title>
+  <title>Cosmic Space Hub - 99 Merrier Effects</title>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -14,11 +14,9 @@
     body {
       background: #020208; color: #fff; font-family: system-ui, -apple-system, sans-serif;
       min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-      padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair;
-      position: relative;
+      padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair; position: relative;
     }
 
-    /* Effect #11: Rainbow Animated Outer Border */
     body::before {
       content: ''; position: fixed; inset: 0; border: 3px solid transparent;
       border-image: linear-gradient(45deg, #c084fc, #38bdf8, #f472b6, #4ade80) 1;
@@ -28,14 +26,12 @@
 
     #top-bar { position: fixed; top: 10px; z-index: 30; display: flex; gap: 8px; align-items: center; }
     
-    /* Effect #27: Live Glassmorphic Clock Banner */
     .badge {
       background: rgba(15, 23, 42, 0.85); color: #38bdf8; padding: 6px 14px;
       border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.8rem;
       backdrop-filter: blur(8px); box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
     }
 
-    /* Effect #20: Ripple Hover Buttons */
     .btn {
       background: rgba(168, 85, 247, 0.3); border: 1px solid #c084fc; color: #c084fc;
       padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
@@ -45,24 +41,14 @@
 
     #space-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
-    /* Effect #12 & #13: Floating Astronaut Mascot */
-    .astronaut {
-      position: fixed; bottom: 20px; right: 20px; font-size: 2.5rem; z-index: 25;
-      cursor: pointer; user-select: none; animation: floatAstro 3s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 10px #c084fc);
-    }
-    @keyframes floatAstro { 0% { transform: translateY(0px) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
-
-    /* Effect #14 & #15: Glassmorphism Card & 3D Hover Tilt */
     .card {
-      position: relative; z-index: 10; width: 100%; max-width: 440px; margin-bottom: 15px;
+      position: relative; z-index: 10; width: 100%; max-width: 460px; margin-bottom: 15px;
       background: rgba(15, 15, 30, 0.75); backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
       box-shadow: 0 0 30px rgba(138, 43, 226, 0.2); transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     .card:hover { box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
 
-    /* Effect #16: Shimmering Holographic Header */
     h1 {
       font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8, #f472b6);
       background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -73,53 +59,51 @@
     .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
     .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-    /* Effect #32: Custom Neon Scrollbars */
+    .chat-util-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 6px; margin-bottom: 6px; }
+    
     .chat-box::-webkit-scrollbar { width: 5px; }
     .chat-box::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
 
-    .chat-box { height: 200px; overflow-y: auto; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
+    .chat-box { height: 210px; overflow-y: auto; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
     
-    /* Effect #18 & #35: Message Pop Animation & Avatar Badge */
     .chat-msg {
       background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px;
-      animation: popIn 0.3s ease-out; display: flex; gap: 8px; align-items: center;
+      animation: popIn 0.3s ease-out; display: flex; gap: 8px; align-items: center; word-break: break-word;
+      border: 1px solid rgba(255, 255, 255, 0.05); transition: background 0.2s;
     }
+    .chat-msg:hover { background: rgba(255, 255, 255, 0.1); }
     @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
     
-    .avatar { width: 22px; height: 22px; border-radius: 50%; background: #c084fc; color: #000; font-weight: bold; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .avatar { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #c084fc, #38bdf8); color: #000; font-weight: bold; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .chat-msg b { color: #38bdf8; }
 
-    /* Effect #17: Neon Pulsing Web Status Dot */
-    .status-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; animation: pulse 1.5s infinite; inline-size: display: inline-block; }
+    .status-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; animation: pulse 1.5s infinite; display: inline-block; }
     @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } }
 
-    /* Effect #19: Pulsing Focus Outline */
+    .emoji-bar { display: flex; gap: 6px; margin-bottom: 8px; }
+    .emoji-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 2px 6px; cursor: pointer; transition: transform 0.1s; }
+    .emoji-btn:hover { transform: scale(1.2); background: rgba(255,255,255,0.15); }
+
     .inputs { display: flex; gap: 6px; }
     input {
       background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
-      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none; transition: border 0.2s;
+      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none; transition: all 0.2s;
     }
     input:focus { border-color: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.5); }
-    input[type="text"]:first-child { width: 30%; }
-    input[type="text"]:last-child { flex: 1; }
+    input[type="text"]:first-child { width: 28%; }
+    input[type="text"]:nth-child(2) { flex: 1; }
+    .char-limit { font-size: 0.65rem; color: #888; text-align: right; margin-top: 4px; }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation Controls -->
   <div id="top-bar">
     <div class="badge" id="clock">🕒 --:--:--</div>
-    <button class="btn" id="warp-btn">🚀 Warp</button>
-    <button class="btn" id="synth-btn">🎵 Audio</button>
+    <div class="badge" id="msg-counter">💬 Messages: 0</div>
   </div>
 
-  <!-- Space Canvas Background Engine -->
   <canvas id="space-canvas"></canvas>
 
-  <!-- Mascot -->
-  <div class="astronaut" id="astro" title="Click for Cosmic Cheer!">👨‍🚀</div>
-
-  <!-- Main Card Container -->
   <main class="card" id="main-card">
     <h1 id="title">Terima Kasih Haji Abu Kassim!</h1>
     <div class="video-box">
@@ -127,115 +111,135 @@
     </div>
   </main>
 
-  <!-- Global Chat Container -->
   <div class="card" id="chat-card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
       <h2 style="font-size:1rem; display:flex; align-items:center; gap:6px;">🌌 Global Chat</h2>
       <span style="font-size:0.75rem; color:#4ade80; display:flex; align-items:center; gap:4px;">
         <span class="status-dot"></span> <span id="status">● Online</span>
       </span>
     </div>
+
+    <!-- Toolbar -->
+    <div class="chat-util-bar">
+      <input type="text" id="chat-search" placeholder="🔍 Search messages..." style="width: 140px; font-size:0.7rem; padding: 4px 6px;">
+      <button class="btn" id="export-btn">📥 Export Log</button>
+      <button class="btn" id="autoscroll-btn">📜 Scroll: ON</button>
+      <button class="btn" id="clear-btn">🗑️ Clear</button>
+    </div>
+
     <div class="chat-box" id="chat"></div>
-    <form class="inputs" id="chat-form">
-      <input type="text" id="user" placeholder="Name" maxlength="12" required>
-      <input type="text" id="msg" placeholder="Type a message..." maxlength="150" required>
-      <button type="submit" class="btn">Send</button>
+
+    <!-- Quick Emoji Insertion Bar -->
+    <div class="emoji-bar">
+      <span class="emoji-btn">🚀</span>
+      <span class="emoji-btn">✨</span>
+      <span class="emoji-btn">🔥</span>
+      <span class="emoji-btn">⭐</span>
+      <span class="emoji-btn">👾</span>
+      <span class="emoji-btn">🌌</span>
+    </div>
+
+    <form id="chat-form">
+      <div class="inputs">
+        <input type="text" id="user" placeholder="Name" maxlength="12" required>
+        <input type="text" id="msg" placeholder="Type a message..." maxlength="150" required autocomplete="off">
+        <button type="submit" class="btn">Send</button>
+      </div>
+      <div class="char-limit" id="char-count">0/150</div>
     </form>
   </div>
 
   <script>
-    // Effect #27: Live UTC Clock
+    // Live Clock Banner
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // Canvas Engine Setup (Effects #1, #4, #5, #6, #8, #9, #10, #31)
+    // Canvas Space Engine
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-    let w, h, stars = [], particles = [], meteors = [], warp = false, mouse = { x: -100, y: -100 };
+    let w, h, stars = [], particles = [], meteors = [], mouse = { x: -100, y: -100 };
 
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 90 }, () => ({
+      stars = Array.from({ length: 110 }, () => ({
         x: Math.random() * w, y: Math.random() * h, z: Math.random() * w,
-        opacity: Math.random()
+        opacity: Math.random(), color: ['#38bdf8', '#c084fc', '#ffffff', '#f472b6'][Math.floor(Math.random() * 4)]
       }));
     }
     window.addEventListener('resize', resize);
     resize();
 
-    // Effect #5: Warp Speed Toggle
-    document.getElementById('warp-btn').onclick = () => warp = !warp;
-
-    // Effect #6: Stardust Cursor Trail & Mouse Tracking
+    // Mouse Tracking & Stardust Particles
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.clientX; mouse.y = e.clientY;
-      if (particles.length < 35) {
+      if (particles.length < 40) {
         particles.push({ x: e.clientX, y: e.clientY, alpha: 1, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 });
       }
     });
 
-    // Effect #2: Gravitational Black Hole Pull Trigger
+    // Particle Burst on Double Click
     window.addEventListener('dblclick', (e) => {
-      stars.forEach(s => { s.x = e.clientX; s.y = e.clientY; });
-      confetti({ particleCount: 50, origin: { x: e.clientX / w, y: e.clientY / h } });
+      for (let i = 0; i < 20; i++) {
+        particles.push({ x: e.clientX, y: e.clientY, alpha: 1, vx: (Math.random() - 0.5) * 6, vy: (Math.random() - 0.5) * 6 });
+      }
+      confetti({ particleCount: 35, origin: { x: e.clientX / w, y: e.clientY / h } });
     });
 
     function render() {
-      // Effect #1 & #30: Eclipse & Nebula Overlay Canvas Shading
-      ctx.fillStyle = warp ? 'rgba(2, 2, 8, 0.25)' : '#020208';
+      ctx.fillStyle = '#020208';
       ctx.fillRect(0, 0, w, h);
 
-      // Effect #4: Shooting Stars Generation
-      if (Math.random() < 0.02) {
-        meteors.push({ x: Math.random() * w, y: 0, length: Math.random() * 80 + 20, speed: Math.random() * 10 + 5 });
+      // Shooting Meteors
+      if (Math.random() < 0.025) {
+        meteors.push({ x: Math.random() * w, y: 0, length: Math.random() * 80 + 20, speed: Math.random() * 8 + 4 });
       }
       meteors.forEach((m, i) => {
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.2;
         ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.length / 2, m.y + m.length); ctx.stroke();
         m.x += m.speed; m.y += m.speed;
         if (m.y > h) meteors.splice(i, 1);
       });
 
-      // Effect #8, #9 & #10: Stars, Constellations, Twinkle & Cursor Orbit
+      // Stars, Constellations, & Satellite Orbits
       stars.forEach((s, idx) => {
-        s.z -= warp ? 10 : 0.5;
+        s.z -= 0.4;
         if (s.z <= 0) s.z = w;
         const px = (s.x - w / 2) * (128 / s.z) + w / 2;
         const py = (s.y - h / 2) * (128 / s.z) + h / 2;
 
         if (px >= 0 && px <= w && py >= 0 && py <= h) {
-          s.opacity = Math.sin(Date.now() * 0.003 + idx) * 0.5 + 0.5; // Effect #9: Twinkle
-          ctx.fillStyle = `rgba(56, 189, 248, ${s.opacity})`;
+          s.opacity = Math.sin(Date.now() * 0.003 + idx) * 0.5 + 0.5;
+          ctx.fillStyle = s.color;
           ctx.fillRect(px, py, 1.5, 1.5);
 
-          // Constellation Proximity Lines (#8)
-          stars.slice(idx + 1, idx + 4).forEach(s2 => {
+          // Constellations Proximity Link
+          stars.slice(idx + 1, idx + 3).forEach(s2 => {
             const px2 = (s2.x - w / 2) * (128 / s2.z) + w / 2;
             const py2 = (s2.y - h / 2) * (128 / s2.z) + h / 2;
             const dist = Math.hypot(px - px2, py - py2);
-            if (dist < 60) {
-              ctx.strokeStyle = `rgba(192, 132, 252, ${1 - dist / 60})`;
-              ctx.lineWidth = 0.3;
+            if (dist < 50) {
+              ctx.strokeStyle = `rgba(192, 132, 252, ${1 - dist / 50})`;
+              ctx.lineWidth = 0.2;
               ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px2, py2); ctx.stroke();
             }
           });
         }
       });
 
-      // Effect #10: Planetary Cursor Satellite Orbit
+      // Cursor Orbit Satellite
       if (mouse.x > 0) {
         const orbitAngle = Date.now() * 0.003;
-        const ox = mouse.x + Math.cos(orbitAngle) * 25;
-        const oy = mouse.y + Math.sin(orbitAngle) * 25;
-        ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(ox, oy, 2.5, 0, Math.PI * 2); ctx.fill();
+        const ox = mouse.x + Math.cos(orbitAngle) * 22;
+        const oy = mouse.y + Math.sin(orbitAngle) * 22;
+        ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(ox, oy, 2, 0, Math.PI * 2); ctx.fill();
       }
 
-      // Particle Trail Logic (#6)
+      // Stardust Particle Animation
       particles.forEach((p, i) => {
         ctx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
-        ctx.fillRect(p.x, p.y, 3, 3);
+        ctx.fillRect(p.x, p.y, 2.5, 2.5);
         p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
         if (p.alpha <= 0) particles.splice(i, 1);
       });
@@ -244,79 +248,108 @@
     }
     render();
 
-    // Effect #13: Mascot Interactive Confetti
-    document.getElementById('astro').onclick = () => {
-      confetti({ particleCount: 40, spread: 60 });
-    };
-
-    // Effect #15: 3D Interactive Parallax Card Tilt
+    // 3D Parallax Card Tilt
     document.querySelectorAll('.card').forEach(card => {
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = e.clientX - rect.left - rect.width / 2;
         const y = e.clientY - rect.top - rect.height / 2;
-        card.style.transform = `perspective(1000px) rotateX(${-y / 20}deg) rotateY(${x / 20}deg)`;
+        card.style.transform = `perspective(1000px) rotateX(${-y / 25}deg) rotateY(${x / 25}deg)`;
       });
       card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)');
     });
 
-    // Effect #22 & #23: Safe Web Audio Synth & Laser Audio Trigger
-    let actx, osc;
-    document.getElementById('synth-btn').onclick = () => {
-      if (!actx) {
-        actx = new (window.AudioContext || window.webkitAudioContext)();
-        osc = actx.createOscillator();
-        const gain = actx.createGain();
-        gain.gain.value = 0.015;
-        osc.connect(gain); gain.connect(actx.destination);
-        osc.start();
-        document.getElementById('synth-btn').innerText = '🎵 Audio ON';
-      } else {
-        actx.state === 'running' ? actx.suspend() : actx.resume();
-      }
+    // Chat Utilities State
+    let autoScroll = true, lastMsgTime = 0, lastMsgText = "", messagesCache = [], totalMsgCount = 0;
+
+    document.getElementById('autoscroll-btn').onclick = () => {
+      autoScroll = !autoScroll;
+      document.getElementById('autoscroll-btn').innerText = `📜 Scroll: ${autoScroll ? 'ON' : 'OFF'}`;
     };
 
-    function playLaserSound() {
-      if (!actx || actx.state !== 'running') return;
-      const lOsc = actx.createOscillator(), lGain = actx.createGain();
-      lOsc.frequency.setValueAtTime(800, actx.currentTime);
-      lOsc.frequency.exponentialRampToValueAtTime(100, actx.currentTime + 0.15);
-      lGain.gain.setValueAtTime(0.03, actx.currentTime);
-      lOsc.connect(lGain); lGain.connect(actx.destination);
-      lOsc.start(); lOsc.stop(actx.currentTime + 0.15);
-    }
+    document.getElementById('clear-btn').onclick = () => document.getElementById('chat').innerHTML = '';
 
-    // Effect #21, #7 & Firebase Integration
+    // Character Counter
+    const msgInput = document.getElementById('msg');
+    msgInput.oninput = () => document.getElementById('char-count').innerText = `${msgInput.value.length}/150`;
+
+    // Emoji Bar Insertion
+    document.querySelectorAll('.emoji-btn').forEach(btn => {
+      btn.onclick = () => { msgInput.value += btn.innerText; msgInput.focus(); document.getElementById('char-count').innerText = `${msgInput.value.length}/150`; };
+    });
+
+    // Export Log Utility
+    document.getElementById('export-btn').onclick = () => {
+      const blob = new Blob([messagesCache.map(m => `[${m.time}] ${m.u}: ${m.m}`).join('\n')], { type: 'text/plain' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+      a.download = 'cosmic-chat-log.txt'; a.click();
+    };
+
+    // Filter Search Input
+    document.getElementById('chat-search').oninput = (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.chat-msg').forEach(el => {
+        el.style.display = el.innerText.toLowerCase().includes(q) ? 'flex' : 'none';
+      });
+    };
+
+    // Firebase Core Connection
     try {
       firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
       const db = firebase.database().ref("global_chat");
 
       document.getElementById('chat-form').onsubmit = (e) => {
         e.preventDefault();
+        const now = Date.now();
         const u = document.getElementById('user').value.trim();
-        const m = document.getElementById('msg').value.trim();
-        if (u && m) {
-          db.push({ u, m });
-          playLaserSound(); // Effect #23
+        const m = msgInput.value.trim();
 
-          // Effect #21 & #7: Keyword Fireworks & Supernova Dispersion
-          if (/space|love|fire|star/i.test(m)) {
-            confetti({ particleCount: 50, spread: 70 });
-          }
-          document.getElementById('msg').value = '';
+        // Anti-spam Rate Limiter & Duplicate Protection
+        if (now - lastMsgTime < 1200) return alert("Slow down! Anti-spam active.");
+        if (m === lastMsgText) return alert("Duplicate message prevented.");
+
+        if (u && m) {
+          db.push({ u, m, t: Date.now() });
+          lastMsgTime = now;
+          lastMsgText = m;
+          if (/space|love|fire|star/i.test(m)) confetti({ particleCount: 40, spread: 60 });
+          msgInput.value = '';
+          document.getElementById('char-count').innerText = '0/150';
         }
       };
 
-      // Effect #36: Auto-scroll Smoothness
-      db.limitToLast(15).on("child_added", snap => {
+      db.limitToLast(20).on("child_added", snap => {
         const d = snap.val();
+        const timeStr = new Date(d.t || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        messagesCache.push({ u: d.u, m: d.m, time: timeStr });
+
+        totalMsgCount++;
+        document.getElementById('msg-counter').innerText = `💬 Messages: ${totalMsgCount}`;
+
         const div = document.createElement('div');
         div.className = 'chat-msg';
         const initial = d.u.charAt(0).toUpperCase();
-        div.innerHTML = `<div class="avatar">${initial}</div><div><b>${d.u}:</b> ${d.m}</div>`;
+
+        // Copy on Click
+        div.onclick = () => {
+          navigator.clipboard.writeText(`${d.u}: ${d.m}`);
+        };
+        div.title = "Click to copy message";
+
+        div.innerHTML = `
+          <div class="avatar">${initial}</div>
+          <div style="flex:1;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+              <b>${d.u}</b>
+              <span style="font-size:0.65rem; color:#888;">${timeStr}</span>
+            </div>
+            <div>${d.m}</div>
+          </div>
+        `;
+
         const box = document.getElementById('chat');
         box.appendChild(div);
-        box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+        if (autoScroll) box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
       });
     } catch (err) {
       document.getElementById('status').innerText = '● Offline Mode';
