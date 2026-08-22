@@ -4,134 +4,269 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cosmic Space Hub</title>
+  
+  <!-- External Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
+    /* CSS Variables & Theme Tokens */
+    :root {
+      --bg-gradient: linear-gradient(-45deg, #020208, #0a0a2a, #020211, #10002b);
+      --card-bg: linear-gradient(135deg, rgba(25, 25, 45, 0.8), rgba(10, 10, 20, 0.6));
+      --accent-cyan: #38bdf8;
+      --accent-purple: #c084fc;
+      --accent-green: #4ade80;
+      --border-color: rgba(255, 255, 255, 0.15);
+      --font-stack: system-ui, -apple-system, sans-serif;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      background: linear-gradient(-45deg, #020208, #0a0a2a, #020211, #10002b);
+      background: var(--bg-gradient);
       background-size: 400% 400%;
       animation: ambientBg 15s ease infinite;
-      color: #fff; font-family: system-ui, sans-serif;
-      min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-      padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair;
+      color: #fff;
+      font-family: var(--font-stack);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 70px 15px 30px;
+      overflow-x: hidden;
+      cursor: crosshair;
     }
-    @keyframes ambientBg { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    #top-bar {
-      position: fixed; top: 10px; z-index: 30; display: flex; gap: 10px; align-items: center;
+    @keyframes ambientBg {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Fixed Background Canvas */
+    #space-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Navigation Header */
+    .app-header {
+      position: fixed;
+      top: 12px;
+      z-index: 30;
+      display: flex;
+      gap: 12px;
+      align-items: center;
       animation: floatUI 4s ease-in-out infinite;
     }
-    @keyframes floatUI { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-3px); } }
 
     .badge {
-      background: rgba(15, 23, 42, 0.85); color: #38bdf8; padding: 6px 14px;
-      border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.8rem;
+      background: rgba(15, 23, 42, 0.85);
+      color: var(--accent-cyan);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      font-size: 0.8rem;
       animation: pulseGlow 3s infinite;
+      backdrop-filter: blur(8px);
     }
-    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 15px rgba(56,189,248,0.6); } }
 
-    .btn {
-      background: rgba(168, 85, 247, 0.3); border: 1px solid #c084fc; color: #c084fc;
-      padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      animation: breatheBtn 4s infinite alternate;
+    /* Main Grid Layout Container */
+    .layout-container {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    .btn:hover { background: rgba(168, 85, 247, 0.7); color: #fff; transform: scale(1.05); box-shadow: 0 0 15px #c084fc; }
-    @keyframes breatheBtn { 0% { border-color: rgba(192,132,252,0.4); } 100% { border-color: rgba(192,132,252,1); } }
 
-    #space-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-
+    /* Shared Modular Cards */
     .card {
-      position: relative; z-index: 10; width: 100%; max-width: 440px; margin-bottom: 15px;
-      background: linear-gradient(135deg, rgba(25, 25, 45, 0.8), rgba(10, 10, 20, 0.6));
-      backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
-      animation: floatUI 6s ease-in-out infinite reverse;
-      transition: border-color 0.4s;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 1.25rem;
+      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+      transition: border-color 0.3s ease, transform 0.3s ease;
     }
-    .card:hover { border-color: rgba(56, 189, 248, 0.5); }
 
+    .card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+
+    /* Content Card Header */
     h1 {
-      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8, #f472b6, #c084fc);
-      background-size: 300% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      margin-bottom: 8px; animation: textFlow 5s linear infinite, spaceBreathe 4s ease-in-out infinite;
+      font-size: 1.35rem;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), #f472b6);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      animation: textFlow 5s linear infinite;
     }
-    @keyframes textFlow { to { background-position: 300% center; } }
-    @keyframes spaceBreathe { 0%, 100% { letter-spacing: 0px; } 50% { letter-spacing: 0.5px; } }
 
+    /* Media Player Wrap */
     .video-box {
-      position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;
-      border-radius: 10px; animation: morphBorder 8s ease-in-out infinite;
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    @keyframes morphBorder { 0%, 100% { border-radius: 10px; } 50% { border-radius: 16px 8px 16px 8px; } }
-    .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-    .chat-box { height: 200px; overflow-y: auto; scroll-behavior: smooth; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; padding-right: 5px; }
+    .video-box iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Chat Structure */
+    .chat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .chat-box {
+      height: 220px;
+      overflow-y: auto;
+      scroll-behavior: smooth;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
     .chat-box::-webkit-scrollbar { width: 4px; }
-    .chat-box::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.5); border-radius: 10px; }
+    .chat-box::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.4);
+      border-radius: 10px;
+    }
 
     .chat-msg {
-      background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px;
-      animation: msgBirth 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      animation: msgBirth 0.3s ease forwards;
     }
-    @keyframes msgBirth { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
-    .chat-msg b { color: #38bdf8; transition: color 0.3s; }
-    .chat-msg:hover b { color: #c084fc; }
 
-    .inputs { display: flex; gap: 6px; }
-    input {
-      background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
-      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none; transition: all 0.3s ease;
+    .chat-msg b { color: var(--accent-cyan); }
+
+    /* Input Actions Form */
+    .inputs {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
     }
-    input:focus { border-color: #4ade80; box-shadow: 0 0 10px rgba(74, 222, 128, 0.3); background: rgba(0, 0, 0, 0.7); }
-    input[type="text"]:first-child { width: 30%; }
+
+    input {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-color);
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    input:focus {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 8px rgba(74, 222, 128, 0.2);
+    }
+
+    input[type="text"]:first-child { width: 32%; }
     input[type="text"]:last-child { flex: 1; }
 
+    .btn {
+      background: rgba(168, 85, 247, 0.3);
+      border: 1px solid var(--accent-purple);
+      color: var(--accent-purple);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(168, 85, 247, 0.6);
+      color: #fff;
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatUI { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 12px rgba(56,189,248,0.5); } }
+    @keyframes textFlow { to { background-position: 200% center; } }
+    @keyframes msgBirth { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
     #status { animation: blinkDot 2s infinite; }
-    @keyframes blinkDot { 0%, 100% { opacity: 1; text-shadow: 0 0 5px #4ade80; } 50% { opacity: 0.4; text-shadow: none; } }
+    @keyframes blinkDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
 <body>
 
-  <div id="top-bar">
+  <!-- App Bar -->
+  <header class="app-header">
     <div class="badge" id="clock">🕒 --:--:--</div>
-  </div>
+  </header>
 
+  <!-- Interactive Space Canvas -->
   <canvas id="space-canvas"></canvas>
 
-  <main class="card">
-    <h1>Terima Kasih Haji Abu Kassim!</h1>
-    <div class="video-box">
-      <!-- Fixed YouTube Embed Params & Permissions -->
-      <iframe 
-        src="https://www.youtube-nocookie.com/embed/mnN866eQQFs?rel=0&enablejsapi=1" 
-        title="Video" 
-        frameborder="0" 
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-        allowfullscreen>
-      </iframe>
-    </div>
+  <!-- Structured Layout Grid -->
+  <main class="layout-container">
+    
+    <!-- Primary Video Card -->
+    <section class="card">
+      <h1>Terima Kasih Haji Abu Kassim!</h1>
+      <div class="video-box">
+        <iframe 
+          src="https://www.youtube-nocookie.com/embed/mnN866eQQFs?rel=0&enablejsapi=1" 
+          title="Featured Video" 
+          frameborder="0" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allowfullscreen>
+        </iframe>
+      </div>
+    </section>
+
+    <!-- Global Live Chat Card -->
+    <section class="card">
+      <div class="chat-header">
+        <h2 style="font-size:1rem; font-weight: 600;">🌌 Global Chat</h2>
+        <span style="font-size:0.75rem; color: var(--accent-green);" id="status">● Online</span>
+      </div>
+      
+      <div class="chat-box" id="chat"></div>
+      
+      <form class="inputs" id="chat-form">
+        <input type="text" id="user" placeholder="Name" maxlength="12" required>
+        <input type="text" id="msg" placeholder="Type a message..." maxlength="150" required>
+        <button type="submit" class="btn">Send</button>
+      </form>
+    </section>
+
   </main>
 
-  <div class="card">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h2 style="font-size:1rem;">🌌 Global Chat</h2>
-      <span style="font-size:0.75rem; color:#4ade80;" id="status">● Online</span>
-    </div>
-    <div class="chat-box" id="chat"></div>
-    <form class="inputs" id="chat-form">
-      <input type="text" id="user" placeholder="Name" maxlength="12" required>
-      <input type="text" id="msg" placeholder="Type a message..." maxlength="150" required>
-      <button type="submit" class="btn">Send</button>
-    </form>
-  </div>
-
+  <!-- Core JavaScript Logic -->
   <script>
+    // Live Clock
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
+    // Canvas Visual Engine
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
     let w, h, stars = [], particles = [], fireflies = [], meteors = [];
@@ -140,11 +275,11 @@
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 150 }, () => ({ 
+      stars = Array.from({ length: 120 }, () => ({ 
         x: Math.random() * w, y: Math.random() * h, z: Math.random() * w, 
         size: Math.random() * 1.5 + 0.5 
       }));
-      fireflies = Array.from({ length: 20 }, () => ({
+      fireflies = Array.from({ length: 15 }, () => ({
         x: Math.random() * w, y: Math.random() * h, offset: Math.random() * 100, speed: Math.random() * 0.02 + 0.01
       }));
     }
@@ -152,10 +287,10 @@
     resize();
 
     window.addEventListener('mousemove', (e) => {
-      if (particles.length < 50) {
+      if (particles.length < 40) {
         particles.push({ 
           x: e.clientX, y: e.clientY, alpha: 1, 
-          vx: (Math.random() - 0.5) * 3, vy: (Math.random() - 0.5) * 3,
+          vx: (Math.random() - 0.5) * 2.5, vy: (Math.random() - 0.5) * 2.5,
           color: Math.random() > 0.5 ? '#38bdf8' : '#c084fc'
         });
       }
@@ -166,15 +301,17 @@
       ctx.fillRect(0, 0, w, h);
       time += 1;
 
+      // Shooting Stars Animation
       if (Math.random() < 0.02) meteors.push({ x: Math.random() * w, y: 0, speed: Math.random() * 5 + 5 });
       for (let i = meteors.length - 1; i >= 0; i--) {
         const m = meteors[i];
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 30, m.y + 30); ctx.stroke();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 25, m.y + 25); ctx.stroke();
         m.x -= m.speed; m.y += m.speed;
         if (m.y > h || m.x < 0) meteors.splice(i, 1);
       }
 
+      // Parallax Stars
       stars.forEach(s => {
         s.z -= 0.5;
         if (s.z <= 0) s.z = w;
@@ -186,23 +323,25 @@
         }
       });
 
+      // Ambient Fireflies
       fireflies.forEach(f => {
-        f.x += Math.sin(time * f.speed + f.offset) * 0.5;
-        f.y += Math.cos(time * f.speed + f.offset) * 0.5;
-        ctx.fillStyle = `rgba(74, 222, 128, ${Math.abs(Math.sin(time * 0.05 + f.offset)) * 0.6})`;
-        ctx.beginPath(); ctx.arc(f.x, f.y, 2, 0, Math.PI * 2); ctx.fill();
+        f.x += Math.sin(time * f.speed + f.offset) * 0.4;
+        f.y += Math.cos(time * f.speed + f.offset) * 0.4;
+        ctx.fillStyle = `rgba(74, 222, 128, ${Math.abs(Math.sin(time * 0.04 + f.offset)) * 0.5})`;
+        ctx.beginPath(); ctx.arc(f.x, f.y, 1.8, 0, Math.PI * 2); ctx.fill();
       });
 
+      // Mouse Particles & Constellations
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
-        ctx.fillRect(p.x, p.y, 2.5, 2.5);
+        ctx.fillRect(p.x, p.y, 2, 2);
         
         for (let j = i - 1; j >= 0; j--) {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 60) {
-            ctx.strokeStyle = `rgba(192, 132, 252, ${0.3 * p.alpha})`;
+          if (dist < 50) {
+            ctx.strokeStyle = `rgba(192, 132, 252, ${0.2 * p.alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
           }
@@ -217,6 +356,7 @@
     }
     render();
 
+    // Firebase Database Sync
     if (typeof firebase !== 'undefined' && firebase.initializeApp) {
       try {
         firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
@@ -228,7 +368,7 @@
           const m = document.getElementById('msg').value.trim();
           if (u && m) {
             db.push({ u, m });
-            if (/space|love|fire/i.test(m) && typeof confetti === 'function') confetti({ particleCount: 40 });
+            if (/space|love|fire/i.test(m) && typeof confetti === 'function') confetti({ particleCount: 35 });
             document.getElementById('msg').value = '';
           }
         };
