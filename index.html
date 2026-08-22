@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Space Hub</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cosmic Space Hub - Android Edition</title>
   
   <!-- External Scripts -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
@@ -14,15 +14,20 @@
     /* CSS Variables & Theme Tokens */
     :root {
       --bg-gradient: linear-gradient(-45deg, #020208, #0a0a2a, #020211, #10002b);
-      --card-bg: linear-gradient(135deg, rgba(25, 25, 45, 0.8), rgba(10, 10, 20, 0.6));
+      --card-bg: linear-gradient(135deg, rgba(25, 25, 45, 0.85), rgba(10, 10, 20, 0.7));
       --accent-cyan: #38bdf8;
       --accent-purple: #c084fc;
       --accent-green: #4ade80;
       --border-color: rgba(255, 255, 255, 0.15);
-      --font-stack: system-ui, -apple-system, sans-serif;
+      --font-stack: system-ui, -apple-system, Roboto, sans-serif;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+      -webkit-tap-highlight-color: transparent; /* Removes blue box highlight on Android tap */
+    }
 
     body {
       background: var(--bg-gradient);
@@ -34,9 +39,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 70px 15px 30px;
+      padding: 60px 12px 20px;
       overflow-x: hidden;
-      cursor: crosshair;
+      touch-action: manipulation;
     }
 
     @keyframes ambientBg {
@@ -56,7 +61,7 @@
     /* Navigation Header */
     .app-header {
       position: fixed;
-      top: 12px;
+      top: 10px;
       z-index: 30;
       display: flex;
       gap: 12px;
@@ -65,12 +70,13 @@
     }
 
     .badge {
-      background: rgba(15, 23, 42, 0.85);
+      background: rgba(15, 23, 42, 0.9);
       color: var(--accent-cyan);
-      padding: 6px 16px;
+      padding: 6px 14px;
       border-radius: 20px;
       border: 1px solid rgba(56, 189, 248, 0.4);
       font-size: 0.8rem;
+      font-weight: 600;
       animation: pulseGlow 3s infinite;
       backdrop-filter: blur(8px);
     }
@@ -83,32 +89,35 @@
       max-width: 480px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
-    /* Shared Modular Cards */
+    /* Modular Android Cards */
     .card {
       background: var(--card-bg);
       backdrop-filter: blur(12px);
       border: 1px solid var(--border-color);
       border-radius: 16px;
-      padding: 1.25rem;
+      padding: 1rem;
       box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-      transition: border-color 0.3s ease, transform 0.3s ease;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .card:hover {
-      border-color: rgba(56, 189, 248, 0.4);
+    /* Android Touch Tap Effect */
+    .card:active {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.5);
+      transform: scale(0.98);
     }
 
     /* Content Card Header */
     h1 {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan), #f472b6);
       background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       animation: textFlow 5s linear infinite;
     }
 
@@ -138,7 +147,7 @@
     }
 
     .chat-box {
-      height: 220px;
+      height: 200px;
       overflow-y: auto;
       scroll-behavior: smooth;
       display: flex;
@@ -176,34 +185,35 @@
       color: #fff;
       padding: 10px;
       border-radius: 8px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       outline: none;
-      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      transition: border-color 0.3s ease;
     }
 
     input:focus {
       border-color: var(--accent-green);
-      box-shadow: 0 0 8px rgba(74, 222, 128, 0.2);
     }
 
     input[type="text"]:first-child { width: 32%; }
     input[type="text"]:last-child { flex: 1; }
 
+    /* Android Rainbow Pulse Button */
     .btn {
-      background: rgba(168, 85, 247, 0.3);
-      border: 1px solid var(--accent-purple);
-      color: var(--accent-purple);
+      background: linear-gradient(45deg, #ff007f, #7928ca, #00dfd8);
+      background-size: 200% 200%;
+      border: none;
+      color: #fff;
       padding: 8px 16px;
       border-radius: 8px;
       font-size: 0.8rem;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease;
+      animation: rainbowBtn 3s ease infinite;
+      transition: transform 0.1s ease;
     }
 
-    .btn:hover {
-      background: rgba(168, 85, 247, 0.6);
-      color: #fff;
+    .btn:active {
+      transform: scale(0.92);
     }
 
     /* Keyframe Animations */
@@ -211,13 +221,14 @@
     @keyframes pulseGlow { 0%, 100% { box-shadow: 0 0 5px rgba(56,189,248,0.2); } 50% { box-shadow: 0 0 12px rgba(56,189,248,0.5); } }
     @keyframes textFlow { to { background-position: 200% center; } }
     @keyframes msgBirth { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes rainbowBtn { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
     #status { animation: blinkDot 2s infinite; }
     @keyframes blinkDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
   </style>
 </head>
 <body>
 
-  <!-- App Bar -->
+  <!-- App Header -->
   <header class="app-header">
     <div class="badge" id="clock">🕒 --:--:--</div>
   </header>
@@ -225,7 +236,7 @@
   <!-- Interactive Space Canvas -->
   <canvas id="space-canvas"></canvas>
 
-  <!-- Structured Layout Grid -->
+  <!-- Main Content Grid -->
   <main class="layout-container">
     
     <!-- Primary Video Card -->
@@ -260,48 +271,62 @@
 
   </main>
 
-  <!-- Core JavaScript Logic -->
+  <!-- Core Android Optimized Script -->
   <script>
     // Live Clock
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // Canvas Visual Engine
+    // Canvas Engine
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
     let w, h, stars = [], particles = [], fireflies = [], meteors = [];
     let time = 0;
 
+    // Mobile-optimized resize function
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 120 }, () => ({ 
+      
+      // Scale star count for Android mobile battery saving
+      const isMobile = w < 600;
+      const starCount = isMobile ? 65 : 120;
+      
+      stars = Array.from({ length: starCount }, () => ({ 
         x: Math.random() * w, y: Math.random() * h, z: Math.random() * w, 
         size: Math.random() * 1.5 + 0.5 
       }));
-      fireflies = Array.from({ length: 15 }, () => ({
+      fireflies = Array.from({ length: isMobile ? 8 : 15 }, () => ({
         x: Math.random() * w, y: Math.random() * h, offset: Math.random() * 100, speed: Math.random() * 0.02 + 0.01
       }));
     }
     window.addEventListener('resize', resize);
     resize();
 
-    window.addEventListener('mousemove', (e) => {
-      if (particles.length < 40) {
-        particles.push({ 
-          x: e.clientX, y: e.clientY, alpha: 1, 
-          vx: (Math.random() - 0.5) * 2.5, vy: (Math.random() - 0.5) * 2.5,
-          color: Math.random() > 0.5 ? '#38bdf8' : '#c084fc'
-        });
+    // Android Touch Effect: Spawns particles where fingers touch/drag
+    window.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      if (particles.length < 30) {
+        for (let i = 0; i < 2; i++) {
+          particles.push({ 
+            x: touch.clientX, 
+            y: touch.clientY, 
+            alpha: 1, 
+            vx: (Math.random() - 0.5) * 3, 
+            vy: (Math.random() - 0.5) * 3,
+            color: Math.random() > 0.5 ? '#38bdf8' : '#4ade80'
+          });
+        }
       }
     });
 
+    // Render Canvas Loop
     function render() {
       ctx.fillStyle = '#020208';
       ctx.fillRect(0, 0, w, h);
       time += 1;
 
-      // Shooting Stars Animation
+      // Shooting Stars
       if (Math.random() < 0.02) meteors.push({ x: Math.random() * w, y: 0, speed: Math.random() * 5 + 5 });
       for (let i = meteors.length - 1; i >= 0; i--) {
         const m = meteors[i];
@@ -323,7 +348,7 @@
         }
       });
 
-      // Ambient Fireflies
+      // Fireflies
       fireflies.forEach(f => {
         f.x += Math.sin(time * f.speed + f.offset) * 0.4;
         f.y += Math.cos(time * f.speed + f.offset) * 0.4;
@@ -331,7 +356,7 @@
         ctx.beginPath(); ctx.arc(f.x, f.y, 1.8, 0, Math.PI * 2); ctx.fill();
       });
 
-      // Mouse Particles & Constellations
+      // Touch Particles & Constellations
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
@@ -340,14 +365,14 @@
         for (let j = i - 1; j >= 0; j--) {
           const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-          if (dist < 50) {
+          if (dist < 40) {
             ctx.strokeStyle = `rgba(192, 132, 252, ${0.2 * p.alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
           }
         }
 
-        p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
+        p.x += p.vx; p.y += p.vy; p.alpha -= 0.03;
         if (p.alpha <= 0) particles.splice(i, 1);
       }
       ctx.globalAlpha = 1.0;
@@ -356,7 +381,7 @@
     }
     render();
 
-    // Firebase Database Sync
+    // Firebase Database Sync & Android Haptic Feedback
     if (typeof firebase !== 'undefined' && firebase.initializeApp) {
       try {
         firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
@@ -366,7 +391,11 @@
           e.preventDefault();
           const u = document.getElementById('user').value.trim();
           const m = document.getElementById('msg').value.trim();
+          
           if (u && m) {
+            // Android Haptic Vibration on Tap
+            if (navigator.vibrate) navigator.vibrate(40);
+
             db.push({ u, m });
             if (/space|love|fire/i.test(m) && typeof confetti === 'function') confetti({ particleCount: 35 });
             document.getElementById('msg').value = '';
