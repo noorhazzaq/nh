@@ -303,11 +303,46 @@
       border: 1px solid rgba(255, 255, 255, 0.2);
     }
 
-    .chat-msg audio {
+    /* Merrier Voice Chat Note Design */
+    .voice-note-card {
+      margin-top: 6px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.25), rgba(6, 182, 212, 0.25));
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      border-radius: 12px;
+      padding: 8px 10px;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      backdrop-filter: blur(5px);
+    }
+
+    .voice-note-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.72rem;
+      font-weight: bold;
+      color: #f472b6;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .voice-note-badge .pulse-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #f472b6;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #f472b6;
+      animation: pulse 1s infinite alternate;
+    }
+
+    .voice-note-card audio {
       width: 100%;
       height: 36px;
-      margin-top: 6px;
+      border-radius: 8px;
       outline: none;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
     }
 
     /* Chat Controls */
@@ -361,7 +396,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.2s ease;
+      transition: background 0.2s ease, transform 0.1s ease;
     }
 
     .icon-btn:hover {
@@ -369,14 +404,15 @@
     }
 
     .recording {
-      background: rgba(239, 68, 68, 0.6) !important;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.8), rgba(244, 114, 182, 0.8)) !important;
       border-color: #ef4444 !important;
-      animation: pulse 1s infinite alternate;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+      animation: pulse 0.8s infinite alternate;
     }
 
     @keyframes pulse {
-      from { opacity: 0.7; }
-      to { opacity: 1; }
+      from { opacity: 0.7; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1.02); }
     }
 
     button.send-btn {
@@ -433,9 +469,10 @@
       <p>Welcome to the cosmic hub. Enjoy the global stream and jump into the chat below!</p>
 
       <div class="video-container">
+        <!-- Changed to Jalur Gemilang Video -->
         <iframe 
-          src="https://www.youtube.com/embed/z_uOB_Gsyis" 
-          title="Cinta Satu Malam (DJ Remix Tahun Baru 2026) | Party Night Vibes 🔥" 
+          src="https://www.youtube.com/embed/mnN866eQQFs" 
+          title="Jalur Gemilang (Video Lirik)" 
           frameborder="0" 
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
           allowfullscreen>
@@ -696,7 +733,15 @@
         contentHtml += `<img src="${data.image}" alt="shared media">`;
       }
       if (data.audio) {
-        contentHtml += `<audio controls src="${data.audio}"></audio>`;
+        contentHtml += `
+          <div class="voice-note-card">
+            <div class="voice-note-badge">
+              <div class="pulse-dot"></div>
+              <span>🎙️ Voice Note</span>
+            </div>
+            <audio controls src="${data.audio}"></audio>
+          </div>
+        `;
       }
 
       msgDiv.innerHTML = `
