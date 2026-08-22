@@ -85,9 +85,8 @@
     .chat-msg {
       background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px;
       animation: msgBirth 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-      transform-origin: bottom left;
     }
-    @keyframes msgBirth { 0% { opacity: 0; transform: translateY(10px) scale(0.95); } 100% { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes msgBirth { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
     .chat-msg b { color: #38bdf8; transition: color 0.3s; }
     .chat-msg:hover b { color: #c084fc; }
 
@@ -171,17 +170,20 @@
     });
 
     function render() {
-      ctx.clearRect(0, 0, w, h);
+      // Fix 1: Smooth dark clear instead of clearRect
+      ctx.fillStyle = '#020208';
+      ctx.fillRect(0, 0, w, h);
       time += 1;
 
-      // 19. Shooting Stars (Occasional Burst)
+      // 19. Shooting Stars
       if (Math.random() < 0.02) meteors.push({ x: Math.random() * w, y: 0, speed: Math.random() * 5 + 5 });
-      meteors.forEach((m, i) => {
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 30, m.y + 30); ctx.stroke();
         m.x -= m.speed; m.y += m.speed;
-        if (m.y > h) meteors.splice(i, 1);
-      });
+        if (m.y > h || m.x < 0) meteors.splice(i, 1);
+      }
 
       // Stars Render
       stars.forEach(s => {
@@ -195,7 +197,7 @@
         }
       });
 
-      // 20. Rendering Fireflies (Sine Wave Movement)
+      // 20. Fireflies Render
       fireflies.forEach(f => {
         f.x += Math.sin(time * f.speed + f.offset) * 0.5;
         f.y += Math.cos(time * f.speed + f.offset) * 0.5;
@@ -203,54 +205,62 @@
         ctx.beginPath(); ctx.arc(f.x, f.y, 2, 0, Math.PI * 2); ctx.fill();
       });
 
-      // 21. Constellation Particle Connections
-      particles.forEach((p, i) => {
+      // Fix 2: Reverse loop for safe particle array splicing
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
         ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha;
         ctx.fillRect(p.x, p.y, 2.5, 2.5);
         
-        particles.slice(i + 1).forEach(p2 => {
+        // 21. Constellation Connections
+        for (let j = i - 1; j >= 0; j--) {
+          const p2 = particles[j];
           const dist = Math.hypot(p.x - p2.x, p.y - p2.y);
           if (dist < 60) {
             ctx.strokeStyle = `rgba(192, 132, 252, ${0.3 * p.alpha})`;
             ctx.lineWidth = 0.5;
             ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
           }
-        });
+        }
 
         p.x += p.vx; p.y += p.vy; p.alpha -= 0.02;
         if (p.alpha <= 0) particles.splice(i, 1);
-      });
+      }
       ctx.globalAlpha = 1.0;
 
       requestAnimationFrame(render);
     }
     render();
 
-    try {
-      firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
-      const db = firebase.database().ref("global_chat");
+    // Fix 4: Guarded Firebase Initialization
+    if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+      try {
+        firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
+        const db = firebase.database().ref("global_chat");
 
-      document.getElementById('chat-form').onsubmit = (e) => {
-        e.preventDefault();
-        const u = document.getElementById('user').value.trim();
-        const m = document.getElementById('msg').value.trim();
-        if (u && m) {
-          db.push({ u, m });
-          if (/space|love|fire/i.test(m)) confetti({ particleCount: 40 });
-          document.getElementById('msg').value = '';
-        }
-      };
+        document.getElementById('chat-form').onsubmit = (e) => {
+          e.preventDefault();
+          const u = document.getElementById('user').value.trim();
+          const m = document.getElementById('msg').value.trim();
+          if (u && m) {
+            db.push({ u, m });
+            if (/space|love|fire/i.test(m) && typeof confetti === 'function') confetti({ particleCount: 40 });
+            document.getElementById('msg').value = '';
+          }
+        };
 
-      db.limitToLast(15).on("child_added", snap => {
-        const d = snap.val();
-        const div = document.createElement('div');
-        div.className = 'chat-msg';
-        div.innerHTML = `<b>${d.u}:</b> ${d.m}`;
-        const box = document.getElementById('chat');
-        box.appendChild(div);
-        box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
-      });
-    } catch (err) {
+        db.limitToLast(15).on("child_added", snap => {
+          const d = snap.val();
+          const div = document.createElement('div');
+          div.className = 'chat-msg';
+          div.innerHTML = `<b>${d.u}:</b> ${d.m}`;
+          const box = document.getElementById('chat');
+          box.appendChild(div);
+          box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
+        });
+      } catch (err) {
+        document.getElementById('status').innerText = '● Offline Mode';
+      }
+    } else {
       document.getElementById('status').innerText = '● Offline Mode';
     }
   </script>
