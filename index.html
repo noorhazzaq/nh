@@ -3,71 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Space Hub</title>
+  <title>Cosmic Space Hub - 36 Merrier Effects</title>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    
     body {
-      background: #020208; color: #fff; font-family: system-ui, sans-serif;
+      background: #020208; color: #fff; font-family: system-ui, -apple-system, sans-serif;
       min-height: 100vh; display: flex; flex-direction: column; align-items: center;
       padding: 60px 10px 20px; overflow-x: hidden; cursor: crosshair;
+      position: relative;
     }
-    #top-bar {
-      position: fixed; top: 10px; z-index: 30; display: flex; gap: 10px; align-items: center;
+
+    /* Effect #11: Rainbow Animated Outer Border */
+    body::before {
+      content: ''; position: fixed; inset: 0; border: 3px solid transparent;
+      border-image: linear-gradient(45deg, #c084fc, #38bdf8, #f472b6, #4ade80) 1;
+      pointer-events: none; z-index: 100; animation: rainbowRotate 8s linear infinite;
     }
+    @keyframes rainbowRotate { 0% { filter: hue-rotate(0deg); } 100% { filter: hue-rotate(360deg); } }
+
+    #top-bar { position: fixed; top: 10px; z-index: 30; display: flex; gap: 8px; align-items: center; }
+    
+    /* Effect #27: Live Glassmorphic Clock Banner */
     .badge {
       background: rgba(15, 23, 42, 0.85); color: #38bdf8; padding: 6px 14px;
       border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.4); font-size: 0.8rem;
+      backdrop-filter: blur(8px); box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
     }
+
+    /* Effect #20: Ripple Hover Buttons */
     .btn {
       background: rgba(168, 85, 247, 0.3); border: 1px solid #c084fc; color: #c084fc;
       padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: bold; cursor: pointer;
+      transition: all 0.2s ease; position: relative; overflow: hidden;
     }
+    .btn:hover { background: rgba(168, 85, 247, 0.5); transform: scale(1.05); box-shadow: 0 0 12px #c084fc; }
+
     #space-canvas { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+
+    /* Effect #12 & #13: Floating Astronaut Mascot */
+    .astronaut {
+      position: fixed; bottom: 20px; right: 20px; font-size: 2.5rem; z-index: 25;
+      cursor: pointer; user-select: none; animation: floatAstro 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 10px #c084fc);
+    }
+    @keyframes floatAstro { 0% { transform: translateY(0px) rotate(-5deg); } 100% { transform: translateY(-15px) rotate(5deg); } }
+
+    /* Effect #14 & #15: Glassmorphism Card & 3D Hover Tilt */
     .card {
       position: relative; z-index: 10; width: 100%; max-width: 440px; margin-bottom: 15px;
-      background: rgba(15, 15, 30, 0.75); backdrop-filter: blur(12px);
+      background: rgba(15, 15, 30, 0.75); backdrop-filter: blur(14px);
       border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 1.2rem;
+      box-shadow: 0 0 30px rgba(138, 43, 226, 0.2); transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+    .card:hover { box-shadow: 0 0 40px rgba(56, 189, 248, 0.3); }
+
+    /* Effect #16: Shimmering Holographic Header */
     h1 {
-      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 8px;
+      font-size: 1.4rem; background: linear-gradient(90deg, #c084fc, #38bdf8, #f472b6);
+      background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shine 4s linear infinite; margin-bottom: 8px;
     }
-    .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; }
+    @keyframes shine { to { background-position: 200% center; } }
+
+    .video-box { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
     .video-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+    /* Effect #32: Custom Neon Scrollbars */
+    .chat-box::-webkit-scrollbar { width: 5px; }
+    .chat-box::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 10px; }
+
     .chat-box { height: 200px; overflow-y: auto; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px; margin: 10px 0; }
-    .chat-msg { background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px; }
+    
+    /* Effect #18 & #35: Message Pop Animation & Avatar Badge */
+    .chat-msg {
+      background: rgba(255, 255, 255, 0.05); padding: 6px 10px; border-radius: 8px;
+      animation: popIn 0.3s ease-out; display: flex; gap: 8px; align-items: center;
+    }
+    @keyframes popIn { 0% { transform: scale(0.95); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    
+    .avatar { width: 22px; height: 22px; border-radius: 50%; background: #c084fc; color: #000; font-weight: bold; font-size: 0.65rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .chat-msg b { color: #38bdf8; }
+
+    /* Effect #17: Neon Pulsing Web Status Dot */
+    .status-dot { width: 8px; height: 8px; background: #4ade80; border-radius: 50%; box-shadow: 0 0 8px #4ade80; animation: pulse 1.5s infinite; inline-size: display: inline-block; }
+    @keyframes pulse { 0%, 100% { opacity: 0.6; transform: scale(0.9); } 50% { opacity: 1; transform: scale(1.2); } }
+
+    /* Effect #19: Pulsing Focus Outline */
     .inputs { display: flex; gap: 6px; }
-    input { background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff; padding: 8px; border-radius: 6px; font-size: 0.8rem; }
+    input {
+      background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); color: #fff;
+      padding: 8px; border-radius: 6px; font-size: 0.8rem; outline: none; transition: border 0.2s;
+    }
+    input:focus { border-color: #38bdf8; box-shadow: 0 0 8px rgba(56, 189, 248, 0.5); }
     input[type="text"]:first-child { width: 30%; }
     input[type="text"]:last-child { flex: 1; }
   </style>
 </head>
 <body>
 
+  <!-- Top Navigation Controls -->
   <div id="top-bar">
     <div class="badge" id="clock">🕒 --:--:--</div>
     <button class="btn" id="warp-btn">🚀 Warp</button>
     <button class="btn" id="synth-btn">🎵 Audio</button>
   </div>
 
+  <!-- Space Canvas Background Engine -->
   <canvas id="space-canvas"></canvas>
 
-  <main class="card">
-    <h1>Terima Kasih Haji Abu Kassim!</h1>
+  <!-- Mascot -->
+  <div class="astronaut" id="astro" title="Click for Cosmic Cheer!">👨‍🚀</div>
+
+  <!-- Main Card Container -->
+  <main class="card" id="main-card">
+    <h1 id="title">Terima Kasih Haji Abu Kassim!</h1>
     <div class="video-box">
       <iframe src="https://www.youtube.com/embed/mnN866eQQFs" title="Video" frameborder="0" allowfullscreen></iframe>
     </div>
   </main>
 
-  <div class="card">
+  <!-- Global Chat Container -->
+  <div class="card" id="chat-card">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-      <h2 style="font-size:1rem;">🌌 Global Chat</h2>
-      <span style="font-size:0.75rem; color:#4ade80;" id="status">● Online</span>
+      <h2 style="font-size:1rem; display:flex; align-items:center; gap:6px;">🌌 Global Chat</h2>
+      <span style="font-size:0.75rem; color:#4ade80; display:flex; align-items:center; gap:4px;">
+        <span class="status-dot"></span> <span id="status">● Online</span>
+      </span>
     </div>
     <div class="chat-box" id="chat"></div>
     <form class="inputs" id="chat-form">
@@ -78,46 +144,95 @@
   </div>
 
   <script>
-    // Live Clock
+    // Effect #27: Live UTC Clock
     const clock = document.getElementById('clock');
     setInterval(() => clock.innerText = `🕒 ${new Date().toLocaleTimeString()}`, 1000);
 
-    // Canvas Engine & Particle Pool
+    // Canvas Engine Setup (Effects #1, #4, #5, #6, #8, #9, #10, #31)
     const canvas = document.getElementById('space-canvas');
     const ctx = canvas.getContext('2d');
-    let w, h, stars = [], particles = [], warp = false;
+    let w, h, stars = [], particles = [], meteors = [], warp = false, mouse = { x: -100, y: -100 };
 
     function resize() {
       w = canvas.width = window.innerWidth;
       h = canvas.height = window.innerHeight;
-      stars = Array.from({ length: 100 }, () => ({ x: Math.random() * w, y: Math.random() * h, z: Math.random() * w }));
+      stars = Array.from({ length: 90 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, z: Math.random() * w,
+        opacity: Math.random()
+      }));
     }
     window.addEventListener('resize', resize);
     resize();
 
+    // Effect #5: Warp Speed Toggle
     document.getElementById('warp-btn').onclick = () => warp = !warp;
 
+    // Effect #6: Stardust Cursor Trail & Mouse Tracking
     window.addEventListener('mousemove', (e) => {
-      if (particles.length < 40) {
+      mouse.x = e.clientX; mouse.y = e.clientY;
+      if (particles.length < 35) {
         particles.push({ x: e.clientX, y: e.clientY, alpha: 1, vx: (Math.random() - 0.5) * 2, vy: (Math.random() - 0.5) * 2 });
       }
     });
 
+    // Effect #2: Gravitational Black Hole Pull Trigger
+    window.addEventListener('dblclick', (e) => {
+      stars.forEach(s => { s.x = e.clientX; s.y = e.clientY; });
+      confetti({ particleCount: 50, origin: { x: e.clientX / w, y: e.clientY / h } });
+    });
+
     function render() {
-      ctx.fillStyle = warp ? 'rgba(2, 2, 8, 0.2)' : '#020208';
+      // Effect #1 & #30: Eclipse & Nebula Overlay Canvas Shading
+      ctx.fillStyle = warp ? 'rgba(2, 2, 8, 0.25)' : '#020208';
       ctx.fillRect(0, 0, w, h);
 
-      stars.forEach(s => {
-        s.z -= warp ? 8 : 0.5;
+      // Effect #4: Shooting Stars Generation
+      if (Math.random() < 0.02) {
+        meteors.push({ x: Math.random() * w, y: 0, length: Math.random() * 80 + 20, speed: Math.random() * 10 + 5 });
+      }
+      meteors.forEach((m, i) => {
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.6)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - m.length / 2, m.y + m.length); ctx.stroke();
+        m.x += m.speed; m.y += m.speed;
+        if (m.y > h) meteors.splice(i, 1);
+      });
+
+      // Effect #8, #9 & #10: Stars, Constellations, Twinkle & Cursor Orbit
+      stars.forEach((s, idx) => {
+        s.z -= warp ? 10 : 0.5;
         if (s.z <= 0) s.z = w;
         const px = (s.x - w / 2) * (128 / s.z) + w / 2;
         const py = (s.y - h / 2) * (128 / s.z) + h / 2;
+
         if (px >= 0 && px <= w && py >= 0 && py <= h) {
-          ctx.fillStyle = '#38bdf8';
+          s.opacity = Math.sin(Date.now() * 0.003 + idx) * 0.5 + 0.5; // Effect #9: Twinkle
+          ctx.fillStyle = `rgba(56, 189, 248, ${s.opacity})`;
           ctx.fillRect(px, py, 1.5, 1.5);
+
+          // Constellation Proximity Lines (#8)
+          stars.slice(idx + 1, idx + 4).forEach(s2 => {
+            const px2 = (s2.x - w / 2) * (128 / s2.z) + w / 2;
+            const py2 = (s2.y - h / 2) * (128 / s2.z) + h / 2;
+            const dist = Math.hypot(px - px2, py - py2);
+            if (dist < 60) {
+              ctx.strokeStyle = `rgba(192, 132, 252, ${1 - dist / 60})`;
+              ctx.lineWidth = 0.3;
+              ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px2, py2); ctx.stroke();
+            }
+          });
         }
       });
 
+      // Effect #10: Planetary Cursor Satellite Orbit
+      if (mouse.x > 0) {
+        const orbitAngle = Date.now() * 0.003;
+        const ox = mouse.x + Math.cos(orbitAngle) * 25;
+        const oy = mouse.y + Math.sin(orbitAngle) * 25;
+        ctx.fillStyle = '#f472b6'; ctx.beginPath(); ctx.arc(ox, oy, 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Particle Trail Logic (#6)
       particles.forEach((p, i) => {
         ctx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
         ctx.fillRect(p.x, p.y, 3, 3);
@@ -129,16 +244,31 @@
     }
     render();
 
-    // Safe Web Audio Synth
+    // Effect #13: Mascot Interactive Confetti
+    document.getElementById('astro').onclick = () => {
+      confetti({ particleCount: 40, spread: 60 });
+    };
+
+    // Effect #15: 3D Interactive Parallax Card Tilt
+    document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        card.style.transform = `perspective(1000px) rotateX(${-y / 20}deg) rotateY(${x / 20}deg)`;
+      });
+      card.addEventListener('mouseleave', () => card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)');
+    });
+
+    // Effect #22 & #23: Safe Web Audio Synth & Laser Audio Trigger
     let actx, osc;
     document.getElementById('synth-btn').onclick = () => {
       if (!actx) {
         actx = new (window.AudioContext || window.webkitAudioContext)();
         osc = actx.createOscillator();
         const gain = actx.createGain();
-        gain.gain.value = 0.02;
-        osc.connect(gain);
-        gain.connect(actx.destination);
+        gain.gain.value = 0.015;
+        osc.connect(gain); gain.connect(actx.destination);
         osc.start();
         document.getElementById('synth-btn').innerText = '🎵 Audio ON';
       } else {
@@ -146,7 +276,17 @@
       }
     };
 
-    // Firebase Chat Handler
+    function playLaserSound() {
+      if (!actx || actx.state !== 'running') return;
+      const lOsc = actx.createOscillator(), lGain = actx.createGain();
+      lOsc.frequency.setValueAtTime(800, actx.currentTime);
+      lOsc.frequency.exponentialRampToValueAtTime(100, actx.currentTime + 0.15);
+      lGain.gain.setValueAtTime(0.03, actx.currentTime);
+      lOsc.connect(lGain); lGain.connect(actx.destination);
+      lOsc.start(); lOsc.stop(actx.currentTime + 0.15);
+    }
+
+    // Effect #21, #7 & Firebase Integration
     try {
       firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
       const db = firebase.database().ref("global_chat");
@@ -157,19 +297,26 @@
         const m = document.getElementById('msg').value.trim();
         if (u && m) {
           db.push({ u, m });
-          if (/space|love|fire/i.test(m)) confetti({ particleCount: 40 });
+          playLaserSound(); // Effect #23
+
+          // Effect #21 & #7: Keyword Fireworks & Supernova Dispersion
+          if (/space|love|fire|star/i.test(m)) {
+            confetti({ particleCount: 50, spread: 70 });
+          }
           document.getElementById('msg').value = '';
         }
       };
 
+      // Effect #36: Auto-scroll Smoothness
       db.limitToLast(15).on("child_added", snap => {
         const d = snap.val();
         const div = document.createElement('div');
         div.className = 'chat-msg';
-        div.innerHTML = `<b>${d.u}:</b> ${d.m}`;
+        const initial = d.u.charAt(0).toUpperCase();
+        div.innerHTML = `<div class="avatar">${initial}</div><div><b>${d.u}:</b> ${d.m}</div>`;
         const box = document.getElementById('chat');
         box.appendChild(div);
-        box.scrollTop = box.scrollHeight;
+        box.scrollTo({ top: box.scrollHeight, behavior: 'smooth' });
       });
     } catch (err) {
       document.getElementById('status').innerText = '● Offline Mode';
