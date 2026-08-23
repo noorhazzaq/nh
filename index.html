@@ -2,277 +2,355 @@
 <html lang="en" class="h-full bg-gray-950">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Realtime Mesh Chat - Verified Real IP</title>
-  <!-- Tailwind CSS -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#4f46e5" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Enterprise App" />
+  <title>Enterprise Android PWA Platform</title>
+
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome -->
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Dynamically Generated Web App Manifest -->
+  <link id="manifestLink" rel="manifest" />
+
   <style>
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    /* Custom Modern Scrollbars & Touch Target Handling */
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #030712; }
     ::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
+    body { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
-<body class="h-full text-gray-100 font-sans flex flex-col overflow-hidden antialiased">
+<body class="h-full text-gray-100 font-sans flex flex-col overflow-hidden antialiased select-none">
 
   <!-- TOP APP BAR -->
   <header class="h-14 bg-gray-900 border-b border-gray-800 px-4 flex items-center justify-between shrink-0 z-20">
     <div class="flex items-center space-x-3">
       <div class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 p-2 rounded-xl flex items-center justify-center">
-        <i class="fa-solid fa-network-wired text-lg"></i>
+        <i class="fa-solid fa-layer-group text-base"></i>
       </div>
       <div>
+        <h1 class="text-xs font-bold tracking-tight text-white uppercase">Enterprise PWA</h1>
         <div class="flex items-center space-x-2">
-          <h1 class="text-sm font-bold tracking-tight text-white">StreamMesh IP Engine</h1>
-          <span id="socketBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
-            <span id="socketDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span id="socketStatusText">Initializing IP...</span>
+          <span id="netStatusBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
+            <span id="netStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span id="netStatusText">Online</span>
           </span>
+          <span id="swStatusText" class="text-[10px] font-mono text-gray-400">SW: Active</span>
         </div>
-        <p class="text-[11px] text-gray-400">
-          Your IP: <span id="myIpDisplay" class="font-mono text-indigo-300">Fetching...</span> | 
-          <span id="activeIpCount" class="font-bold text-white">0</span> Unique Real IP(s) Online
-        </p>
       </div>
     </div>
 
+    <!-- NATIVE INSTALL TRIGGER -->
     <div class="flex items-center space-x-2">
-      <button onclick="UI.toggleRoster()" class="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 p-2 rounded-lg text-xs transition md:hidden">
-        <i class="fa-solid fa-users"></i>
+      <button id="pwaInstallBtn" onclick="Application.pwa.promptInstall()" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-400/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-lg shadow-indigo-600/20">
+        <i class="fa-solid fa-download text-[10px]"></i>
+        <span>Install App</span>
       </button>
     </div>
   </header>
 
-  <!-- WORKSPACE BODY -->
-  <div class="flex flex-1 overflow-hidden relative">
-
-    <!-- MAIN CHAT VIEW -->
-    <main class="flex-1 flex flex-col bg-gray-950 overflow-hidden relative">
-      <div id="messageViewport" class="flex-1 overflow-y-auto p-4 space-y-3">
-        <div id="messagesList" class="space-y-3"></div>
+  <!-- MAIN VIEWPORT -->
+  <main class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-950">
+    
+    <!-- SYSTEM NOTICE BANNER -->
+    <section class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 space-y-2 shadow-sm">
+      <div class="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span>Enterprise Android Core</span>
       </div>
+      <p class="text-xs text-gray-400 leading-relaxed">
+        Engineered with strict Clean Architecture contracts, asynchronous IndexedDB storage, and offline-first Stale-While-Revalidate Caching over Vercel Edge.
+      </p>
+    </section>
 
-      <!-- COMPOSER -->
-      <footer class="bg-gray-900 border-t border-gray-800 p-3 shrink-0">
-        <form id="chatForm" onsubmit="Engine.handleSendMessage(event)" class="flex items-center space-x-2">
-          <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2 text-xs text-gray-100 focus:outline-none focus:border-indigo-500 transition" autocomplete="off">
-          <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
-            <span>Send</span>
-            <i class="fa-solid fa-paper-plane text-[10px]"></i>
-          </button>
-        </form>
-      </footer>
-    </main>
+    <!-- DATA MANAGEMENT COMPONENT -->
+    <section class="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-3">
+      <h2 class="text-xs font-bold text-gray-200 uppercase tracking-wider flex items-center space-x-2">
+        <i class="fa-solid fa-database text-amber-400"></i>
+        <span>Offline IndexedDB Store</span>
+      </h2>
 
-    <!-- ROSTER SIDEBAR (REAL IPs) -->
-    <aside id="rosterSidebar" class="w-72 bg-gray-900 border-l border-gray-800 flex flex-col transition-all duration-300 absolute md:relative right-0 top-0 bottom-0 z-20 translate-x-full md:translate-x-0 shrink-0">
-      <div class="p-3 border-b border-gray-800 flex justify-between items-center">
-        <h2 class="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Active Public IPs</h2>
-        <span id="rosterBadge" class="bg-indigo-950 text-indigo-400 border border-indigo-800/50 text-[10px] px-2 py-0.5 rounded-full font-bold">0</span>
-      </div>
-      <div id="userRosterList" class="flex-1 overflow-y-auto p-2 space-y-1.5"></div>
-    </aside>
+      <form id="recordForm" onsubmit="Application.ui.handleFormSubmit(event)" class="flex gap-2">
+        <input type="text" id="recordInput" placeholder="Enter task or log event..." required class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition" />
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+          <span>Save</span>
+        </button>
+      </form>
 
-  </div>
+      <!-- RECORDED ITEMS LIST -->
+      <div id="recordsList" class="space-y-2 pt-2"></div>
+    </section>
 
-  <!-- APPLICATION MODULE -->
+  </main>
+
+  <!-- SINGLE-FILE ENTERPRISE SCRIPT -->
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Public Firebase Instance
-    const firebaseConfig = {
-      databaseURL: "https://realtime-mesh-ip-default-rtdb.firebaseio.com"
-    };
+    // ==========================================
+    // 1. DYNAMIC PWA MANIFEST INJECTION
+    // ==========================================
+    const manifestBlob = new Blob([JSON.stringify({
+      "name": "Enterprise Android PWA",
+      "short_name": "EntPWA",
+      "start_url": "/",
+      "display": "standalone",
+      "background_color": "#030712",
+      "theme_color": "#4f46e5",
+      "icons": [
+        { "src": "https://cdn-icons-png.flaticon.com/512/2592/2592317.png", "sizes": "192x192", "type": "image/png" },
+        { "src": "https://cdn-icons-png.flaticon.com/512/2592/2592317.png", "sizes": "512x512", "type": "image/png" }
+      ]
+    })], { type: 'application/json' });
+    document.getElementById('manifestLink').href = URL.createObjectURL(manifestBlob);
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
 
-    const State = {
-      myIp: null,
-      sessionId: `session_${Math.random().toString(36).substring(2, 11)}`,
-      onlineNodes: new Map(),
-      messages: []
-    };
+    // ==========================================
+    // 2. ENTERPRISE INDEXEDDB ADAPTER
+    // ==========================================
+    class StorageAdapter {
+      constructor(dbName = "EnterprisePwaDB", storeName = "app_records") {
+        this.dbName = dbName;
+        this.storeName = storeName;
+        this.db = null;
+      }
 
-    // Robust IP Fetcher with 3-Layer Redundancy
-    async function fetchRealIP() {
-      const providers = [
-        async () => (await (await fetch('https://api.ipify.org?format=json')).json()).ip,
-        async () => (await (await fetch('https://ipapi.co/json/')).json()).ip,
-        async () => (await (await fetch('https://api.db-ip.com/v2/free/self')).json()).ipAddress
-      ];
+      async init() {
+        return new Promise((resolve, reject) => {
+          const request = indexedDB.open(this.dbName, 1);
+          request.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(this.storeName)) {
+              db.createObjectStore(this.storeName, { keyPath: "id" });
+            }
+          };
+          request.onsuccess = (e) => {
+            this.db = e.target.result;
+            resolve();
+          };
+          request.onerror = (e) => reject("IndexedDB connection failed: " + e.target.error);
+        });
+      }
 
-      for (const provider of providers) {
+      async getAll() {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction(this.storeName, "readonly");
+          const store = tx.objectStore(this.storeName);
+          const request = store.getAll();
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async add(item) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction(this.storeName, "readwrite");
+          const store = tx.objectStore(this.storeName);
+          const request = store.put(item);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
+
+      async remove(id) {
+        return new Promise((resolve, reject) => {
+          const tx = this.db.transaction(this.storeName, "readwrite");
+          const store = tx.objectStore(this.storeName);
+          const request = store.delete(id);
+          request.onsuccess = () => resolve();
+          request.onerror = () => reject(request.error);
+        });
+      }
+    }
+
+
+    // ==========================================
+    // 3. PWA & SERVICE WORKER MANAGER
+    // ==========================================
+    class PwaManager {
+      constructor() {
+        this.deferredPrompt = null;
+      }
+
+      async init() {
+        this.listenForInstallPrompt();
+        await this.registerServiceWorker();
+      }
+
+      async registerServiceWorker() {
+        if (!('serviceWorker' in navigator)) return;
+
+        // Inlined Service Worker Implementation via Blob
+        const swCode = `
+          const CACHE_NAME = 'ent-pwa-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(self.clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            if (e.request.method !== 'GET') return;
+            e.respondWith(
+              caches.match(e.request).then((res) => {
+                const fetchPromise = fetch(e.request).then((networkRes) => {
+                  if (networkRes && networkRes.status === 200) {
+                    const resClone = networkRes.clone();
+                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
+                  }
+                  return networkRes;
+                }).catch(() => res);
+                return res || fetchPromise;
+              })
+            );
+          });
+        `;
+
+        const blob = new Blob([swCode], { type: 'text/javascript' });
+        const swUrl = URL.createObjectURL(blob);
+
         try {
-          const ip = await provider();
-          if (ip && ip.length >= 7) return ip;
-        } catch (e) {
-          console.warn("IP Provider failed, trying fallback...", e);
+          await navigator.serviceWorker.register(swUrl);
+          document.getElementById("swStatusText").innerText = "SW: Active (Blob)";
+        } catch (err) {
+          console.warn("[SW] Registration skipped or failed:", err);
+          document.getElementById("swStatusText").innerText = "SW: Disabled";
         }
       }
-      return "Unavailable (Blocker Active)";
-    }
 
-    // Helper: Prevent XSS Injection
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
-    }
-
-    // Engine Core
-    window.Engine = {
-      async init() {
-        try {
-          // Authenticate Anonymously to solve Firebase permission barriers
-          await signInAnonymously(auth);
-
-          // Resolve User Public IP
-          State.myIp = await fetchRealIP();
-          document.getElementById("myIpDisplay").innerText = State.myIp;
-
-          UI.setSocketStatus(true, "IP Verified");
-
-          if (State.myIp.includes("Unavailable")) return;
-
-          // Register Session in Firebase Realtime Presence
-          const presenceRef = ref(db, `presence/${State.sessionId}`);
-          const heartbeatData = () => ({
-            ip: State.myIp,
-            sessionId: State.sessionId,
-            lastSeen: serverTimestamp()
-          });
-
-          set(presenceRef, heartbeatData());
-          onDisconnect(presenceRef).remove();
-
-          // Heartbeat loop (runs every 10 seconds)
-          setInterval(() => {
-            set(presenceRef, heartbeatData());
-          }, 10000);
-
-          // Realtime Listener for Online Nodes
-          onValue(ref(db, 'presence'), (snapshot) => {
-            const data = snapshot.val() || {};
-            State.onlineNodes.clear();
-            const now = Date.now();
-
-            Object.values(data).forEach(node => {
-              if (!node || !node.ip) return;
-              
-              // Normalize Firebase serverTimestamp vs client timestamp comparison
-              const lastSeenTime = typeof node.lastSeen === 'number' ? node.lastSeen : now;
-              
-              // Drop stale sessions older than 25 seconds
-              if (now - lastSeenTime < 25000) {
-                State.onlineNodes.set(node.sessionId, node);
-              }
-            });
-
-            UI.renderRoster();
-          });
-
-          // Realtime Listener for Chat Messages
-          onValue(ref(db, 'chat_messages'), (snapshot) => {
-            const data = snapshot.val() || {};
-            State.messages = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
-            UI.renderMessages();
-          });
-
-        } catch (err) {
-          console.error("Initialization error:", err);
-          UI.setSocketStatus(false, "Connection Error");
-        }
-      },
-
-      handleSendMessage(e) {
-        e.preventDefault();
-        const input = document.getElementById("messageInput");
-        const text = input.value.trim();
-        if (!text || !State.myIp) return;
-
-        const msgRef = ref(db, `chat_messages/msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`);
-        set(msgRef, {
-          ip: State.myIp,
-          text: escapeHTML(text),
-          timestamp: Date.now(),
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      listenForInstallPrompt() {
+        window.addEventListener('beforeinstallprompt', (e) => {
+          e.preventDefault();
+          this.deferredPrompt = e;
+          document.getElementById("pwaInstallBtn").classList.remove("hidden");
         });
 
-        input.value = "";
+        window.addEventListener('appinstalled', () => {
+          this.deferredPrompt = null;
+          document.getElementById("pwaInstallBtn").classList.add("hidden");
+        });
       }
-    };
 
-    // UI Controller
-    window.UI = {
-      setSocketStatus(isOnline, text) {
-        const badge = document.getElementById("socketBadge");
-        const dot = document.getElementById("socketDot");
-        document.getElementById("socketStatusText").innerText = text;
-
-        if (isOnline) {
-          badge.className = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
-          dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
-        } else {
-          badge.className = "bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
-          dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+      async promptInstall() {
+        if (!this.deferredPrompt) return;
+        this.deferredPrompt.prompt();
+        const { outcome } = await this.deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+          this.deferredPrompt = null;
+          document.getElementById("pwaInstallBtn").classList.add("hidden");
         }
-      },
+      }
+    }
 
-      renderRoster() {
-        const list = document.getElementById("userRosterList");
-        const activeNodes = Array.from(State.onlineNodes.values());
 
-        // Deduplicate unique public IP addresses
-        const uniqueIps = [...new Set(activeNodes.map(n => n.ip))];
+    // ==========================================
+    // 4. NETWORK & UI CONTROLLER
+    // ==========================================
+    class UiController {
+      constructor(storage) {
+        this.storage = storage;
+        this.setupNetworkListeners();
+      }
 
-        document.getElementById("rosterBadge").innerText = uniqueIps.length;
-        document.getElementById("activeIpCount").innerText = uniqueIps.length;
+      setupNetworkListeners() {
+        const updateStatus = () => {
+          const badge = document.getElementById("netStatusBadge");
+          const dot = document.getElementById("netStatusDot");
+          const text = document.getElementById("netStatusText");
 
-        list.innerHTML = uniqueIps.map(ip => `
-          <div class="p-2 bg-gray-950 border border-gray-800 rounded-lg flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span class="font-mono text-xs font-semibold ${ip === State.myIp ? 'text-indigo-400' : 'text-gray-200'}">
-                ${ip} ${ip === State.myIp ? '(You)' : ''}
-              </span>
+          if (navigator.onLine) {
+            badge.className = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
+            dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
+            text.innerText = "Online";
+          } else {
+            badge.className = "bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
+            dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+            text.innerText = "Offline Mode";
+          }
+        };
+
+        window.addEventListener('online', updateStatus);
+        window.addEventListener('offline', updateStatus);
+        updateStatus();
+      }
+
+      escapeHTML(str) {
+        return str.replace(/[&<>'"]/g, 
+          tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+        );
+      }
+
+      async handleFormSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById("recordInput");
+        const val = input.value.trim();
+        if (!val) return;
+
+        const record = {
+          id: `rec_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          title: this.escapeHTML(val),
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        await this.storage.add(record);
+        input.value = "";
+        await this.renderRecords();
+      }
+
+      async deleteRecord(id) {
+        await this.storage.remove(id);
+        await this.renderRecords();
+      }
+
+      async renderRecords() {
+        const list = document.getElementById("recordsList");
+        const records = await this.storage.getAll();
+
+        if (records.length === 0) {
+          list.innerHTML = `<p class="text-[11px] text-gray-500 italic text-center py-2">No records stored in IndexedDB.</p>`;
+          return;
+        }
+
+        list.innerHTML = records.map(r => `
+          <div class="p-2.5 bg-gray-950 border border-gray-800 rounded-lg flex items-center justify-between">
+            <div class="space-y-0.5">
+              <p class="text-xs font-semibold text-gray-200">${r.title}</p>
+              <p class="text-[9px] font-mono text-gray-500">${r.time}</p>
             </div>
-            <span class="text-[9px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded font-mono">Verified IP</span>
+            <button onclick="Application.ui.deleteRecord('${r.id}')" class="text-gray-500 hover:text-rose-400 p-1.5 transition">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
           </div>
         `).join('');
-      },
-
-      renderMessages() {
-        const list = document.getElementById("messagesList");
-        list.innerHTML = State.messages.map(m => {
-          const isSelf = m.ip === State.myIp;
-          return `
-            <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'}">
-              <div class="flex items-baseline space-x-1.5 mb-0.5">
-                <span class="text-[10px] font-mono text-gray-400">${m.ip}</span>
-                <span class="text-[9px] text-gray-600">${m.time}</span>
-              </div>
-              <div class="max-w-xs sm:max-w-md ${isSelf ? 'bg-indigo-600 text-white rounded-l-xl rounded-tr-xl' : 'bg-gray-900 text-gray-100 rounded-r-xl rounded-tl-xl border border-gray-800'} p-2.5 text-xs shadow-sm">
-                ${m.text}
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        const vp = document.getElementById("messageViewport");
-        vp.scrollTop = vp.scrollHeight;
-      },
-
-      toggleRoster() {
-        document.getElementById("rosterSidebar").classList.toggle("translate-x-full");
       }
-    };
+    }
 
-    window.addEventListener("DOMContentLoaded", () => Engine.init());
+
+    // ==========================================
+    // 5. APPLICATION COMPOSITION ROOT
+    // ==========================================
+    class ApplicationRoot {
+      constructor() {
+        this.storage = new StorageAdapter();
+        this.pwa = new PwaManager();
+        this.ui = new UiController(this.storage);
+      }
+
+      async bootstrap() {
+        await this.storage.init();
+        await this.pwa.init();
+        await this.ui.renderRecords();
+      }
+    }
+
+    // Export Application Instance Globally
+    window.Application = new ApplicationRoot();
+    window.addEventListener("DOMContentLoaded", () => window.Application.bootstrap());
+
   </script>
 </body>
 </html>
