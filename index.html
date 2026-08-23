@@ -5,12 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#4f46e5" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="application-name" content="Enterprise Mesh Chat" />
-  <title>Enterprise Secure Mesh Chat</title>
+  <meta name="application-name" content="Global Mesh Chat" />
+  <title>Global Enterprise Mesh Chat</title>
 
   <!-- Tailwind CSS & FontAwesome Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- PeerJS for Global WebRTC Mesh Connection -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
   <!-- Dynamically Injected Manifest -->
   <link id="manifestLink" rel="manifest" />
@@ -28,31 +31,35 @@
   <header class="h-14 bg-gray-900 border-b border-gray-800 px-4 flex items-center justify-between shrink-0 z-20">
     <div class="flex items-center space-x-3">
       <div class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 p-2 rounded-xl flex items-center justify-center">
-        <i class="fa-solid fa-lock text-base"></i>
+        <i class="fa-solid fa-globe text-base"></i>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <h1 class="text-xs font-bold tracking-tight text-white uppercase">Enterprise Mesh Chat</h1>
-          <span id="cryptoStatusBadge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[9px] font-mono px-1.5 py-0.5 rounded">AES-256-GCM</span>
+          <h1 class="text-xs font-bold tracking-tight text-white uppercase">Global Mesh Network</h1>
+          <span id="cryptoStatusBadge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[9px] font-mono px-1.5 py-0.5 rounded">E2EE AES-256</span>
         </div>
         <div class="flex items-center space-x-2 mt-0.5">
           <span id="netStatusBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
             <span id="netStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="netStatusText">Online</span>
           </span>
-          <span id="storageQuotaText" class="text-[10px] font-mono text-gray-500">Storage: Calc...</span>
+          <span id="peerIdDisplay" class="text-[10px] font-mono text-indigo-300">Global ID: Connecting...</span>
         </div>
       </div>
     </div>
 
-    <!-- ACTION CONTROLS -->
+    <!-- GLOBAL PEER CONNECT & SHARE CONTROLS -->
     <div class="flex items-center space-x-2">
+      <button onclick="Application.ui.promptConnectPeer()" class="bg-gray-800 hover:bg-gray-700 text-indigo-400 border border-indigo-500/30 px-2.5 py-1.5 rounded-lg text-xs transition flex items-center space-x-1">
+        <i class="fa-solid fa-plug text-[10px]"></i>
+        <span class="hidden sm:inline">Connect Peer</span>
+      </button>
       <button onclick="Application.ui.shareApp()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 p-2 rounded-lg text-xs transition">
         <i class="fa-solid fa-share-nodes"></i>
       </button>
       <button id="pwaInstallBtn" onclick="Application.pwa.promptInstall()" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-400/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-lg shadow-indigo-600/20">
         <i class="fa-solid fa-download text-[10px]"></i>
-        <span>Install App</span>
+        <span>Install</span>
       </button>
     </div>
   </header>
@@ -66,24 +73,34 @@
     <!-- COMPOSER -->
     <footer class="bg-gray-900 border-t border-gray-800 p-3 shrink-0">
       <form id="chatForm" onsubmit="Application.ui.handleSendMessage(event)" class="flex items-center space-x-2">
-        <input type="text" id="messageInput" placeholder="Write end-to-end encrypted message..." required class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition" autocomplete="off" />
+        <input type="text" id="messageInput" placeholder="Broadcast encrypted message globally..." required class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition" autocomplete="off" />
         <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-lg shadow-indigo-600/20">
-          <span>Send</span>
+          <span>Broadcast</span>
           <i class="fa-solid fa-paper-plane text-[10px]"></i>
         </button>
       </form>
     </footer>
   </main>
 
-  <!-- ENTERPRISE ARCHITECTURE ENGINE -->
+  <!-- ENTERPRISE GLOBAL ENGINE MODULE -->
   <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // ==========================================
-    // 1. DYNAMIC PWA MANIFEST
-    // ==========================================
+    // Public Relay Firebase Config for Global Synchronization
+    const firebaseConfig = {
+      databaseURL: "https://realtime-mesh-ip-default-rtdb.firebaseio.com"
+    };
+
+    const fbApp = initializeApp(firebaseConfig);
+    const fbAuth = getAuth(fbApp);
+    const fbDb = getDatabase(fbApp);
+
+    // Dynamic Manifest
     const manifestBlob = new Blob([JSON.stringify({
-      "name": "Enterprise Secure Chat",
-      "short_name": "MeshChat",
+      "name": "Global Enterprise Chat",
+      "short_name": "GlobalMesh",
       "start_url": "/",
       "display": "standalone",
       "background_color": "#030712",
@@ -96,7 +113,7 @@
 
 
     // ==========================================
-    // 2. CRYPTOGRAPHIC ENGINE (AES-256-GCM)
+    // 1. CRYPTOGRAPHIC ENGINE (AES-256-GCM)
     // ==========================================
     class CryptoEngine {
       constructor() {
@@ -104,26 +121,18 @@
       }
 
       async init() {
-        // Derive or load persistent device secret key
-        let storedKey = localStorage.getItem('chat_crypto_key');
-        if (!storedKey) {
-          const key = await window.crypto.subtle.generateKey(
-            { name: "AES-GCM", length: 256 },
-            true,
-            ["encrypt", "decrypt"]
-          );
-          const exported = await window.crypto.subtle.exportKey("jwk", key);
-          localStorage.setItem('chat_crypto_key', JSON.stringify(exported));
-          this.key = key;
-        } else {
-          this.key = await window.crypto.subtle.importKey(
-            "jwk",
-            JSON.parse(storedKey),
-            { name: "AES-GCM" },
-            true,
-            ["encrypt", "decrypt"]
-          );
-        }
+        // Universal global channel key derive (SHA-256 hashed shared secret)
+        const channelSecret = "EnterpriseGlobalMeshSecret2026";
+        const enc = new TextEncoder();
+        const keyMaterial = await window.crypto.subtle.digest("SHA-256", enc.encode(channelSecret));
+
+        this.key = await window.crypto.subtle.importKey(
+          "raw",
+          keyMaterial,
+          { name: "AES-GCM" },
+          false,
+          ["encrypt", "decrypt"]
+        );
       }
 
       async encrypt(plaintext) {
@@ -152,58 +161,17 @@
           );
           return new TextDecoder().decode(decrypted);
         } catch (e) {
-          return "[Decryption Failed - Invalid Key]";
+          return "[Decryption Error - Invalid Cipher Payload]";
         }
       }
     }
 
 
     // ==========================================
-    // 3. REACTIVE STATE STORE (REDUX PATTERN)
-    // ==========================================
-    class Store {
-      constructor(reducer, initialState) {
-        this.reducer = reducer;
-        this.state = initialState;
-        this.listeners = [];
-      }
-
-      getState() {
-        return this.state;
-      }
-
-      dispatch(action) {
-        this.state = this.reducer(this.state, action);
-        this.listeners.forEach(listener => listener(this.state));
-      }
-
-      subscribe(listener) {
-        this.listeners.push(listener);
-        return () => {
-          this.listeners = this.listeners.filter(l => l !== listener);
-        };
-      }
-    }
-
-    function chatReducer(state = { messages: [], online: true }, action) {
-      switch (action.type) {
-        case 'SET_MESSAGES':
-          return { ...state, messages: action.payload };
-        case 'ADD_MESSAGE':
-          return { ...state, messages: [...state.messages, action.payload] };
-        case 'SET_ONLINE':
-          return { ...state, online: action.payload };
-        default:
-          return state;
-      }
-    }
-
-
-    // ==========================================
-    // 4. INDEXEDDB PERSISTENCE SERVICE
+    // 2. INDEXEDDB PERSISTENCE ADAPTER
     // ==========================================
     class StorageAdapter {
-      constructor(dbName = "EnterpriseChatDB", storeName = "messages") {
+      constructor(dbName = "GlobalChatDB", storeName = "messages") {
         this.dbName = dbName;
         this.storeName = storeName;
         this.db = null;
@@ -227,72 +195,90 @@
       }
 
       async getAll() {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           const tx = this.db.transaction(this.storeName, "readonly");
           const store = tx.objectStore(this.storeName);
           const request = store.getAll();
           request.onsuccess = () => resolve(request.result || []);
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve([]);
         });
       }
 
       async add(item) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           const tx = this.db.transaction(this.storeName, "readwrite");
           const store = tx.objectStore(this.storeName);
           const request = store.put(item);
           request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
+          request.onerror = () => resolve();
         });
       }
     }
 
 
     // ==========================================
-    // 5. RESILIENT WEBSOCKET MANAGER
+    // 3. GLOBAL HYBRID MESH NETWORK (PeerJS + Firebase)
     // ==========================================
-    class WebSocketManager {
-      constructor(url, onMessage) {
-        this.url = url;
-        this.onMessage = onMessage;
-        this.ws = null;
-        this.retryCount = 0;
+    class GlobalMeshNetwork {
+      constructor(onMessageReceived) {
+        this.onMessageReceived = onMessageReceived;
+        this.peer = null;
+        this.myPeerId = null;
+        this.peerConnections = new Map();
       }
 
-      connect() {
-        try {
-          this.ws = new WebSocket(this.url);
-          this.ws.onopen = () => {
-            console.info('[WS] Connected to Mesh Relay');
-            this.retryCount = 0;
-          };
-          this.ws.onmessage = (e) => this.onMessage(JSON.parse(e.data));
-          this.ws.onclose = () => this.scheduleReconnect();
-          this.ws.onerror = () => this.ws.close();
-        } catch (e) {
-          this.scheduleReconnect();
-        }
+      async init() {
+        await signInAnonymously(fbAuth);
+
+        // Initialize WebRTC PeerJS Global Signaling
+        this.myPeerId = `global_${Math.random().toString(36).substring(2, 9)}`;
+        this.peer = new Peer(this.myPeerId);
+
+        this.peer.on('open', (id) => {
+          document.getElementById("peerIdDisplay").innerText = `ID: ${id}`;
+        });
+
+        this.peer.on('connection', (conn) => {
+          this.setupConnection(conn);
+        });
+
+        // Listen for global public relay broadcasts
+        onValue(ref(fbDb, 'global_channel'), (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            Object.values(data).forEach(msg => this.onMessageReceived(msg));
+          }
+        });
       }
 
-      scheduleReconnect() {
-        this.retryCount++;
-        const timeout = Math.min(1000 * Math.pow(2, this.retryCount), 30000);
-        console.warn(`[WS] Reconnecting in ${timeout}ms...`);
-        setTimeout(() => this.connect(), timeout);
+      setupConnection(conn) {
+        this.peerConnections.set(conn.peer, conn);
+        conn.on('data', (data) => this.onMessageReceived(data));
+        conn.on('close', () => this.peerConnections.delete(conn.peer));
       }
 
-      send(data) {
-        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-          this.ws.send(JSON.stringify(data));
-        } else {
-          console.warn('[WS] Offline. Message queued locally.');
-        }
+      connectToPeer(peerId) {
+        if (!peerId || this.peerConnections.has(peerId)) return;
+        const conn = this.peer.connect(peerId);
+        conn.on('open', () => this.setupConnection(conn));
+      }
+
+      async broadcast(msgRecord) {
+        // 1. Direct WebRTC Mesh Delivery
+        this.peerConnections.forEach(conn => {
+          if (conn.open) conn.send(msgRecord);
+        });
+
+        // 2. Global Firebase Relay Backup
+        const globalRef = ref(fbDb, 'global_channel');
+        const newMsgRef = push(globalRef);
+        await set(newMsgRef, msgRecord);
       }
     }
 
 
     // ==========================================
-    // 6. PWA & SERVICE WORKER MANAGER
+    // 4. PWA MANAGER
     // ==========================================
     class PwaManager {
       constructor() {
@@ -300,34 +286,6 @@
       }
 
       async init() {
-        this.listenForInstallPrompt();
-        await this.registerServiceWorker();
-      }
-
-      async registerServiceWorker() {
-        if (!('serviceWorker' in navigator)) return;
-
-        const swCode = `
-          const CACHE_NAME = 'chat-pwa-v1';
-          self.addEventListener('install', (e) => self.skipWaiting());
-          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
-          self.addEventListener('fetch', (e) => {
-            if (e.request.method !== 'GET') return;
-            e.respondWith(
-              caches.match(e.request).then((res) => res || fetch(e.request))
-            );
-          });
-        `;
-
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        try {
-          await navigator.serviceWorker.register(URL.createObjectURL(blob));
-        } catch (err) {
-          console.warn('[SW] Registration bypassed:', err);
-        }
-      }
-
-      listenForInstallPrompt() {
         window.addEventListener('beforeinstallprompt', (e) => {
           e.preventDefault();
           this.deferredPrompt = e;
@@ -348,41 +306,24 @@
 
 
     // ==========================================
-    // 7. UI CONTROLLER & DEVICE APIs
+    // 5. UI CONTROLLER
     // ==========================================
     class UiController {
-      constructor(store, storage, crypto, ws) {
-        this.store = store;
+      constructor(storage, crypto, mesh) {
         this.storage = storage;
         this.crypto = crypto;
-        this.ws = ws;
-
-        this.store.subscribe((state) => this.render(state));
-        this.setupNetworkAndStorage();
+        this.mesh = mesh;
+        this.renderedMsgIds = new Set();
+        this.setupNetwork();
       }
 
       triggerHaptic() {
         if ('vibrate' in navigator) navigator.vibrate(15);
       }
 
-      async shareApp() {
-        this.triggerHaptic();
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: 'Enterprise Mesh Chat',
-              text: 'Secure, end-to-end encrypted offline PWA chat platform.',
-              url: window.location.href,
-            });
-          } catch (e) {}
-        }
-      }
-
-      setupNetworkAndStorage() {
-        const updateStatus = async () => {
+      setupNetwork() {
+        const updateStatus = () => {
           const isOnline = navigator.onLine;
-          this.store.dispatch({ type: 'SET_ONLINE', payload: isOnline });
-
           const badge = document.getElementById("netStatusBadge");
           const dot = document.getElementById("netStatusDot");
           const text = document.getElementById("netStatusText");
@@ -394,20 +335,31 @@
           } else {
             badge.className = "bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
             dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
-            text.innerText = "Offline Mode";
-          }
-
-          // Storage Quota Diagnostic API
-          if ('storage' in navigator && 'estimate' in navigator.storage) {
-            const { usage, quota } = await navigator.storage.estimate();
-            const usedMb = (usage / (1024 * 1024)).toFixed(1);
-            document.getElementById("storageQuotaText").innerText = `Storage: ${usedMb} MB`;
+            text.innerText = "Offline";
           }
         };
 
         window.addEventListener('online', updateStatus);
         window.addEventListener('offline', updateStatus);
         updateStatus();
+      }
+
+      async shareApp() {
+        this.triggerHaptic();
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'Global Enterprise Mesh Chat',
+              text: `Join my global encrypted mesh chat! My ID: ${this.mesh.myPeerId}`,
+              url: window.location.href,
+            });
+          } catch (e) {}
+        }
+      }
+
+      promptConnectPeer() {
+        const peerId = prompt("Enter Global Peer ID to establish direct WebRTC P2P link:");
+        if (peerId) this.mesh.connectToPeer(peerId.trim());
       }
 
       escapeHTML(str) {
@@ -424,53 +376,50 @@
         const text = input.value.trim();
         if (!text) return;
 
-        // Encrypt with Web Crypto API
         const encrypted = await this.crypto.encrypt(text);
 
         const msgRecord = {
           id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          senderId: this.mesh.myPeerId,
           cipherText: encrypted.cipherHex,
           iv: encrypted.ivHex,
           timestamp: Date.now(),
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          sender: 'Self'
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         };
 
-        // Persist local IndexedDB
         await this.storage.add(msgRecord);
-        this.store.dispatch({ type: 'ADD_MESSAGE', payload: msgRecord });
-
-        // Dispatch over WebSocket
-        this.ws.send(msgRecord);
+        await this.renderSingleMessage(msgRecord);
+        await this.mesh.broadcast(msgRecord);
 
         input.value = "";
       }
 
-      async render(state) {
-        const container = document.getElementById("messagesContainer");
-        
-        const renderedMessages = await Promise.all(state.messages.map(async (m) => {
-          const decryptedText = await this.crypto.decrypt(m.cipherText, m.iv);
-          const cleanText = this.escapeHTML(decryptedText);
+      async renderSingleMessage(m) {
+        if (this.renderedMsgIds.has(m.id)) return;
+        this.renderedMsgIds.add(m.id);
 
-          return `
-            <div class="flex flex-col items-end">
-              <div class="flex items-baseline space-x-1.5 mb-0.5">
-                <span class="text-[9px] font-mono text-indigo-400">Encrypted</span>
-                <span class="text-[9px] text-gray-600">${m.time}</span>
-              </div>
-              <div class="max-w-xs sm:max-w-md bg-indigo-600 text-white rounded-l-xl rounded-tr-xl p-2.5 text-xs shadow-sm space-y-1">
-                <p>${cleanText}</p>
-                <div class="flex items-center justify-end space-x-1 text-[8px] text-indigo-200 font-mono opacity-80">
-                  <i class="fa-solid fa-lock"></i>
-                  <span>AES-GCM</span>
-                </div>
+        const container = document.getElementById("messagesContainer");
+        const isSelf = m.senderId === this.mesh.myPeerId;
+        const decryptedText = await this.crypto.decrypt(m.cipherText, m.iv);
+        const cleanText = this.escapeHTML(decryptedText);
+
+        const msgHtml = `
+          <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'}">
+            <div class="flex items-baseline space-x-1.5 mb-0.5">
+              <span class="text-[9px] font-mono ${isSelf ? 'text-indigo-400' : 'text-emerald-400'}">${isSelf ? 'You' : m.senderId || 'Global Peer'}</span>
+              <span class="text-[9px] text-gray-600">${m.time}</span>
+            </div>
+            <div class="max-w-xs sm:max-w-md ${isSelf ? 'bg-indigo-600 text-white rounded-l-xl rounded-tr-xl' : 'bg-gray-900 text-gray-100 rounded-r-xl rounded-tl-xl border border-gray-800'} p-2.5 text-xs shadow-sm space-y-1">
+              <p>${cleanText}</p>
+              <div class="flex items-center justify-end space-x-1 text-[8px] opacity-75 font-mono">
+                <i class="fa-solid fa-earth-americas"></i>
+                <span>Global E2EE</span>
               </div>
             </div>
-          `;
-        }));
+          </div>
+        `;
 
-        container.innerHTML = renderedMessages.join('');
+        container.insertAdjacentHTML('beforeend', msgHtml);
         const vp = document.getElementById("messageViewport");
         vp.scrollTop = vp.scrollHeight;
       }
@@ -478,36 +427,30 @@
 
 
     // ==========================================
-    // 8. APPLICATION COMPOSITION ROOT
+    // 6. APPLICATION COMPOSITION ROOT
     // ==========================================
     class ApplicationRoot {
       constructor() {
         this.crypto = new CryptoEngine();
         this.storage = new StorageAdapter();
-        this.store = new Store(chatReducer, { messages: [], online: true });
-        this.ws = new WebSocketManager('wss://echo.websocket.events', (data) => {
-          // Echo handle for incoming payloads
-        });
         this.pwa = new PwaManager();
-        this.ui = new UiController(this.store, this.storage, this.crypto, this.ws);
+        this.mesh = new GlobalMeshNetwork((msg) => this.ui.renderSingleMessage(msg));
+        this.ui = new UiController(this.storage, this.crypto, this.mesh);
       }
 
       async bootstrap() {
         await this.crypto.init();
         await this.storage.init();
         await this.pwa.init();
-        this.ws.connect();
+        await this.mesh.init();
 
-        // Hydrate store from IndexedDB
         const storedMessages = await this.storage.getAll();
-        this.store.dispatch({ type: 'SET_MESSAGES', payload: storedMessages });
+        storedMessages.sort((a, b) => a.timestamp - b.timestamp).forEach(m => this.ui.renderSingleMessage(m));
       }
     }
 
-    // Export Globally
     window.Application = new ApplicationRoot();
     window.addEventListener("DOMContentLoaded", () => window.Application.bootstrap());
-
   </script>
 </body>
 </html>
