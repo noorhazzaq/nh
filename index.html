@@ -100,7 +100,7 @@
         value="Steve" 
         class="bg-slate-900 border border-indigo-500 text-green-400 text-[8px] px-1 py-0.5 w-20 focus:outline-none focus:border-yellow-400 font-bold glow-green"
       />
-      <!-- Feature 14: Custom User Status -->
+      <!-- Custom User Status -->
       <input 
         type="text" 
         id="statusInput" 
@@ -117,26 +117,26 @@
     </div>
 
     <div class="flex items-center gap-1 flex-wrap">
-      <!-- Feature 3: Custom Themes -->
+      <!-- Custom Themes -->
       <select id="themeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-purple-300">
         <option value="theme-neon">THEME: NEON</option>
         <option value="theme-amber">THEME: AMBER</option>
         <option value="theme-matrix">THEME: MATRIX</option>
       </select>
 
-      <!-- Feature 19: Font Size Controls -->
+      <!-- Font Size Controls -->
       <select id="fontSizeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-slate-300">
         <option value="text-size-sm">FONT: SM</option>
         <option value="text-size-md" selected>FONT: MD</option>
         <option value="text-size-lg">FONT: LG</option>
       </select>
 
-      <!-- Feature 9: Audio Mute Toggle -->
+      <!-- Audio Mute Toggle -->
       <button type="button" id="audioToggleBtn" class="bg-slate-900 border border-indigo-500 text-[7px] p-1 rounded text-yellow-400">
         🔊
       </button>
 
-      <!-- Feature 2: Live Room Presence Tracker -->
+      <!-- Live Room Presence Tracker -->
       <div id="presenceBadge" class="text-[6px] text-emerald-300 border border-emerald-400/50 bg-emerald-950/70 px-1.5 py-0.5 uppercase shrink-0 glow-green flex items-center gap-1">
         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#4ade80] animate-pulse"></span>
         <span id="onlineCountText">1 ONLINE</span>
@@ -144,30 +144,36 @@
     </div>
   </header>
 
+  <!-- ACTIVE IPS SORTED ROW DISPLAY -->
+  <div id="activeIpsBanner" class="bg-indigo-950/90 border border-indigo-500 px-2 py-1 mb-1 text-[6px] text-cyan-300 flex items-center gap-1 overflow-x-auto whitespace-nowrap z-10 glow-box">
+    <span class="text-yellow-400 font-bold shrink-0">🌐 ONLINE IPS:</span>
+    <span id="activeIpsListText" class="text-emerald-300 font-mono tracking-wider">Detecting...</span>
+  </div>
+
   <!-- SECONDARY CONTROL BAR -->
   <div class="flex items-center justify-between gap-1 bg-slate-900/90 border border-indigo-900 p-1 mb-1 relative z-10 text-[6px]">
-    <!-- Feature 4: Search Bar -->
+    <!-- Search Bar -->
     <div class="flex items-center gap-1 flex-1">
       <span>🔍</span>
       <input type="text" id="searchInput" placeholder="Search chat..." class="bg-slate-950 border border-indigo-800 text-yellow-300 px-1 py-0.5 text-[6px] w-full focus:outline-none" />
     </div>
 
-    <!-- Feature 7: Bookmarks Drawer Toggle -->
+    <!-- Bookmarks Drawer Toggle -->
     <button type="button" id="bookmarkFilterBtn" class="bg-indigo-950 border border-indigo-600 px-1.5 py-0.5 text-purple-300 hover:bg-indigo-900">
       ⭐ BOOKMARKS
     </button>
 
-    <!-- Feature 8: Mini Game Launcher -->
+    <!-- Mini Game Launcher -->
     <button type="button" id="miniGameBtn" class="bg-amber-950 border border-amber-600 px-1.5 py-0.5 text-yellow-300 hover:bg-amber-900">
       🎮 CLICKER
     </button>
 
-    <!-- Feature 16: Export Logs -->
+    <!-- Export Logs -->
     <button type="button" id="exportLogsBtn" class="bg-slate-950 border border-slate-700 px-1.5 py-0.5 text-cyan-300 hover:bg-slate-800">
       💾 EXPORT
     </button>
 
-    <!-- Feature 21: Diagnostics Drawer -->
+    <!-- Diagnostics Drawer -->
     <button type="button" id="diagToggleBtn" class="bg-slate-950 border border-slate-700 px-1 py-0.5 text-slate-400">
       ⚙️
     </button>
@@ -196,7 +202,7 @@
     </div>
   </main>
 
-  <!-- Feature 1: Typing Indicator Banner -->
+  <!-- Typing Indicator Banner -->
   <div id="typingIndicator" class="hidden text-[6px] text-cyan-300 italic px-1 mb-0.5 animate-pulse z-10">
     💬 Someone is typing...
   </div>
@@ -247,14 +253,14 @@
         <option value="pixel_star">⭐ STAR</option>
       </select>
 
-      <!-- Feature 18: Self Destruct Switch -->
+      <!-- Self Destruct Switch -->
       <select id="ttlSelect" class="bg-black border border-red-500 text-red-400 rounded p-0.5">
         <option value="0">TTL: OFF</option>
         <option value="5000">TTL: 5s</option>
         <option value="30000">TTL: 30s</option>
       </select>
 
-      <!-- Feature 11: Formatting Toolbar Tools -->
+      <!-- Formatting Toolbar Tools -->
       <div class="flex items-center gap-1 ml-auto">
         <button type="button" id="fmtBoldBtn" class="bg-slate-800 border border-slate-600 px-1 text-slate-200 font-bold" title="Bold">*B*</button>
         <button type="button" id="fmtItalicBtn" class="bg-slate-800 border border-slate-600 px-1 text-slate-200 italic" title="Italic">_I_</button>
@@ -297,7 +303,7 @@
   <!-- REALTIME ENGINE & AUDIO PIPELINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, onValue, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, onValue, query, limitToLast, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -354,6 +360,7 @@
     const diagPanel = document.getElementById('diagPanel');
     const typingIndicator = document.getElementById('typingIndicator');
     const onlineCountText = document.getElementById('onlineCountText');
+    const activeIpsListText = document.getElementById('activeIpsListText');
 
     let currentBase64Image = "";
     let currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
@@ -363,24 +370,25 @@
     let audioMuted = false;
     let isShowingOnlyBookmarks = false;
     let coinsMined = 0;
+    let detectedClientIp = "0.0.0.0";
 
-    // Feature 3: Theme Selector
+    // Theme Selector
     themeSelect.addEventListener('change', (e) => {
       document.getElementById('appBody').className = `h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none overflow-hidden relative ${e.target.value}`;
     });
 
-    // Feature 19: Font Size Control
+    // Font Size Control
     fontSizeSelect.addEventListener('change', (e) => {
       c.className = `space-y-2.5 ${e.target.value}`;
     });
 
-    // Feature 9: Audio Mute Toggle
+    // Audio Mute Toggle
     audioToggleBtn.addEventListener('click', () => {
       audioMuted = !audioMuted;
       audioToggleBtn.textContent = audioMuted ? '🔇' : '🔊';
     });
 
-    // Feature 12 & 13: Latency & Tilt Sensor Diagnostic Pipeline
+    // Latency & Tilt Sensor Diagnostic Pipeline
     let lastPing = Date.now();
     setInterval(() => {
       const start = Date.now();
@@ -395,7 +403,7 @@
       document.getElementById('tiltText').textContent = window.orientation === 0 ? 'PORTRAIT' : 'LANDSCAPE';
     });
 
-    // Feature 21: Diagnostics Toggle
+    // Diagnostics Toggle
     diagToggleBtn.addEventListener('click', () => {
       diagPanel.classList.toggle('hidden');
       if (window.performance && window.performance.memory) {
@@ -404,7 +412,7 @@
       document.getElementById('domNodeText').textContent = document.querySelectorAll('*').length;
     });
 
-    // Feature 8: Mini Game Clicker Engine
+    // Mini Game Clicker Engine
     miniGameBtn.addEventListener('click', () => document.getElementById('miniGamePanel').classList.remove('hidden'));
     document.getElementById('closeGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.add('hidden'));
     document.getElementById('mineCoinBtn').addEventListener('click', () => {
@@ -413,7 +421,7 @@
       playCustomSFX('coin');
     });
 
-    // Feature 1: Realtime Typing Engine Signaling
+    // Realtime Typing Engine Signaling
     const typingRef = ref(db, `typing/${USER_ID}`);
     let typingTimer = null;
     i.addEventListener('input', () => {
@@ -436,12 +444,70 @@
       typingIndicator.classList.add('hidden');
     });
 
-    // Feature 2: Presence Tracking System
-    const presenceRef = ref(db, `presence/${USER_ID}`);
-    set(presenceRef, { handle: nameInput.value.trim(), active: true });
+    // Detect Online Visitors and IP Tracker Engine
+    const userPresenceRef = ref(db, `presence/${USER_ID}`);
+
+    async function trackVisitorAndIpPresence() {
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        if (res.ok) {
+          const data = await res.json();
+          detectedClientIp = data.ip || "0.0.0.0";
+        }
+      } catch (e) {
+        detectedClientIp = "127.0.0.1";
+      }
+
+      // Automatically purge session when browser window/tab closes
+      onDisconnect(userPresenceRef).remove();
+
+      // Write active presence payload to Firebase
+      set(userPresenceRef, {
+        handle: nameInput.value.trim(),
+        ip: detectedClientIp,
+        lastSeen: serverTimestamp()
+      });
+    }
+
+    trackVisitorAndIpPresence();
+
+    // Re-sync presence when handle changes
+    nameInput.addEventListener('change', () => {
+      set(userPresenceRef, {
+        handle: nameInput.value.trim(),
+        ip: detectedClientIp,
+        lastSeen: serverTimestamp()
+      });
+    });
+
+    // Live Online IP Aggregator Listener
     onValue(ref(db, 'presence'), (snap) => {
-      const p = snap.val();
-      if (p) onlineCountText.textContent = `${Object.keys(p).length} ONLINE`;
+      const presenceData = snap.val();
+      if (!presenceData) {
+        onlineCountText.textContent = "0 ONLINE";
+        activeIpsListText.textContent = "NONE";
+        return;
+      }
+
+      const activeUsers = Object.values(presenceData);
+      onlineCountText.textContent = `${activeUsers.length} ONLINE`;
+
+      // Extract unique IPs and sort numerically
+      const activeIps = activeUsers
+        .map(u => u.ip)
+        .filter((ip, idx, self) => ip && self.indexOf(ip) === idx)
+        .sort((a, b) => {
+          const numA = a.split('.').map(Number);
+          const numB = b.split('.').map(Number);
+          for (let idx = 0; idx < 4; idx++) {
+            if ((numA[idx] || 0) !== (numB[idx] || 0)) {
+              return (numA[idx] || 0) - (numB[idx] || 0);
+            }
+          }
+          return a.localeCompare(b);
+        });
+
+      activeIpsListText.textContent = activeIps.length > 0 ? activeIps.join(' | ') : 'NONE';
     });
 
     // Geo & Battery Services
@@ -670,11 +736,11 @@
 
     unpinBtn.addEventListener('click', () => pinnedBanner.classList.add('hidden'));
 
-    // Feature 11: Text Formatting Shortcuts
+    // Text Formatting Shortcuts
     document.getElementById('fmtBoldBtn').addEventListener('click', () => { i.value += '*Bold*'; i.focus(); });
     document.getElementById('fmtItalicBtn').addEventListener('click', () => { i.value += '_Italic_'; i.focus(); });
 
-    // Feature 4: Client Search Filter Pipeline
+    // Client Search Filter Pipeline
     searchInput.addEventListener('input', () => {
       const q = searchInput.value.toLowerCase().trim();
       const nodes = c.querySelectorAll('[data-msgid]');
@@ -684,7 +750,7 @@
       });
     });
 
-    // Feature 7: Bookmarks View Toggle
+    // Bookmarks View Toggle
     bookmarkFilterBtn.addEventListener('click', () => {
       isShowingOnlyBookmarks = !isShowingOnlyBookmarks;
       bookmarkFilterBtn.classList.toggle('bg-purple-800', isShowingOnlyBookmarks);
@@ -695,7 +761,7 @@
       });
     });
 
-    // Feature 16: Export Chat Log as JSON
+    // Export Chat Log as JSON
     exportLogsBtn.addEventListener('click', () => {
       const messages = [];
       c.querySelectorAll('[data-msgid]').forEach(n => {
@@ -710,7 +776,7 @@
 
     const chatRef = ref(db, "global_pixel_chat");
 
-    // UI RENDERER WITH NEW FEATURES
+    // UI RENDERER
     function renderMessageNode(snap) {
       const msgId = snap.key;
       const d = snap.val();
@@ -765,7 +831,6 @@
 
       let textHtml = '';
       if (d.t) {
-        // Feature 11: Text Formatting Render Parser (*bold*, _italic_)
         let formattedText = esc(d.t)
           .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
           .replace(/_(.*?)_/g, '<em>$1</em>')
@@ -813,11 +878,9 @@
 
       let footerMetaHtml = `
         <div class="flex items-center justify-between text-[5px] text-slate-500 pt-1 border-t border-indigo-950/60 flex-wrap gap-1">
-          <span>LOC: ${esc(d.geoCity || 'Global')} | BAT: ${d.battery || '100%'}</span>
+          <span>IP: ${esc(d.clientIp || '0.0.0.0')} | LOC: ${esc(d.geoCity || 'Global')} | BAT: ${d.battery || '100%'}</span>
           <div class="flex items-center gap-1">
-            <!-- Feature 6: Text To Speech -->
             <button type="button" data-action="tts" data-msgid="${msgId}" class="text-cyan-300 hover:underline">🔊 READ</button>
-            <!-- Feature 17: Copy Raw Text -->
             <button type="button" data-action="copy" data-msgid="${msgId}" class="text-slate-300 hover:underline">📋 COPY</button>
             <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
             <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
@@ -834,7 +897,7 @@
         c.appendChild(div);
       }
 
-      // Feature 18: Self Destruct Auto Timer
+      // Self Destruct Auto Timer
       if (d.ttl && parseInt(d.ttl) > 0) {
         setTimeout(() => { update(ref(db, `global_pixel_chat/${msgId}`), { isDeleted: true }); }, parseInt(d.ttl));
       }
@@ -868,18 +931,15 @@
       } else if (action === 'playvoice') {
         playAudioData(btn.dataset.audiosrc, parseFloat(btn.dataset.pitch) || 550);
       } else if (action === 'tts') {
-        // Feature 6: Web Speech Synthesis TTS
         const msgNode = document.getElementById(`msg-${msgId}`);
         if (msgNode && 'speechSynthesis' in window) {
           const u = new SpeechSynthesisUtterance(msgNode.innerText);
           window.speechSynthesis.speak(u);
         }
       } else if (action === 'copy') {
-        // Feature 17: Clipboard API
         const msgNode = document.getElementById(`msg-${msgId}`);
         if (msgNode) navigator.clipboard.writeText(msgNode.innerText);
       } else if (action === 'edit') {
-        // Feature 5: Edit Message Inline
         const newTxt = prompt("Edit your pixel message:");
         if (newTxt) update(ref(db, `global_pixel_chat/${msgId}`), { t: newTxt, isEdited: true });
       }
@@ -897,7 +957,7 @@
 
     onChildChanged(chatRef, (snap) => { renderMessageNode(snap); });
 
-    // Feature 10: Slash Command Engine Parser
+    // Slash Command Engine Parser
     function parseSlashCommand(cmd) {
       const parts = cmd.split(' ');
       const action = parts[0].toLowerCase();
@@ -943,6 +1003,7 @@
         s: handle,
         userStatus: statusInput.value.trim() || 'Online',
         senderUserId: USER_ID,
+        clientIp: detectedClientIp,
         avatar: avatarSelect.value,
         appVersion: APP_VERSION,
         badge: badgeSelect.value,
