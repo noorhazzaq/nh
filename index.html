@@ -20,7 +20,6 @@
   }" />
 
   <style>
-    /* ===== RESET & BASE ===== */
     * {
       margin: 0;
       padding: 0;
@@ -210,14 +209,9 @@
       margin: 0.2rem 0;
       display: block;
     }
-    .message .text .emoji-big {
-      font-size: 2.5rem;
-      display: block;
-    }
     .message .text .sticker {
-      max-width: 150px;
-      max-height: 150px;
-      border-radius: 0.8rem;
+      font-size: 3rem;
+      display: inline-block;
     }
     .message .text .location {
       padding: 0.5rem 1rem;
@@ -266,14 +260,15 @@
       transition: var(--transition);
     }
     .message .text .poll .poll-option:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.15);
     }
-    .message .text .poll .poll-option .vote-bar {
+    .message .text .poll .vote-bar {
       height: 4px;
       background: var(--accent);
       border-radius: 2px;
       margin-top: 0.1rem;
       transition: width 0.3s ease;
+      width: 0%;
     }
     .message .text pre {
       background: #0f0e17;
@@ -462,15 +457,6 @@
         opacity: 0.4;
       }
     }
-    .typing-indicator {
-      align-self: flex-start;
-      background: var(--msg-other);
-      padding: 0.5rem 1.2rem;
-      border-radius: 1.2rem;
-      font-size: 0.8rem;
-      opacity: 0.7;
-      animation: pulse 1.2s ease-in-out infinite;
-    }
     @media (max-width: 600px) {
       .chat-container {
         height: 100vh;
@@ -530,7 +516,7 @@
 <body>
 
   <div class="chat-container">
-    <!-- ===== HEADER ===== -->
+    <!-- HEADER -->
     <div class="chat-header">
       <h1>🌍 <span>Chat</span>Pro</h1>
       <div class="header-right">
@@ -543,12 +529,12 @@
       </div>
     </div>
 
-    <!-- ===== MESSAGES ===== -->
+    <!-- MESSAGES -->
     <div class="messages-area" id="messagesArea">
       <div class="status">👋 Sign in to start chatting</div>
     </div>
 
-    <!-- ===== INPUT ===== -->
+    <!-- INPUT -->
     <div class="input-area">
       <div class="toolbar" id="toolbar">
         <button data-action="emoji">😊 Emoji</button>
@@ -567,7 +553,7 @@
 
       <div class="recording-indicator" id="recordingIndicator">
         🔴 Recording...
-        <button id="stopRecordingBtn" style="background:transparent;border:none;color:#fff;cursor:pointer;">⏹️</button>
+        <button id="stopRecordingBtn" style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:1.2rem;">⏹️</button>
       </div>
 
       <div class="emoji-picker" id="emojiPicker">
@@ -579,7 +565,6 @@
         <button>🥳</button><button>😤</button><button>🤯</button><button>😱</button>
         <button>🍕</button><button>🌮</button><button>🍔</button><button>☕</button>
         <button>🏆</button><button>🎯</button><button>💯</button><button>🔮</button>
-        <button>💔</button><button>💝</button><button>💖</button><button>💗</button>
       </div>
 
       <div class="sticker-picker" id="stickerPicker">
@@ -588,19 +573,18 @@
         <button>🐵</button><button>🦄</button><button>🐉</button><button>🐲</button>
         <button>🚀</button><button>🛸</button><button>👽</button><button>🤖</button>
         <button>🎃</button><button>👻</button><button>💀</button><button>👾</button>
-        <button>⭐</button><button>🌙</button><button>☀️</button><button>🌈</button>
       </div>
 
       <div class="input-row">
         <input type="text" id="messageInput" placeholder="Type a message..." disabled />
         <button id="sendBtn" disabled>Send</button>
         <button id="fileInputBtn" class="icon-btn" disabled>📎</button>
-        <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" />
+        <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" multiple />
       </div>
     </div>
   </div>
 
-  <!-- ===== FIREBASE SDK ===== -->
+  <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
@@ -608,7 +592,7 @@
 
   <script>
     // ============================================================
-    // 1. FIREBASE CONFIG
+    // FIREBASE CONFIG
     // ============================================================
     const firebaseConfig = {
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
@@ -617,7 +601,7 @@
     const db = firebase.database();
 
     // ============================================================
-    // 2. DOM REFS
+    // DOM REFS
     // ============================================================
     const DOM = {
       messages: document.getElementById('messagesArea'),
@@ -637,7 +621,7 @@
     };
 
     // ============================================================
-    // 3. STATE
+    // STATE
     // ============================================================
     let currentUser = null;
     let listeners = [];
@@ -646,7 +630,7 @@
     let pollVotes = {};
 
     // ============================================================
-    // 4. CORE FUNCTIONS
+    // CORE FUNCTIONS
     // ============================================================
     function setStatus(text) {
       let el = DOM.messages.querySelector('.status');
@@ -659,7 +643,9 @@
     }
 
     function scrollBottom() {
-      setTimeout(() => DOM.messages.scrollTop = DOM.messages.scrollHeight, 50);
+      setTimeout(() => {
+        DOM.messages.scrollTop = DOM.messages.scrollHeight;
+      }, 50);
     }
 
     function escapeHTML(text) {
@@ -682,9 +668,9 @@
     }
 
     // ============================================================
-    // 5. FILE STORAGE (Upload to Firebase Storage)
+    // FILE UPLOAD
     // ============================================================
-    async function uploadFile(file) {
+    function uploadFile(file) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = (e) => resolve(e.target.result);
@@ -694,7 +680,7 @@
     }
 
     // ============================================================
-    // 6. MESSAGE RENDERER
+    // MESSAGE RENDERER
     // ============================================================
     function renderMessage(data) {
       const isOwn = currentUser && data.uid === currentUser.uid;
@@ -702,7 +688,6 @@
       div.className = `message ${isOwn ? 'own' : 'other'}`;
       div.dataset.key = data._key;
 
-      // Sender + time
       const header = document.createElement('div');
       header.className = 'sender';
       header.textContent = data.name || 'Anonymous';
@@ -712,7 +697,6 @@
       header.appendChild(time);
       div.appendChild(header);
 
-      // Content
       const content = document.createElement('div');
       content.className = 'text';
       let html = data.text || '';
@@ -723,19 +707,13 @@
         html = `<img src="${url}" alt="Image" loading="lazy" onerror="this.style.display='none'" />`;
       } else if (html.startsWith('🎬 ')) {
         const url = html.substring(4);
-        if (url.startsWith('http')) {
-          html = `<video controls src="${url}" preload="metadata"></video>`;
-        } else {
-          html = `<video controls src="${url}" preload="metadata"></video>`;
-        }
+        html = `<video controls src="${url}" preload="metadata"></video>`;
       } else if (html.startsWith('🎤 ')) {
         const url = html.substring(4);
-        html =
-          `<div class="voice-msg">🎤 <audio controls src="${url}"></audio></div>`;
+        html = `<div class="voice-msg">🎤 <audio controls src="${url}"></audio></div>`;
       } else if (html.startsWith('📍 ')) {
         const coords = html.substring(4);
-        html =
-          `<div class="location">📍 <a href="https://maps.google.com/maps?q=${coords}" target="_blank">${coords}</a></div>`;
+        html = `<div class="location">📍 <a href="https://maps.google.com/maps?q=${coords}" target="_blank">${coords}</a></div>`;
       } else if (html.startsWith('📊 ')) {
         const pollData = html.substring(4);
         const parts = pollData.split('|');
@@ -743,18 +721,17 @@
         const options = parts.slice(1);
         const pollId = data._key;
 
-        let pollHtml =
-          `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(question)}</strong><br/>`;
+        let pollHtml = `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(question)}</strong><br/>`;
         options.forEach((opt, i) => {
           const votes = pollVotes[pollId]?.[i] || 0;
           const total = pollVotes[pollId]?.total || 1;
           const pct = Math.round((votes / total) * 100);
           pollHtml += `
-                  <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
-                    ${escapeHTML(opt)} (${votes} votes)
-                    <div class="vote-bar" style="width:${pct}%"></div>
-                  </div>
-                `;
+                    <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
+                      ${escapeHTML(opt)} (${votes} votes)
+                      <div class="vote-bar" style="width:${pct}%"></div>
+                    </div>
+                  `;
         });
         pollHtml += '</div>';
         html = pollHtml;
@@ -767,17 +744,16 @@
       } else if (html.startsWith('🎨 ')) {
         const emoji = html.substring(4);
         html = `<span class="sticker">${emoji}</span>`;
+      } else {
+        // Markdown for regular text
+        html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+        html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
+        html = html.replace(/~~(.*?)~~/g, '<s>$1</s>');
       }
-
-      // Markdown
-      html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-      html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
-      html = html.replace(/~~(.*?)~~/g, '<s>$1</s>');
 
       content.innerHTML = html;
       div.appendChild(content);
 
-      // Remove status
       const status = DOM.messages.querySelector('.status');
       if (status) status.remove();
 
@@ -795,49 +771,49 @@
     }
 
     // ============================================================
-    // 7. POLL SYSTEM
+    // POLL SYSTEM
     // ============================================================
     function votePoll(pollId, optionIndex) {
-      if (!currentUser) return;
-      const voteKey = `poll_${pollId}`;
-      const userVoteRef = db.ref('polls/' + pollId + '/votes/' + currentUser.uid);
+      if (!currentUser) {
+        alert('Sign in to vote!');
+        return;
+      }
 
+      const userVoteRef = db.ref('polls/' + pollId + '/votes/' + currentUser.uid);
       userVoteRef.once('value', (snap) => {
         if (snap.exists()) {
           alert('You already voted on this poll!');
           return;
         }
-        userVoteRef.set(optionIndex);
-        // Update local votes
-        if (!pollVotes[pollId]) pollVotes[pollId] = {};
-        pollVotes[pollId][optionIndex] = (pollVotes[pollId][optionIndex] || 0) + 1;
-        pollVotes[pollId].total = (pollVotes[pollId].total || 0) + 1;
-        // Re-render the poll
-        const pollEl = document.querySelector(`[data-poll-id="${pollId}"]`);
-        if (pollEl) {
-          const messageEl = pollEl.closest('.message');
-          if (messageEl) {
-            const data = {
-              text: messageEl.querySelector('.text').innerHTML,
-              _key: pollId
-            };
-            // Refresh the poll display
-            renderPoll(pollId);
+
+        userVoteRef.set(optionIndex, (error) => {
+          if (error) {
+            alert('Failed to vote. Please try again.');
+            return;
           }
-        }
+
+          // Update local vote counts
+          if (!pollVotes[pollId]) pollVotes[pollId] = {};
+          pollVotes[pollId][optionIndex] = (pollVotes[pollId][optionIndex] || 0) + 1;
+          pollVotes[pollId].total = (pollVotes[pollId].total || 0) + 1;
+
+          // Refresh poll display
+          renderPoll(pollId);
+        });
       });
     }
 
     function renderPoll(pollId) {
       const pollEl = document.querySelector(`[data-poll-id="${pollId}"]`);
       if (!pollEl) return;
+
       const messageEl = pollEl.closest('.message');
       if (!messageEl) return;
 
-      // Re-fetch poll data from Firebase
       db.ref('polls/' + pollId).once('value', (snap) => {
         const data = snap.val();
         if (!data) return;
+
         const votes = data.votes || {};
         const total = Object.keys(votes).length;
         const options = data.options || [];
@@ -852,18 +828,17 @@
           const count = counts[i] || 0;
           const pct = total > 0 ? Math.round((count / total) * 100) : 0;
           html += `
-                  <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
-                    ${escapeHTML(opt)} (${count} votes)
-                    <div class="vote-bar" style="width:${pct}%"></div>
-                  </div>
-                `;
+                    <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
+                      ${escapeHTML(opt)} (${count} votes)
+                      <div class="vote-bar" style="width:${pct}%"></div>
+                    </div>
+                  `;
         });
         html += '</div>';
 
         const content = messageEl.querySelector('.text');
         content.innerHTML = html;
 
-        // Re-attach vote handlers
         messageEl.querySelectorAll('.poll-option').forEach(el => {
           el.addEventListener('click', () => {
             const pid = el.dataset.pollId;
@@ -875,7 +850,7 @@
     }
 
     // ============================================================
-    // 8. FIREBASE SUBSCRIPTIONS
+    // FIREBASE SUBSCRIPTIONS
     // ============================================================
     function subscribeMessages() {
       listeners.forEach(ref => ref.off());
@@ -900,7 +875,7 @@
         if (!snap.exists()) setStatus('💬 No messages yet. Say hello!');
       });
 
-      // Poll votes subscription
+      // Poll votes listener
       const pollRef = db.ref('polls');
       pollRef.on('child_changed', (snap) => {
         renderPoll(snap.key);
@@ -917,23 +892,33 @@
       presence.on('value', (snap) => {
         if (snap.val() && currentUser) {
           const ref = users.child(currentUser.uid);
-          ref.set({ name: currentUser.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+          ref.set({
+            name: currentUser.name,
+            lastSeen: firebase.database.ServerValue.TIMESTAMP
+          });
           ref.onDisconnect().remove();
         }
       });
 
       users.on('value', (snap) => {
-        DOM.online.textContent = snap.exists() ? `👤 ${snap.numChildren()} online` : '👤 0 online';
+        if (snap.exists()) {
+          DOM.online.textContent = `👤 ${snap.numChildren()} online`;
+        } else {
+          DOM.online.textContent = '👤 0 online';
+        }
       });
 
       listeners.push(presence);
     }
 
     // ============================================================
-    // 9. SEND MESSAGE
+    // SEND MESSAGE
     // ============================================================
     function sendMessage(text) {
-      if (!currentUser) { alert('Sign in first!'); return; }
+      if (!currentUser) {
+        alert('Sign in first!');
+        return;
+      }
       if (!text || !text.trim()) return;
 
       const msgData = {
@@ -943,7 +928,7 @@
         timestamp: firebase.database.ServerValue.TIMESTAMP
       };
 
-      // If it's a poll, store poll data separately
+      // Store poll data separately
       if (text.startsWith('📊 ')) {
         const pollData = text.substring(4);
         const parts = pollData.split('|');
@@ -970,10 +955,13 @@
     }
 
     // ============================================================
-    // 10. FILE HANDLING
+    // FILE HANDLING
     // ============================================================
     async function handleFile(file) {
-      if (!currentUser) { alert('Sign in first!'); return; }
+      if (!currentUser) {
+        alert('Sign in first!');
+        return;
+      }
 
       try {
         const type = getFileType(file);
@@ -981,7 +969,6 @@
         if (type === 'video') prefix = '🎬 ';
         else if (type === 'audio') prefix = '🎤 ';
 
-        // Convert to base64
         const dataUrl = await uploadFile(file);
         sendMessage(prefix + dataUrl);
       } catch (err) {
@@ -991,7 +978,7 @@
     }
 
     // ============================================================
-    // 11. VOICE RECORDING
+    // VOICE RECORDING
     // ============================================================
     async function startRecording() {
       try {
@@ -1008,6 +995,8 @@
           const file = new File([audioBlob], 'voice.webm', { type: 'audio/webm' });
           await handleFile(file);
           DOM.recordingIndicator.classList.remove('active');
+          DOM.input.disabled = false;
+          DOM.send.disabled = false;
           stream.getTracks().forEach(track => track.stop());
         };
 
@@ -1032,7 +1021,7 @@
     }
 
     // ============================================================
-    // 12. AUTH
+    // AUTH
     // ============================================================
     function login() {
       const name = DOM.username.value.trim() || 'Guest';
@@ -1049,7 +1038,6 @@
       DOM.fileBtn.disabled = false;
       DOM.input.placeholder = `Message as ${name}...`;
 
-      // Enable toolbar buttons
       DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = false);
 
       setStatus(`✅ Signed in as ${name}`);
@@ -1058,7 +1046,10 @@
     }
 
     function logout() {
-      if (currentUser) db.ref('users').child(currentUser.uid).remove();
+      if (currentUser) {
+        db.ref('users').child(currentUser.uid).remove();
+      }
+
       listeners.forEach(ref => ref.off());
       listeners = [];
       currentUser = null;
@@ -1072,7 +1063,6 @@
       DOM.input.placeholder = 'Sign in to chat...';
       DOM.input.value = '';
 
-      // Disable toolbar buttons
       DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
 
       DOM.messages.innerHTML = '';
@@ -1081,7 +1071,7 @@
     }
 
     // ============================================================
-    // 13. TOOLBAR ACTIONS
+    // TOOLBAR ACTIONS
     // ============================================================
     function togglePicker(type) {
       const pickers = {
@@ -1097,7 +1087,7 @@
     }
 
     // ============================================================
-    // 14. EVENT BINDINGS
+    // EVENT BINDINGS
     // ============================================================
     // Auth
     DOM.login.addEventListener('click', login);
@@ -1119,13 +1109,16 @@
     DOM.fileBtn.addEventListener('click', () => DOM.fileInput.click());
     DOM.fileInput.addEventListener('change', async (e) => {
       if (e.target.files.length) {
-        await handleFile(e.target.files[0]);
+        for (let file of e.target.files) {
+          await handleFile(file);
+        }
         e.target.value = '';
       }
     });
 
     // Voice recording
-    DOM.toolbar.querySelector('[data-action="voice"]').addEventListener('click', () => {
+    const voiceBtn = DOM.toolbar.querySelector('[data-action="voice"]');
+    voiceBtn.addEventListener('click', () => {
       if (mediaRecorder && mediaRecorder.state === 'recording') {
         stopRecording();
       } else {
@@ -1148,10 +1141,11 @@
         case 'sticker':
           togglePicker('sticker');
           break;
-        case 'gif':
+        case 'gif': {
           const gifUrl = prompt('Enter GIF URL (e.g., https://media.giphy.com/media/xxx/giphy.gif):');
           if (gifUrl) sendMessage('🎬 GIF: ' + gifUrl);
           break;
+        }
         case 'image':
           DOM.fileInput.click();
           break;
@@ -1174,7 +1168,7 @@
             alert('Geolocation is not supported by your browser.');
           }
           break;
-        case 'poll':
+        case 'poll': {
           const question = prompt('Enter poll question:');
           if (question) {
             const options = prompt('Enter poll options (comma separated, min 2):');
@@ -1188,10 +1182,12 @@
             }
           }
           break;
-        case 'code':
+        }
+        case 'code': {
           const code = prompt('Enter your code:');
           if (code) sendMessage('💻 ' + code);
           break;
+        }
         case 'bold':
           DOM.input.value += ' **bold text** ';
           DOM.input.focus();
@@ -1203,8 +1199,6 @@
         case 'strike':
           DOM.input.value += ' ~~strikethrough text~~ ';
           DOM.input.focus();
-          break;
-        default:
           break;
       }
     });
@@ -1237,9 +1231,8 @@
     });
 
     // ============================================================
-    // 15. INIT
+    // INIT
     // ============================================================
-    // Disable toolbar initially
     DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
 
     setStatus('🌐 Connecting...');
