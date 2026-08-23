@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>PixelChat</title>
+  <title>PixelChat · Self-Healing</title>
 
-  <!-- Preconnect to YOUR Firebase database -->
+  <!-- Preconnect to Firebase -->
   <link rel="preconnect" href="https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app">
   <link rel="preconnect" href="https://www.googleapis.com">
 
@@ -13,7 +13,6 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"></noscript>
 
-  <!-- PWA Manifest (inline) -->
   <link rel="manifest" href='data:application/json,{"name":"PixelChat","short_name":"PixelChat","start_url":"/","display":"standalone","background_color":"#111","theme_color":"#0f0","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23111%22/%3E%3Ctext x=%228%22 y=%2248%22 font-family=%22monospace%22 font-size=%2248%22 fill=%22%230f0%22%3E%3C/text%3E%3C/svg%3E","sizes":"64x64","type":"image/svg+xml"}]}'>
 
   <style>
@@ -31,7 +30,7 @@
       image-rendering:pixelated;
     }
     #app {
-      max-width:600px;
+      max-width:700px;
       width:100%;
       background:#222;
       border:4px solid #0f0;
@@ -46,8 +45,23 @@
       margin-bottom:12px;
       letter-spacing:2px;
     }
+    #status-bar {
+      display:flex;
+      justify-content:space-between;
+      font-size:8px;
+      color:#888;
+      margin-bottom:6px;
+      padding:4px;
+      background:#1a1a1a;
+      border:1px solid #333;
+      flex-wrap:wrap;
+      gap:4px;
+    }
+    #status-bar .healing { color:#ff0; animation:blink 1s infinite; }
+    #status-bar .fixed { color:#0f0; }
+    @keyframes blink { 50% { opacity:0.3; } }
     #messages {
-      height:300px;
+      height:250px;
       overflow-y:auto;
       background:#000;
       border:2px solid #0f0;
@@ -62,6 +76,9 @@
       padding:4px 0;
       word-wrap:break-word;
     }
+    #messages .error-msg { color:#f44; background:#2a0000; padding:4px; margin:4px 0; border-left:3px solid #f44; }
+    #messages .fix-msg { color:#0f0; background:#002a00; padding:4px; margin:4px 0; border-left:3px solid #0f0; }
+    #messages .backend-fix { color:#0ff; background:#002a2a; padding:4px; margin:4px 0; border-left:3px solid #0ff; }
     .username { color:#ff0; margin-right:8px; }
     .timestamp { color:#666; font-size:8px; margin-left:8px; }
     #input-area {
@@ -100,12 +117,44 @@
       color:#fff;
       border-color:#f0f;
     }
-    #status {
+    #status { font-size:8px; color:#888; margin-top:6px; text-align:center; }
+    #healing-log {
+      margin-top:8px;
+      padding:8px;
+      background:#1a1a1a;
+      border:1px solid #333;
       font-size:8px;
-      color:#888;
-      margin-top:6px;
-      text-align:center;
+      max-height:150px;
+      overflow-y:auto;
+      color:#aaa;
+      display:none;
     }
+    #healing-log .log-entry { padding:2px 0; border-bottom:1px solid #222; }
+    #healing-log .log-error { color:#f44; }
+    #healing-log .log-fix { color:#0f0; }
+    #healing-log .log-info { color:#0ff; }
+    #healing-log .log-backend { color:#f0f; }
+    #toggle-log {
+      font-size:8px;
+      background:transparent;
+      color:#666;
+      border:1px solid #333;
+      padding:4px 8px;
+      cursor:pointer;
+      margin-top:4px;
+    }
+    #toggle-log:hover { color:#0f0; border-color:#0f0; }
+    .heal-btn {
+      font-size:8px;
+      background:#f0f;
+      color:#000;
+      border:2px solid #f0f;
+      padding:4px 8px;
+      cursor:pointer;
+      margin-left:8px;
+      font-weight:bold;
+    }
+    .heal-btn:hover { background:#0ff; border-color:#0ff; }
     ::-webkit-scrollbar { width:6px; background:#000; }
     ::-webkit-scrollbar-thumb { background:#0f0; border:1px solid #0f0; }
   </style>
@@ -113,21 +162,31 @@
 <body>
   <div id="app">
     <h1>⬛ PIXELCHAT ⬛</h1>
+    <div id="status-bar">
+      <span id="connection-status">⚡ connecting…</span>
+      <span id="healing-status">🧠 monitoring</span>
+      <span id="fix-count">🔧 fixes: 0</span>
+      <span id="backend-status">🌐 backend: checking…</span>
+    </div>
     <div id="messages"></div>
     <div id="input-area">
       <input type="text" id="nameInput" placeholder="NAME" maxlength="12" value="Guest">
       <input type="text" id="msgInput" placeholder="MESSAGE" maxlength="200" autofocus>
       <button id="sendBtn">SEND</button>
+      <button class="heal-btn" id="forceHealBtn">🧬 FORCE HEAL</button>
     </div>
-    <div id="status">connecting…</div>
+    <div id="status">ready</div>
+    <button id="toggle-log">📋 show healing log</button>
+    <div id="healing-log"></div>
   </div>
 
   <script>
     // ============================================================
-    //  YOUR FIREBASE DATABASE URL – NO API KEY NEEDED!
-    //  Using Firebase REST API directly
+    //  SELF-HEALING WITH BACKEND FILE WRITE ACCESS
     // ============================================================
+
     const DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app';
+    const BACKEND_URL = '/api/heal';
 
     // DOM refs
     const msgContainer = document.getElementById('messages');
@@ -135,10 +194,185 @@
     const msgInput = document.getElementById('msgInput');
     const sendBtn = document.getElementById('sendBtn');
     const statusEl = document.getElementById('status');
+    const connectionStatus = document.getElementById('connection-status');
+    const healingStatus = document.getElementById('healing-status');
+    const fixCountEl = document.getElementById('fix-count');
+    const backendStatus = document.getElementById('backend-status');
+    const toggleLogBtn = document.getElementById('toggle-log');
+    const forceHealBtn = document.getElementById('forceHealBtn');
 
     let lastKey = null;
+    let isPolling = false;
+    let fixCount = 0;
+    let isHealing = false;
 
-    // Helpers
+    const healingLog = document.getElementById('healing-log');
+
+    // ============================================================
+    //  LOGGING
+    // ============================================================
+    function addLog(message, type = 'info') {
+      const entry = document.createElement('div');
+      entry.className = `log-entry log-${type}`;
+      const time = new Date().toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      entry.textContent = `[${time}] ${message}`;
+      healingLog.appendChild(entry);
+      healingLog.scrollTop = healingLog.scrollHeight;
+      
+      if (type === 'error' || type === 'backend') {
+        healingLog.style.display = 'block';
+        toggleLogBtn.textContent = '📋 hide healing log';
+      }
+    }
+
+    function addMessageToChat(text, className = '') {
+      const div = document.createElement('div');
+      div.className = className;
+      div.textContent = text;
+      msgContainer.appendChild(div);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    // ============================================================
+    //  BACKEND HEALING ENGINE
+    // ============================================================
+    
+    // Check backend health
+    function checkBackend() {
+      fetch(BACKEND_URL)
+        .then(res => res.json())
+        .then(data => {
+          backendStatus.textContent = '🌐 backend: online v' + (data.version || '1.0');
+          addLog('✅ Backend online: ' + JSON.stringify(data), 'info');
+        })
+        .catch(() => {
+          backendStatus.textContent = '🌐 backend: offline';
+          addLog('⚠️ Backend unreachable', 'error');
+        });
+    }
+
+    // Request backend to heal the code
+    function requestBackendHeal(errorData) {
+      if (isHealing) return;
+      isHealing = true;
+      healingStatus.textContent = '🔄 healing…';
+      healingStatus.className = 'healing';
+
+      addLog(`🔧 Requesting backend heal for: ${errorData.message}`, 'backend');
+
+      fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          error: errorData,
+          timestamp: Date.now(),
+          url: window.location.href
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          fixCount++;
+          fixCountEl.textContent = `🔧 fixes: ${fixCount}`;
+          addLog(`✅ Backend healed: ${data.patch}`, 'fix');
+          addLog(`📝 Version: ${data.version}`, 'info');
+          addMessageToChat(`🧬 BACKEND HEALED: ${data.patch}`, 'backend-fix');
+          healingStatus.textContent = '🧠 healed';
+          healingStatus.className = 'fixed';
+          
+          // Reload to apply fixes
+          if (data.restart_required) {
+            addLog('🔄 Reloading to apply fixes…', 'info');
+            setTimeout(() => window.location.reload(), 2000);
+          }
+        } else {
+          addLog(`❌ Backend heal failed: ${data.error}`, 'error');
+          healingStatus.textContent = '🧠 monitoring';
+          healingStatus.className = '';
+        }
+      })
+      .catch(err => {
+        addLog(`❌ Backend request failed: ${err.message}`, 'error');
+        healingStatus.textContent = '🧠 monitoring';
+        healingStatus.className = '';
+      })
+      .finally(() => {
+        isHealing = false;
+      });
+    }
+
+    // Force heal (manual trigger)
+    forceHealBtn.addEventListener('click', () => {
+      const errorData = {
+        message: 'Manual heal request',
+        type: 'manual',
+        user: nameInput.value || 'Guest'
+      };
+      requestBackendHeal(errorData);
+      addLog('🧬 Manual heal triggered', 'backend');
+    });
+
+    // ============================================================
+    //  ERROR DETECTION (sends to backend)
+    // ============================================================
+    
+    // Global error handler
+    window.onerror = (msg, url, line, col, error) => {
+      const errorData = {
+        message: msg,
+        url: url,
+        line: line,
+        col: col,
+        stack: error?.stack || '',
+        type: 'runtime'
+      };
+      addLog(`❌ Error: ${msg}`, 'error');
+      addMessageToChat(`⚠️ ERROR: ${msg}`, 'error-msg');
+      
+      // Send to backend for healing
+      requestBackendHeal(errorData);
+      return true;
+    };
+
+    // Unhandled promise rejections
+    window.addEventListener('unhandledrejection', (event) => {
+      const errorData = {
+        message: event.reason?.message || 'Promise rejection',
+        stack: event.reason?.stack || '',
+        type: 'promise'
+      };
+      addLog(`❌ Promise error: ${errorData.message}`, 'error');
+      requestBackendHeal(errorData);
+    });
+
+    // Fetch interceptor
+    const originalFetch = window.fetch;
+    window.fetch = async (...args) => {
+      try {
+        const response = await originalFetch.apply(window, args);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response;
+      } catch (error) {
+        if (!error.message.includes('heal')) { // Avoid recursion
+          const errorData = {
+            message: error.message,
+            stack: error.stack || '',
+            type: 'fetch',
+            url: args[0]
+          };
+          addLog(`❌ Fetch error: ${error.message}`, 'error');
+          requestBackendHeal(errorData);
+        }
+        throw error;
+      }
+    };
+
+    // ============================================================
+    //  CHAT FUNCTIONS
+    // ============================================================
+
     function getTime() {
       const d = new Date();
       return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
@@ -151,111 +385,112 @@
     }
 
     function addMessage(key, data) {
-      const div = document.createElement('div');
-      const name = data.username || 'Anonymous';
-      const text = data.text || '';
-      const colour = data.colour || '#0f0';
-      const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '';
-      div.innerHTML = `<span class="username" style="color:${colour}">${escapeHtml(name)}</span>${escapeHtml(text)}<span class="timestamp">${time}</span>`;
-      div.dataset.key = key;
-      msgContainer.appendChild(div);
-      msgContainer.scrollTop = msgContainer.scrollHeight;
+      try {
+        const div = document.createElement('div');
+        const name = data?.username || 'Anonymous';
+        const text = data?.text || '';
+        const colour = data?.colour || '#0f0';
+        const time = data?.timestamp ? new Date(data.timestamp).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '';
+        div.innerHTML = `<span class="username" style="color:${colour}">${escapeHtml(name)}</span>${escapeHtml(text)}<span class="timestamp">${time}</span>`;
+        div.dataset.key = key;
+        msgContainer.appendChild(div);
+        msgContainer.scrollTop = msgContainer.scrollHeight;
+      } catch (error) {
+        addLog(`Error adding message: ${error.message}`, 'error');
+      }
     }
 
-    // ============================================================
-    //  FETCH MESSAGES VIA REST API (only last 50)
-    // ============================================================
     function fetchMessages() {
       const url = `${DB_URL}/messages.json?orderBy="$key"&limitToLast=50`;
       fetch(url)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
         .then(data => {
           if (!data) return;
           const keys = Object.keys(data).sort();
-          // Clear and re-render
           msgContainer.innerHTML = '';
-          keys.forEach(key => {
-            addMessage(key, data[key]);
-          });
-          if (keys.length > 0) {
-            lastKey = keys[keys.length - 1];
-          }
-          statusEl.textContent = 'connected · ' + getTime();
+          keys.forEach(key => addMessage(key, data[key]));
+          if (keys.length > 0) lastKey = keys[keys.length - 1];
+          connectionStatus.textContent = '⚡ connected';
+          statusEl.textContent = 'live · ' + getTime();
+          try { localStorage.setItem('pixelchat-cache', JSON.stringify(data)); } catch (e) {}
         })
-        .catch(err => {
-          statusEl.textContent = '⚠️ offline – retrying…';
-          console.warn(err);
+        .catch(error => {
+          connectionStatus.textContent = '⚠️ offline';
+          statusEl.textContent = '⚠️ offline';
+          if (!error.message.includes('heal')) {
+            addLog(`Fetch error: ${error.message}`, 'error');
+          }
         });
     }
 
-    // ============================================================
-    //  POLL FOR NEW MESSAGES (REST alternative to realtime)
-    //  Optimised for 64kbps – polls every 3 seconds
-    // ============================================================
     function pollNewMessages() {
+      if (isPolling) return;
+      isPolling = true;
       let query = `${DB_URL}/messages.json?orderBy="$key"&limitToLast=1`;
       if (lastKey) {
         query = `${DB_URL}/messages.json?orderBy="$key"&startAfter="${lastKey}"&limitToFirst=5`;
       }
       fetch(query)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          return res.json();
+        })
         .then(data => {
           if (!data) return;
           const keys = Object.keys(data).sort();
           keys.forEach(key => {
-            if (key !== lastKey) {
-              addMessage(key, data[key]);
-            }
+            if (key !== lastKey) addMessage(key, data[key]);
           });
-          if (keys.length > 0) {
-            lastKey = keys[keys.length - 1];
-          }
+          if (keys.length > 0) lastKey = keys[keys.length - 1];
           statusEl.textContent = 'live · ' + getTime();
         })
-        .catch(err => {
-          // Silent fail – will retry next poll
-        });
+        .catch(() => {})
+        .finally(() => { isPolling = false; });
     }
 
-    // ============================================================
-    //  SEND MESSAGE VIA REST API
-    // ============================================================
     function sendMessage() {
       const name = nameInput.value.trim() || 'Guest';
       const text = msgInput.value.trim();
       if (!text) return;
-
       const msg = {
         username: name.slice(0, 12),
         text: text.slice(0, 200),
         timestamp: Date.now(),
         colour: '#0f0'
       };
-
       const url = `${DB_URL}/messages.json`;
       fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(msg)
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
       .then(() => {
         msgInput.value = '';
         msgInput.focus();
-        // Immediately fetch to show new message
         pollNewMessages();
       })
-      .catch(err => {
+      .catch(error => {
         statusEl.textContent = '❌ send failed';
-        console.error(err);
+        addLog(`Send failed: ${error.message}`, 'error');
       });
     }
 
     // ============================================================
-    //  INIT – fetch messages and start polling
+    //  INIT
     // ============================================================
+
+    // Check backend
+    checkBackend();
+
+    // Start chat
     fetchMessages();
-    // Poll every 3 seconds (optimised for 64kbps)
     setInterval(pollNewMessages, 3000);
 
     // Event listeners
@@ -263,40 +498,39 @@
     msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
     window.addEventListener('load', () => msgInput.focus());
 
+    toggleLogBtn.addEventListener('click', () => {
+      const log = document.getElementById('healing-log');
+      if (log.style.display === 'block') {
+        log.style.display = 'none';
+        toggleLogBtn.textContent = '📋 show healing log';
+      } else {
+        log.style.display = 'block';
+        toggleLogBtn.textContent = '📋 hide healing log';
+      }
+    });
+
     // ============================================================
-    //  SERVICE WORKER – Inline (no separate file)
+    //  SERVICE WORKER
     // ============================================================
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE = 'pixelchat-v1';
-        const ASSETS = [
-          '/',
-          '/index.html',
-          'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
-        ];
+        const CACHE = 'pixelchat-v3';
+        const ASSETS = ['/', '/index.html', 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'];
         self.addEventListener('install', e => {
-          e.waitUntil(
-            caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
-          );
+          e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));
         });
         self.addEventListener('activate', e => {
-          e.waitUntil(
-            caches.keys().then(keys => Promise.all(
-              keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-            )).then(() => clients.claim())
-          );
+          e.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => clients.claim()));
         });
         self.addEventListener('fetch', e => {
           const req = e.request;
           const url = new URL(req.url);
           if (url.origin === location.origin || url.hostname === 'fonts.googleapis.com') {
-            e.respondWith(
-              caches.match(req).then(cached => cached || fetch(req).then(res => {
-                const clone = res.clone();
-                caches.open(CACHE).then(c => c.put(req, clone));
-                return res;
-              }))
-            );
+            e.respondWith(caches.match(req).then(cached => cached || fetch(req).then(res => {
+              const clone = res.clone();
+              caches.open(CACHE).then(c => c.put(req, clone));
+              return res;
+            })));
           } else {
             e.respondWith(fetch(req));
           }
@@ -306,6 +540,10 @@
       const swUrl = URL.createObjectURL(blob);
       navigator.serviceWorker.register(swUrl);
     }
+
+    console.log('🧠 Self-healing system active with backend file write access');
+    console.log('🔧 Backend API: ' + BACKEND_URL);
+    console.log('📊 Click "FORCE HEAL" to trigger manual healing');
   </script>
 </body>
 </html>
