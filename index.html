@@ -1,447 +1,310 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en-GB">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel World Chat (Fixed & Functional)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>PixelChat</title>
+
+  <!-- Preconnect to YOUR Firebase database -->
+  <link rel="preconnect" href="https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app">
+  <link rel="preconnect" href="https://www.googleapis.com">
+
+  <!-- Pixel font -->
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"></noscript>
+
+  <!-- PWA Manifest (inline) -->
+  <link rel="manifest" href='data:application/json,{"name":"PixelChat","short_name":"PixelChat","start_url":"/","display":"standalone","background_color":"#111","theme_color":"#0f0","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23111%22/%3E%3Ctext x=%228%22 y=%2248%22 font-family=%22monospace%22 font-size=%2248%22 fill=%22%230f0%22%3E%3C/text%3E%3C/svg%3E","sizes":"64x64","type":"image/svg+xml"}]}'>
+
   <style>
-    body { font-family: 'Press Start 2P', monospace; image-rendering: pixelated; }
-    .theme-neon { --pb: #6366f1; --pbg: #1e1b4b; --g: rgba(99,102,241,0.4); }
-    .theme-amber { --pb: #f59e0b; --pbg: #451a03; --g: rgba(245,158,11,0.4); }
-    .theme-matrix { --pb: #22c55e; --pbg: #052e16; --g: rgba(34,197,94,0.4); }
-    .crt-overlay { background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.35) 50%); background-size: 100% 4px; pointer-events: none; }
-    .glow-yellow { text-shadow: 0 0 6px #facc15; }
-    .glow-green { text-shadow: 0 0 6px #4ade80; }
-    .px-box { background: var(--pbg, #1e1b4b); border: 2px solid var(--pb, #6366f1); box-shadow: 0 0 8px var(--g, rgba(99,102,241,0.4)); }
-    .px-btn { background: #16a34a; border: 2px solid #4ade80; }
-    .px-btn:active { transform: translateY(1px); }
-    @keyframes msgPop { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
-    .animate-pop { animation: msgPop 0.15s ease-out forwards; }
-    .spoiler-hidden { filter: blur(5px); cursor: pointer; }
-    #v::-webkit-scrollbar { width: 4px; }
-    #v::-webkit-scrollbar-thumb { background: #6366f1; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background:#111;
+      color:#0f0;
+      font-family: 'Press Start 2P', monospace;
+      font-size:12px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      min-height:100vh;
+      padding:8px;
+      image-rendering:pixelated;
+    }
+    #app {
+      max-width:600px;
+      width:100%;
+      background:#222;
+      border:4px solid #0f0;
+      padding:12px;
+      box-shadow:8px 8px 0 #0f0;
+    }
+    h1 {
+      font-size:18px;
+      text-align:center;
+      color:#f0f;
+      text-shadow:3px 3px 0 #0ff;
+      margin-bottom:12px;
+      letter-spacing:2px;
+    }
+    #messages {
+      height:300px;
+      overflow-y:auto;
+      background:#000;
+      border:2px solid #0f0;
+      padding:8px;
+      margin-bottom:8px;
+      scroll-behavior:smooth;
+      font-size:11px;
+      line-height:1.6;
+    }
+    #messages div {
+      border-bottom:1px solid #333;
+      padding:4px 0;
+      word-wrap:break-word;
+    }
+    .username { color:#ff0; margin-right:8px; }
+    .timestamp { color:#666; font-size:8px; margin-left:8px; }
+    #input-area {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    #input-area input, #input-area button {
+      font-family:inherit;
+      font-size:11px;
+      background:#000;
+      color:#0f0;
+      border:2px solid #0f0;
+      padding:8px;
+      outline:none;
+      image-rendering:pixelated;
+    }
+    #input-area input {
+      flex:2;
+      min-width:120px;
+    }
+    #input-area input:focus {
+      background:#0f0;
+      color:#000;
+    }
+    #input-area button {
+      flex:1;
+      background:#0f0;
+      color:#000;
+      cursor:pointer;
+      font-weight:bold;
+      min-width:80px;
+    }
+    #input-area button:hover {
+      background:#f0f;
+      color:#fff;
+      border-color:#f0f;
+    }
+    #status {
+      font-size:8px;
+      color:#888;
+      margin-top:6px;
+      text-align:center;
+    }
+    ::-webkit-scrollbar { width:6px; background:#000; }
+    ::-webkit-scrollbar-thumb { background:#0f0; border:1px solid #0f0; }
   </style>
 </head>
-<body id="appBody" class="h-full text-white flex flex-col p-2 bg-slate-950 select-none overflow-hidden relative theme-neon">
-
-  <div class="crt-overlay absolute inset-0 z-50"></div>
-
-  <!-- PINNED BANNER -->
-  <div id="pinnedBanner" class="hidden bg-yellow-950 border border-yellow-500 p-1 mb-1 flex justify-between items-center z-10 text-[7px] text-yellow-300">
-    <div class="truncate flex-1">📌 <span id="pinnedContent">None</span></div>
-    <button type="button" id="unpinBtn" class="text-red-400 font-bold ml-2">X</button>
+<body>
+  <div id="app">
+    <h1>⬛ PIXELCHAT ⬛</h1>
+    <div id="messages"></div>
+    <div id="input-area">
+      <input type="text" id="nameInput" placeholder="NAME" maxlength="12" value="Guest">
+      <input type="text" id="msgInput" placeholder="MESSAGE" maxlength="200" autofocus>
+      <button id="sendBtn">SEND</button>
+    </div>
+    <div id="status">connecting…</div>
   </div>
 
-  <!-- HEADER -->
-  <header class="px-box p-2 mb-1.5 flex items-center justify-between shrink-0 z-10 flex-wrap gap-1">
-    <div class="flex items-center gap-1 flex-1 flex-wrap">
-      <select id="avatarSelect" class="bg-slate-900 text-[9px] border border-indigo-500 rounded p-0.5 text-yellow-300">
-        <option value="⛏️">⛏️</option><option value="🧙‍♂️">🧙‍♂️</option><option value="🤖">🤖</option><option value="👾">👾</option>
-      </select>
-      <input type="text" id="nameInput" maxlength="12" class="bg-slate-900 border border-indigo-500 text-green-400 text-[8px] px-1 py-0.5 w-20 focus:outline-none glow-green" />
-      <input type="text" id="statusInput" maxlength="15" placeholder="Status..." value="Mining..." class="bg-slate-900 border border-indigo-800 text-slate-300 text-[6px] px-1 py-0.5 w-20 focus:outline-none" />
-      <select id="badgeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-cyan-300">
-        <option value="PLAYER">PLAYER</option><option value="VIP">VIP</option><option value="MOD">MOD</option>
-      </select>
-    </div>
+  <script>
+    // ============================================================
+    //  YOUR FIREBASE DATABASE URL – NO API KEY NEEDED!
+    //  Using Firebase REST API directly
+    // ============================================================
+    const DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app';
 
-    <div class="flex items-center gap-1">
-      <select id="themeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-purple-300">
-        <option value="theme-neon">NEON</option><option value="theme-amber">AMBER</option><option value="theme-matrix">MATRIX</option>
-      </select>
-      <button type="button" id="audioToggleBtn" class="bg-slate-900 border border-indigo-500 text-[7px] p-1 rounded text-yellow-400">🔊</button>
-    </div>
-  </header>
-
-  <!-- CONTROL BAR -->
-  <div class="flex items-center justify-between gap-1 bg-slate-900 border border-indigo-900 p-1 mb-1 z-10 text-[6px]">
-    <div class="flex items-center gap-1 flex-1">
-      <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="Search..." class="bg-slate-950 border border-indigo-800 text-yellow-300 px-1 py-0.5 w-full focus:outline-none" />
-    </div>
-    <button type="button" id="miniGameBtn" class="bg-amber-950 border border-amber-600 px-1.5 py-0.5 text-yellow-300">🎮 CLICKER</button>
-    <button type="button" id="exportLogsBtn" class="bg-slate-950 border border-slate-700 px-1.5 py-0.5 text-cyan-300">💾 EXPORT</button>
-  </div>
-
-  <!-- MINI-GAME PANEL -->
-  <div id="miniGamePanel" class="hidden bg-slate-900 border border-yellow-500 p-2 mb-1 z-20 text-center space-y-1">
-    <div class="text-[7px] text-yellow-300 glow-yellow">🪙 COIN MINER</div>
-    <div id="coinScore" class="text-[9px] text-green-400 font-bold">0 COINS</div>
-    <button type="button" id="mineCoinBtn" class="px-btn text-[8px] text-white px-3 py-1 font-bold my-1">CLICK!</button>
-    <button type="button" id="closeGameBtn" class="text-[6px] text-red-400 block mx-auto underline">CLOSE</button>
-  </div>
-
-  <!-- CHAT VIEWPORT -->
-  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-1 z-10">
-    <div id="c" class="space-y-2 text-[8px]">
-      <div class="text-[7px] text-yellow-300 bg-yellow-950/50 p-1.5 border border-yellow-500/50 glow-yellow animate-pop">
-        ⚡ 64kbps Mode Ready & Functional!
-      </div>
-    </div>
-  </main>
-
-  <div id="typingIndicator" class="hidden text-[6px] text-cyan-300 italic px-1 mb-0.5 animate-pulse z-10">💬 Someone is typing...</div>
-
-  <!-- REPLY BANNER -->
-  <div id="replyBanner" class="hidden bg-indigo-950 border-t border-indigo-500 p-1 flex justify-between items-center z-10 text-[7px]">
-    <span id="replyTargetText" class="text-cyan-300 truncate">Replying...</span>
-    <button type="button" id="cancelReplyBtn" class="text-red-400 font-bold px-1">X</button>
-  </div>
-
-  <!-- INPUT CONTROLS -->
-  <footer class="space-y-1 z-10">
-    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border border-indigo-500">
-      <img id="imgPreview" class="w-8 h-8 object-cover border border-yellow-400" alt="Preview" />
-      <span id="imgMetaText" class="text-[6px] text-slate-400 flex-1 truncate">Ready</span>
-      <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
-    </div>
-
-    <div id="voicePreviewContainer" class="hidden flex items-center gap-2 bg-purple-950 p-1 border border-purple-500 text-[6px]">
-      <span class="text-purple-300 animate-pulse">🎙️ SYNTH MELODY READY</span>
-      <button type="button" id="clearVoiceBtn" class="text-[8px] text-red-400 font-bold px-1 ml-auto">X</button>
-    </div>
-
-    <div class="flex items-center gap-1 bg-slate-900 p-1 border border-indigo-800 text-[6px] flex-wrap">
-      <select id="prioritySelect" class="bg-black border border-yellow-500 text-yellow-400 font-bold p-0.5">
-        <option value="N">PRIO: NORM</option><option value="H">PRIO: HIGH</option>
-      </select>
-      <select id="sfxSelect" class="bg-black border border-indigo-500 text-yellow-300 p-0.5">
-        <option value="b">SFX: BEEP</option><option value="c">SFX: COIN</option>
-      </select>
-      <select id="stickerSelect" class="bg-black border border-indigo-500 text-cyan-300 p-0.5">
-        <option value="">STICKER: NONE</option><option value="h">💖 HEART</option><option value="s">⚔️ SWORD</option>
-      </select>
-      <label class="flex items-center gap-0.5 text-slate-300 cursor-pointer ml-auto">
-        <input type="checkbox" id="spoilerCheck" />
-        <span>SPOILER</span>
-      </label>
-    </div>
-
-    <form id="f" class="flex gap-1">
-      <input type="file" id="fileInput" accept="image/*" class="hidden" />
-      <button type="button" id="attachBtn" class="bg-indigo-700 border border-indigo-400 text-[8px] text-white px-2 py-2">📷</button>
-      <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2">🎵</button>
-
-      <div class="relative flex-1">
-        <input type="text" id="i" placeholder="TYPE MESSAGE..." maxlength="160" class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[8px] p-2 pr-8 focus:outline-none glow-yellow" autocomplete="off" />
-        <span id="charCounter" class="absolute right-2 top-2 text-[6px] text-slate-500">0/160</span>
-      </div>
-
-      <button type="submit" id="sendBtn" class="px-btn text-[8px] text-white px-2.5 py-2 font-bold uppercase">SEND</button>
-    </form>
-  </footer>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, onValue, query, limitToLast, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-
-    const db = getDatabase(initializeApp({
-      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    }));
-
-    const USER_ID = `u_${Math.random().toString(36).substring(2, 7)}`;
-
-    // DOM Elements
+    // DOM refs
+    const msgContainer = document.getElementById('messages');
     const nameInput = document.getElementById('nameInput');
-    nameInput.value = `P_${Math.floor(10 + Math.random() * 90)}`;
-    const avatarSelect = document.getElementById('avatarSelect');
-    const badgeSelect = document.getElementById('badgeSelect');
-    const prioritySelect = document.getElementById('prioritySelect');
-    const sfxSelect = document.getElementById('sfxSelect');
-    const stickerSelect = document.getElementById('stickerSelect');
-    const spoilerCheck = document.getElementById('spoilerCheck');
-    const themeSelect = document.getElementById('themeSelect');
-    const audioToggleBtn = document.getElementById('audioToggleBtn');
+    const msgInput = document.getElementById('msgInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const statusEl = document.getElementById('status');
 
-    const c = document.getElementById('c'), v = document.getElementById('v'), i = document.getElementById('i');
-    const charCounter = document.getElementById('charCounter'), fileInput = document.getElementById('fileInput');
-    const voicePreviewContainer = document.getElementById('voicePreviewContainer'), imgPreviewContainer = document.getElementById('imgPreviewContainer');
-    const imgPreview = document.getElementById('imgPreview'), imgMetaText = document.getElementById('imgMetaText');
-    const replyBanner = document.getElementById('replyBanner'), replyTargetText = document.getElementById('replyTargetText');
-    const pinnedBanner = document.getElementById('pinnedBanner'), pinnedContent = document.getElementById('pinnedContent');
-    const searchInput = document.getElementById('searchInput'), typingIndicator = document.getElementById('typingIndicator');
+    let lastKey = null;
 
-    let currentBase64Image = "", currentSynthMelody = null, replyParentId = null, audioMuted = false, coinsMined = 0;
-
-    themeSelect.addEventListener('change', e => document.getElementById('appBody').className = `h-full text-white flex flex-col p-2 bg-slate-950 select-none overflow-hidden relative ${e.target.value}`);
-    audioToggleBtn.addEventListener('click', () => audioToggleBtn.textContent = (audioMuted = !audioMuted) ? '🔇' : '🔊');
-
-    document.getElementById('miniGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.remove('hidden'));
-    document.getElementById('closeGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.add('hidden'));
-    document.getElementById('mineCoinBtn').addEventListener('click', () => {
-      document.getElementById('coinScore').textContent = `${++coinsMined} COINS`;
-      playCustomSFX('c');
-    });
-
-    // Typing Logic
-    const typingRef = ref(db, `typing/${USER_ID}`);
-    onDisconnect(typingRef).remove();
-    let typingTimer = null, lastTypingSent = 0;
-
-    i.addEventListener('input', () => {
-      charCounter.textContent = `${i.value.length}/160`;
-      const val = i.value.trim();
-      const now = Date.now();
-
-      if (!val) {
-        set(typingRef, null);
-        clearTimeout(typingTimer);
-        return;
-      }
-
-      if (now - lastTypingSent > 4000) {
-        set(typingRef, { h: nameInput.value.trim() });
-        lastTypingSent = now;
-      }
-      clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => { set(typingRef, null); lastTypingSent = 0; }, 2000);
-    });
-
-    onValue(ref(db, 'typing'), snap => {
-      const data = snap.val();
-      if (data) {
-        const typers = Object.values(data).filter(t => t && t.h !== nameInput.value.trim());
-        if (typers.length > 0) {
-          typingIndicator.textContent = `💬 ${typers[0].h} is typing...`;
-          typingIndicator.classList.remove('hidden');
-          return;
-        }
-      }
-      typingIndicator.classList.add('hidden');
-    });
-
-    // Audio Engine
-    let audioCtx = null;
-    function initAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
-    }
-    window.addEventListener('pointerdown', initAudio, { once: true });
-
-    function playCustomSFX(type = 'b') {
-      if (audioMuted) return;
-      initAudio();
-      if (!audioCtx || audioCtx.state !== 'running') return;
-      try {
-        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-        osc.connect(gain); gain.connect(audioCtx.destination);
-        if (type === 'c') {
-          osc.type = 'sine'; osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
-          osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08);
-          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
-          osc.start(); osc.stop(audioCtx.currentTime + 0.2);
-        } else {
-          osc.type = 'square'; osc.frequency.setValueAtTime(520, audioCtx.currentTime);
-          gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-          osc.start(); osc.stop(audioCtx.currentTime + 0.1);
-        }
-      } catch (err) {}
+    // Helpers
+    function getTime() {
+      const d = new Date();
+      return d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
     }
 
-    function playSynthMelody(notes) {
-      if (audioMuted || !notes || !Array.isArray(notes)) return;
-      initAudio();
-      if (!audioCtx || audioCtx.state !== 'running') return;
-      notes.forEach((freq, idx) => {
-        try {
-          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
-          osc.connect(gain); gain.connect(audioCtx.destination);
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
-          gain.gain.setValueAtTime(0.05, audioCtx.currentTime + idx * 0.12);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.12 + 0.1);
-          osc.start(audioCtx.currentTime + idx * 0.12);
-          osc.stop(audioCtx.currentTime + idx * 0.12 + 0.1);
-        } catch(e) {}
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    function addMessage(key, data) {
+      const div = document.createElement('div');
+      const name = data.username || 'Anonymous';
+      const text = data.text || '';
+      const colour = data.colour || '#0f0';
+      const time = data.timestamp ? new Date(data.timestamp).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '';
+      div.innerHTML = `<span class="username" style="color:${colour}">${escapeHtml(name)}</span>${escapeHtml(text)}<span class="timestamp">${time}</span>`;
+      div.dataset.key = key;
+      msgContainer.appendChild(div);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    // ============================================================
+    //  FETCH MESSAGES VIA REST API (only last 50)
+    // ============================================================
+    function fetchMessages() {
+      const url = `${DB_URL}/messages.json?orderBy="$key"&limitToLast=50`;
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!data) return;
+          const keys = Object.keys(data).sort();
+          // Clear and re-render
+          msgContainer.innerHTML = '';
+          keys.forEach(key => {
+            addMessage(key, data[key]);
+          });
+          if (keys.length > 0) {
+            lastKey = keys[keys.length - 1];
+          }
+          statusEl.textContent = 'connected · ' + getTime();
+        })
+        .catch(err => {
+          statusEl.textContent = '⚠️ offline – retrying…';
+          console.warn(err);
+        });
+    }
+
+    // ============================================================
+    //  POLL FOR NEW MESSAGES (REST alternative to realtime)
+    //  Optimised for 64kbps – polls every 3 seconds
+    // ============================================================
+    function pollNewMessages() {
+      let query = `${DB_URL}/messages.json?orderBy="$key"&limitToLast=1`;
+      if (lastKey) {
+        query = `${DB_URL}/messages.json?orderBy="$key"&startAfter="${lastKey}"&limitToFirst=5`;
+      }
+      fetch(query)
+        .then(res => res.json())
+        .then(data => {
+          if (!data) return;
+          const keys = Object.keys(data).sort();
+          keys.forEach(key => {
+            if (key !== lastKey) {
+              addMessage(key, data[key]);
+            }
+          });
+          if (keys.length > 0) {
+            lastKey = keys[keys.length - 1];
+          }
+          statusEl.textContent = 'live · ' + getTime();
+        })
+        .catch(err => {
+          // Silent fail – will retry next poll
+        });
+    }
+
+    // ============================================================
+    //  SEND MESSAGE VIA REST API
+    // ============================================================
+    function sendMessage() {
+      const name = nameInput.value.trim() || 'Guest';
+      const text = msgInput.value.trim();
+      if (!text) return;
+
+      const msg = {
+        username: name.slice(0, 12),
+        text: text.slice(0, 200),
+        timestamp: Date.now(),
+        colour: '#0f0'
+      };
+
+      const url = `${DB_URL}/messages.json`;
+      fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(msg)
+      })
+      .then(res => res.json())
+      .then(() => {
+        msgInput.value = '';
+        msgInput.focus();
+        // Immediately fetch to show new message
+        pollNewMessages();
+      })
+      .catch(err => {
+        statusEl.textContent = '❌ send failed';
+        console.error(err);
       });
     }
 
-    document.getElementById('voiceNoteBtn').addEventListener('click', () => {
-      const presets = [[523, 659, 783], [440, 554, 659], [349, 440, 523], [392, 493, 587]];
-      currentSynthMelody = presets[Math.floor(Math.random() * presets.length)];
-      voicePreviewContainer.classList.remove('hidden');
-      playSynthMelody(currentSynthMelody);
-    });
+    // ============================================================
+    //  INIT – fetch messages and start polling
+    // ============================================================
+    fetchMessages();
+    // Poll every 3 seconds (optimised for 64kbps)
+    setInterval(pollNewMessages, 3000);
 
-    document.getElementById('clearVoiceBtn').addEventListener('click', () => {
-      currentSynthMelody = null; voicePreviewContainer.classList.add('hidden');
-    });
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    msgInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') sendMessage(); });
+    window.addEventListener('load', () => msgInput.focus());
 
-    // Downscale File Input
-    document.getElementById('attachBtn').addEventListener('click', () => fileInput.click());
-    fileInput.addEventListener('change', e => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = ev => {
-        const img = new Image();
-        img.onload = () => {
-          const cvs = document.createElement('canvas');
-          let w = img.width, h = img.height;
-          if (w > 80) { h = Math.round((h * 80) / w); w = 80; }
-          cvs.width = w; cvs.height = h;
-          cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-          currentBase64Image = cvs.toDataURL('image/jpeg', 0.20);
-          imgPreview.src = currentBase64Image;
-          imgMetaText.textContent = `${w}x${h}px (~${Math.round(currentBase64Image.length/1024)}KB)`;
-          imgPreviewContainer.classList.remove('hidden');
-        };
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    document.getElementById('clearImgBtn').addEventListener('click', () => {
-      currentBase64Image = ""; fileInput.value = ""; imgPreviewContainer.classList.add('hidden');
-    });
-
-    document.getElementById('cancelReplyBtn').addEventListener('click', () => { replyParentId = null; replyBanner.classList.add('hidden'); });
-    document.getElementById('unpinBtn').addEventListener('click', () => pinnedBanner.classList.add('hidden'));
-
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.toLowerCase().trim();
-      c.querySelectorAll('[data-msgid]').forEach(n => n.style.display = n.textContent.toLowerCase().includes(q) ? 'block' : 'none');
-    });
-
-    document.getElementById('exportLogsBtn').addEventListener('click', () => {
-      const logs = Array.from(c.querySelectorAll('[data-msgid]')).map(n => n.innerText);
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' }));
-      a.download = `chat_export_${Date.now()}.json`;
-      a.click();
-    });
-
-    const chatRef = ref(db, "global_pixel_chat");
-
-    function renderMessageNode(snap) {
-      const msgId = snap.key, d = snap.val();
-      if (!d || !d.s) return;
-
-      if (d.p) {
-        pinnedContent.textContent = `${d.s}: ${d.t || '[MEDIA]'}`;
-        pinnedBanner.classList.remove('hidden');
-      }
-
-      const isSelf = d.u === USER_ID;
-      let div = document.getElementById(`msg-${msgId}`) || document.createElement('div');
-      div.id = `msg-${msgId}`; div.dataset.msgid = msgId;
-
-      if (d.d) {
-        div.innerHTML = `<div class="text-slate-500 italic text-[6px]">🚫 [Message recalled]</div>`;
-        if (!div.parentNode) c.appendChild(div);
-        return { isSelf };
-      }
-
-      div.className = `animate-pop bg-slate-900/80 p-1.5 border border-indigo-900/60 rounded space-y-1 ${d.pr === 'H' ? 'border-yellow-500 bg-yellow-950/20' : ''}`;
-      const timeStr = new Date(d.ts || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      let replyHtml = d.r ? `<div class="text-[6px] text-cyan-400 bg-slate-950 p-0.5 border-l border-cyan-500">Replying to message</div>` : '';
-      let textHtml = d.t ? `<div class="text-white my-0.5 ${d.sp ? 'spoiler-hidden bg-slate-800' : ''}" onclick="this.classList.remove('spoiler-hidden')">${esc(d.t)}</div>` : '';
-      let imgHtml = d.m ? `<img src="${esc(d.m)}" class="max-w-[80px] max-h-[80px] border border-indigo-400 bg-slate-900 my-1" />` : '';
-      let synthHtml = d.sn ? `<button type="button" onclick="window.playSynthMelody([${d.sn.join(',')}])" class="text-[6px] bg-purple-900 border border-purple-500 px-1 py-0.5 my-1 rounded text-purple-200">▶ PLAY SYNTH</button>` : '';
-
-      div.innerHTML = `
-        <div class="flex items-center justify-between border-b border-indigo-950 pb-0.5 text-[5.5px] text-slate-400">
-          <div class="flex items-center gap-1">
-            <span>${d.a || '⛏️'}</span>
-            <span class="${isSelf ? 'text-green-400' : 'text-cyan-400'} font-bold">${esc(d.s)}</span>
-            <span class="bg-indigo-900 text-indigo-200 px-0.5 rounded">${esc(d.b || 'PLAYER')}</span>
-          </div>
-          <span>${timeStr}</span>
-        </div>
-        ${replyHtml}
-        ${textHtml}
-        ${d.st ? `<div class="text-[10px]">${d.st === 'h' ? '💖' : '⚔️'}</div>` : ''}
-        ${imgHtml}${synthHtml}
-        <div class="flex items-center justify-end gap-2 text-[5px] text-slate-500 pt-0.5 border-t border-indigo-950">
-          <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
-          <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
-          ${isSelf ? `<button type="button" data-action="recall" data-msgid="${msgId}" class="text-red-400 hover:underline">RECALL</button>` : ''}
-        </div>
+    // ============================================================
+    //  SERVICE WORKER – Inline (no separate file)
+    // ============================================================
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE = 'pixelchat-v1';
+        const ASSETS = [
+          '/',
+          '/index.html',
+          'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'
+        ];
+        self.addEventListener('install', e => {
+          e.waitUntil(
+            caches.open(CACHE).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting())
+          );
+        });
+        self.addEventListener('activate', e => {
+          e.waitUntil(
+            caches.keys().then(keys => Promise.all(
+              keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+            )).then(() => clients.claim())
+          );
+        });
+        self.addEventListener('fetch', e => {
+          const req = e.request;
+          const url = new URL(req.url);
+          if (url.origin === location.origin || url.hostname === 'fonts.googleapis.com') {
+            e.respondWith(
+              caches.match(req).then(cached => cached || fetch(req).then(res => {
+                const clone = res.clone();
+                caches.open(CACHE).then(c => c.put(req, clone));
+                return res;
+              }))
+            );
+          } else {
+            e.respondWith(fetch(req));
+          }
+        });
       `;
-
-      if (!div.parentNode) c.appendChild(div);
-      return { isSelf };
-    }
-
-    window.playSynthMelody = playSynthMelody;
-
-    c.addEventListener('click', e => {
-      const btn = e.target.closest('button[data-action]');
-      if (!btn) return;
-      const { action, msgid, sender } = btn.dataset;
-      if (action === 'reply') {
-        replyParentId = msgid;
-        replyTargetText.textContent = `Replying to @${sender}`;
-        replyBanner.classList.remove('hidden');
-      } else if (action === 'pin') {
-        update(ref(db, `global_pixel_chat/${msgid}`), { p: true });
-        playCustomSFX('c');
-      } else if (action === 'recall') {
-        update(ref(db, `global_pixel_chat/${msgid}`), { d: true });
-      }
-    });
-
-    onChildAdded(query(chatRef, limitToLast(10)), snap => {
-      const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 100;
-      const { isSelf } = renderMessageNode(snap) || {};
-      if (isNearBottom || isSelf) v.scrollTop = v.scrollHeight;
-      if (snap.val()?.fx) playCustomSFX(snap.val().fx);
-    });
-
-    onChildChanged(chatRef, snap => renderMessageNode(snap));
-
-    document.getElementById('f').addEventListener('submit', async e => {
-      e.preventDefault();
-      const txt = i.value.trim();
-
-      if (txt === '/help') return alert("COMMANDS:\n/help - Help menu\n/clear - Clear screen\n/roll - Roll die"), i.value = '';
-      if (txt === '/clear') return c.innerHTML = '', i.value = '';
-      if (txt === '/roll') i.value = `🎲 Rolled ${Math.floor(Math.random() * 100) + 1}!`;
-
-      if (!i.value.trim() && !currentBase64Image && !currentSynthMelody) return;
-
-      document.getElementById('sendBtn').disabled = true;
-
-      const payload = {
-        ts: Date.now(),
-        s: nameInput.value.trim() || 'P',
-        u: USER_ID,
-        a: avatarSelect.value,
-        b: badgeSelect.value,
-        t: i.value.trim(),
-        m: currentBase64Image || null,
-        pr: prioritySelect.value,
-        sn: currentSynthMelody || null,
-        fx: sfxSelect.value,
-        sp: spoilerCheck.checked,
-        st: stickerSelect.value || null,
-        r: replyParentId || null
-      };
-
-      i.value = ''; charCounter.textContent = '0/160';
-      currentBase64Image = ""; currentSynthMelody = null; fileInput.value = "";
-      imgPreviewContainer.classList.add('hidden'); voicePreviewContainer.classList.add('hidden');
-      replyBanner.classList.add('hidden'); replyParentId = null; spoilerCheck.checked = false;
-
-      try {
-        await set(push(chatRef), payload);
-        set(typingRef, null);
-      } catch (err) {
-        console.error("Firebase send error:", err);
-      } finally {
-        document.getElementById('sendBtn').disabled = false;
-      }
-    });
-
-    function esc(s) {
-      return s ? String(s).replace(/[&<>'"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[m])) : '';
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl);
     }
   </script>
 </body>
