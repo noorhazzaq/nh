@@ -31,14 +31,17 @@
     .msg .s{font-size:.6rem;font-weight:700;text-transform:uppercase;opacity:.6;letter-spacing:.5px;margin-bottom:2px}
     .msg .tm{font-size:.5rem;opacity:.4;margin-left:6px}
     .msg .text{font-size:.9rem;word-break:break-word}
-    .msg .text img,.msg .text video{max-width:100%;max-height:250px;border-radius:8px;margin:4px 0;display:block}
+    .msg .text img{max-width:100%;max-height:300px;border-radius:8px;margin:4px 0;display:block}
+    .msg .text video{max-width:100%;max-height:300px;border-radius:8px;margin:4px 0;display:block}
     .msg .text .voice{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);padding:4px 14px;border-radius:24px}
-    .msg .text .voice audio{max-width:140px;height:28px}
+    .msg .text .voice audio{max-width:180px;height:32px;flex:1}
+    .msg .text .file-error{color:#ff6b81;font-size:.8rem;padding:4px 8px;background:rgba(255,0,0,.1);border-radius:6px}
     .in{padding:8px 12px 12px;background:#16213e;border-top:1px solid #2d2d44;flex-shrink:0}
     .tools{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px}
     .tools button{padding:2px 10px;border:none;border-radius:12px;background:#2d2d44;color:#fff;cursor:pointer;font-size:.7rem;transition:.2s;opacity:.7}
     .tools button:hover:not(:disabled){opacity:1;background:#e94560;transform:scale(1.05)}
     .tools button:disabled{opacity:.25;cursor:not-allowed}
+    .tools button.active{background:#e94560;opacity:1;animation:pulse 1s infinite}
     .row{display:flex;gap:6px;align-items:center}
     .row input{flex:1;padding:8px 14px;border:none;border-radius:20px;background:#0f0e17;color:#fff;font-size:.9rem;min-width:50px;transition:.2s}
     .row input:focus{outline:2px solid #e94560}
@@ -51,9 +54,10 @@
     .rec{display:none;align-items:center;gap:10px;padding:4px 14px;background:#e94560;border-radius:24px;font-size:.8rem;animation:pulse 1s infinite;margin-bottom:6px}
     .rec.active{display:flex}
     .rec button{background:0 0;border:none;color:#fff;cursor:pointer;font-size:1.2rem;padding:0 4px}
+    .rec .timer{font-weight:600;min-width:30px}
     @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-    @media(max-width:600px){.app{height:100vh;max-height:100vh;border-radius:0}.h{padding:8px 12px}.h h1{font-size:1rem}.auth input{width:70px;font-size:.75rem}.auth input:focus{width:90px}.msgs{padding:8px}.msg{max-width:92%;padding:4px 10px;font-size:.85rem}.tools button{font-size:.6rem;padding:2px 6px}.row input{font-size:.85rem;padding:6px 10px}.row button{padding:6px 12px;font-size:.75rem}}
+    @media(max-width:600px){.app{height:100vh;max-height:100vh;border-radius:0}.h{padding:8px 12px}.h h1{font-size:1rem}.auth input{width:70px;font-size:.75rem}.auth input:focus{width:90px}.msgs{padding:8px}.msg{max-width:92%;padding:4px 10px;font-size:.85rem}.tools button{font-size:.6rem;padding:2px 6px}.row input{font-size:.85rem;padding:6px 10px}.row button{padding:6px 12px;font-size:.75rem}.msg .text .voice audio{max-width:120px}}
   </style>
 </head>
 <body>
@@ -75,12 +79,17 @@
 
   <div class="in">
     <div class="tools" id="tools">
-      <button data-a="image">🖼️</button>
-      <button data-a="video">🎥</button>
-      <button data-a="voice">🎤</button>
+      <button data-a="image">🖼️ Image</button>
+      <button data-a="video">🎥 Video</button>
+      <button data-a="voice" id="voiceBtn">🎤 Voice</button>
     </div>
 
-    <div class="rec" id="rec"><span>🔴</span> Recording... <button id="stoprec">⏹️</button></div>
+    <div class="rec" id="rec">
+      <span>🔴</span>
+      <span class="timer" id="timer">0:00</span>
+      <span>Recording...</span>
+      <button id="stoprec">⏹️</button>
+    </div>
 
     <div class="row">
       <input type="text" id="i" placeholder="Type a message..." disabled />
@@ -95,69 +104,352 @@
 <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
 
 <script>
-// Firebase
+// ============================================================
+// FIREBASE
+// ============================================================
 firebase.initializeApp({databaseURL:"https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"});
 const db=firebase.database();
 
-// DOM shortcuts
-const $=id=>document.getElementById(id), m=$('m'), i=$('i'), s=$('s'), n=$('n'), j=$('j'), l=$('l'), o=$('o');
-const tools=$('tools'), fileInput=$('file'), fileBtn=$('filebtn'), rec=$('rec'), stopRec=$('stoprec');
+// ============================================================
+// DOM
+// ============================================================
+const $=id=>document.getElementById(id);
+const m=$('m'), i=$('i'), s=$('s'), n=$('n'), j=$('j'), l=$('l'), o=$('o');
+const tools=$('tools'), fileInput=$('file'), fileBtn=$('filebtn');
+const rec=$('rec'), stopRec=$('stoprec'), timer=$('timer'), voiceBtn=$('voiceBtn');
 
 let u=null, listeners=[], recorder=null, chunks=[], isRecording=false;
+let recordTimer=null, seconds=0;
 
-// Helpers
-const st=t=>{let e=m.querySelector('.status');if(!e){e=document.createElement('div');e.className='status';m.appendChild(e)}e.textContent=t};
+// ============================================================
+// HELPERS
+// ============================================================
+const st=t=>{
+  let e=m.querySelector('.status');
+  if(!e){e=document.createElement('div');e.className='status';m.appendChild(e)}
+  e.textContent=t;
+};
+
 const sc=()=>setTimeout(()=>m.scrollTop=m.scrollHeight,50);
+
 const tm=t=>t?new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
-const upload=f=>new Promise((r,re)=>{const rd=new FileReader();rd.onload=e=>r(e.target.result);rd.onerror=re;rd.readAsDataURL(f)});
 
-// Send message
-const sm=t=>{if(!u)return alert('Sign in!');if(!t||!t.trim())return;db.ref('messages').push({name:u.name,uid:u.uid,text:t.trim(),timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>alert('Failed.'));i.value='';i.focus()};
+const upload=(f)=>new Promise((r,re)=>{
+  const rd=new FileReader();
+  rd.onload=e=>r(e.target.result);
+  rd.onerror=re;
+  rd.readAsDataURL(f);
+});
 
-// Render message
-const rn=d=>{const ow=u&&d.uid===u.uid,el=document.createElement('div');el.className=`msg ${ow?'o':'t'}`;el.dataset.key=d._key;let html=d.text||'';
-if(html.startsWith('📸 '))html=`<img src="${html.substring(4)}" loading="lazy" onerror="this.style.display='none'" />`;
-else if(html.startsWith('🎬 '))html=`<video controls src="${html.substring(4)}" preload="metadata"></video>`;
-else if(html.startsWith('🎤 '))html=`<div class="voice">🎤 <audio controls src="${html.substring(4)}"></audio></div>`;
-el.innerHTML=`<div class="s">${d.name||'Anonymous'}<span class="tm">${tm(d.timestamp)}</span></div><div class="text">${html}</div>`;
-const sts=m.querySelector('.status');if(sts)sts.remove();m.appendChild(el);sc()};
+const formatTime=(s)=>{
+  const mins=Math.floor(s/60);
+  const secs=s%60;
+  return `${mins}:${secs.toString().padStart(2,'0')}`;
+};
 
-// Subscribe
-const sub=()=>{listeners.forEach(r=>r.off());listeners=[];const q=db.ref('messages').orderByKey().limitToLast(150);
-q.on('child_added',s=>{const d=s.val();d._key=s.key;rn(d)});
-q.on('child_removed',s=>{const el=m.querySelector(`[data-key="${s.key}"]`);if(el)el.remove()});listeners.push(q);
-q.once('value',s=>{if(!s.exists())st('💬 No messages yet')});
-const p=db.ref('.info/connected'),us=db.ref('users');
-p.on('value',s=>{if(s.val()&&u){const r=us.child(u.uid);r.set({name:u.name,lastSeen:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove()}});
-us.on('value',s=>{o.textContent=s.exists()?`👤 ${s.numChildren()}`:'👤 0'});listeners.push(p)};
+// ============================================================
+// SEND MESSAGE
+// ============================================================
+const sm=(t)=>{
+  if(!u)return alert('Sign in!');
+  if(!t||!t.trim())return;
+  db.ref('messages').push({
+    name:u.name,
+    uid:u.uid,
+    text:t.trim(),
+    timestamp:firebase.database.ServerValue.TIMESTAMP
+  }).catch(()=>alert('Failed to send.'));
+  i.value='';
+  i.focus();
+};
 
-// Voice recording
-const startRec=async()=>{try{const stream=await navigator.mediaDevices.getUserMedia({audio:true});recorder=new MediaRecorder(stream);chunks=[];isRecording=true;
-recorder.ondataavailable=e=>chunks.push(e.data);
-recorder.onstop=async()=>{isRecording=false;rec.classList.remove('active');i.disabled=false;s.disabled=false;const blob=new Blob(chunks,{type:'audio/webm'});if(blob.size>0){const file=new File([blob],`voice-${Date.now()}.webm`,{type:'audio/webm'});const dataUrl=await upload(file);sm('🎤 '+dataUrl)}stream.getTracks().forEach(t=>t.stop())};
-recorder.start();rec.classList.add('active');i.disabled=true;s.disabled=true}catch(e){alert('Microphone access denied')}};
-const stopRecFn=()=>{if(recorder&&recorder.state==='recording'){recorder.stop();rec.classList.remove('active');i.disabled=false;s.disabled=false}};
+// ============================================================
+// RENDER MESSAGE
+// ============================================================
+const rn=(d)=>{
+  const ow=u&&d.uid===u.uid;
+  const el=document.createElement('div');
+  el.className=`msg ${ow?'o':'t'}`;
+  el.dataset.key=d._key;
+  
+  let html=d.text||'';
+  
+  // Image
+  if(html.startsWith('📸 ')){
+    html=`<img src="${html.substring(4)}" loading="lazy" onerror="this.parentElement.innerHTML='❌ Failed to load image'" />`;
+  }
+  // Video
+  else if(html.startsWith('🎬 ')){
+    html=`<video controls src="${html.substring(4)}" preload="metadata" onerror="this.parentElement.innerHTML='❌ Failed to load video'"></video>`;
+  }
+  // Voice
+  else if(html.startsWith('🎤 ')){
+    html=`<div class="voice">🎤 <audio controls src="${html.substring(4)}" onerror="this.parentElement.innerHTML='❌ Failed to load voice'"></audio></div>`;
+  }
+  
+  el.innerHTML=`
+    <div class="s">${d.name||'Anonymous'}<span class="tm">${tm(d.timestamp)}</span></div>
+    <div class="text">${html}</div>
+  `;
+  
+  const sts=m.querySelector('.status');
+  if(sts)sts.remove();
+  m.appendChild(el);
+  sc();
+};
 
-// File handling
-const hf=async f=>{if(!u)return alert('Sign in!');const type=f.type;let prefix='📸 ';if(type.startsWith('video/'))prefix='🎬 ';else if(type.startsWith('audio/'))prefix='🎤 ';const dataUrl=await upload(f);sm(prefix+dataUrl)};
+// ============================================================
+// SUBSCRIBE
+// ============================================================
+const sub=()=>{
+  listeners.forEach(r=>r.off());
+  listeners=[];
+  
+  const q=db.ref('messages').orderByKey().limitToLast(150);
+  
+  q.on('child_added',s=>{
+    const d=s.val();
+    d._key=s.key;
+    rn(d);
+  });
+  
+  q.on('child_removed',s=>{
+    const el=m.querySelector(`[data-key="${s.key}"]`);
+    if(el)el.remove();
+  });
+  
+  listeners.push(q);
+  
+  q.once('value',s=>{
+    if(!s.exists())st('💬 No messages yet');
+  });
+  
+  // Presence
+  const p=db.ref('.info/connected');
+  const us=db.ref('users');
+  
+  p.on('value',s=>{
+    if(s.val()&&u){
+      const r=us.child(u.uid);
+      r.set({name:u.name,lastSeen:firebase.database.ServerValue.TIMESTAMP});
+      r.onDisconnect().remove();
+    }
+  });
+  
+  us.on('value',s=>{
+    o.textContent=s.exists()?`👤 ${s.numChildren()}`:'👤 0';
+  });
+  
+  listeners.push(p);
+};
 
-// Auth
-const login=()=>{const nm=n.value.trim()||'Guest';u={name:nm,uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)};n.disabled=true;j.style.display='none';l.style.display='inline-block';i.disabled=false;s.disabled=false;fileBtn.disabled=false;i.placeholder=`Message as ${nm}...`;document.querySelectorAll('#tools button').forEach(b=>b.disabled=false);st(`✅ Signed in as ${nm}`);m.innerHTML='';sub()};
-const logout=()=>{if(u)db.ref('users').child(u.uid).remove();listeners.forEach(r=>r.off());listeners=[];u=null;n.disabled=false;j.style.display='inline-block';l.style.display='none';i.disabled=true;s.disabled=true;fileBtn.disabled=true;i.placeholder='Sign in to chat...';i.value='';document.querySelectorAll('#tools button').forEach(b=>b.disabled=true);m.innerHTML='';st('👋 You left the chat');o.textContent='👤 0';if(isRecording)stopRecFn()};
+// ============================================================
+// VOICE RECORDING
+// ============================================================
+const startRec=async()=>{
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recorder=new MediaRecorder(stream);
+    chunks=[];
+    isRecording=true;
+    seconds=0;
+    
+    recorder.ondataavailable=(e)=>{
+      if(e.data.size>0)chunks.push(e.data);
+    };
+    
+    recorder.onstop=async()=>{
+      isRecording=false;
+      rec.classList.remove('active');
+      voiceBtn.classList.remove('active');
+      i.disabled=false;
+      s.disabled=false;
+      
+      if(recordTimer){
+        clearInterval(recordTimer);
+        recordTimer=null;
+      }
+      
+      if(chunks.length>0){
+        const blob=new Blob(chunks,{type:'audio/webm'});
+        if(blob.size>0){
+          try{
+            const file=new File([blob],`voice-${Date.now()}.webm`,{type:'audio/webm'});
+            const dataUrl=await upload(file);
+            sm('🎤 '+dataUrl);
+          }catch(e){
+            alert('Failed to upload voice. Please try again.');
+          }
+        }
+      }
+      
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    
+    recorder.start(1000);
+    rec.classList.add('active');
+    voiceBtn.classList.add('active');
+    i.disabled=true;
+    s.disabled=true;
+    
+    // Timer
+    recordTimer=setInterval(()=>{
+      seconds++;
+      timer.textContent=formatTime(seconds);
+    },1000);
+    
+  }catch(e){
+    alert('Microphone access denied. Please allow microphone permissions.');
+  }
+};
 
-// Events
-j.onclick=login;l.onclick=logout;n.onkeydown=e=>{if(e.key==='Enter')login()};
-s.onclick=()=>sm(i.value);i.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sm(i.value)}};
-fileBtn.onclick=()=>fileInput.click();fileInput.onchange=async e=>{if(e.target.files.length){for(const f of e.target.files)await hf(f);e.target.value=''}};
+const stopRecFn=()=>{
+  if(recorder&&recorder.state==='recording'){
+    recorder.stop();
+    rec.classList.remove('active');
+    voiceBtn.classList.remove('active');
+    i.disabled=false;
+    s.disabled=false;
+    if(recordTimer){
+      clearInterval(recordTimer);
+      recordTimer=null;
+    }
+  }
+};
+
+// ============================================================
+// FILE HANDLING
+// ============================================================
+const hf=async(f)=>{
+  if(!u)return alert('Sign in!');
+  
+  try{
+    const type=f.type;
+    let prefix='📸 ';
+    if(type.startsWith('video/'))prefix='🎬 ';
+    else if(type.startsWith('audio/'))prefix='🎤 ';
+    
+    // Limit file size to 10MB
+    if(f.size>10*1024*1024){
+      alert('File too large! Max 10MB.');
+      return;
+    }
+    
+    const dataUrl=await upload(f);
+    sm(prefix+dataUrl);
+  }catch(e){
+    alert('Failed to upload file. Please try again.');
+  }
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+const login=()=>{
+  const nm=n.value.trim()||'Guest';
+  u={name:nm,uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)};
+  
+  n.disabled=true;
+  j.style.display='none';
+  l.style.display='inline-block';
+  i.disabled=false;
+  s.disabled=false;
+  fileBtn.disabled=false;
+  i.placeholder=`Message as ${nm}...`;
+  
+  document.querySelectorAll('#tools button').forEach(b=>b.disabled=false);
+  
+  st(`✅ Signed in as ${nm}`);
+  m.innerHTML='';
+  sub();
+};
+
+const logout=()=>{
+  if(u)db.ref('users').child(u.uid).remove();
+  listeners.forEach(r=>r.off());
+  listeners=[];
+  u=null;
+  
+  n.disabled=false;
+  j.style.display='inline-block';
+  l.style.display='none';
+  i.disabled=true;
+  s.disabled=true;
+  fileBtn.disabled=true;
+  i.placeholder='Sign in to chat...';
+  i.value='';
+  
+  document.querySelectorAll('#tools button').forEach(b=>b.disabled=true);
+  
+  m.innerHTML='';
+  st('👋 You left the chat');
+  o.textContent='👤 0';
+  
+  if(isRecording)stopRecFn();
+};
+
+// ============================================================
+// EVENTS
+// ============================================================
+j.onclick=login;
+l.onclick=logout;
+n.onkeydown=e=>{if(e.key==='Enter')login()};
+
+s.onclick=()=>sm(i.value);
+i.onkeydown=e=>{
+  if(e.key==='Enter'&&!e.shiftKey){
+    e.preventDefault();
+    sm(i.value);
+  }
+};
+
+fileBtn.onclick=()=>fileInput.click();
+
+fileInput.onchange=async(e)=>{
+  if(e.target.files.length){
+    for(const f of e.target.files){
+      await hf(f);
+    }
+    e.target.value='';
+  }
+};
+
 stopRec.onclick=stopRecFn;
 
-tools.onclick=e=>{const btn=e.target.closest('button');if(!btn)return;const a=btn.dataset.a;
-if(a==='image')fileInput.click();else if(a==='video')fileInput.click();else if(a==='voice'){if(isRecording)stopRecFn();else startRec()}};
+voiceBtn.onclick=()=>{
+  if(isRecording){
+    stopRecFn();
+  }else{
+    startRec();
+  }
+};
 
-// Init
+tools.onclick=(e)=>{
+  const btn=e.target.closest('button');
+  if(!btn)return;
+  const a=btn.dataset.a;
+  
+  if(a==='image'){
+    fileInput.click();
+  }else if(a==='video'){
+    fileInput.click();
+  }else if(a==='voice'){
+    if(isRecording)stopRecFn();
+    else startRec();
+  }
+};
+
+// ============================================================
+// INIT
+// ============================================================
 document.querySelectorAll('#tools button').forEach(b=>b.disabled=true);
-st('🌐 Connecting...');sub();
-if('serviceWorker' in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+st('🌐 Connecting...');
+sub();
+
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('/sw.js').catch(()=>{});
+}
+
 console.log('💬 Global Chat ready');
 </script>
 
