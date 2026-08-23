@@ -3,1024 +3,277 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>TikTok Chat</title>
-  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;TikTok Chat&quot;,&quot;short_name&quot;:&quot;TChat&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#000000&quot;,&quot;theme_color&quot;:&quot;#000000&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23000'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23fff'%3E🎵%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
+  <title>Text Chat</title>
+  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Text Chat&quot;,&quot;short_name&quot;:&quot;Chat&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#0f0e17&quot;,&quot;theme_color&quot;:&quot;#16213e&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316213e'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23e94560'%3E💬%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
   <style>
-    /* ============================================================
-       TIKTOK DESIGN SYSTEM
-       ============================================================ */
-    :root {
-      --tk-black: #000000;
-      --tk-white: #ffffff;
-      --tk-gray: #1a1a1a;
-      --tk-gray-light: #2a2a2a;
-      --tk-gray-mid: #3a3a3a;
-      --tk-accent: #fe2c55;
-      --tk-accent-hover: #ff3b6b;
-      --tk-blue: #25f4ee;
-      --tk-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
-      --tk-radius: 12px;
-      --tk-radius-full: 9999px;
-      --tk-transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-      --tk-font: -apple-system, system-ui, sans-serif;
-    }
-
-    /* ============================================================
-       RESET
-       ============================================================ */
-    *,
-    *::before,
-    *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* ============================================================
-       BASE
-       ============================================================ */
-    body {
-      background: var(--tk-black);
-      color: var(--tk-white);
-      font-family: var(--tk-font);
-      height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    /* ============================================================
-       APP — Full screen TikTok feel
-       ============================================================ */
-    .app {
-      max-width: 430px;
-      width: 100%;
-      height: 100vh;
-      max-height: 932px;
-      background: var(--tk-black);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* ============================================================
-       HEADER — TikTok style
-       ============================================================ */
-    .header {
-      padding: 12px 16px 8px;
-      background: var(--tk-black);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-      border-bottom: 1px solid var(--tk-gray);
-      z-index: 10;
-    }
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .header-logo {
-      font-size: 1.4rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-    }
-    .header-logo span {
-      color: var(--tk-accent);
-    }
-    .header-logo .dot {
-      color: var(--tk-blue);
-    }
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .online-badge {
-      font-size: 0.7rem;
-      padding: 4px 10px;
-      background: var(--tk-gray);
-      border-radius: var(--tk-radius-full);
-      opacity: 0.7;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .online-badge .live-dot {
-      width: 6px;
-      height: 6px;
-      background: var(--tk-accent);
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
-    }
-
-    /* ============================================================
-       AUTH — TikTok style
-       ============================================================ */
-    .auth {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .auth-input {
-      padding: 6px 12px;
-      border: none;
-      border-radius: var(--tk-radius-full);
-      background: var(--tk-gray);
-      color: var(--tk-white);
-      font-size: 0.8rem;
-      width: 90px;
-      transition: var(--tk-transition);
-    }
-    .auth-input::placeholder {
-      color: rgba(255, 255, 255, 0.4);
-    }
-    .auth-input:focus {
-      outline: 2px solid var(--tk-accent);
-      width: 120px;
-    }
-    .auth-btn {
-      padding: 6px 14px;
-      border: none;
-      border-radius: var(--tk-radius-full);
-      background: var(--tk-accent);
-      color: var(--tk-white);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.75rem;
-      transition: var(--tk-transition);
-      white-space: nowrap;
-    }
-    .auth-btn:hover {
-      transform: scale(1.05);
-      background: var(--tk-accent-hover);
-    }
-    .auth-btn--logout {
-      background: var(--tk-gray);
-    }
-    .auth-btn--logout:hover {
-      background: var(--tk-gray-mid);
-    }
-
-    /* ============================================================
-       MESSAGES — TikTok feed style
-       ============================================================ */
-    .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      background: var(--tk-black);
-      scroll-behavior: smooth;
-    }
-    .messages::-webkit-scrollbar {
-      width: 3px;
-    }
-    .messages::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .messages::-webkit-scrollbar-thumb {
-      background: var(--tk-accent);
-      border-radius: 10px;
-    }
-    .status {
-      text-align: center;
-      font-size: 0.8rem;
-      opacity: 0.3;
-      padding: 20px;
-      font-style: italic;
-    }
-
-    /* ============================================================
-       MESSAGE — TikTok comment style
-       ============================================================ */
-    .message {
-      padding: 8px 14px;
-      border-radius: var(--tk-radius);
-      max-width: 88%;
-      word-wrap: break-word;
-      animation: slideUp 0.25s ease;
-      line-height: 1.4;
-      margin-bottom: 2px;
-    }
-    .message--own {
-      align-self: flex-end;
-      background: var(--tk-accent);
-      border-bottom-right-radius: 4px;
-    }
-    .message--other {
-      align-self: flex-start;
-      background: var(--tk-gray);
-      border-bottom-left-radius: 4px;
-    }
-    .message-sender {
-      font-size: 0.6rem;
-      font-weight: 700;
-      opacity: 0.6;
-      letter-spacing: 0.3px;
-      margin-bottom: 1px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .message-sender .verified {
-      font-size: 0.5rem;
-      color: var(--tk-blue);
-    }
-    .message-time {
-      font-size: 0.45rem;
-      opacity: 0.4;
-      margin-left: 4px;
-    }
-    .message-text {
-      font-size: 0.9rem;
-      word-break: break-word;
-    }
-    .message-text img {
-      max-width: 100%;
-      max-height: 280px;
-      border-radius: var(--tk-radius);
-      margin: 4px 0;
-      display: block;
-    }
-    .message-text video {
-      max-width: 100%;
-      max-height: 280px;
-      border-radius: var(--tk-radius);
-      margin: 4px 0;
-      display: block;
-    }
-    .message-text .voice {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 4px 14px;
-      border-radius: var(--tk-radius-full);
-    }
-    .message-text .voice audio {
-      max-width: 160px;
-      height: 30px;
-    }
-    .message-text .error {
-      color: var(--tk-accent);
-      font-size: 0.75rem;
-      padding: 4px 8px;
-      background: rgba(254, 44, 85, 0.1);
-      border-radius: 6px;
-    }
-
-    /* ============================================================
-       INPUT AREA — TikTok comment bar
-       ============================================================ */
-    .input-area {
-      padding: 8px 16px 16px;
-      background: var(--tk-black);
-      border-top: 1px solid var(--tk-gray);
-      flex-shrink: 0;
-    }
-    .toolbar {
-      display: flex;
-      gap: 4px;
-      flex-wrap: wrap;
-      margin-bottom: 8px;
-    }
-    .toolbar-btn {
-      padding: 4px 12px;
-      border: none;
-      border-radius: var(--tk-radius-full);
-      background: var(--tk-gray);
-      color: var(--tk-white);
-      cursor: pointer;
-      font-size: 0.7rem;
-      transition: var(--tk-transition);
-      opacity: 0.7;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .toolbar-btn:hover:not(:disabled) {
-      opacity: 1;
-      background: var(--tk-accent);
-      transform: scale(1.05);
-    }
-    .toolbar-btn:disabled {
-      opacity: 0.2;
-      cursor: not-allowed;
-    }
-    .toolbar-btn--active {
-      background: var(--tk-accent);
-      opacity: 1;
-      animation: pulse 1.2s infinite;
-    }
-
-    /* ============================================================
-       RECORDING — TikTok live style
-       ============================================================ */
-    .recording {
-      display: none;
-      align-items: center;
-      gap: 10px;
-      padding: 6px 16px;
-      background: var(--tk-accent);
-      border-radius: var(--tk-radius-full);
-      font-size: 0.8rem;
-      animation: pulse 1.2s infinite;
-      margin-bottom: 8px;
-    }
-    .recording--active {
-      display: flex;
-    }
-    .recording .live-icon {
-      width: 8px;
-      height: 8px;
-      background: var(--tk-white);
-      border-radius: 50%;
-      animation: pulse 0.8s infinite;
-    }
-    .recording-timer {
-      font-weight: 600;
-      min-width: 30px;
-      font-variant-numeric: tabular-nums;
-    }
-    .recording-stop {
-      background: none;
-      border: none;
-      color: var(--tk-white);
-      cursor: pointer;
-      font-size: 1.2rem;
-      padding: 0 4px;
-      opacity: 0.8;
-    }
-    .recording-stop:hover {
-      opacity: 1;
-    }
-
-    /* ============================================================
-       INPUT ROW — TikTok comment composer
-       ============================================================ */
-    .input-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .input-field {
-      flex: 1;
-      padding: 10px 16px;
-      border: none;
-      border-radius: var(--tk-radius-full);
-      background: var(--tk-gray);
-      color: var(--tk-white);
-      font-size: 0.9rem;
-      min-width: 50px;
-      transition: var(--tk-transition);
-    }
-    .input-field::placeholder {
-      color: rgba(255, 255, 255, 0.3);
-    }
-    .input-field:focus {
-      outline: 2px solid var(--tk-accent);
-      background: var(--tk-gray-light);
-    }
-    .input-field:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-    .input-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: var(--tk-radius-full);
-      background: var(--tk-accent);
-      color: var(--tk-white);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: var(--tk-transition);
-      white-space: nowrap;
-    }
-    .input-btn:hover:not(:disabled) {
-      transform: scale(1.05);
-      background: var(--tk-accent-hover);
-    }
-    .input-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-    .input-btn--icon {
-      padding: 10px 12px;
-      font-size: 1.1rem;
-      background: var(--tk-gray);
-    }
-    .input-btn--icon:hover:not(:disabled) {
-      background: var(--tk-gray-mid);
-    }
-    .file-input {
-      display: none;
-    }
-
-    /* ============================================================
-       ANIMATIONS
-       ============================================================ */
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(12px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-    @keyframes pulse {
-      0%,
-      100% {
-        opacity: 1;
-      }
-      50% {
-        opacity: 0.3;
-      }
-    }
-    @keyframes float {
-      0%,
-      100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-3px);
-      }
-    }
-
-    /* ============================================================
-       RESPONSIVE — TikTok mobile first
-       ============================================================ */
-    @media (max-width: 430px) {
-      .app {
-        max-height: 100vh;
-        border-radius: 0;
-      }
-      .header {
-        padding: 10px 12px 6px;
-      }
-      .header-logo {
-        font-size: 1.2rem;
-      }
-      .auth-input {
-        width: 70px;
-        font-size: 0.7rem;
-      }
-      .auth-input:focus {
-        width: 90px;
-      }
-      .messages {
-        padding: 8px 12px;
-      }
-      .message {
-        max-width: 92%;
-        padding: 6px 12px;
-        font-size: 0.85rem;
-      }
-      .toolbar-btn {
-        font-size: 0.6rem;
-        padding: 3px 8px;
-      }
-      .input-field {
-        font-size: 0.85rem;
-        padding: 8px 12px;
-      }
-      .input-btn {
-        padding: 8px 14px;
-        font-size: 0.75rem;
-      }
-      .input-btn--icon {
-        padding: 8px 10px;
-        font-size: 1rem;
-      }
-      .message-text .voice audio {
-        max-width: 110px;
-      }
-      .online-badge {
-        font-size: 0.6rem;
-        padding: 3px 8px;
-      }
-    }
-    @media (max-width: 360px) {
-      .auth-input {
-        width: 50px;
-      }
-      .auth-input:focus {
-        width: 70px;
-      }
-      .header-logo {
-        font-size: 1rem;
-      }
-      .message-text .voice audio {
-        max-width: 80px;
-      }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
+    body{background:#0f0e17;color:#fff;height:100vh;display:flex;justify-content:center;align-items:center;padding:8px;overflow:hidden}
+    .app{max-width:700px;width:100%;height:95vh;max-height:800px;background:#1a1a2e;border-radius:24px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+    .header{padding:12px 20px;background:#16213e;border-bottom:2px solid #e94560;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;flex-shrink:0}
+    .header h1{font-size:1.2rem;font-weight:700}
+    .header h1 span{color:#e94560}
+    .header-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .online{font-size:.75rem;opacity:.6;padding:4px 12px;background:#0f0e17;border-radius:20px}
+    .auth{display:flex;gap:6px;align-items:center}
+    .auth input{padding:4px 10px;border:none;border-radius:20px;background:#0f0e17;color:#fff;font-size:.85rem;width:100px;transition:.2s}
+    .auth input:focus{outline:2px solid #e94560;width:130px}
+    .auth button{padding:4px 14px;border:none;border-radius:20px;background:#e94560;color:#fff;font-weight:600;cursor:pointer;font-size:.8rem;transition:.2s;white-space:nowrap}
+    .auth button:hover{transform:scale(1.05);background:#ff6b81}
+    .auth button.out{background:#2d2d44}
+    .auth button.out:hover{background:#3d3d5c}
+    .msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:4px;background:#12122a;scroll-behavior:smooth}
+    .msgs::-webkit-scrollbar{width:4px}
+    .msgs::-webkit-scrollbar-thumb{background:#e94560;border-radius:10px}
+    .status{text-align:center;font-size:.8rem;opacity:.4;padding:12px;font-style:italic}
+    .msg{padding:6px 14px;border-radius:16px;max-width:82%;word-wrap:break-word;animation:fadeIn .2s;line-height:1.4}
+    .msg.own{align-self:flex-end;background:#e94560;border-bottom-right-radius:4px}
+    .msg.other{align-self:flex-start;background:#2d2d44;border-bottom-left-radius:4px}
+    .msg .sender{font-size:.6rem;font-weight:700;text-transform:uppercase;opacity:.6;letter-spacing:.5px;margin-bottom:2px}
+    .msg .time{font-size:.5rem;opacity:.4;margin-left:6px}
+    .msg .text{font-size:.9rem;word-break:break-word}
+    .input-area{padding:8px 12px 12px;background:#16213e;border-top:1px solid #2d2d44;flex-shrink:0}
+    .row{display:flex;gap:6px;align-items:center}
+    .row input{flex:1;padding:8px 14px;border:none;border-radius:20px;background:#0f0e17;color:#fff;font-size:.9rem;min-width:50px;transition:.2s}
+    .row input:focus{outline:2px solid #e94560}
+    .row input:disabled{opacity:.4;cursor:not-allowed}
+    .row button{padding:8px 18px;border:none;border-radius:20px;background:#e94560;color:#fff;font-weight:700;cursor:pointer;font-size:.85rem;transition:.2s;white-space:nowrap}
+    .row button:hover:not(:disabled){transform:scale(1.05);background:#ff6b81}
+    .row button:disabled{opacity:.4;cursor:not-allowed}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:600px){.app{height:100vh;max-height:100vh;border-radius:0}.header{padding:8px 12px}.header h1{font-size:1rem}.auth input{width:70px;font-size:.75rem}.auth input:focus{width:90px}.msgs{padding:8px}.msg{max-width:92%;padding:4px 10px;font-size:.85rem}.row input{font-size:.85rem;padding:6px 10px}.row button{padding:6px 12px;font-size:.75rem}}
   </style>
 </head>
 <body>
 
-  <!-- ============================================================
-  APP — TikTok Chat
-  ============================================================ -->
-  <div class="app">
-
-    <!-- ===== HEADER ===== -->
-    <header class="header">
-      <div class="header-left">
-        <div class="header-logo">
-          🎵 <span>Chat</span><span class="dot">.</span>
-        </div>
-      </div>
-      <div class="header-right">
-        <span class="online-badge">
-          <span class="live-dot"></span>
-          <span id="onlineCount">0</span>
-        </span>
-        <div class="auth">
-          <input type="text" class="auth-input" id="usernameInput" placeholder="Name..." maxlength="20" />
-          <button class="auth-btn" id="joinBtn">Join</button>
-          <button class="auth-btn auth-btn--logout" id="leaveBtn" style="display:none">✕</button>
-        </div>
-      </div>
-    </header>
-
-    <!-- ===== MESSAGES ===== -->
-    <div class="messages" id="messagesContainer">
-      <div class="status">👋 Sign in to chat</div>
-    </div>
-
-    <!-- ===== INPUT ===== -->
-    <div class="input-area">
-      <div class="toolbar" id="toolbar">
-        <button class="toolbar-btn" data-action="image">🖼️ Photo</button>
-        <button class="toolbar-btn" data-action="video">🎥 Video</button>
-        <button class="toolbar-btn" id="voiceBtn" data-action="voice">🎤 Voice</button>
-      </div>
-
-      <div class="recording" id="recordingIndicator">
-        <span class="live-icon"></span>
-        <span class="recording-timer" id="recordingTimer">0:00</span>
-        <span>Recording</span>
-        <button class="recording-stop" id="stopRecordingBtn">⏹</button>
-      </div>
-
-      <div class="input-row">
-        <input type="text" class="input-field" id="messageInput" placeholder="Type a message..." disabled />
-        <button class="input-btn" id="sendBtn" disabled>Send</button>
-        <button class="input-btn input-btn--icon" id="fileBtn" disabled>📎</button>
-        <input type="file" class="file-input" id="fileInput" accept="image/*,video/*,audio/*" multiple />
+<div class="app">
+  <div class="header">
+    <h1>💬 <span>Text</span> Chat</h1>
+    <div class="header-right">
+      <span class="online" id="online">👤 0</span>
+      <div class="auth">
+        <input type="text" id="name" placeholder="Name..." maxlength="20" />
+        <button id="join">Join</button>
+        <button id="leave" class="out" style="display:none">Leave</button>
       </div>
     </div>
   </div>
 
-  <!-- ============================================================
-  FIREBASE
-  ============================================================ -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
-  </script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
-  </script>
-
-  <script>
-    /**
-     * ============================================================
-     * TIKTOK CHAT — Firebase + PWA
-     * ============================================================
-     */
-
-    // ============================================================
-    // CONFIG
-    // ============================================================
-    const CONFIG = {
-      FIREBASE: {
-        databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-      },
-      MAX_MESSAGES: 150,
-      MAX_FILE_SIZE: 10 * 1024 * 1024,
-    };
-
-    // ============================================================
-    // FIREBASE
-    // ============================================================
-    firebase.initializeApp(CONFIG.FIREBASE);
-    const db = firebase.database();
-
-    // ============================================================
-    // DOM
-    // ============================================================
-    const DOM = {
-      messages: document.getElementById('messagesContainer'),
-      input: document.getElementById('messageInput'),
-      send: document.getElementById('sendBtn'),
-      username: document.getElementById('usernameInput'),
-      join: document.getElementById('joinBtn'),
-      leave: document.getElementById('leaveBtn'),
-      online: document.getElementById('onlineCount'),
-      toolbar: document.getElementById('toolbar'),
-      fileInput: document.getElementById('fileInput'),
-      fileBtn: document.getElementById('fileBtn'),
-      recording: document.getElementById('recordingIndicator'),
-      recordingTimer: document.getElementById('recordingTimer'),
-      stopRecording: document.getElementById('stopRecordingBtn'),
-      voiceBtn: document.getElementById('voiceBtn'),
-    };
-
-    // ============================================================
-    // STATE
-    // ============================================================
-    const STATE = {
-      user: null,
-      listeners: [],
-      isRecording: false,
-      recorder: null,
-      chunks: [],
-      seconds: 0,
-      timerInterval: null,
-    };
-
-    // ============================================================
-    // UTILITIES
-    // ============================================================
-    const Utils = {
-      setStatus: (text) => {
-        let el = DOM.messages.querySelector('.status');
-        if (!el) {
-          el = document.createElement('div');
-          el.className = 'status';
-          DOM.messages.appendChild(el);
-        }
-        el.textContent = text;
-      },
-
-      scrollBottom: () => {
-        setTimeout(() => {
-          DOM.messages.scrollTop = DOM.messages.scrollHeight;
-        }, 50);
-      },
-
-      formatTime: (ts) => {
-        if (!ts) return '';
-        const d = new Date(ts);
-        return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-      },
-
-      formatSeconds: (s) => {
-        const mins = Math.floor(s / 60);
-        const secs = s % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
-      },
-
-      uploadFile: (file) => {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target.result);
-          reader.onerror = reject;
-          reader.readAsDataURL(file);
-        });
-      },
-
-      getFilePrefix: (file) => {
-        const type = file.type;
-        if (type.startsWith('video/')) return '🎬 ';
-        if (type.startsWith('audio/')) return '🎤 ';
-        return '📸 ';
-      },
-    };
-
-    // ============================================================
-    // MESSAGE HANDLER
-    // ============================================================
-    const MessageHandler = {
-      send: (text) => {
-        if (!STATE.user) return alert('Sign in first!');
-        if (!text || !text.trim()) return;
-
-        db.ref('messages').push({
-          name: STATE.user.name,
-          uid: STATE.user.uid,
-          text: text.trim(),
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-        }).catch(() => alert('Failed to send.'));
-
-        DOM.input.value = '';
-        DOM.input.focus();
-      },
-
-      render: (data) => {
-        const isOwn = STATE.user && data.uid === STATE.user.uid;
-        const el = document.createElement('div');
-        el.className = `message ${isOwn ? 'message--own' : 'message--other'}`;
-        el.dataset.key = data._key;
-
-        let html = data.text || '';
-
-        // Parse media
-        if (html.startsWith('📸 ')) {
-          html =
-            `<img src="${html.substring(4)}" loading="lazy" onerror="this.outerHTML='<span class=\\'error\\'>❌ Failed</span>'" />`;
-        } else if (html.startsWith('🎬 ')) {
-          html =
-            `<video controls src="${html.substring(4)}" preload="metadata" onerror="this.outerHTML='<span class=\\'error\\'>❌ Failed</span>'"></video>`;
-        } else if (html.startsWith('🎤 ')) {
-          html =
-            `<div class="voice">🎤 <audio controls src="${html.substring(4)}" onerror="this.outerHTML='<span class=\\'error\\'>❌ Failed</span>'"></audio></div>`;
-        }
-
-        el.innerHTML = `
-            <div class="message-sender">
-              ${data.name || 'Anonymous'}
-              ${isOwn ? '<span class="verified">✓</span>' : ''}
-              <span class="message-time">${Utils.formatTime(data.timestamp)}</span>
-            </div>
-            <div class="message-text">${html}</div>
-          `;
-
-        const status = DOM.messages.querySelector('.status');
-        if (status) status.remove();
-
-        DOM.messages.appendChild(el);
-        Utils.scrollBottom();
-      },
-    };
-
-    // ============================================================
-    // SUBSCRIPTION
-    // ============================================================
-    const Subscription = {
-      messages: () => {
-        STATE.listeners.forEach(ref => ref.off());
-        STATE.listeners = [];
-
-        const query = db.ref('messages').orderByKey().limitToLast(CONFIG.MAX_MESSAGES);
-
-        query.on('child_added', (snapshot) => {
-          const data = snapshot.val();
-          data._key = snapshot.key;
-          MessageHandler.render(data);
-        });
-
-        query.on('child_removed', (snapshot) => {
-          const el = DOM.messages.querySelector(`[data-key="${snapshot.key}"]`);
-          if (el) el.remove();
-        });
-
-        STATE.listeners.push(query);
-
-        query.once('value', (snapshot) => {
-          if (!snapshot.exists()) Utils.setStatus('💬 No messages yet');
-        });
-
-        Subscription.presence();
-      },
-
-      presence: () => {
-        const presence = db.ref('.info/connected');
-        const users = db.ref('users');
-
-        presence.on('value', (snapshot) => {
-          if (snapshot.val() && STATE.user) {
-            const ref = users.child(STATE.user.uid);
-            ref.set({
-              name: STATE.user.name,
-              lastSeen: firebase.database.ServerValue.TIMESTAMP,
-            });
-            ref.onDisconnect().remove();
-          }
-        });
-
-        users.on('value', (snapshot) => {
-          DOM.online.textContent = snapshot.exists() ? snapshot.numChildren() : '0';
-        });
-
-        STATE.listeners.push(presence);
-      },
-
-      cleanup: () => {
-        STATE.listeners.forEach(ref => ref.off());
-        STATE.listeners = [];
-      },
-    };
-
-    // ============================================================
-    // VOICE RECORDER
-    // ============================================================
-    const VoiceRecorder = {
-      start: async () => {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-
-          STATE.recorder = new MediaRecorder(stream);
-          STATE.chunks = [];
-          STATE.isRecording = true;
-          STATE.seconds = 0;
-
-          STATE.recorder.ondataavailable = (event) => {
-            if (event.data.size > 0) STATE.chunks.push(event.data);
-          };
-
-          STATE.recorder.onstop = async () => {
-            STATE.isRecording = false;
-            DOM.recording.classList.remove('recording--active');
-            DOM.voiceBtn.classList.remove('toolbar-btn--active');
-            DOM.input.disabled = false;
-            DOM.send.disabled = false;
-
-            if (STATE.timerInterval) {
-              clearInterval(STATE.timerInterval);
-              STATE.timerInterval = null;
-            }
-
-            if (STATE.chunks.length > 0) {
-              const blob = new Blob(STATE.chunks, { type: 'audio/webm' });
-              if (blob.size > 0) {
-                try {
-                  const file = new File([blob], `voice-${Date.now()}.webm`, { type: 'audio/webm' });
-                  const dataUrl = await Utils.uploadFile(file);
-                  MessageHandler.send('🎤 ' + dataUrl);
-                } catch (e) {
-                  alert('Failed to upload voice.');
-                }
-              }
-            }
-
-            stream.getTracks().forEach(track => track.stop());
-          };
-
-          STATE.recorder.start(1000);
-          DOM.recording.classList.add('recording--active');
-          DOM.voiceBtn.classList.add('toolbar-btn--active');
-          DOM.input.disabled = true;
-          DOM.send.disabled = true;
-
-          STATE.timerInterval = setInterval(() => {
-            STATE.seconds++;
-            DOM.recordingTimer.textContent = Utils.formatSeconds(STATE.seconds);
-          }, 1000);
-
-        } catch (e) {
-          alert('Microphone access denied.');
-        }
-      },
-
-      stop: () => {
-        if (STATE.recorder && STATE.recorder.state === 'recording') {
-          STATE.recorder.stop();
-        }
-      },
-
-      toggle: () => {
-        if (STATE.isRecording) VoiceRecorder.stop();
-        else VoiceRecorder.start();
-      },
-    };
-
-    // ============================================================
-    // FILE HANDLER
-    // ============================================================
-    const FileHandler = {
-      handle: async (file) => {
-        if (!STATE.user) return alert('Sign in first!');
-        if (file.size > CONFIG.MAX_FILE_SIZE) return alert('File too large! Max 10MB.');
-
-        try {
-          const prefix = Utils.getFilePrefix(file);
-          const dataUrl = await Utils.uploadFile(file);
-          MessageHandler.send(prefix + dataUrl);
-        } catch (e) {
-          alert('Failed to upload file.');
-        }
-      },
-
-      handleMultiple: async (files) => {
-        for (const file of files) await FileHandler.handle(file);
-        DOM.fileInput.value = '';
-      },
-    };
-
-    // ============================================================
-    // AUTH
-    // ============================================================
-    const Auth = {
-      login: () => {
-        const name = DOM.username.value.trim() || 'Guest';
-        STATE.user = {
-          name: name,
-          uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-        };
-
-        DOM.username.disabled = true;
-        DOM.join.style.display = 'none';
-        DOM.leave.style.display = 'inline-block';
-        DOM.input.disabled = false;
-        DOM.send.disabled = false;
-        DOM.fileBtn.disabled = false;
-        DOM.input.placeholder = `Message as ${name}...`;
-
-        DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = false);
-
-        Utils.setStatus(`✅ Signed in`);
-        DOM.messages.innerHTML = '';
-        Subscription.messages();
-      },
-
-      logout: () => {
-        if (STATE.user) db.ref('users').child(STATE.user.uid).remove();
-
-        Subscription.cleanup();
-        STATE.user = null;
-
-        DOM.username.disabled = false;
-        DOM.join.style.display = 'inline-block';
-        DOM.leave.style.display = 'none';
-        DOM.input.disabled = true;
-        DOM.send.disabled = true;
-        DOM.fileBtn.disabled = true;
-        DOM.input.placeholder = 'Sign in to chat...';
-        DOM.input.value = '';
-
-        DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
-
-        DOM.messages.innerHTML = '';
-        Utils.setStatus('👋 Left chat');
-        DOM.online.textContent = '0';
-
-        if (STATE.isRecording) VoiceRecorder.stop();
-      },
-    };
-
-    // ============================================================
-    // EVENTS
-    // ============================================================
-    const Events = {
-      init: () => {
-        // Auth
-        DOM.join.addEventListener('click', Auth.login);
-        DOM.leave.addEventListener('click', Auth.logout);
-        DOM.username.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') Auth.login();
-        });
-
-        // Send
-        DOM.send.addEventListener('click', () => MessageHandler.send(DOM.input.value));
-        DOM.input.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            MessageHandler.send(DOM.input.value);
-          }
-        });
-
-        // Voice
-        DOM.voiceBtn.addEventListener('click', VoiceRecorder.toggle);
-        DOM.stopRecording.addEventListener('click', VoiceRecorder.stop);
-
-        // File
-        DOM.fileBtn.addEventListener('click', () => DOM.fileInput.click());
-        DOM.fileInput.addEventListener('change', (e) => {
-          if (e.target.files.length) FileHandler.handleMultiple(e.target.files);
-        });
-
-        // Toolbar
-        DOM.toolbar.addEventListener('click', (e) => {
-          const btn = e.target.closest('button');
-          if (!btn) return;
-          const action = btn.dataset.action;
-          if (action === 'image' || action === 'video') DOM.fileInput.click();
-        });
-      },
-    };
-
-    // ============================================================
-    // INIT
-    // ============================================================
-    DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
-    Utils.setStatus('🌐 Connecting...');
-    Subscription.messages();
-    Events.init();
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+  <div class="msgs" id="msgs"><div class="status">👋 Sign in to chat</div></div>
+
+  <div class="input-area">
+    <div class="row">
+      <input type="text" id="input" placeholder="Type a message..." disabled />
+      <button id="send" disabled>Send</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
+<script>
+// ============================================================
+// FIREBASE
+// ============================================================
+firebase.initializeApp({
+  databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+});
+const db = firebase.database();
+
+// ============================================================
+// DOM
+// ============================================================
+const msgs = document.getElementById('msgs');
+const input = document.getElementById('input');
+const send = document.getElementById('send');
+const name = document.getElementById('name');
+const join = document.getElementById('join');
+const leave = document.getElementById('leave');
+const online = document.getElementById('online');
+
+// ============================================================
+// STATE
+// ============================================================
+let user = null;
+let listeners = [];
+
+// ============================================================
+// HELPERS
+// ============================================================
+const status = (text) => {
+  let el = msgs.querySelector('.status');
+  if (!el) {
+    el = document.createElement('div');
+    el.className = 'status';
+    msgs.appendChild(el);
+  }
+  el.textContent = text;
+};
+
+const scroll = () => setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+
+const time = (ts) => ts ? new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+
+// ============================================================
+// SEND
+// ============================================================
+const sendMsg = (text) => {
+  if (!user) return alert('Sign in first!');
+  if (!text || !text.trim()) return;
+
+  db.ref('messages').push({
+    name: user.name,
+    uid: user.uid,
+    text: text.trim(),
+    timestamp: firebase.database.ServerValue.TIMESTAMP
+  }).catch(() => alert('Failed to send.'));
+
+  input.value = '';
+  input.focus();
+};
+
+// ============================================================
+// RENDER
+// ============================================================
+const render = (data) => {
+  const isOwn = user && data.uid === user.uid;
+  const el = document.createElement('div');
+  el.className = `msg ${isOwn ? 'own' : 'other'}`;
+  el.dataset.key = data._key;
+
+  el.innerHTML = `
+    <div class="sender">${data.name || 'Anonymous'}<span class="time">${time(data.timestamp)}</span></div>
+    <div class="text">${data.text || ''}</div>
+  `;
+
+  const st = msgs.querySelector('.status');
+  if (st) st.remove();
+
+  msgs.appendChild(el);
+  scroll();
+};
+
+// ============================================================
+// SUBSCRIBE
+// ============================================================
+const subscribe = () => {
+  listeners.forEach(ref => ref.off());
+  listeners = [];
+
+  const query = db.ref('messages').orderByKey().limitToLast(100);
+
+  query.on('child_added', (snapshot) => {
+    const data = snapshot.val();
+    data._key = snapshot.key;
+    render(data);
+  });
+
+  query.on('child_removed', (snapshot) => {
+    const el = msgs.querySelector(`[data-key="${snapshot.key}"]`);
+    if (el) el.remove();
+  });
+
+  listeners.push(query);
+
+  query.once('value', (snapshot) => {
+    if (!snapshot.exists()) status('💬 No messages yet. Say hello!');
+  });
+
+  // Presence
+  const presence = db.ref('.info/connected');
+  const users = db.ref('users');
+
+  presence.on('value', (snapshot) => {
+    if (snapshot.val() && user) {
+      const ref = users.child(user.uid);
+      ref.set({
+        name: user.name,
+        lastSeen: firebase.database.ServerValue.TIMESTAMP
+      });
+      ref.onDisconnect().remove();
     }
+  });
 
-    console.log('🎵 TikTok Chat ready!');
-  </script>
+  users.on('value', (snapshot) => {
+    online.textContent = snapshot.exists() ? `👤 ${snapshot.numChildren()}` : '👤 0';
+  });
+
+  listeners.push(presence);
+};
+
+// ============================================================
+// AUTH
+// ============================================================
+const login = () => {
+  const n = name.value.trim() || 'Guest';
+  user = {
+    name: n,
+    uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+  };
+
+  name.disabled = true;
+  join.style.display = 'none';
+  leave.style.display = 'inline-block';
+  input.disabled = false;
+  send.disabled = false;
+  input.placeholder = `Message as ${n}...`;
+
+  status(`✅ Signed in as ${n}`);
+  msgs.innerHTML = '';
+  subscribe();
+};
+
+const logout = () => {
+  if (user) db.ref('users').child(user.uid).remove();
+
+  listeners.forEach(ref => ref.off());
+  listeners = [];
+  user = null;
+
+  name.disabled = false;
+  join.style.display = 'inline-block';
+  leave.style.display = 'none';
+  input.disabled = true;
+  send.disabled = true;
+  input.placeholder = 'Sign in to chat...';
+  input.value = '';
+
+  msgs.innerHTML = '';
+  status('👋 You left the chat. Sign in to rejoin.');
+  online.textContent = '👤 0';
+};
+
+// ============================================================
+// EVENTS
+// ============================================================
+join.addEventListener('click', login);
+leave.addEventListener('click', logout);
+
+name.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') login();
+});
+
+send.addEventListener('click', () => sendMsg(input.value));
+
+input.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMsg(input.value);
+  }
+});
+
+// ============================================================
+// INIT
+// ============================================================
+status('🌐 Connecting...');
+subscribe();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+
+console.log('💬 Text Chat ready');
+</script>
 
 </body>
 </html>
