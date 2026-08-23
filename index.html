@@ -3,335 +3,406 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Pixel Chat</title>
+  <title>Enterprise Pixel Chat</title>
   <style>
     /* ============================================================
-       PIXEL FONT — Retro 8-bit style
+       ENTERPRISE DESIGN SYSTEM
        ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
-    * {
+    :root {
+      /* Colours */
+      --color-bg-primary: #1a1a2e;
+      --color-bg-secondary: #16213e;
+      --color-bg-tertiary: #12122a;
+      --color-bg-input: #0f0e17;
+      --color-accent: #e94560;
+      --color-accent-hover: #ff6b81;
+      --color-accent-dark: #c7304a;
+      --color-text: #ffffff;
+      --color-text-muted: rgba(255, 255, 255, 0.6);
+      --color-text-dim: rgba(255, 255, 255, 0.3);
+      --color-border: #e94560;
+      --color-success: #4caf50;
+      --color-error: #e94560;
+      --color-warning: #ff9800;
+
+      /* Typography */
+      --font-family: 'Press Start 2P', monospace;
+      --font-size-xs: 0.35rem;
+      --font-size-sm: 0.45rem;
+      --font-size-md: 0.55rem;
+      --font-size-base: 0.65rem;
+      --font-size-lg: 0.85rem;
+      --font-size-xl: 1rem;
+      --font-size-2xl: 1.2rem;
+
+      /* Spacing */
+      --space-xs: 2px;
+      --space-sm: 4px;
+      --space-md: 8px;
+      --space-lg: 12px;
+      --space-xl: 16px;
+      --space-2xl: 20px;
+      --space-3xl: 24px;
+
+      /* Borders */
+      --border-width: 2px;
+      --border-radius: 0px;
+      --border-style: solid;
+
+      /* Shadows */
+      --shadow-pixel: 4px 4px 0 rgba(0, 0, 0, 0.6);
+      --shadow-pixel-sm: 2px 2px 0 rgba(0, 0, 0, 0.4);
+
+      /* Z-index */
+      --z-header: 100;
+      --z-overlay: 200;
+      --z-modal: 300;
+
+      /* Transitions */
+      --transition-fast: 0.1s ease;
+      --transition-base: 0.2s ease;
+      --transition-slow: 0.3s ease;
+
+      /* Sizing */
+      --app-max-width: 700px;
+      --app-height: 95vh;
+      --app-max-height: 800px;
+    }
+
+    /* ============================================================
+       RESET
+       ============================================================ */
+    *,
+    *::before,
+    *::after {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       image-rendering: pixelated;
     }
 
+    /* ============================================================
+       BASE
+       ============================================================ */
     body {
-      background: #1a1a2e;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
+      background: var(--color-bg-primary);
+      color: var(--color-text);
+      font-family: var(--font-family);
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 8px;
+      padding: var(--space-md);
       overflow: hidden;
-      image-rendering: pixelated;
-    }
-
-    .app {
-      max-width: 700px;
-      width: 100%;
-      height: 95vh;
-      max-height: 800px;
-      background: #16213e;
-      border: 4px solid #e94560;
-      border-radius: 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.6);
-      image-rendering: pixelated;
+      font-size: var(--font-size-base);
     }
 
     /* ============================================================
-       HEADER — Pixel style
+       APP CONTAINER
+       ============================================================ */
+    .app {
+      max-width: var(--app-max-width);
+      width: 100%;
+      height: var(--app-height);
+      max-height: var(--app-max-height);
+      background: var(--color-bg-secondary);
+      border: var(--border-width) var(--border-style) var(--color-border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: var(--shadow-pixel);
+    }
+
+    /* ============================================================
+       HEADER
        ============================================================ */
     .header {
-      padding: 16px 20px;
-      background: #0f0e17;
-      border-bottom: 4px solid #e94560;
+      padding: var(--space-xl) var(--space-2xl);
+      background: var(--color-bg-input);
+      border-bottom: var(--border-width) var(--border-style) var(--color-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: var(--space-md);
       flex-shrink: 0;
+      min-height: 60px;
     }
 
-    .header h1 {
-      font-size: 1rem;
-      font-weight: 400;
-      letter-spacing: 2px;
-      text-shadow: 2px 2px 0 #e94560;
-      image-rendering: pixelated;
-    }
-
-    .header h1 span {
-      color: #e94560;
-    }
-
-    .header-right {
+    .header-brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: var(--space-md);
+    }
+
+    .header-brand .logo {
+      font-size: var(--font-size-xl);
+    }
+
+    .header-brand .title {
+      font-size: var(--font-size-lg);
+      font-weight: 400;
+      letter-spacing: 2px;
+      text-shadow: var(--shadow-pixel-sm);
+    }
+
+    .header-brand .title .highlight {
+      color: var(--color-accent);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
       flex-wrap: wrap;
     }
 
-    .online {
-      font-size: 0.5rem;
-      padding: 4px 12px;
-      background: #0f0e17;
-      border: 2px solid #4caf50;
+    /* ============================================================
+       STATUS INDICATOR
+       ============================================================ */
+    .status-indicator {
       display: flex;
       align-items: center;
-      gap: 6px;
-      image-rendering: pixelated;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-lg);
+      background: var(--color-bg-primary);
+      border: var(--border-width) var(--border-style) var(--color-success);
+      font-size: var(--font-size-xs);
     }
 
-    .online .dot {
+    .status-indicator .dot {
       width: 8px;
       height: 8px;
-      background: #4caf50;
       display: inline-block;
-      image-rendering: pixelated;
+      background: var(--color-success);
     }
 
-    .online .dot.off {
-      background: #e94560;
-      animation: blink 0.8s infinite;
+    .status-indicator .dot--offline {
+      background: var(--color-error);
+      animation: pulse 0.8s infinite;
+    }
+
+    .status-indicator .count {
+      font-size: var(--font-size-xs);
+      margin-left: var(--space-xs);
     }
 
     /* ============================================================
-       AUTH — Pixel buttons
+       AUTH
        ============================================================ */
     .auth {
       display: flex;
-      gap: 6px;
+      gap: var(--space-sm);
       align-items: center;
     }
 
-    .auth input {
-      padding: 6px 10px;
-      border: 2px solid #e94560;
-      background: #0f0e17;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
+    .auth-input {
+      padding: var(--space-sm) var(--space-lg);
+      border: var(--border-width) var(--border-style) var(--color-border);
+      background: var(--color-bg-primary);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-xs);
       width: 100px;
-      transition: 0.2s;
-      image-rendering: pixelated;
+      transition: var(--transition-fast);
     }
 
-    .auth input:focus {
+    .auth-input:focus {
       outline: none;
-      border-color: #ff6b81;
+      border-color: var(--color-accent-hover);
       width: 130px;
     }
 
-    .auth input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+    .auth-input::placeholder {
+      color: var(--color-text-dim);
     }
 
-    .auth button {
-      padding: 6px 14px;
-      border: 2px solid #e94560;
-      background: #e94560;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
+    .auth-input:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn {
+      padding: var(--space-sm) var(--space-xl);
+      border: var(--border-width) var(--border-style) var(--color-border);
+      background: var(--color-accent);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-xs);
       cursor: pointer;
-      transition: 0.1s;
-      image-rendering: pixelated;
+      transition: var(--transition-fast);
       text-transform: uppercase;
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .auth button:hover {
-      background: #ff6b81;
+    .btn:hover:not(:disabled) {
+      background: var(--color-accent-hover);
       transform: translate(-2px, -2px);
-      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-pixel-sm);
     }
 
-    .auth button:active {
+    .btn:active:not(:disabled) {
       transform: translate(2px, 2px);
       box-shadow: none;
     }
 
-    .auth button.out {
-      background: #2d2d44;
-      border-color: #2d2d44;
-    }
-
-    .auth button.out:hover {
-      background: #3d3d5c;
-      border-color: #3d3d5c;
-    }
-
-    .auth button:disabled {
+    .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
       transform: none !important;
     }
 
-    /* ============================================================
-       MESSAGES — Pixel chat bubbles
-       ============================================================ */
-    .msgs {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      background: #12122a;
-      scroll-behavior: smooth;
-      image-rendering: pixelated;
+    .btn--secondary {
+      background: var(--color-bg-primary);
+      border-color: var(--color-bg-primary);
     }
 
-    .msgs::-webkit-scrollbar {
+    .btn--secondary:hover:not(:disabled) {
+      background: var(--color-bg-tertiary);
+      border-color: var(--color-bg-tertiary);
+    }
+
+    .btn--danger {
+      background: var(--color-error);
+      border-color: var(--color-error);
+    }
+
+    .btn--danger:hover:not(:disabled) {
+      background: var(--color-accent-hover);
+      border-color: var(--color-accent-hover);
+    }
+
+    .btn--success {
+      background: var(--color-success);
+      border-color: var(--color-success);
+    }
+
+    /* ============================================================
+       MESSAGES
+       ============================================================ */
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      background: var(--color-bg-tertiary);
+      scroll-behavior: smooth;
+    }
+
+    .messages::-webkit-scrollbar {
       width: 8px;
     }
 
-    .msgs::-webkit-scrollbar-track {
-      background: #0f0e17;
+    .messages::-webkit-scrollbar-track {
+      background: var(--color-bg-input);
     }
 
-    .msgs::-webkit-scrollbar-thumb {
-      background: #e94560;
-      border: 2px solid #0f0e17;
+    .messages::-webkit-scrollbar-thumb {
+      background: var(--color-accent);
+      border: var(--border-width) var(--border-style) var(--color-bg-input);
     }
 
-    .status {
+    .status-message {
       text-align: center;
-      font-size: 0.5rem;
+      font-size: var(--font-size-xs);
       opacity: 0.5;
-      padding: 16px;
+      padding: var(--space-3xl);
       font-style: italic;
-      image-rendering: pixelated;
     }
 
     /* ============================================================
-       MESSAGE — Pixel bubble
+       MESSAGE
        ============================================================ */
-    .msg {
-      padding: 8px 14px;
-      border: 2px solid #fff;
+    .message {
+      padding: var(--space-md) var(--space-xl);
+      border: var(--border-width) var(--border-style) var(--color-text);
       max-width: 82%;
       word-wrap: break-word;
       animation: pixelFade 0.2s steps(2);
       line-height: 1.6;
-      image-rendering: pixelated;
-      position: relative;
     }
 
-    .msg.own {
+    .message--own {
       align-self: flex-end;
-      background: #e94560;
-      border-color: #ff6b81;
+      background: var(--color-accent);
+      border-color: var(--color-accent-hover);
       border-bottom-right-radius: 0;
     }
 
-    .msg.other {
+    .message--other {
       align-self: flex-start;
-      background: #2d2d44;
-      border-color: #3d3d5c;
+      background: var(--color-bg-primary);
+      border-color: var(--color-bg-tertiary);
       border-bottom-left-radius: 0;
     }
 
-    .msg .sender {
-      font-size: 0.4rem;
+    .message__sender {
+      font-size: var(--font-size-xs);
       text-transform: uppercase;
       opacity: 0.7;
       letter-spacing: 1px;
-      margin-bottom: 4px;
-      image-rendering: pixelated;
+      margin-bottom: var(--space-sm);
     }
 
-    .msg .time {
-      font-size: 0.35rem;
+    .message__timestamp {
+      font-size: var(--font-size-xs);
       opacity: 0.5;
-      margin-left: 6px;
+      margin-left: var(--space-sm);
     }
 
-    .msg .text {
-      font-size: 0.65rem;
+    .message__content {
+      font-size: var(--font-size-md);
       word-break: break-word;
-      image-rendering: pixelated;
       line-height: 1.8;
     }
 
     /* ============================================================
-       INPUT — Pixel style
+       INPUT AREA
        ============================================================ */
     .input-area {
-      padding: 12px 16px 16px;
-      background: #0f0e17;
-      border-top: 4px solid #e94560;
+      padding: var(--space-lg) var(--space-2xl) var(--space-2xl);
+      background: var(--color-bg-input);
+      border-top: var(--border-width) var(--border-style) var(--color-border);
       flex-shrink: 0;
     }
 
-    .row {
+    .input-row {
       display: flex;
-      gap: 8px;
+      gap: var(--space-md);
       align-items: center;
     }
 
-    .row input {
+    .input-field {
       flex: 1;
-      padding: 10px 14px;
-      border: 2px solid #e94560;
-      background: #12122a;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
+      padding: var(--space-lg) var(--space-xl);
+      border: var(--border-width) var(--border-style) var(--color-border);
+      background: var(--color-bg-tertiary);
+      color: var(--color-text);
+      font-family: var(--font-family);
+      font-size: var(--font-size-sm);
       min-width: 50px;
-      transition: 0.2s;
-      image-rendering: pixelated;
+      transition: var(--transition-fast);
     }
 
-    .row input:focus {
+    .input-field:focus {
       outline: none;
-      border-color: #ff6b81;
+      border-color: var(--color-accent-hover);
     }
 
-    .row input::placeholder {
-      color: rgba(255, 255, 255, 0.2);
+    .input-field::placeholder {
+      color: var(--color-text-dim);
     }
 
-    .row input:disabled {
+    .input-field:disabled {
       opacity: 0.3;
       cursor: not-allowed;
-    }
-
-    .row button {
-      padding: 10px 18px;
-      border: 2px solid #e94560;
-      background: #e94560;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      cursor: pointer;
-      transition: 0.1s;
-      image-rendering: pixelated;
-      text-transform: uppercase;
-    }
-
-    .row button:hover:not(:disabled) {
-      background: #ff6b81;
-      transform: translate(-2px, -2px);
-      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
-    }
-
-    .row button:active:not(:disabled) {
-      transform: translate(2px, 2px);
-      box-shadow: none;
-    }
-
-    .row button:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      transform: none !important;
     }
 
     /* ============================================================
@@ -352,7 +423,7 @@
       }
     }
 
-    @keyframes blink {
+    @keyframes pulse {
       0%,
       100% {
         opacity: 1;
@@ -366,369 +437,709 @@
        RESPONSIVE
        ============================================================ */
     @media (max-width: 600px) {
+      :root {
+        --app-height: 100vh;
+        --app-max-height: 100vh;
+        --space-xl: 12px;
+        --space-2xl: 16px;
+      }
+
       .app {
-        height: 100vh;
-        max-height: 100vh;
+        border-width: var(--border-width);
         border-radius: 0;
-        border-width: 2px;
       }
 
       .header {
-        padding: 12px 16px;
+        padding: var(--space-lg) var(--space-xl);
+        min-height: 50px;
       }
 
-      .header h1 {
-        font-size: 0.7rem;
+      .header-brand .title {
+        font-size: var(--font-size-md);
       }
 
-      .auth input {
+      .auth-input {
         width: 70px;
-        font-size: 0.4rem;
-        padding: 4px 8px;
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-md);
       }
 
-      .auth input:focus {
+      .auth-input:focus {
         width: 90px;
       }
 
-      .auth button {
-        font-size: 0.4rem;
-        padding: 4px 10px;
+      .btn {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-md);
+        min-height: 24px;
       }
 
-      .msgs {
-        padding: 12px;
+      .messages {
+        padding: var(--space-lg);
       }
 
-      .msg {
+      .message {
         max-width: 92%;
-        padding: 6px 10px;
+        padding: var(--space-sm) var(--space-lg);
       }
 
-      .msg .text {
-        font-size: 0.55rem;
+      .message__content {
+        font-size: var(--font-size-sm);
       }
 
-      .row input {
-        font-size: 0.45rem;
-        padding: 8px 10px;
+      .input-area {
+        padding: var(--space-md) var(--space-xl) var(--space-xl);
       }
 
-      .row button {
-        font-size: 0.4rem;
-        padding: 8px 12px;
+      .input-field {
+        font-size: var(--font-size-xs);
+        padding: var(--space-md) var(--space-lg);
       }
 
-      .online {
-        font-size: 0.4rem;
-        padding: 3px 8px;
+      .status-indicator {
+        font-size: var(--font-size-xs);
+        padding: var(--space-xs) var(--space-md);
       }
     }
 
     @media (max-width: 400px) {
-      .auth input {
+      .auth-input {
         width: 50px;
       }
 
-      .auth input:focus {
+      .auth-input:focus {
         width: 70px;
       }
 
-      .header h1 {
-        font-size: 0.55rem;
+      .header-brand .title {
+        font-size: var(--font-size-sm);
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="app">
+  <!-- ============================================================
+  APP
+  ============================================================ -->
+  <div class="app" role="main" aria-label="Chat Application">
+
     <!-- ===== HEADER ===== -->
-    <div class="header">
-      <h1>🕹️ <span>PIXEL</span> CHAT</h1>
-      <div class="header-right">
-        <span class="online">
+    <header class="header" role="banner">
+      <div class="header-brand">
+        <span class="logo" aria-hidden="true">🕹️</span>
+        <h1 class="title">
+          <span class="highlight">PIXEL</span> CHAT
+        </h1>
+      </div>
+      <div class="header-actions">
+        <div class="status-indicator" role="status" aria-live="polite">
           <span class="dot" id="statusDot"></span>
           <span id="onlineCount">0</span>
-        </span>
-        <div class="auth">
-          <input type="text" id="name" placeholder="NAME" maxlength="20" />
-          <button id="join">JOIN</button>
-          <button id="leave" class="out" style="display:none">X</button>
+        </div>
+        <div class="auth" role="group" aria-label="Authentication">
+          <input
+          type="text"
+          class="auth-input"
+          id="nameInput"
+          placeholder="NAME"
+          maxlength="20"
+          aria-label="Username"
+          />
+          <button class="btn" id="joinBtn" aria-label="Join chat">JOIN</button>
+          <button class="btn btn--danger" id="leaveBtn" style="display:none" aria-label="Leave chat">X</button>
         </div>
       </div>
-    </div>
+    </header>
 
     <!-- ===== MESSAGES ===== -->
-    <div class="msgs" id="msgs">
-      <div class="status">🔄 CONNECTING...</div>
+    <div class="messages" id="messagesContainer" role="log" aria-live="polite">
+      <div class="status-message">🔄 CONNECTING...</div>
     </div>
 
     <!-- ===== INPUT ===== -->
-    <div class="input-area">
-      <div class="row">
-        <input type="text" id="input" placeholder="TYPE..." disabled />
-        <button id="send" disabled>SEND</button>
+    <footer class="input-area" role="contentinfo">
+      <div class="input-row">
+        <input
+        type="text"
+        class="input-field"
+        id="messageInput"
+        placeholder="TYPE..."
+        disabled
+        aria-label="Message input"
+        />
+        <button class="btn" id="sendBtn" disabled aria-label="Send message">SEND</button>
       </div>
-    </div>
+    </footer>
   </div>
 
-  <!-- ===== FIREBASE ===== -->
+  <!-- ============================================================
+  FIREBASE SDK
+  ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
+  <!-- ============================================================
+  APPLICATION SCRIPT
+  ============================================================ -->
   <script>
+    /**
+     * ============================================================
+     * ENTERPRISE PIXEL CHAT
+     * Architecture: Clean, Modular, Production-Ready
+     * ============================================================
+     */
+
     // ============================================================
-    // FIREBASE
+    // 1. CONFIGURATION
     // ============================================================
-    firebase.initializeApp({
-      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+
+    const CONFIG = Object.freeze({
+      FIREBASE: {
+        databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+      },
+      MESSAGE_LIMIT: 100,
+      MAX_USERNAME_LENGTH: 20,
+      CONNECTION_TIMEOUT: 5000,
+      STATUS_CLEAR_DELAY: 1500,
     });
-    const db = firebase.database();
 
     // ============================================================
-    // DOM
+    // 2. LOGGER
     // ============================================================
-    const msgs = document.getElementById('msgs');
-    const input = document.getElementById('input');
-    const send = document.getElementById('send');
-    const name = document.getElementById('name');
-    const join = document.getElementById('join');
-    const leave = document.getElementById('leave');
-    const onlineCount = document.getElementById('onlineCount');
-    const statusDot = document.getElementById('statusDot');
 
-    // ============================================================
-    // STATE
-    // ============================================================
-    let user = null;
-    let listeners = [];
-    let connected = false;
+    const Logger = {
+      _prefix: '[PixelChat]',
 
-    // ============================================================
-    // HELPERS
-    // ============================================================
-    const status = (text) => {
-      let el = msgs.querySelector('.status');
-      if (!el) {
-        el = document.createElement('div');
-        el.className = 'status';
-        msgs.appendChild(el);
-      }
-      el.textContent = text;
+      info: (...args) => {
+        console.info(Logger._prefix, ...args);
+      },
+
+      warn: (...args) => {
+        console.warn(Logger._prefix, ...args);
+      },
+
+      error: (...args) => {
+        console.error(Logger._prefix, ...args);
+      },
+
+      debug: (...args) => {
+        if (process.env.NODE_ENV === 'development') {
+          console.debug(Logger._prefix, ...args);
+        }
+      },
     };
 
-    const scroll = () => setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+    // ============================================================
+    // 3. FIREBASE SERVICE
+    // ============================================================
 
-    const time = (ts) => ts ? new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+    const FirebaseService = {
+      _db: null,
+      _initialized: false,
 
-    const setOnline = (on) => {
-      connected = on;
-      statusDot.className = `dot ${on ? '' : 'off'}`;
-      if (on) {
-        status('✅ CONNECTED');
+      init() {
+        try {
+          firebase.initializeApp(CONFIG.FIREBASE);
+          this._db = firebase.database();
+          this._initialized = true;
+          Logger.info('Firebase initialized successfully');
+          return this._db;
+        } catch (error) {
+          Logger.error('Firebase initialization failed:', error);
+          throw new Error('Failed to initialize Firebase');
+        }
+      },
+
+      get db() {
+        if (!this._initialized) {
+          this.init();
+        }
+        return this._db;
+      },
+
+      get messagesRef() {
+        return this.db.ref('messages');
+      },
+
+      get usersRef() {
+        return this.db.ref('users');
+      },
+
+      get connectionRef() {
+        return this.db.ref('.info/connected');
+      },
+    };
+
+    // ============================================================
+    // 4. DOM SERVICE
+    // ============================================================
+
+    const DOMService = {
+      elements: {},
+
+      init() {
+        this.elements = {
+          messages: document.getElementById('messagesContainer'),
+          messageInput: document.getElementById('messageInput'),
+          sendBtn: document.getElementById('sendBtn'),
+          nameInput: document.getElementById('nameInput'),
+          joinBtn: document.getElementById('joinBtn'),
+          leaveBtn: document.getElementById('leaveBtn'),
+          onlineCount: document.getElementById('onlineCount'),
+          statusDot: document.getElementById('statusDot'),
+        };
+
+        // Validate all elements exist
+        Object.entries(this.elements).forEach(([key, element]) => {
+          if (!element) {
+            Logger.error(`DOM element not found: ${key}`);
+            throw new Error(`Required DOM element missing: ${key}`);
+          }
+        });
+
+        Logger.info('DOM initialized');
+        return this.elements;
+      },
+
+      get(id) {
+        return this.elements[id];
+      },
+
+      setStatus(text) {
+        const el = this.elements.messages.querySelector('.status-message');
+        if (el) {
+          el.textContent = text;
+        } else {
+          const newEl = document.createElement('div');
+          newEl.className = 'status-message';
+          newEl.textContent = text;
+          this.elements.messages.appendChild(newEl);
+        }
+      },
+
+      clearStatus() {
+        const el = this.elements.messages.querySelector('.status-message');
+        if (el) el.remove();
+      },
+
+      scrollToBottom() {
         setTimeout(() => {
-          const st = msgs.querySelector('.status');
-          if (st && st.textContent === '✅ CONNECTED') st.remove();
-        }, 800);
-      } else {
-        status('🔄 RECONNECTING...');
-      }
+          this.elements.messages.scrollTop = this.elements.messages.scrollHeight;
+        }, 50);
+      },
     };
 
     // ============================================================
-    // SEND
+    // 5. MESSAGE SERVICE
     // ============================================================
-    const sendMsg = (text) => {
-      if (!user) return alert('SIGN IN FIRST!');
-      if (!text || !text.trim()) return;
-      if (!connected) return alert('WAITING FOR CONNECTION...');
 
-      db.ref('messages').push({
-        name: user.name,
-        uid: user.uid,
-        text: text.trim(),
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      }).catch(() => alert('FAILED TO SEND.'));
+    const MessageService = {
+      _listeners: [],
+      _user: null,
+      _connected: false,
 
-      input.value = '';
-      input.focus();
+      setUser(user) {
+        this._user = user;
+      },
+
+      setConnected(status) {
+        this._connected = status;
+      },
+
+      send(text) {
+        if (!this._user) {
+          Logger.warn('Cannot send: User not authenticated');
+          alert('SIGN IN FIRST!');
+          return false;
+        }
+
+        if (!text || !text.trim()) {
+          return false;
+        }
+
+        if (!this._connected) {
+          Logger.warn('Cannot send: Not connected');
+          alert('WAITING FOR CONNECTION...');
+          return false;
+        }
+
+        try {
+          FirebaseService.messagesRef.push({
+            name: this._user.name,
+            uid: this._user.uid,
+            text: text.trim(),
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+          });
+          Logger.info('Message sent successfully');
+          return true;
+        } catch (error) {
+          Logger.error('Failed to send message:', error);
+          alert('FAILED TO SEND.');
+          return false;
+        }
+      },
+
+      render(data) {
+        const isOwn = this._user && data.uid === this._user.uid;
+        const el = document.createElement('div');
+        el.className = `message ${isOwn ? 'message--own' : 'message--other'}`;
+        el.dataset.key = data._key;
+
+        const timestamp = data.timestamp ?
+          new Date(data.timestamp).toLocaleTimeString('en-GB', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }) :
+          '';
+
+        el.innerHTML = `
+            <div class="message__sender">
+              ${this._escapeHtml(data.name || 'ANON')}
+              <span class="message__timestamp">${timestamp}</span>
+            </div>
+            <div class="message__content">${this._escapeHtml(data.text || '')}</div>
+          `;
+
+        DOMService.clearStatus();
+        DOMService.elements.messages.appendChild(el);
+        DOMService.scrollToBottom();
+      },
+
+      _escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+      },
+
+      clearListeners() {
+        this._listeners.forEach(ref => ref.off());
+        this._listeners = [];
+        Logger.debug('Listeners cleared');
+      },
+
+      subscribe() {
+        this.clearListeners();
+
+        // Connection status
+        const presenceRef = FirebaseService.connectionRef;
+        const onConnection = (snapshot) => {
+          const isConnected = snapshot.val() === true;
+          this.setConnected(isConnected);
+          this._updateConnectionStatus(isConnected);
+
+          if (isConnected && this._user) {
+            this._updateUserPresence();
+          }
+        };
+        presenceRef.on('value', onConnection);
+        this._listeners.push(presenceRef);
+
+        // Online users
+        const usersRef = FirebaseService.usersRef;
+        const onUsers = (snapshot) => {
+          if (this._connected) {
+            const count = snapshot.exists() ? snapshot.numChildren() : 0;
+            DOMService.elements.onlineCount.textContent = count;
+          }
+        };
+        usersRef.on('value', onUsers);
+        this._listeners.push(usersRef);
+
+        // Messages
+        const query = FirebaseService.messagesRef
+          .orderByKey()
+          .limitToLast(CONFIG.MESSAGE_LIMIT);
+
+        const onMessageAdded = (snapshot) => {
+          if (this._connected) {
+            const data = snapshot.val();
+            data._key = snapshot.key;
+            this.render(data);
+          }
+        };
+        query.on('child_added', onMessageAdded);
+        this._listeners.push(query);
+
+        const onMessageRemoved = (snapshot) => {
+          const el = DOMService.elements.messages
+            .querySelector(`[data-key="${snapshot.key}"]`);
+          if (el) el.remove();
+        };
+        query.on('child_removed', onMessageRemoved);
+        this._listeners.push(query);
+
+        // Initial check
+        query.once('value', (snapshot) => {
+          if (!snapshot.exists()) {
+            DOMService.setStatus('💬 NO MESSAGES YET');
+          }
+        });
+
+        Logger.info('Subscribed to Firebase events');
+      },
+
+      _updateConnectionStatus(isConnected) {
+        const dot = DOMService.elements.statusDot;
+        dot.className = `dot ${isConnected ? '' : 'dot--offline'}`;
+
+        if (isConnected) {
+          DOMService.setStatus('✅ CONNECTED');
+          setTimeout(() => {
+            const statusEl = DOMService.elements.messages
+              .querySelector('.status-message');
+            if (statusEl && statusEl.textContent === '✅ CONNECTED') {
+              DOMService.clearStatus();
+            }
+          }, CONFIG.STATUS_CLEAR_DELAY);
+        } else {
+          DOMService.setStatus('🔄 RECONNECTING...');
+        }
+      },
+
+      _updateUserPresence() {
+        const ref = FirebaseService.usersRef.child(this._user.uid);
+        ref.set({
+          name: this._user.name,
+          lastSeen: firebase.database.ServerValue.TIMESTAMP,
+        });
+        ref.onDisconnect().remove();
+        Logger.info('User presence updated');
+      },
     };
 
     // ============================================================
-    // RENDER
+    // 6. AUTH SERVICE
     // ============================================================
-    const render = (data) => {
-      const isOwn = user && data.uid === user.uid;
-      const el = document.createElement('div');
-      el.className = `msg ${isOwn ? 'own' : 'other'}`;
-      el.dataset.key = data._key;
 
-      el.innerHTML = `
-        <div class="sender">${data.name || 'ANON'}<span class="time">${time(data.timestamp)}</span></div>
-        <div class="text">${data.text || ''}</div>
-      `;
+    const AuthService = {
+      _user: null,
 
-      const st = msgs.querySelector('.status');
-      if (st && (st.textContent === '✅ CONNECTED' || st.textContent === '🔄 CONNECTING...')) {
-        st.remove();
-      }
+      get currentUser() {
+        return this._user;
+      },
 
-      msgs.appendChild(el);
-      scroll();
-    };
+      login() {
+        const nameInput = DOMService.elements.nameInput;
+        const rawName = nameInput.value.trim() || 'GUEST';
+        const name = rawName.toUpperCase().slice(0, CONFIG.MAX_USERNAME_LENGTH);
 
-    // ============================================================
-    // SUBSCRIBE
-    // ============================================================
-    const subscribe = () => {
-      listeners.forEach(ref => ref.off());
-      listeners = [];
+        this._user = {
+          name: name,
+          uid: `u_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+        };
 
-      // Connection status
-      const presence = db.ref('.info/connected');
-      presence.on('value', (snapshot) => {
-        const on = snapshot.val() === true;
-        setOnline(on);
+        MessageService.setUser(this._user);
 
-        if (on && user) {
-          const users = db.ref('users');
-          const ref = users.child(user.uid);
+        // Update UI
+        nameInput.disabled = true;
+        DOMService.elements.joinBtn.style.display = 'none';
+        DOMService.elements.leaveBtn.style.display = 'inline-block';
+        DOMService.elements.messageInput.disabled = false;
+        DOMService.elements.sendBtn.disabled = false;
+        DOMService.elements.messageInput.placeholder = `MSG AS ${name}...`;
+
+        DOMService.clearStatus();
+        DOMService.setStatus(`👾 ${name} JOINED`);
+
+        // Re-subscribe with user context
+        MessageService.subscribe();
+
+        // Force presence update if connected
+        if (MessageService._connected) {
+          const ref = FirebaseService.usersRef.child(this._user.uid);
           ref.set({
-            name: user.name,
-            lastSeen: firebase.database.ServerValue.TIMESTAMP
+            name: this._user.name,
+            lastSeen: firebase.database.ServerValue.TIMESTAMP,
           });
           ref.onDisconnect().remove();
         }
-      });
-      listeners.push(presence);
 
-      // Online users
-      const usersRef = db.ref('users');
-      usersRef.on('value', (snapshot) => {
-        if (connected) {
-          onlineCount.textContent = snapshot.exists() ? snapshot.numChildren() : '0';
-        }
-      });
-      listeners.push(usersRef);
+        DOMService.elements.onlineCount.textContent = '1';
 
-      // Messages
-      const query = db.ref('messages').orderByKey().limitToLast(100);
-
-      query.on('child_added', (snapshot) => {
-        if (connected) {
-          const data = snapshot.val();
-          data._key = snapshot.key;
-          render(data);
-        }
-      });
-
-      query.on('child_removed', (snapshot) => {
-        const el = msgs.querySelector(`[data-key="${snapshot.key}"]`);
-        if (el) el.remove();
-      });
-
-      listeners.push(query);
-
-      query.once('value', (snapshot) => {
-        if (!snapshot.exists()) {
-          const st = msgs.querySelector('.status');
-          if (!st || st.textContent === '🔄 CONNECTING...' || st.textContent === '✅ CONNECTED') {
-            status('💬 NO MESSAGES YET');
+        setTimeout(() => {
+          const statusEl = DOMService.elements.messages
+            .querySelector('.status-message');
+          if (statusEl && statusEl.textContent === `👾 ${name} JOINED`) {
+            DOMService.clearStatus();
           }
+        }, CONFIG.STATUS_CLEAR_DELAY);
+
+        Logger.info(`User logged in: ${name}`);
+        return this._user;
+      },
+
+      logout() {
+        if (this._user) {
+          FirebaseService.usersRef.child(this._user.uid).remove();
         }
-      });
+
+        MessageService.clearListeners();
+        MessageService.setUser(null);
+
+        const nameInput = DOMService.elements.nameInput;
+        nameInput.disabled = false;
+        DOMService.elements.joinBtn.style.display = 'inline-block';
+        DOMService.elements.leaveBtn.style.display = 'none';
+        DOMService.elements.messageInput.disabled = true;
+        DOMService.elements.sendBtn.disabled = true;
+        DOMService.elements.messageInput.placeholder = 'TYPE...';
+        DOMService.elements.messageInput.value = '';
+
+        DOMService.elements.messages.innerHTML = '';
+        DOMService.setStatus('👋 LEFT CHAT');
+        DOMService.elements.onlineCount.textContent = '0';
+
+        // Update connection status
+        const isConnected = MessageService._connected;
+        const dot = DOMService.elements.statusDot;
+        dot.className = `dot ${isConnected ? '' : 'dot--offline'}`;
+
+        this._user = null;
+        Logger.info('User logged out');
+      },
     };
 
     // ============================================================
-    // AUTH
+    // 7. EVENT HANDLER
     // ============================================================
-    const login = () => {
-      const n = name.value.trim() || 'GUEST';
-      user = {
-        name: n.toUpperCase(),
-        uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-      };
 
-      name.disabled = true;
-      join.style.display = 'none';
-      leave.style.display = 'inline-block';
-      input.disabled = false;
-      send.disabled = false;
-      input.placeholder = `MSG AS ${n.toUpperCase()}...`;
+    const EventHandler = {
+      _initialized: false,
 
-      const st = msgs.querySelector('.status');
-      if (st) st.remove();
+      init() {
+        if (this._initialized) {
+          Logger.warn('Event handler already initialized');
+          return;
+        }
 
-      subscribe();
+        const dom = DOMService.elements;
 
-      if (connected) {
-        const users = db.ref('users');
-        const ref = users.child(user.uid);
-        ref.set({
-          name: user.name,
-          lastSeen: firebase.database.ServerValue.TIMESTAMP
+        // Auth events
+        dom.joinBtn.addEventListener('click', () => AuthService.login());
+        dom.leaveBtn.addEventListener('click', () => AuthService.logout());
+        dom.nameInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') AuthService.login();
         });
-        ref.onDisconnect().remove();
-      }
 
-      onlineCount.textContent = '1';
-      status(`👾 ${user.name} JOINED`);
-      setTimeout(() => {
-        const st = msgs.querySelector('.status');
-        if (st && st.textContent === `👾 ${user.name} JOINED`) st.remove();
-      }, 1500);
-    };
+        // Message events
+        dom.sendBtn.addEventListener('click', () => {
+          const text = dom.messageInput.value;
+          if (MessageService.send(text)) {
+            dom.messageInput.value = '';
+            dom.messageInput.focus();
+          }
+        });
 
-    const logout = () => {
-      if (user) db.ref('users').child(user.uid).remove();
+        dom.messageInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            const text = dom.messageInput.value;
+            if (MessageService.send(text)) {
+              dom.messageInput.value = '';
+              dom.messageInput.focus();
+            }
+          }
+        });
 
-      listeners.forEach(ref => ref.off());
-      listeners = [];
-      user = null;
-
-      name.disabled = false;
-      join.style.display = 'inline-block';
-      leave.style.display = 'none';
-      input.disabled = true;
-      send.disabled = true;
-      input.placeholder = 'TYPE...';
-      input.value = '';
-
-      msgs.innerHTML = '';
-      status('👋 LEFT CHAT');
-      onlineCount.textContent = '0';
-      setOnline(connected);
+        this._initialized = true;
+        Logger.info('Event handlers initialized');
+      },
     };
 
     // ============================================================
-    // EVENTS
+    // 8. APPLICATION BOOTSTRAP
     // ============================================================
-    join.addEventListener('click', login);
-    leave.addEventListener('click', logout);
 
-    name.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') login();
-    });
+    const App = {
+      _bootstrapped: false,
 
-    send.addEventListener('click', () => sendMsg(input.value));
+      bootstrap() {
+        if (this._bootstrapped) {
+          Logger.warn('App already bootstrapped');
+          return;
+        }
 
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMsg(input.value);
-      }
-    });
+        try {
+          // Initialize services in order
+          Logger.info('Bootstrapping application...');
+
+          // 1. Firebase
+          FirebaseService.init();
+
+          // 2. DOM
+          DOMService.init();
+
+          // 3. Message Service
+          MessageService.subscribe();
+
+          // 4. Event Handler
+          EventHandler.init();
+
+          // 5. Initial status
+          DOMService.setStatus('🔄 CONNECTING...');
+
+          this._bootstrapped = true;
+          Logger.info('Application bootstrapped successfully');
+          Logger.info(`📡 Database: ${CONFIG.FIREBASE.databaseURL}`);
+          Logger.info(`📦 Message limit: ${CONFIG.MESSAGE_LIMIT}`);
+
+        } catch (error) {
+          Logger.error('Failed to bootstrap application:', error);
+          document.body.innerHTML = `
+              <div style="
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                font-family: 'Press Start 2P', monospace;
+                color: #e94560;
+                padding: 20px;
+                text-align: center;
+              ">
+                <div>
+                  <div style="font-size: 48px; margin-bottom: 20px;">💀</div>
+                  <h2 style="font-size: 1rem; margin-bottom: 10px;">BOOT FAILED</h2>
+                  <p style="font-size: 0.6rem; opacity: 0.6;">
+                    ${error.message || 'Unknown error'}
+                  </p>
+                </div>
+              </div>
+            `;
+          throw error;
+        }
+      },
+    };
 
     // ============================================================
-    // INIT
+    // 9. INIT
     // ============================================================
-    setOnline(false);
-    subscribe();
 
-    console.log('🕹️ PIXEL CHAT READY');
+    // Boot the application when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => App.bootstrap());
+    } else {
+      App.bootstrap();
+    }
+
+    // ============================================================
+    // 10. EXPOSE FOR DEBUGGING (Development only)
+    // ============================================================
+
+    if (process.env.NODE_ENV === 'development') {
+      window.__APP = {
+        CONFIG,
+        FirebaseService,
+        DOMService,
+        MessageService,
+        AuthService,
+        EventHandler,
+        App,
+      };
+      Logger.info('Debug API exposed');
+    }
   </script>
 
 </body>
