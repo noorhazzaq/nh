@@ -85,9 +85,11 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f
 
 var current=null;
 var history=[];
+var totalFetched=0;
 
-function showLoading(){
-document.getElementById('proverb').innerHTML='<span class="loading">⏳ Fetching wisdom...</span>';
+function showLoading(msg){
+msg=msg||'⏳ Fetching wisdom...';
+document.getElementById('proverb').innerHTML='<span class="loading">'+msg+'</span>';
 document.getElementById('counter').textContent='⏳ Loading...';
 document.getElementById('badge').textContent='📜 Fetching...';
 document.getElementById('icon').textContent='⏳';
@@ -101,7 +103,7 @@ var icons=['📜','🕊️','🌿','⭐','🌙','☀️','💫','🌟','✨','�
 var icon=icons[Math.floor(Math.random()*icons.length)];
 
 document.getElementById('proverb').innerHTML='"'+text+'"<span class="origin">— '+origin+'</span>';
-document.getElementById('counter').textContent='📖 #'+(history.length)+' · '+cat;
+document.getElementById('counter').textContent='📖 #'+totalFetched+' · '+cat;
 document.getElementById('badge').textContent='📜 '+cat;
 document.getElementById('icon').textContent=icon;
 current=data;
@@ -110,7 +112,6 @@ current=data;
 function fetchFromAPI(){
 showLoading();
 
-// Try multiple free APIs
 var apis=[
 function(){return fetch('https://api.quotable.io/random')
 .then(function(r){return r.json()})
@@ -126,14 +127,10 @@ function(){return fetch('https://zenquotes.io/api/random')
 .then(function(d){var q=d[0]||{};return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'}})}
 ];
 
-// Try each API until one works
 return apis.reduce(function(promise,fn){
-return promise.catch(function(){
-return fn();
-});
+return promise.catch(function(){return fn();});
 }, Promise.reject())
 .catch(function(){
-// Fallback: generate wisdom
 var fallbacks=[
 'Wisdom is knowing when to speak and when to listen.',
 'The journey of a thousand miles begins with a single step.',
@@ -153,9 +150,9 @@ return Promise.resolve({proverb:f,origin:'Ancient Wisdom',source:'Fallback'});
 
 function fetchFresh(){
 fetchFromAPI().then(function(data){
+totalFetched++;
 display(data);
 history.push(data);
-document.getElementById('counter').textContent='📖 #'+history.length+' · '+data.source;
 }).catch(function(){
 document.getElementById('proverb').innerHTML='<span class="loading">❌ Try again</span>';
 });
@@ -174,8 +171,9 @@ if(history.length>1){
 var prev=history[history.length-2];
 display(prev);
 history.pop();
-document.getElementById('counter').textContent='📖 #'+(history.length)+' · '+prev.source;
+document.getElementById('counter').textContent='📖 #'+totalFetched+' · '+prev.source;
 }else{
+showLoading('⏳ No history. Fetching fresh...');
 fetchFresh();
 }
 }
@@ -222,11 +220,11 @@ drawTrail();
 var breathe=0;setInterval(function(){breathe=(breathe+1)%100;var s=1+Math.sin(breathe/20)*.008;document.querySelector('.container').style.transform='scale('+s+')'},100);
 
 // ============================================================
-// INIT — Auto fetch first proverb
+// INIT
 // ============================================================
 
 fetchFresh();
-console.log('📜 Pure API Proverbs — No storage');
+console.log('📜 Pure API Proverbs — Fixed');
 </script>
 </body>
 </html>
