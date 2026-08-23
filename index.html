@@ -3,438 +3,196 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel World Chat - Master Edition v4.0</title>
-  
+  <title>Pixel World Chat</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
-    body {
-      font-family: 'Press Start 2P', monospace;
-      image-rendering: pixelated;
-      touch-action: manipulation;
-    }
-
-    .theme-neon { --primary-border: #6366f1; --primary-bg: #1e1b4b; --glow: rgba(99, 102, 241, 0.5); }
-    .theme-amber { --primary-border: #f59e0b; --primary-bg: #451a03; --glow: rgba(245, 158, 11, 0.5); }
-    .theme-matrix { --primary-border: #22c55e; --primary-bg: #052e16; --glow: rgba(34, 197, 94, 0.5); }
-
-    .crt-overlay {
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%);
-      background-size: 100% 4px;
-      pointer-events: none;
-    }
-
-    .glow-yellow { text-shadow: 0 0 6px #facc15, 0 0 12px #eab308; }
-    .glow-green { text-shadow: 0 0 6px #4ade80, 0 0 12px #22c55e; }
-    .glow-cyan { text-shadow: 0 0 6px #22d3ee, 0 0 12px #06b6d4; }
-    .glow-red { text-shadow: 0 0 6px #f87171, 0 0 12px #ef4444; }
-    .glow-box { box-shadow: 0 0 15px var(--glow, rgba(99, 102, 241, 0.45)), inset 0 0 10px var(--glow, rgba(129, 140, 248, 0.3)); }
-
-    .px-box {
-      background: var(--primary-bg, #1e1b4b);
-      border: 3px solid var(--primary-border, #6366f1);
-      box-shadow: inset -3px -3px 0 #0f172a, inset 3px 3px 0 #818cf8, 0 0 10px var(--glow, rgba(99, 102, 241, 0.5));
-    }
-    .px-btn {
-      background: #16a34a;
-      border: 2px solid #4ade80;
-      box-shadow: inset -2px -2px 0 #15803d, inset 2px 2px 0 #86efac, 0 0 8px rgba(34, 197, 94, 0.4);
-    }
-    .px-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .px-btn:active:not(:disabled) { box-shadow: inset 2px 2px 0 #15803d; transform: translateY(1px); }
-    .px-btn-blue {
-      background: #2563eb;
-      border: 2px solid #60a5fa;
-      box-shadow: inset -2px -2px 0 #1d4ed8, inset 2px 2px 0 #93c5fd, 0 0 8px rgba(59, 130, 246, 0.4);
-    }
-
-    @keyframes msgPop {
-      0% { opacity: 0; transform: translateY(6px) scale(0.98); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .animate-pop { animation: msgPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
-
-    .spoiler-hidden { filter: blur(6px); cursor: pointer; user-select: none; }
-    .spoiler-hidden:hover { filter: blur(4px); }
-    
-    #v::-webkit-scrollbar { width: 6px; }
-    #v::-webkit-scrollbar-track { background: #020617; }
+    body { font-family: 'Press Start 2P', monospace; image-rendering: pixelated; }
+    .theme-neon { --pb: #6366f1; --pbg: #1e1b4b; --g: rgba(99,102,241,0.4); }
+    .theme-amber { --pb: #f59e0b; --pbg: #451a03; --g: rgba(245,158,11,0.4); }
+    .theme-matrix { --pb: #22c55e; --pbg: #052e16; --g: rgba(34,197,94,0.4); }
+    .crt-overlay { background: linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.35) 50%); background-size: 100% 4px; pointer-events: none; }
+    .glow-yellow { text-shadow: 0 0 6px #facc15; }
+    .glow-green { text-shadow: 0 0 6px #4ade80; }
+    .px-box { background: var(--pbg, #1e1b4b); border: 2px solid var(--pb, #6366f1); box-shadow: 0 0 8px var(--g, rgba(99,102,241,0.4)); }
+    .px-btn { background: #16a34a; border: 2px solid #4ade80; }
+    .px-btn:active { transform: translateY(1px); }
+    @keyframes msgPop { 0% { opacity: 0; transform: translateY(4px); } 100% { opacity: 1; transform: translateY(0); } }
+    .animate-pop { animation: msgPop 0.15s ease-out forwards; }
+    .spoiler-hidden { filter: blur(5px); cursor: pointer; }
+    #v::-webkit-scrollbar { width: 4px; }
     #v::-webkit-scrollbar-thumb { background: #6366f1; }
-
-    .text-size-sm { font-size: 6px !important; }
-    .text-size-md { font-size: 8px !important; }
-    .text-size-lg { font-size: 10px !important; }
   </style>
 </head>
-<body id="appBody" class="h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none overflow-hidden relative theme-neon">
+<body id="appBody" class="h-full text-white flex flex-col p-2 bg-slate-950 select-none overflow-hidden relative theme-neon">
 
-  <canvas id="particleCanvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
   <div class="crt-overlay absolute inset-0 z-50"></div>
 
-  <!-- PINNED MESSAGE BANNER -->
-  <div id="pinnedBanner" class="hidden bg-yellow-950/90 border-2 border-yellow-500 p-1.5 mb-1 flex justify-between items-center z-10 text-[7px] text-yellow-300 shadow-[0_0_10px_rgba(234,179,8,0.4)]">
-    <div class="flex items-center gap-1 truncate flex-1">
-      <span>📌 PINNED:</span>
-      <span id="pinnedContent" class="truncate">None</span>
-    </div>
-    <button type="button" id="unpinBtn" class="text-red-400 font-bold ml-2 hover:underline">X</button>
+  <!-- PINNED BANNER -->
+  <div id="pinnedBanner" class="hidden bg-yellow-950 border border-yellow-500 p-1 mb-1 flex justify-between items-center z-10 text-[7px] text-yellow-300">
+    <div class="truncate flex-1">📌 <span id="pinnedContent">None</span></div>
+    <button type="button" id="unpinBtn" class="text-red-400 font-bold ml-2">X</button>
   </div>
 
   <!-- HEADER -->
-  <header class="px-box p-2 mb-1.5 flex items-center justify-between shrink-0 relative z-10 flex-wrap gap-1">
-    <div class="flex items-center gap-1 flex-1 mr-1 flex-wrap">
+  <header class="px-box p-2 mb-1.5 flex items-center justify-between shrink-0 z-10 flex-wrap gap-1">
+    <div class="flex items-center gap-1 flex-1 flex-wrap">
       <select id="avatarSelect" class="bg-slate-900 text-[9px] border border-indigo-500 rounded p-0.5 text-yellow-300">
-        <option value="⛏️">⛏️</option>
-        <option value="🧙‍♂️">🧙‍♂️</option>
-        <option value="🤖">🤖</option>
-        <option value="👾">👾</option>
-        <option value="🥷">🥷</option>
+        <option value="⛏️">⛏️</option><option value="🧙‍♂️">🧙‍♂️</option><option value="🤖">🤖</option><option value="👾">👾</option>
       </select>
-      <input 
-        type="text" 
-        id="nameInput" 
-        maxlength="12" 
-        value="Steve" 
-        class="bg-slate-900 border border-indigo-500 text-green-400 text-[8px] px-1 py-0.5 w-20 focus:outline-none focus:border-yellow-400 font-bold glow-green"
-      />
-      <!-- Custom User Status -->
-      <input 
-        type="text" 
-        id="statusInput" 
-        maxlength="15" 
-        placeholder="Status..." 
-        value="Mining Pixel..." 
-        class="bg-slate-900 border border-indigo-800 text-slate-300 text-[6px] px-1 py-0.5 w-20 focus:outline-none focus:border-yellow-400"
-      />
+      <input type="text" id="nameInput" maxlength="12" class="bg-slate-900 border border-indigo-500 text-green-400 text-[8px] px-1 py-0.5 w-20 focus:outline-none glow-green" />
+      <input type="text" id="statusInput" maxlength="15" placeholder="Status..." value="Mining..." class="bg-slate-900 border border-indigo-800 text-slate-300 text-[6px] px-1 py-0.5 w-20 focus:outline-none" />
       <select id="badgeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-cyan-300">
-        <option value="PLAYER">PLAYER</option>
-        <option value="VIP">VIP</option>
-        <option value="MOD">MOD</option>
+        <option value="PLAYER">PLAYER</option><option value="VIP">VIP</option><option value="MOD">MOD</option>
       </select>
     </div>
 
-    <div class="flex items-center gap-1 flex-wrap">
-      <!-- Custom Themes -->
+    <div class="flex items-center gap-1">
       <select id="themeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-purple-300">
-        <option value="theme-neon">THEME: NEON</option>
-        <option value="theme-amber">THEME: AMBER</option>
-        <option value="theme-matrix">THEME: MATRIX</option>
+        <option value="theme-neon">NEON</option><option value="theme-amber">AMBER</option><option value="theme-matrix">MATRIX</option>
       </select>
-
-      <!-- Font Size Controls -->
-      <select id="fontSizeSelect" class="bg-slate-900 text-[6px] border border-indigo-500 rounded p-0.5 text-slate-300">
-        <option value="text-size-sm">FONT: SM</option>
-        <option value="text-size-md" selected>FONT: MD</option>
-        <option value="text-size-lg">FONT: LG</option>
-      </select>
-
-      <!-- Audio Mute Toggle -->
-      <button type="button" id="audioToggleBtn" class="bg-slate-900 border border-indigo-500 text-[7px] p-1 rounded text-yellow-400">
-        🔊
-      </button>
-
-      <!-- Live Room Presence Tracker -->
-      <div id="presenceBadge" class="text-[6px] text-emerald-300 border border-emerald-400/50 bg-emerald-950/70 px-1.5 py-0.5 uppercase shrink-0 glow-green flex items-center gap-1">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#4ade80] animate-pulse"></span>
-        <span id="onlineCountText">1 ONLINE</span>
-      </div>
+      <button type="button" id="audioToggleBtn" class="bg-slate-900 border border-indigo-500 text-[7px] p-1 rounded text-yellow-400">🔊</button>
     </div>
   </header>
 
-  <!-- ACTIVE IPS SORTED ROW DISPLAY -->
-  <div id="activeIpsBanner" class="bg-indigo-950/90 border border-indigo-500 px-2 py-1 mb-1 text-[6px] text-cyan-300 flex items-center gap-1 overflow-x-auto whitespace-nowrap z-10 glow-box">
-    <span class="text-yellow-400 font-bold shrink-0">🌐 ONLINE IPS:</span>
-    <span id="activeIpsListText" class="text-emerald-300 font-mono tracking-wider">Detecting...</span>
-  </div>
-
-  <!-- SECONDARY CONTROL BAR -->
-  <div class="flex items-center justify-between gap-1 bg-slate-900/90 border border-indigo-900 p-1 mb-1 relative z-10 text-[6px]">
-    <!-- Search Bar -->
+  <!-- CONTROL BAR -->
+  <div class="flex items-center justify-between gap-1 bg-slate-900 border border-indigo-900 p-1 mb-1 z-10 text-[6px]">
     <div class="flex items-center gap-1 flex-1">
       <span>🔍</span>
-      <input type="text" id="searchInput" placeholder="Search chat..." class="bg-slate-950 border border-indigo-800 text-yellow-300 px-1 py-0.5 text-[6px] w-full focus:outline-none" />
+      <input type="text" id="searchInput" placeholder="Search..." class="bg-slate-950 border border-indigo-800 text-yellow-300 px-1 py-0.5 w-full focus:outline-none" />
     </div>
-
-    <!-- Bookmarks Drawer Toggle -->
-    <button type="button" id="bookmarkFilterBtn" class="bg-indigo-950 border border-indigo-600 px-1.5 py-0.5 text-purple-300 hover:bg-indigo-900">
-      ⭐ BOOKMARKS
-    </button>
-
-    <!-- Mini Game Launcher -->
-    <button type="button" id="miniGameBtn" class="bg-amber-950 border border-amber-600 px-1.5 py-0.5 text-yellow-300 hover:bg-amber-900">
-      🎮 CLICKER
-    </button>
-
-    <!-- Export Logs -->
-    <button type="button" id="exportLogsBtn" class="bg-slate-950 border border-slate-700 px-1.5 py-0.5 text-cyan-300 hover:bg-slate-800">
-      💾 EXPORT
-    </button>
-
-    <!-- Diagnostics Drawer -->
-    <button type="button" id="diagToggleBtn" class="bg-slate-950 border border-slate-700 px-1 py-0.5 text-slate-400">
-      ⚙️
-    </button>
+    <button type="button" id="miniGameBtn" class="bg-amber-950 border border-amber-600 px-1.5 py-0.5 text-yellow-300">🎮 CLICKER</button>
+    <button type="button" id="exportLogsBtn" class="bg-slate-950 border border-slate-700 px-1.5 py-0.5 text-cyan-300">💾 EXPORT</button>
   </div>
 
-  <!-- DIAGNOSTICS & TELEMETRY PANELS (HIDDEN) -->
-  <div id="diagPanel" class="hidden bg-slate-950 border-2 border-cyan-500 p-1.5 mb-1 relative z-20 text-[5.5px] text-cyan-300 space-y-0.5">
-    <div>⚡ LATENCY (PING): <span id="pingMsText">-- ms</span> | TILT: <span id="tiltText">PORTRAIT</span></div>
-    <div>🧠 MEMORY HEAP: <span id="heapText">0 KB</span> | DOM NODES: <span id="domNodeText">0</span></div>
-  </div>
-
-  <!-- MINI-GAME OVERLAY (HIDDEN) -->
-  <div id="miniGamePanel" class="hidden bg-slate-900 border-2 border-yellow-500 p-2 mb-1 relative z-20 text-center space-y-1">
-    <div class="text-[7px] text-yellow-300 glow-yellow">🪙 PIXEL COIN MINER</div>
+  <!-- MINI-GAME PANEL -->
+  <div id="miniGamePanel" class="hidden bg-slate-900 border border-yellow-500 p-2 mb-1 z-20 text-center space-y-1">
+    <div class="text-[7px] text-yellow-300 glow-yellow">🪙 COIN MINER</div>
     <div id="coinScore" class="text-[9px] text-green-400 font-bold">0 COINS</div>
-    <button type="button" id="mineCoinBtn" class="px-btn text-[8px] text-white px-3 py-1 font-bold my-1">CLICK TO MINE!</button>
-    <button type="button" id="closeGameBtn" class="text-[6px] text-red-400 block mx-auto underline">CLOSE GAME</button>
+    <button type="button" id="mineCoinBtn" class="px-btn text-[8px] text-white px-3 py-1 font-bold my-1">CLICK!</button>
+    <button type="button" id="closeGameBtn" class="text-[6px] text-red-400 block mx-auto underline">CLOSE</button>
   </div>
 
   <!-- CHAT VIEWPORT -->
-  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-1 relative z-10 glow-box">
-    <div id="c" class="space-y-2.5 text-size-md">
-      <div class="text-[7px] text-yellow-300 bg-yellow-950/50 p-2 border border-yellow-500/50 glow-yellow animate-pop">
-        ✨ [SYS]: Pixel World Chat Master v4.0 Online! Type <span class="text-white font-bold">/help</span> for slash commands.
+  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-1 z-10">
+    <div id="c" class="space-y-2 text-[8px]">
+      <div class="text-[7px] text-yellow-300 bg-yellow-950/50 p-1.5 border border-yellow-500/50 glow-yellow animate-pop">
+        ✨ Pixel Chat Ready! Type <span class="text-white font-bold">/help</span> for commands.
       </div>
     </div>
   </main>
 
-  <!-- Typing Indicator Banner -->
-  <div id="typingIndicator" class="hidden text-[6px] text-cyan-300 italic px-1 mb-0.5 animate-pulse z-10">
-    💬 Someone is typing...
-  </div>
+  <div id="typingIndicator" class="hidden text-[6px] text-cyan-300 italic px-1 mb-0.5 animate-pulse z-10">💬 Someone is typing...</div>
 
   <!-- REPLY BANNER -->
-  <div id="replyBanner" class="hidden shrink-0 bg-indigo-950 border-t-2 border-x-2 border-indigo-500 p-1 flex justify-between items-center relative z-10 text-[7px]">
-    <span id="replyTargetText" class="text-cyan-300 truncate">Replying to...</span>
-    <button type="button" id="cancelReplyBtn" class="text-red-400 font-bold px-1 hover:underline">X</button>
+  <div id="replyBanner" class="hidden bg-indigo-950 border-t border-indigo-500 p-1 flex justify-between items-center z-10 text-[7px]">
+    <span id="replyTargetText" class="text-cyan-300 truncate">Replying...</span>
+    <button type="button" id="cancelReplyBtn" class="text-red-400 font-bold px-1">X</button>
   </div>
 
-  <!-- INPUT CONTROLS & FOOTER -->
-  <footer class="shrink-0 space-y-1 relative z-10">
-    <!-- PREVIEW CONTAINER -->
-    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border-2 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]">
+  <!-- INPUT CONTROLS -->
+  <footer class="space-y-1 z-10">
+    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border border-indigo-500">
       <img id="imgPreview" class="w-8 h-8 object-cover border border-yellow-400" alt="Preview" />
-      <div class="flex-1 overflow-hidden">
-        <div class="text-[7px] text-yellow-300 glow-yellow">📷 READY TO BROADCAST</div>
-        <div id="imgMetaText" class="text-[6px] text-slate-400 truncate">0x0 | 0 KB</div>
-      </div>
+      <span id="imgMetaText" class="text-[6px] text-slate-400 flex-1 truncate">Ready</span>
       <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
     </div>
 
-    <!-- VOICE PREVIEW INDICATOR -->
-    <div id="voicePreviewContainer" class="hidden flex items-center gap-2 bg-purple-950 p-1 border-2 border-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)]">
-      <div class="text-[7px] text-purple-300 glow-cyan animate-pulse">🎙️ VOICE SNIPPET READY</div>
-      <button type="button" id="playVoicePreviewBtn" class="text-[6px] bg-purple-800 text-white px-1.5 py-0.5 rounded">TEST</button>
+    <div id="voicePreviewContainer" class="hidden flex items-center gap-2 bg-purple-950 p-1 border border-purple-500 text-[6px]">
+      <span class="text-purple-300 animate-pulse">🎙️ VOICE READY</span>
       <button type="button" id="clearVoiceBtn" class="text-[8px] text-red-400 font-bold px-1 ml-auto">X</button>
     </div>
 
-    <!-- EXTRA CONTROLS BAR -->
     <div class="flex items-center gap-1 bg-slate-900 p-1 border border-indigo-800 text-[6px] flex-wrap">
-      <select id="prioritySelect" class="bg-black border border-yellow-500 rounded p-0.5 text-yellow-400 font-bold">
-        <option value="NORMAL">PRIO: NORM</option>
-        <option value="HIGH">PRIO: HIGH</option>
-        <option value="URGENT">PRIO: URGT</option>
+      <select id="prioritySelect" class="bg-black border border-yellow-500 text-yellow-400 font-bold p-0.5">
+        <option value="NORMAL">PRIO: NORM</option><option value="HIGH">PRIO: HIGH</option>
       </select>
-
-      <select id="sfxSelect" class="bg-black border border-indigo-500 text-yellow-300 rounded p-0.5">
-        <option value="beep">SFX: BEEP</option>
-        <option value="coin">SFX: COIN</option>
-        <option value="laser">SFX: LASER</option>
+      <select id="sfxSelect" class="bg-black border border-indigo-500 text-yellow-300 p-0.5">
+        <option value="beep">SFX: BEEP</option><option value="coin">SFX: COIN</option>
       </select>
-
-      <select id="stickerSelect" class="bg-black border border-indigo-500 text-cyan-300 rounded p-0.5">
-        <option value="">STICKER: NONE</option>
-        <option value="pixel_heart">💖 HEART</option>
-        <option value="pixel_sword">⚔️ SWORD</option>
-        <option value="pixel_star">⭐ STAR</option>
+      <select id="stickerSelect" class="bg-black border border-indigo-500 text-cyan-300 p-0.5">
+        <option value="">STICKER: NONE</option><option value="pixel_heart">💖 HEART</option><option value="pixel_sword">⚔️ SWORD</option>
       </select>
-
-      <!-- Self Destruct Switch -->
-      <select id="ttlSelect" class="bg-black border border-red-500 text-red-400 rounded p-0.5">
-        <option value="0">TTL: OFF</option>
-        <option value="5000">TTL: 5s</option>
-        <option value="30000">TTL: 30s</option>
-      </select>
-
-      <!-- Formatting Toolbar Tools -->
-      <div class="flex items-center gap-1 ml-auto">
-        <button type="button" id="fmtBoldBtn" class="bg-slate-800 border border-slate-600 px-1 text-slate-200 font-bold" title="Bold">*B*</button>
-        <button type="button" id="fmtItalicBtn" class="bg-slate-800 border border-slate-600 px-1 text-slate-200 italic" title="Italic">_I_</button>
-        <label class="flex items-center gap-0.5 text-slate-300 cursor-pointer ml-1">
-          <input type="checkbox" id="spoilerCheck" class="rounded bg-slate-950 border-indigo-500" />
-          <span>SPOILER</span>
-        </label>
-      </div>
+      <label class="flex items-center gap-0.5 text-slate-300 cursor-pointer ml-auto">
+        <input type="checkbox" id="spoilerCheck" />
+        <span>SPOILER</span>
+      </label>
     </div>
 
     <form id="f" class="flex gap-1">
       <input type="file" id="fileInput" accept="image/*" class="hidden" />
+      <button type="button" id="attachBtn" class="bg-indigo-700 border border-indigo-400 text-[8px] text-white px-2 py-2">📷</button>
+      <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2">🎙️</button>
 
-      <button type="button" id="attachBtn" class="px-btn-blue text-[8px] text-white px-2 py-2 font-bold uppercase shrink-0">
-        📷
-      </button>
-
-      <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2 font-bold uppercase shrink-0">
-        🎙️
-      </button>
-
-      <div class="relative flex-1 flex items-center">
-        <input 
-          type="text" 
-          id="i" 
-          placeholder="TYPE MESSAGE OR /COMMAND..." 
-          maxlength="200" 
-          class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[8px] p-2 pr-8 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 glow-yellow"
-          autocomplete="off"
-        />
-        <span id="charCounter" class="absolute right-2 text-[6px] text-slate-500">0/200</span>
+      <div class="relative flex-1">
+        <input type="text" id="i" placeholder="TYPE MESSAGE..." maxlength="200" class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[8px] p-2 pr-8 focus:outline-none glow-yellow" autocomplete="off" />
+        <span id="charCounter" class="absolute right-2 top-2 text-[6px] text-slate-500">0/200</span>
       </div>
 
-      <button type="submit" id="sendBtn" class="px-btn text-[8px] text-white px-2.5 py-2 font-bold uppercase shrink-0">
-        SEND
-      </button>
+      <button type="submit" id="sendBtn" class="px-btn text-[8px] text-white px-2.5 py-2 font-bold uppercase">SEND</button>
     </form>
   </footer>
 
-  <!-- REALTIME ENGINE & AUDIO PIPELINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, onValue, query, limitToLast, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, onValue, query, limitToLast, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
-    const APP_VERSION = "v4.0.0-master";
     const USER_ID = `usr_${Math.random().toString(36).substring(2, 9)}`;
 
     // DOM References
     const nameInput = document.getElementById('nameInput');
-    nameInput.value = `Steve_${Math.floor(100 + Math.random() * 900)}`;
-    const statusInput = document.getElementById('statusInput');
+    nameInput.value = `Player_${Math.floor(100 + Math.random() * 900)}`;
     const avatarSelect = document.getElementById('avatarSelect');
     const badgeSelect = document.getElementById('badgeSelect');
     const prioritySelect = document.getElementById('prioritySelect');
     const sfxSelect = document.getElementById('sfxSelect');
     const stickerSelect = document.getElementById('stickerSelect');
     const spoilerCheck = document.getElementById('spoilerCheck');
-    const ttlSelect = document.getElementById('ttlSelect');
     const themeSelect = document.getElementById('themeSelect');
-    const fontSizeSelect = document.getElementById('fontSizeSelect');
     const audioToggleBtn = document.getElementById('audioToggleBtn');
 
-    const c = document.getElementById('c');
-    const v = document.getElementById('v');
-    const i = document.getElementById('i');
-    const charCounter = document.getElementById('charCounter');
-    const fileInput = document.getElementById('fileInput');
-    const attachBtn = document.getElementById('attachBtn');
-    const voiceNoteBtn = document.getElementById('voiceNoteBtn');
-    const voicePreviewContainer = document.getElementById('voicePreviewContainer');
-    const playVoicePreviewBtn = document.getElementById('playVoicePreviewBtn');
-    const clearVoiceBtn = document.getElementById('clearVoiceBtn');
+    const c = document.getElementById('c'), v = document.getElementById('v'), i = document.getElementById('i');
+    const charCounter = document.getElementById('charCounter'), fileInput = document.getElementById('fileInput');
+    const voicePreviewContainer = document.getElementById('voicePreviewContainer'), imgPreviewContainer = document.getElementById('imgPreviewContainer');
+    const imgPreview = document.getElementById('imgPreview'), imgMetaText = document.getElementById('imgMetaText');
+    const replyBanner = document.getElementById('replyBanner'), replyTargetText = document.getElementById('replyTargetText');
+    const pinnedBanner = document.getElementById('pinnedBanner'), pinnedContent = document.getElementById('pinnedContent');
+    const searchInput = document.getElementById('searchInput'), typingIndicator = document.getElementById('typingIndicator');
 
-    const imgPreviewContainer = document.getElementById('imgPreviewContainer');
-    const imgPreview = document.getElementById('imgPreview');
-    const imgMetaText = document.getElementById('imgMetaText');
-    const clearImgBtn = document.getElementById('clearImgBtn');
-    const sendBtn = document.getElementById('sendBtn');
-    
-    const replyBanner = document.getElementById('replyBanner');
-    const replyTargetText = document.getElementById('replyTargetText');
-    const cancelReplyBtn = document.getElementById('cancelReplyBtn');
+    let currentBase64Image = "", currentVoiceNote = null, replyParentId = null, audioMuted = false, coinsMined = 0;
 
-    const pinnedBanner = document.getElementById('pinnedBanner');
-    const pinnedContent = document.getElementById('pinnedContent');
-    const unpinBtn = document.getElementById('unpinBtn');
+    themeSelect.addEventListener('change', e => document.getElementById('appBody').className = `h-full text-white flex flex-col p-2 bg-slate-950 select-none overflow-hidden relative ${e.target.value}`);
+    audioToggleBtn.addEventListener('click', () => audioToggleBtn.textContent = (audioMuted = !audioMuted) ? '🔇' : '🔊');
 
-    const searchInput = document.getElementById('searchInput');
-    const bookmarkFilterBtn = document.getElementById('bookmarkFilterBtn');
-    const miniGameBtn = document.getElementById('miniGameBtn');
-    const exportLogsBtn = document.getElementById('exportLogsBtn');
-    const diagToggleBtn = document.getElementById('diagToggleBtn');
-    const diagPanel = document.getElementById('diagPanel');
-    const typingIndicator = document.getElementById('typingIndicator');
-    const onlineCountText = document.getElementById('onlineCountText');
-    const activeIpsListText = document.getElementById('activeIpsListText');
-
-    let currentBase64Image = "";
-    let currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
-    let currentVoiceNote = null; 
-    let replyParentId = null;
-    let typingStartTime = Date.now();
-    let audioMuted = false;
-    let isShowingOnlyBookmarks = false;
-    let coinsMined = 0;
-    let detectedClientIp = "0.0.0.0";
-
-    // Theme Selector
-    themeSelect.addEventListener('change', (e) => {
-      document.getElementById('appBody').className = `h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none overflow-hidden relative ${e.target.value}`;
-    });
-
-    // Font Size Control
-    fontSizeSelect.addEventListener('change', (e) => {
-      c.className = `space-y-2.5 ${e.target.value}`;
-    });
-
-    // Audio Mute Toggle
-    audioToggleBtn.addEventListener('click', () => {
-      audioMuted = !audioMuted;
-      audioToggleBtn.textContent = audioMuted ? '🔇' : '🔊';
-    });
-
-    // Latency & Tilt Sensor Diagnostic Pipeline
-    let lastPing = Date.now();
-    setInterval(() => {
-      const start = Date.now();
-      const pingRef = ref(db, ".info/connected");
-      onValue(pingRef, () => {
-        const ping = Date.now() - start;
-        document.getElementById('pingMsText').textContent = `${ping} ms`;
-      }, { onlyOnce: true });
-    }, 10000);
-
-    window.addEventListener('orientationchange', () => {
-      document.getElementById('tiltText').textContent = window.orientation === 0 ? 'PORTRAIT' : 'LANDSCAPE';
-    });
-
-    // Diagnostics Toggle
-    diagToggleBtn.addEventListener('click', () => {
-      diagPanel.classList.toggle('hidden');
-      if (window.performance && window.performance.memory) {
-        document.getElementById('heapText').textContent = `${Math.round(window.performance.memory.usedJSHeapSize / 1024)} KB`;
-      }
-      document.getElementById('domNodeText').textContent = document.querySelectorAll('*').length;
-    });
-
-    // Mini Game Clicker Engine
-    miniGameBtn.addEventListener('click', () => document.getElementById('miniGamePanel').classList.remove('hidden'));
+    document.getElementById('miniGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.remove('hidden'));
     document.getElementById('closeGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.add('hidden'));
     document.getElementById('mineCoinBtn').addEventListener('click', () => {
-      coinsMined += 1;
-      document.getElementById('coinScore').textContent = `${coinsMined} COINS`;
+      document.getElementById('coinScore').textContent = `${++coinsMined} COINS`;
       playCustomSFX('coin');
     });
 
-    // Realtime Typing Engine Signaling
+    // Realtime Typing Engine with disconnect cleanup fix
     const typingRef = ref(db, `typing/${USER_ID}`);
+    onDisconnect(typingRef).remove();
     let typingTimer = null;
+
     i.addEventListener('input', () => {
       charCounter.textContent = `${i.value.length}/200`;
-      set(typingRef, { handle: nameInput.value.trim(), ts: Date.now() });
+      set(typingRef, { handle: nameInput.value.trim() });
       clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => { set(typingRef, null); }, 2000);
+      typingTimer = setTimeout(() => set(typingRef, null), 1500);
     });
 
-    onValue(ref(db, 'typing'), (snap) => {
+    onValue(ref(db, 'typing'), snap => {
       const data = snap.val();
       if (data) {
-        const typers = Object.values(data).filter(t => t.handle !== nameInput.value.trim());
+        const typers = Object.values(data).filter(t => t && t.handle !== nameInput.value.trim());
         if (typers.length > 0) {
           typingIndicator.textContent = `💬 ${typers[0].handle} is typing...`;
           typingIndicator.classList.remove('hidden');
@@ -444,104 +202,11 @@
       typingIndicator.classList.add('hidden');
     });
 
-    // Detect Online Visitors and IP Tracker Engine
-    const userPresenceRef = ref(db, `presence/${USER_ID}`);
-
-    async function trackVisitorAndIpPresence() {
-      try {
-        const res = await fetch('https://api.ipify.org?format=json');
-        if (res.ok) {
-          const data = await res.json();
-          detectedClientIp = data.ip || "0.0.0.0";
-        }
-      } catch (e) {
-        detectedClientIp = "127.0.0.1";
-      }
-
-      // Automatically purge session when browser window/tab closes
-      onDisconnect(userPresenceRef).remove();
-
-      // Write active presence payload to Firebase
-      set(userPresenceRef, {
-        handle: nameInput.value.trim(),
-        ip: detectedClientIp,
-        lastSeen: serverTimestamp()
-      });
-    }
-
-    trackVisitorAndIpPresence();
-
-    // Re-sync presence when handle changes
-    nameInput.addEventListener('change', () => {
-      set(userPresenceRef, {
-        handle: nameInput.value.trim(),
-        ip: detectedClientIp,
-        lastSeen: serverTimestamp()
-      });
-    });
-
-    // Live Online IP Aggregator Listener
-    onValue(ref(db, 'presence'), (snap) => {
-      const presenceData = snap.val();
-      if (!presenceData) {
-        onlineCountText.textContent = "0 ONLINE";
-        activeIpsListText.textContent = "NONE";
-        return;
-      }
-
-      const activeUsers = Object.values(presenceData);
-      onlineCountText.textContent = `${activeUsers.length} ONLINE`;
-
-      // Extract unique IPs and sort numerically
-      const activeIps = activeUsers
-        .map(u => u.ip)
-        .filter((ip, idx, self) => ip && self.indexOf(ip) === idx)
-        .sort((a, b) => {
-          const numA = a.split('.').map(Number);
-          const numB = b.split('.').map(Number);
-          for (let idx = 0; idx < 4; idx++) {
-            if ((numA[idx] || 0) !== (numB[idx] || 0)) {
-              return (numA[idx] || 0) - (numB[idx] || 0);
-            }
-          }
-          return a.localeCompare(b);
-        });
-
-      activeIpsListText.textContent = activeIps.length > 0 ? activeIps.join(' | ') : 'NONE';
-    });
-
-    // Geo & Battery Services
-    let cachedCity = "Locating...";
-    async function fetchRealLocation() {
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.city) cachedCity = `${data.city}, ${data.country_code}`;
-        }
-      } catch (err) { cachedCity = "Unknown Loc"; }
-    }
-    fetchRealLocation();
-
-    let currentBattery = "100%";
-    async function initBatteryMonitoring() {
-      if (navigator.getBattery) {
-        try {
-          const b = await navigator.getBattery();
-          const updateBat = () => { currentBattery = `${Math.round(b.level * 100)}%${b.charging ? '⚡' : ''}`; };
-          updateBat();
-          b.addEventListener('levelchange', updateBat);
-          b.addEventListener('chargingchange', updateBat);
-        } catch(e) {}
-      }
-    }
-    initBatteryMonitoring();
-
-    // WEB AUDIO ENGINE
+    // Audio Engine safely initialized
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+      if (audioCtx.state === 'suspended') audioCtx.resume().catch(() => {});
     }
     window.addEventListener('pointerdown', initAudio, { once: true });
 
@@ -550,28 +215,16 @@
       initAudio();
       if (!audioCtx || audioCtx.state !== 'running') return;
       try {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
+        const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
         if (type === 'coin') {
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
+          osc.type = 'sine'; osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
           osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08);
           gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.25);
-          osc.start(); osc.stop(audioCtx.currentTime + 0.25);
-        } else if (type === 'laser') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(880, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(110, audioCtx.currentTime + 0.15);
-          gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
-          osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.2);
+          osc.start(); osc.stop(audioCtx.currentTime + 0.2);
         } else {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(520, audioCtx.currentTime);
+          osc.type = 'square'; osc.frequency.setValueAtTime(520, audioCtx.currentTime);
           gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
           osc.start(); osc.stop(audioCtx.currentTime + 0.1);
@@ -579,207 +232,86 @@
       } catch (err) {}
     }
 
-    // Voice Recorder Engine
+    // Voice Engine
     let mediaRecorder = null, audioChunks = [], isRecording = false;
-    voiceNoteBtn.addEventListener('click', async () => {
+    document.getElementById('voiceNoteBtn').addEventListener('click', async () => {
       initAudio();
       if (!isRecording) {
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        if (navigator.mediaDevices?.getUserMedia) {
           try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream);
-            audioChunks = [];
-            mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+            mediaRecorder = new MediaRecorder(stream); audioChunks = [];
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
             mediaRecorder.onstop = () => {
-              const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-              const reader = new FileReader();
-              reader.onloadend = () => {
-                currentVoiceNote = { audioData: reader.result, duration: "REC Voice", synthPitch: 640 };
-                voicePreviewContainer.classList.remove('hidden');
-              };
-              reader.readAsDataURL(audioBlob);
-              stream.getTracks().forEach(track => track.stop());
+              const r = new FileReader();
+              r.onloadend = () => { currentVoiceNote = r.result; voicePreviewContainer.classList.remove('hidden'); };
+              r.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
+              stream.getTracks().forEach(t => t.stop());
             };
-            mediaRecorder.start();
-            isRecording = true;
-            voiceNoteBtn.classList.add('bg-red-600', 'animate-pulse');
-            voiceNoteBtn.textContent = '⏹️';
+            mediaRecorder.start(); isRecording = true;
+            document.getElementById('voiceNoteBtn').textContent = '⏹️';
             return;
-          } catch (err) {}
+          } catch (e) {}
         }
-        currentVoiceNote = { audioData: null, duration: "2.5s Retro Synth", synthPitch: 580 + Math.random() * 200 };
-        voicePreviewContainer.classList.remove('hidden');
-        playCustomSFX('coin');
       } else {
         if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-        isRecording = false;
-        voiceNoteBtn.classList.remove('bg-red-600', 'animate-pulse');
-        voiceNoteBtn.textContent = '🎙️';
+        isRecording = false; document.getElementById('voiceNoteBtn').textContent = '🎙️';
       }
     });
 
-    playVoicePreviewBtn.addEventListener('click', () => {
-      if (currentVoiceNote) playAudioData(currentVoiceNote.audioData, currentVoiceNote.synthPitch);
-    });
-    clearVoiceBtn.addEventListener('click', () => {
-      currentVoiceNote = null;
-      voicePreviewContainer.classList.add('hidden');
+    document.getElementById('clearVoiceBtn').addEventListener('click', () => {
+      currentVoiceNote = null; voicePreviewContainer.classList.add('hidden');
     });
 
-    function playAudioData(audioSrc, synthPitch = 550) {
-      if (audioSrc && audioSrc.startsWith('data:audio')) {
-        const snd = new Audio(audioSrc);
-        snd.play().catch(() => playRetroVoiceSynthesizer(synthPitch));
-      } else { playRetroVoiceSynthesizer(synthPitch); }
-    }
-
-    function playRetroVoiceSynthesizer(basePitch = 550) {
-      if (audioMuted) return;
-      initAudio();
-      const freqs = [basePitch, basePitch * 1.25, basePitch * 0.85, basePitch * 1.5, basePitch];
-      freqs.forEach((f, idx) => {
-        try {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(f, audioCtx.currentTime + idx * 0.12);
-          gain.gain.setValueAtTime(0.03, audioCtx.currentTime + idx * 0.12);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + (idx + 1) * 0.12);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(audioCtx.currentTime + idx * 0.12);
-          osc.stop(audioCtx.currentTime + (idx + 1) * 0.12);
-        } catch(e) {}
-      });
-    }
-
-    // Particle Background Engine
-    const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let particles = [];
-    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class PixelParticle {
-      constructor(x, y) {
-        this.x = x || Math.random() * canvas.width;
-        this.y = y || Math.random() * canvas.height;
-        this.size = Math.random() > 0.5 ? 4 : 2;
-        this.vx = (Math.random() - 0.5) * 1.5;
-        this.vy = -Math.random() * 1.5 - 0.5;
-        this.colors = ['#facc15', '#22d3ee', '#4ade80', '#a855f7', '#ec4899'];
-        this.color = this.colors[Math.floor(Math.random() * this.colors.length)];
-        this.alpha = 1;
-        this.decay = Math.random() * 0.02 + 0.008;
-      }
-      update() { this.x += this.vx; this.y += this.vy; this.alpha -= this.decay; }
-      draw() {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, this.alpha);
-        ctx.fillStyle = this.color;
-        ctx.fillRect(Math.floor(this.x), Math.floor(this.y), this.size, this.size);
-        ctx.restore();
-      }
-    }
-    setInterval(() => { if (particles.length < 30) particles.push(new PixelParticle()); }, 200);
-    function renderParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let idx = particles.length - 1; idx >= 0; idx--) {
-        const p = particles[idx]; p.update(); p.draw();
-        if (p.alpha <= 0) particles.splice(idx, 1);
-      }
-      requestAnimationFrame(renderParticles);
-    }
-    renderParticles();
-
-    // Image Upload Handlers
-    attachBtn.addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
-    fileInput.addEventListener('change', (e) => {
+    // File Handler with Auto-Canvas Compressor
+    document.getElementById('attachBtn').addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', e => {
       const file = e.target.files[0];
       if (!file) return;
-      const sizeKb = Math.round(file.size / 1024);
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = ev => {
         const img = new Image();
         img.onload = () => {
           const cvs = document.createElement('canvas');
-          const maxDim = 220;
           let w = img.width, h = img.height;
-          if (w > h && w > maxDim) { h = Math.round((h * maxDim) / w); w = maxDim; }
-          else if (h > maxDim) { w = Math.round((w * maxDim) / h); h = maxDim; }
+          if (w > 200) { h = Math.round((h * 200) / w); w = 200; }
           cvs.width = w; cvs.height = h;
           cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-          currentBase64Image = cvs.toDataURL('image/jpeg', 0.55);
-          currentImageMeta = { width: w, height: h, sizeKb: sizeKb };
+          currentBase64Image = cvs.toDataURL('image/jpeg', 0.5);
           imgPreview.src = currentBase64Image;
-          imgMetaText.textContent = `${w}x${h}px | ${sizeKb} KB`;
+          imgMetaText.textContent = `${w}x${h}px`;
           imgPreviewContainer.classList.remove('hidden');
-          playCustomSFX('beep');
         };
-        img.src = event.target.result;
+        img.src = ev.target.result;
       };
       reader.readAsDataURL(file);
     });
 
-    clearImgBtn.addEventListener('click', () => {
-      currentBase64Image = "";
-      currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
-      fileInput.value = "";
-      imgPreviewContainer.classList.add('hidden');
+    document.getElementById('clearImgBtn').addEventListener('click', () => {
+      currentBase64Image = ""; fileInput.value = ""; imgPreviewContainer.classList.add('hidden');
     });
 
-    cancelReplyBtn.addEventListener('click', () => {
-      replyParentId = null;
-      replyBanner.classList.add('hidden');
-    });
+    document.getElementById('cancelReplyBtn').addEventListener('click', () => { replyParentId = null; replyBanner.classList.add('hidden'); });
+    document.getElementById('unpinBtn').addEventListener('click', () => pinnedBanner.classList.add('hidden'));
 
-    unpinBtn.addEventListener('click', () => pinnedBanner.classList.add('hidden'));
-
-    // Text Formatting Shortcuts
-    document.getElementById('fmtBoldBtn').addEventListener('click', () => { i.value += '*Bold*'; i.focus(); });
-    document.getElementById('fmtItalicBtn').addEventListener('click', () => { i.value += '_Italic_'; i.focus(); });
-
-    // Client Search Filter Pipeline
     searchInput.addEventListener('input', () => {
       const q = searchInput.value.toLowerCase().trim();
-      const nodes = c.querySelectorAll('[data-msgid]');
-      nodes.forEach(n => {
-        const txt = n.textContent.toLowerCase();
-        n.style.display = txt.includes(q) ? 'block' : 'none';
-      });
+      c.querySelectorAll('[data-msgid]').forEach(n => n.style.display = n.textContent.toLowerCase().includes(q) ? 'block' : 'none');
     });
 
-    // Bookmarks View Toggle
-    bookmarkFilterBtn.addEventListener('click', () => {
-      isShowingOnlyBookmarks = !isShowingOnlyBookmarks;
-      bookmarkFilterBtn.classList.toggle('bg-purple-800', isShowingOnlyBookmarks);
-      const nodes = c.querySelectorAll('[data-msgid]');
-      nodes.forEach(n => {
-        const isBookmarked = n.dataset.bookmarked === 'true';
-        n.style.display = (isShowingOnlyBookmarks ? isBookmarked : true) ? 'block' : 'none';
-      });
-    });
-
-    // Export Chat Log as JSON
-    exportLogsBtn.addEventListener('click', () => {
-      const messages = [];
-      c.querySelectorAll('[data-msgid]').forEach(n => {
-        messages.push(n.innerText);
-      });
-      const blob = new Blob([JSON.stringify(messages, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
+    document.getElementById('exportLogsBtn').addEventListener('click', () => {
+      const logs = Array.from(c.querySelectorAll('[data-msgid]')).map(n => n.innerText);
       const a = document.createElement('a');
-      a.href = url; a.download = `pixel_chat_export_${Date.now()}.json`;
+      a.href = URL.createObjectURL(new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' }));
+      a.download = `chat_export_${Date.now()}.json`;
       a.click();
     });
 
     const chatRef = ref(db, "global_pixel_chat");
 
-    // UI RENDERER
+    // Message Renderer
     function renderMessageNode(snap) {
-      const msgId = snap.key;
-      const d = snap.val();
+      const msgId = snap.key, d = snap.val();
       if (!d || !d.s) return;
 
       if (d.isPinned) {
@@ -787,265 +319,116 @@
         pinnedBanner.classList.remove('hidden');
       }
 
-      const isSelf = d.senderUserId === USER_ID || d.s === nameInput.value.trim();
-      let existingDiv = document.getElementById(`msg-${msgId}`);
-      const div = existingDiv || document.createElement('div');
-      
-      div.id = `msg-${msgId}`;
-      div.dataset.msgid = msgId;
-      div.dataset.senderid = d.senderUserId || '';
-      div.dataset.bookmarked = (d.bookmarks && d.bookmarks[USER_ID]) ? 'true' : 'false';
-      
-      let borderClass = 'border-indigo-900/60';
-      if (d.priority === 'HIGH') borderClass = 'border-yellow-500/80 bg-yellow-950/20';
-      if (d.priority === 'URGENT') borderClass = 'border-red-500/90 bg-red-950/30 glow-red';
-
-      div.className = `leading-relaxed break-words animate-pop bg-slate-900/70 p-2 border ${borderClass} rounded relative space-y-1`;
+      const isSelf = d.uid === USER_ID;
+      let div = document.getElementById(`msg-${msgId}`) || document.createElement('div');
+      div.id = `msg-${msgId}`; div.dataset.msgid = msgId;
 
       if (d.isDeleted) {
-        div.innerHTML = `<div class="text-slate-500 italic text-[6px]">🚫 [Message recalled by sender]</div>`;
-        if (!existingDiv) c.appendChild(div);
+        div.innerHTML = `<div class="text-slate-500 italic text-[6px]">🚫 [Message recalled]</div>`;
+        if (!div.parentNode) c.appendChild(div);
         return { isSelf };
       }
 
-      const dateObj = new Date(d.sentTime || d.ts || Date.now());
-      const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      div.className = `animate-pop bg-slate-900/80 p-1.5 border border-indigo-900/60 rounded space-y-1 ${d.prio === 'HIGH' ? 'border-yellow-500 bg-yellow-950/20' : ''}`;
+      const timeStr = new Date(d.ts || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      let headerHtml = `
-        <div class="flex items-center justify-between border-b border-indigo-950 pb-1 text-[5.5px] text-slate-400 flex-wrap gap-1">
+      let textHtml = d.t ? `<div class="text-white my-0.5 ${d.sp ? 'spoiler-hidden bg-slate-800' : ''}" onclick="this.classList.remove('spoiler-hidden')">${esc(d.t)}</div>` : '';
+      let imgHtml = d.img ? `<img src="${esc(d.img)}" class="max-w-[120px] max-h-[120px] border border-indigo-400 bg-slate-900 my-1" />` : '';
+      let voiceHtml = d.v ? `<audio controls src="${esc(d.v)}" class="h-6 w-32 my-1"></audio>` : '';
+
+      div.innerHTML = `
+        <div class="flex items-center justify-between border-b border-indigo-950 pb-0.5 text-[5.5px] text-slate-400">
           <div class="flex items-center gap-1">
-            <span>${d.avatar || '⛏️'}</span>
-            <span class="${isSelf ? 'text-green-400 glow-green' : 'text-cyan-400 glow-cyan'} font-bold">${esc(d.s)}</span>
-            <span class="text-slate-500 text-[5px]">[${esc(d.userStatus || 'Online')}]</span>
-            <span class="bg-indigo-900 text-indigo-200 px-1 rounded">${esc(d.badge || 'PLAYER')}</span>
+            <span>${d.av || '⛏️'}</span>
+            <span class="${isSelf ? 'text-green-400' : 'text-cyan-400'} font-bold">${esc(d.s)}</span>
+            <span class="bg-indigo-900 text-indigo-200 px-0.5 rounded">${esc(d.bdg || 'PLAYER')}</span>
           </div>
-          <div class="flex items-center gap-1">
-            <span>${timeStr}</span>
-            ${d.isEdited ? '<span class="text-yellow-400 font-bold">(edited)</span>' : ''}
-          </div>
+          <span>${timeStr}</span>
+        </div>
+        ${textHtml}
+        ${d.stk ? `<div class="text-[10px]">${d.stk === 'pixel_heart' ? '💖' : '⚔️'}</div>` : ''}
+        ${imgHtml}${voiceHtml}
+        <div class="flex items-center justify-end gap-2 text-[5px] text-slate-500 pt-0.5 border-t border-indigo-950">
+          <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
+          <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
+          ${isSelf ? `<button type="button" data-action="recall" data-msgid="${msgId}" class="text-red-400 hover:underline">RECALL</button>` : ''}
         </div>
       `;
 
-      let replyHtml = '';
-      if (d.replyParentId) replyHtml += `<div class="bg-indigo-950/80 border-l-2 border-yellow-400 p-0.5 text-[5.5px] text-yellow-200/80 truncate">↩️ Replying to ${d.replyParentId.substring(0, 6)}...</div>`;
-
-      let textHtml = '';
-      if (d.t) {
-        let formattedText = esc(d.t)
-          .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
-          .replace(/_(.*?)_/g, '<em>$1</em>')
-          .replace(/(@\w+)/g, '<span class="text-yellow-300 font-bold underline">$1</span>');
-
-        const spoilerClass = d.isSpoiler ? 'spoiler-hidden bg-slate-800 text-slate-800 rounded px-1' : '';
-        textHtml = `<div class="text-white my-0.5 ${spoilerClass}" onclick="this.classList.remove('spoiler-hidden')">${formattedText}</div>`;
-      }
-
-      if (d.stickerId) {
-        textHtml += `<div class="text-[12px] my-1">${d.stickerId === 'pixel_heart' ? '💖' : d.stickerId === 'pixel_sword' ? '⚔️' : '⭐'} [STICKER]</div>`;
-      }
-
-      let voiceHtml = '';
-      if (d.voiceSnippet) {
-        voiceHtml = `
-          <div class="bg-indigo-950 p-1 border border-indigo-700 rounded flex items-center gap-2 my-1">
-            <button type="button" data-action="playvoice" data-audiosrc="${d.voiceSnippet.audioData || ''}" data-pitch="${d.voiceSnippet.synthPitch || 550}" class="text-[7px] text-green-400 font-bold hover:underline">▶️ PLAY VOICE</button>
-            <span class="text-[5.5px] text-slate-300">${d.voiceSnippet.duration || 'Voice'}</span>
-          </div>
-        `;
-      }
-
-      let imgHtml = '';
-      if (d.img) {
-        imgHtml = `
-          <div class="mt-1">
-            <img src="${d.img}" class="max-w-[140px] max-h-[140px] border border-indigo-400 bg-slate-900 p-0.5 object-contain" />
-          </div>
-        `;
-      }
-
-      let reactionsHtml = '<div class="flex flex-wrap items-center gap-1 my-1 text-[5.5px]">';
-      ['👍', '❤️', '🔥'].forEach(emo => {
-        const count = d.reactions && d.reactions[emo] ? Object.keys(d.reactions[emo]).length : 0;
-        reactionsHtml += `
-          <button type="button" data-action="react" data-msgid="${msgId}" data-emo="${emo}" class="bg-indigo-950 border border-indigo-800 px-1 rounded hover:bg-indigo-900">
-            ${emo} ${count > 0 ? count : ''}
-          </button>
-        `;
-      });
-      reactionsHtml += '</div>';
-
-      let bookmarkCount = d.bookmarks ? Object.keys(d.bookmarks).length : 0;
-
-      let footerMetaHtml = `
-        <div class="flex items-center justify-between text-[5px] text-slate-500 pt-1 border-t border-indigo-950/60 flex-wrap gap-1">
-          <span>IP: ${esc(d.clientIp || '0.0.0.0')} | LOC: ${esc(d.geoCity || 'Global')} | BAT: ${d.battery || '100%'}</span>
-          <div class="flex items-center gap-1">
-            <button type="button" data-action="tts" data-msgid="${msgId}" class="text-cyan-300 hover:underline">🔊 READ</button>
-            <button type="button" data-action="copy" data-msgid="${msgId}" class="text-slate-300 hover:underline">📋 COPY</button>
-            <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
-            <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
-            <button type="button" data-action="bookmark" data-msgid="${msgId}" class="text-purple-400 hover:underline">⭐${bookmarkCount > 0 ? bookmarkCount : ''}</button>
-            ${isSelf ? `<button type="button" data-action="edit" data-msgid="${msgId}" class="text-green-400 hover:underline">EDIT</button>` : ''}
-            ${isSelf ? `<button type="button" data-action="recall" data-msgid="${msgId}" class="text-red-400 hover:underline">RECALL</button>` : ''}
-          </div>
-        </div>
-      `;
-
-      div.innerHTML = headerHtml + replyHtml + textHtml + voiceHtml + imgHtml + reactionsHtml + footerMetaHtml;
-
-      if (!existingDiv) {
-        c.appendChild(div);
-      }
-
-      // Self Destruct Auto Timer
-      if (d.ttl && parseInt(d.ttl) > 0) {
-        setTimeout(() => { update(ref(db, `global_pixel_chat/${msgId}`), { isDeleted: true }); }, parseInt(d.ttl));
-      }
-
+      if (!div.parentNode) c.appendChild(div);
       return { isSelf };
     }
 
-    // CLICK DELEGATION
-    c.addEventListener('click', (e) => {
+    // Global Delegated Actions
+    c.addEventListener('click', e => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
-
-      const action = btn.dataset.action;
-      const msgId = btn.dataset.msgid;
-
-      if (action === 'react') {
-        set(ref(db, `global_pixel_chat/${msgId}/reactions/${btn.dataset.emo}/${USER_ID}`), true);
-        playCustomSFX('beep');
-      } else if (action === 'reply') {
-        replyParentId = msgId;
-        replyTargetText.textContent = `Replying to @${btn.dataset.sender}`;
+      const { action, msgid, sender } = btn.dataset;
+      if (action === 'reply') {
+        replyParentId = msgid;
+        replyTargetText.textContent = `Replying to @${sender}`;
         replyBanner.classList.remove('hidden');
       } else if (action === 'pin') {
-        update(ref(db, `global_pixel_chat/${msgId}`), { isPinned: true });
-        playCustomSFX('coin');
-      } else if (action === 'bookmark') {
-        set(ref(db, `global_pixel_chat/${msgId}/bookmarks/${USER_ID}`), true);
+        update(ref(db, `global_pixel_chat/${msgid}`), { isPinned: true });
         playCustomSFX('coin');
       } else if (action === 'recall') {
-        update(ref(db, `global_pixel_chat/${msgId}`), { isDeleted: true });
-      } else if (action === 'playvoice') {
-        playAudioData(btn.dataset.audiosrc, parseFloat(btn.dataset.pitch) || 550);
-      } else if (action === 'tts') {
-        const msgNode = document.getElementById(`msg-${msgId}`);
-        if (msgNode && 'speechSynthesis' in window) {
-          const u = new SpeechSynthesisUtterance(msgNode.innerText);
-          window.speechSynthesis.speak(u);
-        }
-      } else if (action === 'copy') {
-        const msgNode = document.getElementById(`msg-${msgId}`);
-        if (msgNode) navigator.clipboard.writeText(msgNode.innerText);
-      } else if (action === 'edit') {
-        const newTxt = prompt("Edit your pixel message:");
-        if (newTxt) update(ref(db, `global_pixel_chat/${msgId}`), { t: newTxt, isEdited: true });
+        update(ref(db, `global_pixel_chat/${msgid}`), { isDeleted: true });
       }
     });
 
-    // REALTIME SYNC HANDLERS
-    onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
-      const d = snap.val();
-      const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 120;
+    onChildAdded(query(chatRef, limitToLast(30)), snap => {
+      const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 100;
       const { isSelf } = renderMessageNode(snap) || {};
       if (isNearBottom || isSelf) v.scrollTop = v.scrollHeight;
-      
-      if (d && d.sfxTag) playCustomSFX(d.sfxTag);
+      if (snap.val()?.sfx) playCustomSFX(snap.val().sfx);
     });
 
-    onChildChanged(chatRef, (snap) => { renderMessageNode(snap); });
+    onChildChanged(chatRef, snap => renderMessageNode(snap));
 
-    // Slash Command Engine Parser
-    function parseSlashCommand(cmd) {
-      const parts = cmd.split(' ');
-      const action = parts[0].toLowerCase();
-
-      if (action === '/help') {
-        alert("AVAILABLE SLASH COMMANDS:\n/help - Show commands\n/clear - Clear local screen\n/roll - Roll 1-100 die\n/coinflip - Flip coin\n/shrug - Append ¯\\_(ツ)_/¯");
-        return true;
-      } else if (action === '/clear') {
-        c.innerHTML = '';
-        return true;
-      } else if (action === '/roll') {
-        i.value = `🎲 Rolled a ${Math.floor(Math.random() * 100) + 1}!`;
-        return false;
-      } else if (action === '/coinflip') {
-        i.value = `🪙 Flipped ${Math.random() > 0.5 ? 'HEADS' : 'TAILS'}!`;
-        return false;
-      } else if (action === '/shrug') {
-        i.value += ' ¯\\_(ツ)_/¯';
-        return false;
-      }
-      return false;
-    }
-
-    // MESSAGE SUBMIT PIPELINE
-    document.getElementById('f').addEventListener('submit', async (e) => {
+    // Submit handler with minimized payload keys
+    document.getElementById('f').addEventListener('submit', async e => {
       e.preventDefault();
       const txt = i.value.trim();
-      const handle = nameInput.value.trim() || 'Steve';
-      
-      if (txt.startsWith('/')) {
-        const isHandledLocally = parseSlashCommand(txt);
-        if (isHandledLocally) { i.value = ''; return; }
-      }
 
-      if (!txt && !currentBase64Image && !currentVoiceNote) return;
+      if (txt === '/help') return alert("COMMANDS:\n/help - Help menu\n/clear - Clear screen\n/roll - Roll die"), i.value = '';
+      if (txt === '/clear') return c.innerHTML = '', i.value = '';
+      if (txt === '/roll') i.value = `🎲 Rolled ${Math.floor(Math.random() * 100) + 1}!`;
 
-      sendBtn.disabled = true;
+      if (!i.value.trim() && !currentBase64Image && !currentVoiceNote) return;
+
+      document.getElementById('sendBtn').disabled = true;
 
       const payload = {
-        sentTime: Date.now(),
-        serverReceivedTs: serverTimestamp(),
-        clientMsgId: `msg_${Date.now()}`,
-        s: handle,
-        userStatus: statusInput.value.trim() || 'Online',
-        senderUserId: USER_ID,
-        clientIp: detectedClientIp,
-        avatar: avatarSelect.value,
-        appVersion: APP_VERSION,
-        badge: badgeSelect.value,
-        t: txt,
+        ts: Date.now(),
+        s: nameInput.value.trim() || 'Player',
+        uid: USER_ID,
+        av: avatarSelect.value,
+        bdg: badgeSelect.value,
+        t: i.value.trim(),
         img: currentBase64Image || null,
-        replyParentId: replyParentId || null,
-        priority: prioritySelect.value,
-        voiceSnippet: currentVoiceNote || null,
-        geoCity: cachedCity,
-        battery: currentBattery,
-        sfxTag: sfxSelect.value,
-        isSpoiler: spoilerCheck.checked,
-        stickerId: stickerSelect.value || null,
-        ttl: ttlSelect.value
+        prio: prioritySelect.value,
+        v: currentVoiceNote || null,
+        sfx: sfxSelect.value,
+        sp: spoilerCheck.checked,
+        stk: stickerSelect.value || null
       };
 
-      // Reset Inputs
-      i.value = '';
-      charCounter.textContent = '0/200';
-      currentBase64Image = "";
-      currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
-      currentVoiceNote = null;
-      fileInput.value = "";
-      imgPreviewContainer.classList.add('hidden');
-      voicePreviewContainer.classList.add('hidden');
-      replyParentId = null;
-      replyBanner.classList.add('hidden');
-      spoilerCheck.checked = false;
+      i.value = ''; charCounter.textContent = '0/200';
+      currentBase64Image = ""; currentVoiceNote = null; fileInput.value = "";
+      imgPreviewContainer.classList.add('hidden'); voicePreviewContainer.classList.add('hidden');
+      replyBanner.classList.add('hidden'); replyParentId = null; spoilerCheck.checked = false;
 
       try {
-        const newMsgRef = push(chatRef);
-        await set(newMsgRef, payload);
+        await set(push(chatRef), payload);
       } catch (err) {
-        console.error("Transmission error:", err);
+        console.error("Firebase send failed:", err);
       } finally {
-        sendBtn.disabled = false;
+        document.getElementById('sendBtn').disabled = false;
       }
     });
 
     function esc(s) {
-      if (!s) return '';
-      return s.replace(/[&<>'"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[m]));
+      return s ? String(s).replace(/[&<>'"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[m])) : '';
     }
   </script>
 </body>
