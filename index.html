@@ -2,25 +2,41 @@
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat</title>
-  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Chat&quot;,&quot;short_name&quot;:&quot;Chat&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#1a1a2e&quot;,&quot;theme_color&quot;:&quot;#16213e&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316213e'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23e94560'%3E💬%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Voice & Media Chat</title>
+
+  <link rel="manifest" href="data:application/json,{
+    &quot;name&quot;:&quot;Voice &amp; Media Chat&quot;,
+    &quot;short_name&quot;:&quot;VMChat&quot;,
+    &quot;start_url&quot;:&quot;/&quot;,
+    &quot;display&quot;:&quot;standalone&quot;,
+    &quot;background_color&quot;:&quot;#1a1a2e&quot;,
+    &quot;theme_color&quot;:&quot;#16213e&quot;,
+    &quot;icons&quot;:[{
+      &quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316213e'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23e94560'%3E🎙️%3C/text%3E%3C/svg%3E&quot;,
+      &quot;sizes&quot;:&quot;512x512&quot;,
+      &quot;type&quot;:&quot;image/svg+xml&quot;
+    }]
+  }" />
 
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, sans-serif;
+      font-family: system-ui, -apple-system, sans-serif;
     }
     :root {
       --bg: #0f0e17;
       --surface: #1a1a2e;
       --header: #16213e;
       --accent: #e94560;
+      --accent-hover: #ff6b81;
       --text: #fffffe;
+      --text-muted: #a7a9be;
       --own: #e94560;
       --other: #2d2d44;
+      --radius: 16px;
     }
     body {
       background: var(--bg);
@@ -30,12 +46,13 @@
       justify-content: center;
       align-items: center;
       padding: 8px;
+      overflow: hidden;
     }
     .app {
-      max-width: 800px;
+      max-width: 850px;
       width: 100%;
-      height: 95vh;
-      max-height: 800px;
+      height: 96vh;
+      max-height: 820px;
       background: var(--surface);
       border-radius: 24px;
       display: flex;
@@ -43,6 +60,7 @@
       overflow: hidden;
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     }
+    /* HEADER */
     .header {
       padding: 12px 20px;
       background: var(--header);
@@ -56,6 +74,7 @@
     }
     .header h1 {
       font-size: 1.2rem;
+      font-weight: 700;
     }
     .header h1 span {
       color: var(--accent);
@@ -72,6 +91,7 @@
       padding: 4px 12px;
       background: var(--bg);
       border-radius: 20px;
+      white-space: nowrap;
     }
     .auth {
       display: flex;
@@ -86,7 +106,7 @@
       color: var(--text);
       font-size: 0.85rem;
       width: 100px;
-      transition: 0.2s;
+      transition: 0.25s;
     }
     .auth input:focus {
       outline: 2px solid var(--accent);
@@ -100,13 +120,13 @@
       color: var(--text);
       font-weight: 600;
       cursor: pointer;
-      transition: 0.2s;
+      transition: 0.25s;
       font-size: 0.8rem;
       white-space: nowrap;
     }
     .auth button:hover {
       transform: scale(1.05);
-      background: #ff6b81;
+      background: var(--accent-hover);
     }
     .auth button.logout {
       background: var(--other);
@@ -114,6 +134,7 @@
     .auth button.logout:hover {
       background: #3d3d5c;
     }
+    /* MESSAGES */
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -122,6 +143,7 @@
       flex-direction: column;
       gap: 4px;
       background: #12122a;
+      scroll-behavior: smooth;
     }
     .messages::-webkit-scrollbar {
       width: 4px;
@@ -134,13 +156,14 @@
       text-align: center;
       font-size: 0.8rem;
       opacity: 0.4;
-      padding: 8px;
+      padding: 12px;
       font-style: italic;
     }
+    /* MESSAGE */
     .msg {
       padding: 6px 14px;
       border-radius: 16px;
-      max-width: 80%;
+      max-width: 82%;
       word-wrap: break-word;
       animation: fadeIn 0.2s ease;
       line-height: 1.4;
@@ -161,6 +184,7 @@
       text-transform: uppercase;
       opacity: 0.6;
       letter-spacing: 0.5px;
+      margin-bottom: 2px;
     }
     .msg .time {
       font-size: 0.5rem;
@@ -173,8 +197,8 @@
     .msg .text img,
     .msg .text video {
       max-width: 100%;
-      max-height: 250px;
-      border-radius: 8px;
+      max-height: 300px;
+      border-radius: 10px;
       margin: 4px 0;
       display: block;
     }
@@ -183,8 +207,8 @@
       display: inline-block;
     }
     .msg .text .gif {
-      max-width: 180px;
-      border-radius: 8px;
+      max-width: 200px;
+      border-radius: 10px;
     }
     .msg .text .location {
       padding: 4px 12px;
@@ -197,41 +221,42 @@
       color: #4fc3f7;
       text-decoration: none;
     }
+    .msg .text .location a:hover {
+      text-decoration: underline;
+    }
     .msg .text .voice {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       background: rgba(255, 255, 255, 0.06);
-      padding: 4px 12px;
-      border-radius: 20px;
+      padding: 4px 14px;
+      border-radius: 24px;
+      min-width: 140px;
     }
     .msg .text .voice audio {
-      max-width: 140px;
+      max-width: 160px;
       height: 28px;
+      flex: 1;
     }
-    .msg .text .poll {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 8px 12px;
+    .msg .text .voice .wave {
+      font-size: 1.2rem;
+      opacity: 0.6;
+    }
+    .msg .text .file {
+      padding: 6px 12px;
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
     }
-    .msg .text .poll .option {
-      padding: 4px 8px;
-      margin: 2px 0;
-      background: rgba(255, 255, 255, 0.04);
-      border-radius: 4px;
-      cursor: pointer;
-      transition: 0.2s;
+    .msg .text .file a {
+      color: #4fc3f7;
+      text-decoration: none;
     }
-    .msg .text .poll .option:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-    .msg .text .poll .bar {
-      height: 3px;
-      background: var(--accent);
-      border-radius: 2px;
-      margin-top: 2px;
-      transition: width 0.3s;
-      width: 0%;
+    .msg .text .file a:hover {
+      text-decoration: underline;
     }
     .msg .text pre {
       background: #0f0e17;
@@ -239,11 +264,13 @@
       border-radius: 6px;
       overflow-x: auto;
       font-size: 0.75rem;
+      max-width: 100%;
     }
     .msg .text pre code {
-      font-family: monospace;
-      color: #a7a9be;
+      font-family: 'Courier New', monospace;
+      color: var(--text-muted);
     }
+    /* INPUT */
     .input-area {
       padding: 8px 12px 12px;
       background: var(--header);
@@ -276,6 +303,101 @@
       opacity: 0.25;
       cursor: not-allowed;
     }
+    .tools button.active {
+      background: var(--accent);
+      opacity: 1;
+    }
+    .tools button .badge {
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      padding: 0 4px;
+      font-size: 0.5rem;
+      margin-left: 2px;
+    }
+    .recording {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 4px 14px;
+      background: var(--accent);
+      border-radius: 24px;
+      font-size: 0.8rem;
+      animation: pulse 1s infinite;
+      margin-bottom: 6px;
+    }
+    .recording.active {
+      display: flex;
+    }
+    .recording .timer {
+      font-weight: 600;
+      min-width: 30px;
+    }
+    .recording button {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.2rem;
+      padding: 0 4px;
+    }
+    .row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .row input[type="text"] {
+      flex: 1;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 24px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      min-width: 50px;
+      transition: 0.2s;
+    }
+    .row input[type="text"]:focus {
+      outline: 2px solid var(--accent);
+    }
+    .row input[type="text"]:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .row button {
+      padding: 8px 18px;
+      border: none;
+      border-radius: 24px;
+      background: var(--accent);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .row button:hover:not(:disabled) {
+      transform: scale(1.05);
+      background: var(--accent-hover);
+    }
+    .row button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .row button.icon {
+      padding: 8px 10px;
+      font-size: 1.1rem;
+      background: var(--other);
+      min-width: 40px;
+    }
+    .row button.icon:hover:not(:disabled) {
+      background: #3d3d5c;
+    }
+    .row button.icon.recording-active {
+      background: var(--accent);
+      animation: pulse 1s infinite;
+    }
+    /* PICKERS */
     .picker {
       display: none;
       flex-wrap: wrap;
@@ -283,7 +405,7 @@
       padding: 6px;
       background: var(--surface);
       border-radius: 12px;
-      max-height: 100px;
+      max-height: 110px;
       overflow-y: auto;
       margin-bottom: 6px;
     }
@@ -295,7 +417,7 @@
       border: none;
       font-size: 1.4rem;
       cursor: pointer;
-      padding: 2px 4px;
+      padding: 2px 6px;
       border-radius: 4px;
       transition: 0.2s;
     }
@@ -306,77 +428,7 @@
     .sticker-picker button {
       font-size: 2.2rem;
     }
-    .recording {
-      display: none;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 12px;
-      background: var(--accent);
-      border-radius: 20px;
-      font-size: 0.8rem;
-      animation: pulse 1s infinite;
-      margin-bottom: 6px;
-    }
-    .recording.active {
-      display: flex;
-    }
-    .recording button {
-      background: none;
-      border: none;
-      color: #fff;
-      cursor: pointer;
-      font-size: 1.2rem;
-    }
-    .row {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .row input {
-      flex: 1;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 20px;
-      background: var(--bg);
-      color: var(--text);
-      font-size: 0.9rem;
-      min-width: 50px;
-    }
-    .row input:focus {
-      outline: 2px solid var(--accent);
-    }
-    .row input:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .row button {
-      padding: 8px 16px;
-      border: none;
-      border-radius: 20px;
-      background: var(--accent);
-      color: var(--text);
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-      font-size: 0.85rem;
-      white-space: nowrap;
-    }
-    .row button:hover:not(:disabled) {
-      transform: scale(1.05);
-      background: #ff6b81;
-    }
-    .row button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .row button.icon {
-      padding: 8px 10px;
-      font-size: 1.1rem;
-      background: var(--other);
-    }
-    .row button.icon:hover:not(:disabled) {
-      background: #3d3d5c;
-    }
+    /* ANIMATIONS */
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -396,11 +448,25 @@
         opacity: 0.4;
       }
     }
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    /* RESPONSIVE */
     @media (max-width: 600px) {
       .app {
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
+      }
+      .header {
+        padding: 8px 12px;
       }
       .header h1 {
         font-size: 1rem;
@@ -420,6 +486,9 @@
         padding: 4px 10px;
         font-size: 0.85rem;
       }
+      .msg .text .voice audio {
+        max-width: 100px;
+      }
       .tools button {
         font-size: 0.6rem;
         padding: 2px 6px;
@@ -427,14 +496,34 @@
       .picker button {
         font-size: 1.1rem;
       }
+      .sticker-picker button {
+        font-size: 1.8rem;
+      }
+      .row input[type="text"] {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+      }
+      .row button {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+    }
+    @media (max-width: 400px) {
+      .auth input {
+        width: 50px;
+      }
+      .msg .text .voice audio {
+        max-width: 70px;
+      }
     }
   </style>
 </head>
 <body>
 
   <div class="app">
+    <!-- HEADER -->
     <div class="header">
-      <h1>💬 <span>Chat</span></h1>
+      <h1>🎙️ <span>Voice</span>Chat</h1>
       <div class="header-right">
         <span class="online" id="online">👤 0</span>
         <div class="auth" id="auth">
@@ -445,8 +534,12 @@
       </div>
     </div>
 
-    <div class="messages" id="msgs"><div class="status">👋 Sign in</div></div>
+    <!-- MESSAGES -->
+    <div class="messages" id="msgs">
+      <div class="status">👋 Sign in to start</div>
+    </div>
 
+    <!-- INPUT -->
     <div class="input-area">
       <div class="tools" id="tools">
         <button data-a="emoji">😊</button>
@@ -454,9 +547,9 @@
         <button data-a="gif">🎬</button>
         <button data-a="image">🖼️</button>
         <button data-a="video">🎥</button>
-        <button data-a="voice">🎤</button>
+        <button data-a="voice" id="voiceBtn">🎤</button>
         <button data-a="location">📍</button>
-        <button data-a="poll">📊</button>
+        <button data-a="file">📎</button>
         <button data-a="code">💻</button>
         <button data-a="bold"><b>B</b></button>
         <button data-a="italic"><i>I</i></button>
@@ -464,7 +557,10 @@
       </div>
 
       <div class="recording" id="recording">
-        🔴 Recording <button id="stoprec">⏹️</button>
+        <span>🔴</span>
+        <span class="timer" id="timer">0:00</span>
+        <span>Recording...</span>
+        <button id="stoprec">⏹️</button>
       </div>
 
       <div class="picker" id="emojiPicker">
@@ -476,6 +572,7 @@
         <button>🥳</button><button>😤</button><button>🤯</button><button>😱</button>
         <button>🍕</button><button>🌮</button><button>🍔</button><button>☕</button>
         <button>🏆</button><button>🎯</button><button>💯</button><button>🔮</button>
+        <button>💔</button><button>💝</button><button>💖</button><button>💗</button>
       </div>
 
       <div class="picker sticker-picker" id="stickerPicker">
@@ -484,10 +581,11 @@
         <button>🐵</button><button>🦄</button><button>🐉</button><button>🐲</button>
         <button>🚀</button><button>🛸</button><button>👽</button><button>🤖</button>
         <button>🎃</button><button>👻</button><button>💀</button><button>👾</button>
+        <button>⭐</button><button>🌙</button><button>☀️</button><button>🌈</button>
       </div>
 
       <div class="row">
-        <input type="text" id="input" placeholder="Type..." disabled />
+        <input type="text" id="input" placeholder="Type a message..." disabled />
         <button id="send" disabled>Send</button>
         <button id="filebtn" class="icon" disabled>📎</button>
         <input type="file" id="file" accept="image/*,video/*,audio/*" style="display:none" multiple />
@@ -495,41 +593,58 @@
     </div>
   </div>
 
+  <!-- FIREBASE -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
   <script>
-    // Firebase
-    firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
+    // ============================================================
+    // FIREBASE SETUP
+    // ============================================================
+    firebase.initializeApp({
+      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    });
     const db = firebase.database();
 
-    // DOM
+    // ============================================================
+    // DOM REFS
+    // ============================================================
     const $ = s => document.querySelector(s);
     const $$ = s => document.querySelectorAll(s);
-    const msgs = $('#msgs'),
-      input = $('#input'),
-      send = $('#send'),
-      name = $('#name'),
-      join = $('#join'),
-      leave = $('#leave'),
-      online = $('#online'),
-      tools = $('#tools'),
-      emojiPicker = $('#emojiPicker'),
-      stickerPicker = $('#stickerPicker'),
-      fileInput = $('#file'),
-      fileBtn = $('#filebtn'),
-      recording = $('#recording'),
-      stopRec = $('#stoprec');
 
-    let user = null,
-      listeners = [],
-      recorder = null,
-      chunks = [],
-      votes = {};
+    const msgs = $('#msgs');
+    const input = $('#input');
+    const send = $('#send');
+    const name = $('#name');
+    const join = $('#join');
+    const leave = $('#leave');
+    const online = $('#online');
+    const tools = $('#tools');
+    const emojiPicker = $('#emojiPicker');
+    const stickerPicker = $('#stickerPicker');
+    const fileInput = $('#file');
+    const fileBtn = $('#filebtn');
+    const recording = $('#recording');
+    const stopRec = $('#stoprec');
+    const timer = $('#timer');
+    const voiceBtn = $('#voiceBtn');
 
-    // Helpers
+    // ============================================================
+    // STATE
+    // ============================================================
+    let user = null;
+    let listeners = [];
+    let recorder = null;
+    let chunks = [];
+    let recordTimer = null;
+    let seconds = 0;
+    let isRecording = false;
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
     const status = t => {
       let el = msgs.querySelector('.status');
       if (!el) { el = document.createElement('div');
@@ -537,36 +652,52 @@
         msgs.appendChild(el); }
       el.textContent = t;
     };
+
     const scroll = () => setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
-    const esc = t => { const d = document.createElement('div');
-      d.textContent = t; return d.innerHTML; };
+
+    const esc = t => {
+      const d = document.createElement('div');
+      d.textContent = t;
+      return d.innerHTML;
+    };
+
     const time = t => t ? new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
 
-    // Upload file
-    const upload = f => new Promise((r, re) => { const rd = new FileReader();
+    const upload = f => new Promise((r, re) => {
+      const rd = new FileReader();
       rd.onload = e => r(e.target.result);
       rd.onerror = re;
-      rd.readAsDataURL(f); });
+      rd.readAsDataURL(f);
+    });
 
-    // Send message
+    const formatTime = (s) => {
+      const mins = Math.floor(s / 60);
+      const secs = s % 60;
+      return `${mins}:${secs.toString().padStart(2, '0')}`;
+    };
+
+    // ============================================================
+    // SEND MESSAGE
+    // ============================================================
     const sendMsg = txt => {
-      if (!user) return alert('Sign in!');
+      if (!user) return alert('Sign in first!');
       if (!txt || !txt.trim()) return;
-      const data = { name: user.name, uid: user.uid, text: txt.trim(), timestamp: firebase.database.ServerValue.TIMESTAMP };
-      if (txt.startsWith('📊 ')) {
-        const parts = txt.substring(4).split('|');
-        if (parts.length >= 3) {
-          const id = db.ref('messages').push().key;
-          db.ref('polls/' + id).set({ question: parts[0], options: parts.slice(1), votes: {} });
-          data.text = `📊 ${parts[0]}|${parts.slice(1).join('|')}`;
-        }
-      }
+
+      const data = {
+        name: user.name,
+        uid: user.uid,
+        text: txt.trim(),
+        timestamp: firebase.database.ServerValue.TIMESTAMP
+      };
+
       db.ref('messages').push(data).catch(() => alert('Failed to send.'));
       input.value = '';
       input.focus();
     };
 
-    // Render message
+    // ============================================================
+    // RENDER MESSAGE
+    // ============================================================
     const render = data => {
       const own = user && data.uid === user.uid;
       const div = document.createElement('div');
@@ -586,33 +717,34 @@
       cnt.className = 'text';
       let html = data.text || '';
 
-      if (html.startsWith('📸 ')) html = `<img src="${html.substring(4)}" loading="lazy" onerror="this.style.display='none'" />`;
-      else if (html.startsWith('🎬 ')) html = `<video controls src="${html.substring(4)}" preload="metadata"></video>`;
-      else if (html.startsWith('🎤 ')) html =
-        `<div class="voice">🎤 <audio controls src="${html.substring(4)}"></audio></div>`;
-      else if (html.startsWith('📍 ')) html =
-        `<div class="location">📍 <a href="https://maps.google.com/maps?q=${html.substring(4)}" target="_blank">${html.substring(4)}</a></div>`;
-      else if (html.startsWith('📊 ')) {
+      // Parse message types
+      if (html.startsWith('📸 ')) {
+        html = `<img src="${html.substring(4)}" loading="lazy" onerror="this.style.display='none'" />`;
+      } else if (html.startsWith('🎬 ')) {
+        html = `<video controls src="${html.substring(4)}" preload="metadata"></video>`;
+      } else if (html.startsWith('🎤 ')) {
+        html =
+          `<div class="voice"><span class="wave">🎤</span> <audio controls src="${html.substring(4)}"></audio></div>`;
+      } else if (html.startsWith('📍 ')) {
+        const coords = html.substring(4);
+        html =
+          `<div class="location">📍 <a href="https://maps.google.com/maps?q=${coords}" target="_blank">${coords}</a></div>`;
+      } else if (html.startsWith('💻 ')) {
+        html = `<pre><code>${esc(html.substring(4))}</code></pre>`;
+      } else if (html.startsWith('🎬 GIF: ')) {
+        html = `<img class="gif" src="${html.substring(8)}" loading="lazy" onerror="this.style.display='none'" />`;
+      } else if (html.startsWith('🎨 ')) {
+        html = `<span class="sticker">${html.substring(4)}</span>`;
+      } else if (html.startsWith('📄 ')) {
         const parts = html.substring(4).split('|');
-        const q = parts[0],
-          opts = parts.slice(1);
-        const id = data._key;
-        let pollHtml = `<div class="poll" data-poll="${id}"><strong>📊 ${esc(q)}</strong><br/>`;
-        opts.forEach((o, i) => {
-          const v = votes[id]?.[i] || 0;
-          const t = votes[id]?.total || 1;
-          const pct = Math.round((v / t) * 100);
-          pollHtml +=
-            `<div class="option" data-poll="${id}" data-opt="${i}">${esc(o)} (${v})<div class="bar" style="width:${pct}%"></div></div>`;
-        });
-        pollHtml += '</div>';
-        html = pollHtml;
-      } else if (html.startsWith('💻 ')) html = `<pre><code>${esc(html.substring(4))}</code></pre>`;
-      else if (html.startsWith('🎬 GIF: ')) html =
-        `<img class="gif" src="${html.substring(8)}" loading="lazy" onerror="this.style.display='none'" />`;
-      else if (html.startsWith('🎨 ')) html = `<span class="sticker">${html.substring(4)}</span>`;
-      else html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/~~(.*?)~~/g,
-        '<s>$1</s>');
+        html =
+          `<div class="file">📄 <a href="${parts[1]}" target="_blank">${esc(parts[0])}</a> (${parts[2] || 'file'})</div>`;
+      } else {
+        // Markdown
+        html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
+          .replace(/\*(.*?)\*/g, '<i>$1</i>')
+          .replace(/~~(.*?)~~/g, '<s>$1</s>');
+      }
 
       cnt.innerHTML = html;
       div.appendChild(cnt);
@@ -621,100 +753,144 @@
       if (st) st.remove();
       msgs.appendChild(div);
       scroll();
-
-      div.querySelectorAll('.option').forEach(el => {
-        el.onclick = () => {
-          if (!user) return alert('Sign in to vote!');
-          const id = el.dataset.poll,
-            opt = parseInt(el.dataset.opt);
-          const ref = db.ref('polls/' + id + '/votes/' + user.uid);
-          ref.once('value', s => {
-            if (s.exists()) return alert('Already voted!');
-            ref.set(opt, () => {
-              if (!votes[id]) votes[id] = {};
-              votes[id][opt] = (votes[id][opt] || 0) + 1;
-              votes[id].total = (votes[id].total || 0) + 1;
-              renderPoll(id);
-            });
-          });
-        };
-      });
     };
 
-    const renderPoll = id => {
-      const el = document.querySelector(`[data-poll="${id}"]`);
-      if (!el) return;
-      const msg = el.closest('.msg');
-      if (!msg) return;
-      db.ref('polls/' + id).once('value', s => {
-        const d = s.val();
-        if (!d) return;
-        const v = d.votes || {},
-          total = Object.keys(v).length,
-          opts = d.options || [];
-        let html = `<div class="poll" data-poll="${id}"><strong>📊 ${esc(d.question)}</strong><br/>`;
-        const counts = {};
-        Object.values(v).forEach(x => counts[x] = (counts[x] || 0) + 1);
-        opts.forEach((o, i) => {
-          const c = counts[i] || 0,
-            pct = total > 0 ? Math.round((c / total) * 100) : 0;
-          html +=
-            `<div class="option" data-poll="${id}" data-opt="${i}">${esc(o)} (${c})<div class="bar" style="width:${pct}%"></div></div>`;
-        });
-        html += '</div>';
-        const cnt = msg.querySelector('.text');
-        cnt.innerHTML = html;
-        msg.querySelectorAll('.option').forEach(el => {
-          el.onclick = () => {
-            if (!user) return alert('Sign in!');
-            const pid = el.dataset.poll,
-              opt = parseInt(el.dataset.opt);
-            const ref = db.ref('polls/' + pid + '/votes/' + user.uid);
-            ref.once('value', s => {
-              if (s.exists()) return alert('Already voted!');
-              ref.set(opt, () => {
-                if (!votes[pid]) votes[pid] = {};
-                votes[pid][opt] = (votes[pid][opt] || 0) + 1;
-                votes[pid].total = (votes[pid].total || 0) + 1;
-                renderPoll(pid);
-              });
-            });
-          };
-        });
-      });
-    };
-
-    // Subscribe
+    // ============================================================
+    // SUBSCRIBE TO MESSAGES
+    // ============================================================
     const subscribe = () => {
       listeners.forEach(r => r.off());
       listeners = [];
-      const q = db.ref('messages').orderByKey().limitToLast(150);
-      q.on('child_added', s => { const d = s.val();
-        d._key = s.key;
-        render(d); });
-      q.on('child_removed', s => { const el = msgs.querySelector(`[data-key="${s.key}"]`); if (el) el.remove(); });
-      listeners.push(q);
-      q.once('value', s => { if (!s.exists()) status('💬 No messages'); });
-      db.ref('polls').on('child_changed', s => renderPoll(s.key));
-      listeners.push(db.ref('polls'));
 
-      const presence = db.ref('.info/connected'),
-        users = db.ref('users');
+      const q = db.ref('messages').orderByKey().limitToLast(150);
+
+      q.on('child_added', s => {
+        const d = s.val();
+        d._key = s.key;
+        render(d);
+      });
+
+      q.on('child_removed', s => {
+        const el = msgs.querySelector(`[data-key="${s.key}"]`);
+        if (el) el.remove();
+      });
+
+      listeners.push(q);
+
+      q.once('value', s => {
+        if (!s.exists()) status('💬 No messages yet. Say hello!');
+      });
+
+      // Presence
+      const presence = db.ref('.info/connected');
+      const users = db.ref('users');
+
       presence.on('value', s => {
         if (s.val() && user) {
           const ref = users.child(user.uid);
-          ref.set({ name: user.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+          ref.set({
+            name: user.name,
+            lastSeen: firebase.database.ServerValue.TIMESTAMP
+          });
           ref.onDisconnect().remove();
         }
       });
-      users.on('value', s => { online.textContent = s.exists() ? `👤 ${s.numChildren()}` : '👤 0'; });
+
+      users.on('value', s => {
+        online.textContent = s.exists() ? `👤 ${s.numChildren()}` : '👤 0';
+      });
+
       listeners.push(presence);
     };
 
-    // Auth
+    // ============================================================
+    // VOICE RECORDING
+    // ============================================================
+    const startRecording = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recorder = new MediaRecorder(stream);
+        chunks = [];
+        seconds = 0;
+        isRecording = true;
+
+        recorder.ondataavailable = e => chunks.push(e.data);
+
+        recorder.onstop = async () => {
+          isRecording = false;
+          recording.classList.remove('active');
+          voiceBtn.classList.remove('recording-active');
+          input.disabled = false;
+          send.disabled = false;
+          if (recordTimer) { clearInterval(recordTimer);
+            recordTimer = null; }
+
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          if (blob.size > 0) {
+            const file = new File([blob], `voice-${Date.now()}.webm`, { type: 'audio/webm' });
+            try {
+              const dataUrl = await upload(file);
+              sendMsg('🎤 ' + dataUrl);
+            } catch (e) {
+              alert('Failed to upload voice message.');
+            }
+          }
+          stream.getTracks().forEach(t => t.stop());
+        };
+
+        recorder.start();
+        recording.classList.add('active');
+        voiceBtn.classList.add('recording-active');
+        input.disabled = true;
+        send.disabled = true;
+
+        // Timer
+        recordTimer = setInterval(() => {
+          seconds++;
+          timer.textContent = formatTime(seconds);
+        }, 1000);
+
+      } catch (e) {
+        alert('Microphone access denied. Please allow microphone permissions.');
+      }
+    };
+
+    const stopRecording = () => {
+      if (recorder && recorder.state === 'recording') {
+        recorder.stop();
+      }
+    };
+
+    // ============================================================
+    // FILE HANDLING
+    // ============================================================
+    const handleFile = async f => {
+      if (!user) return alert('Sign in first!');
+
+      const type = f.type;
+      let prefix = '📸 ';
+      if (type.startsWith('video/')) prefix = '🎬 ';
+      else if (type.startsWith('audio/')) prefix = '🎤 ';
+      else if (type.startsWith('image/')) prefix = '📸 ';
+
+      try {
+        const dataUrl = await upload(f);
+        sendMsg(prefix + dataUrl);
+      } catch (e) {
+        alert('Failed to upload file.');
+      }
+    };
+
+    // ============================================================
+    // AUTH
+    // ============================================================
     const login = () => {
       const n = name.value.trim() || 'Guest';
-      user = { name: n, uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6) };
+      user = {
+        name: n,
+        uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
+      };
+
       name.disabled = true;
       join.style.display = 'none';
       leave.style.display = 'inline-block';
@@ -722,7 +898,9 @@
       send.disabled = false;
       fileBtn.disabled = false;
       input.placeholder = `Message as ${n}...`;
+
       $$('#tools button').forEach(b => b.disabled = false);
+
       status(`✅ Signed in as ${n}`);
       msgs.innerHTML = '';
       subscribe();
@@ -733,62 +911,28 @@
       listeners.forEach(r => r.off());
       listeners = [];
       user = null;
+
       name.disabled = false;
       join.style.display = 'inline-block';
       leave.style.display = 'none';
       input.disabled = true;
       send.disabled = true;
       fileBtn.disabled = true;
-      input.placeholder = 'Sign in...';
+      input.placeholder = 'Sign in to chat...';
       input.value = '';
+
       $$('#tools button').forEach(b => b.disabled = true);
+
       msgs.innerHTML = '';
-      status('👋 Left chat');
+      status('👋 You left the chat');
       online.textContent = '👤 0';
+
+      if (isRecording) stopRecording();
     };
 
-    // Voice recording
-    const startRecord = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        recorder = new MediaRecorder(stream);
-        chunks = [];
-        recorder.ondataavailable = e => chunks.push(e.data);
-        recorder.onstop = async () => {
-          const blob = new Blob(chunks, { type: 'audio/webm' });
-          const file = new File([blob], 'voice.webm', { type: 'audio/webm' });
-          const dataUrl = await upload(file);
-          sendMsg('🎤 ' + dataUrl);
-          recording.classList.remove('active');
-          input.disabled = false;
-          send.disabled = false;
-          stream.getTracks().forEach(t => t.stop());
-        };
-        recorder.start();
-        recording.classList.add('active');
-        input.disabled = true;
-        send.disabled = true;
-      } catch (e) { alert('Microphone access denied.'); }
-    };
-
-    const stopRecord = () => {
-      if (recorder && recorder.state === 'recording') {
-        recorder.stop();
-        recording.classList.remove('active');
-        input.disabled = false;
-        send.disabled = false;
-      }
-    };
-
-    // Handle files
-    const handleFile = async f => {
-      if (!user) return alert('Sign in!');
-      const type = f.type.startsWith('image/') ? '📸 ' : f.type.startsWith('video/') ? '🎬 ' : '🎤 ';
-      const dataUrl = await upload(f);
-      sendMsg(type + dataUrl);
-    };
-
-    // Toggle pickers
+    // ============================================================
+    // TOGGLE PICKERS
+    // ============================================================
     const togglePicker = type => {
       const picker = type === 'emoji' ? emojiPicker : stickerPicker;
       const isOpen = picker.classList.contains('open');
@@ -796,70 +940,126 @@
       if (!isOpen) picker.classList.add('open');
     };
 
-    // Events
+    // ============================================================
+    // EVENT BINDINGS
+    // ============================================================
+    // Auth
     join.onclick = login;
     leave.onclick = logout;
     name.onkeydown = e => { if (e.key === 'Enter') login(); };
-    send.onclick = () => sendMsg(input.value);
-    input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
-        sendMsg(input.value); } };
 
+    // Send
+    send.onclick = () => sendMsg(input.value);
+    input.onkeydown = e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMsg(input.value);
+      }
+    };
+
+    // Voice
+    voiceBtn.onclick = () => {
+      if (isRecording) {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    };
+
+    stopRec.onclick = stopRecording;
+
+    // File
     fileBtn.onclick = () => fileInput.click();
     fileInput.onchange = async e => {
       if (e.target.files.length) {
-        for (const f of e.target.files) await handleFile(f);
+        for (const f of e.target.files) {
+          await handleFile(f);
+        }
         e.target.value = '';
       }
     };
 
-    stopRec.onclick = stopRecord;
-
+    // Tools
     tools.onclick = e => {
       const btn = e.target.closest('button');
       if (!btn) return;
       const a = btn.dataset.a;
-      if (a === 'emoji') togglePicker('emoji');
-      else if (a === 'sticker') togglePicker('sticker');
-      else if (a === 'gif') { const url = prompt('GIF URL:'); if (url) sendMsg('🎬 GIF: ' + url); } else if (a === 'image')
-        fileInput.click();
-      else if (a === 'video') fileInput.click();
-      else if (a === 'voice') { if (recorder && recorder.state === 'recording') stopRecord();
-        else startRecord(); } else if (a === 'location') {
-        if (navigator.geolocation) navigator.geolocation.getCurrentPosition(
-          p => sendMsg('📍 ' + p.coords.latitude + ',' + p.coords.longitude),
-          () => alert('Location denied.')
-        );
-        else alert('Not supported.');
-      } else if (a === 'poll') {
-        const q = prompt('Poll question:');
-        if (q) {
-          const opts = prompt('Options (comma separated):');
-          if (opts) {
-            const o = opts.split(',').map(x => x.trim()).filter(x => x);
-            if (o.length >= 2) sendMsg('📊 ' + q + '|' + o.join('|'));
-            else alert('Need 2+ options');
-          }
+
+      switch (a) {
+        case 'emoji':
+          togglePicker('emoji');
+          break;
+        case 'sticker':
+          togglePicker('sticker');
+          break;
+        case 'gif': {
+          const url = prompt('Enter GIF URL:');
+          if (url) sendMsg('🎬 GIF: ' + url);
+          break;
         }
-      } else if (a === 'code') { const c = prompt('Code:'); if (c) sendMsg('💻 ' + c); } else if (a === 'bold') input
-        .value += ' **bold** ';
-      else if (a === 'italic') input.value += ' *italic* ';
-      else if (a === 'strike') input.value += ' ~~strike~~ ';
-      input.focus();
+        case 'image':
+          fileInput.click();
+          break;
+        case 'video':
+          fileInput.click();
+          break;
+        case 'voice':
+          if (isRecording) stopRecording();
+          else startRecording();
+          break;
+        case 'location':
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              p => sendMsg('📍 ' + p.coords.latitude + ',' + p.coords.longitude),
+              () => alert('Location access denied.')
+            );
+          } else {
+            alert('Geolocation not supported.');
+          }
+          break;
+        case 'file':
+          fileInput.click();
+          break;
+        case 'code': {
+          const code = prompt('Enter code:');
+          if (code) sendMsg('💻 ' + code);
+          break;
+        }
+        case 'bold':
+          input.value += ' **bold** ';
+          input.focus();
+          break;
+        case 'italic':
+          input.value += ' *italic* ';
+          input.focus();
+          break;
+        case 'strike':
+          input.value += ' ~~strike~~ ';
+          input.focus();
+          break;
+      }
     };
 
+    // Emoji picker
     emojiPicker.onclick = e => {
       const btn = e.target.closest('button');
-      if (btn) { input.value += btn.textContent;
+      if (btn) {
+        input.value += btn.textContent;
         input.focus();
-        emojiPicker.classList.remove('open'); }
+        emojiPicker.classList.remove('open');
+      }
     };
 
+    // Sticker picker
     stickerPicker.onclick = e => {
       const btn = e.target.closest('button');
-      if (btn) { sendMsg('🎨 ' + btn.textContent);
-        stickerPicker.classList.remove('open'); }
+      if (btn) {
+        sendMsg('🎨 ' + btn.textContent);
+        stickerPicker.classList.remove('open');
+      }
     };
 
+    // Close pickers
     document.onclick = e => {
       if (!e.target.closest('.input-area')) {
         emojiPicker.classList.remove('open');
@@ -867,12 +1067,18 @@
       }
     };
 
-    // Init
+    // ============================================================
+    // INIT
+    // ============================================================
     $$('#tools button').forEach(b => b.disabled = true);
     status('🌐 Connecting...');
     subscribe();
-    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
-    console.log('💬 Chat loaded');
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+
+    console.log('🎙️ Voice & Media Chat loaded!');
   </script>
 
 </body>
