@@ -80,7 +80,7 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f
 
 <script>
 // ============================================================
-// PURE API — No Storage
+// WORKING APIS — FIXED
 // ============================================================
 
 var current=null;
@@ -109,28 +109,76 @@ document.getElementById('icon').textContent=icon;
 current=data;
 }
 
+// ===== WORKING APIS =====
 function fetchFromAPI(){
 showLoading();
 
+// Try multiple working APIs
 var apis=[
-function(){return fetch('https://api.quotable.io/random')
-.then(function(r){return r.json()})
-.then(function(d){return{proverb:d.content,origin:d.author,source:'Quotable'}})},
-function(){return fetch('https://api.api-ninjas.com/v1/quotes?limit=1',{headers:{'X-Api-Key':'3qT+WckTS2W3+O1G+f4NCA==iAj03j3T1fR4V7Wh'}})
-.then(function(r){return r.json()})
-.then(function(d){var q=d[0]||{};return{proverb:q.quote||'Wisdom',origin:q.author||'Unknown',source:'Ninjas'}})},
-function(){return fetch('https://api.adviceslip.com/advice')
-.then(function(r){return r.json()})
-.then(function(d){var a=d.slip||{};return{proverb:a.advice||'Advice',origin:'Wisdom',source:'Advice Slip'}})},
-function(){return fetch('https://zenquotes.io/api/random')
-.then(function(r){return r.json()})
-.then(function(d){var q=d[0]||{};return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'}})}
+
+// 1. Quotable.io (most reliable)
+function(){
+return fetch('https://api.quotable.io/random')
+.then(function(r){
+if(!r.ok)throw new Error('Quotable failed');
+return r.json();
+})
+.then(function(d){
+return{proverb:d.content,origin:d.author||'Unknown',source:'Quotable'};
+});
+},
+
+// 2. Advice Slip (always works)
+function(){
+return fetch('https://api.adviceslip.com/advice')
+.then(function(r){
+if(!r.ok)throw new Error('Advice failed');
+return r.json();
+})
+.then(function(d){
+var a=d.slip||{};
+return{proverb:a.advice||'Advice',origin:'Wisdom',source:'Advice Slip'};
+});
+},
+
+// 3. Zen Quotes
+function(){
+return fetch('https://zenquotes.io/api/random')
+.then(function(r){
+if(!r.ok)throw new Error('Zen failed');
+return r.json();
+})
+.then(function(d){
+var q=d[0]||{};
+return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'};
+});
+},
+
+// 4. API Ninjas (with key)
+function(){
+return fetch('https://api.api-ninjas.com/v1/quotes?limit=1',{
+headers:{'X-Api-Key':'3qT+WckTS2W3+O1G+f4NCA==iAj03j3T1fR4V7Wh'}
+})
+.then(function(r){
+if(!r.ok)throw new Error('Ninjas failed');
+return r.json();
+})
+.then(function(d){
+var q=d[0]||{};
+return{proverb:q.quote||'Wisdom',origin:q.author||'Unknown',source:'Ninjas'};
+});
+}
 ];
 
+// Try each API until one works
 return apis.reduce(function(promise,fn){
-return promise.catch(function(){return fn();});
+return promise.catch(function(){
+return fn();
+});
 }, Promise.reject())
-.catch(function(){
+.catch(function(err){
+console.warn('All APIs failed:',err);
+// Return fallback
 var fallbacks=[
 'Wisdom is knowing when to speak and when to listen.',
 'The journey of a thousand miles begins with a single step.',
@@ -141,10 +189,12 @@ var fallbacks=[
 'A fool thinks himself wise, but a wise man knows himself to be a fool.',
 'It is better to remain silent and be thought a fool than to speak and remove all doubt.',
 'Turn your wounds into wisdom.',
-'The wise man learns from the mistakes of others.'
+'The wise man learns from the mistakes of others.',
+'Life is really simple, but we insist on making it complicated.',
+'Simplicity is the ultimate sophistication.'
 ];
 var f=fallbacks[Math.floor(Math.random()*fallbacks.length)];
-return Promise.resolve({proverb:f,origin:'Ancient Wisdom',source:'Fallback'});
+return{proverb:f,origin:'Ancient Wisdom',source:'Fallback'};
 });
 }
 
@@ -155,16 +205,13 @@ display(data);
 history.push(data);
 }).catch(function(){
 document.getElementById('proverb').innerHTML='<span class="loading">❌ Try again</span>';
+document.getElementById('badge').textContent='📜 Error';
+document.getElementById('icon').textContent='❌';
 });
 }
 
-function fetchRandom(){
-fetchFresh();
-}
-
-function fetchNext(){
-fetchFresh();
-}
+function fetchRandom(){fetchFresh();}
+function fetchNext(){fetchFresh();}
 
 function fetchPrev(){
 if(history.length>1){
@@ -220,11 +267,11 @@ drawTrail();
 var breathe=0;setInterval(function(){breathe=(breathe+1)%100;var s=1+Math.sin(breathe/20)*.008;document.querySelector('.container').style.transform='scale('+s+')'},100);
 
 // ============================================================
-// INIT
+// INIT — Auto fetch
 // ============================================================
 
 fetchFresh();
-console.log('📜 Pure API Proverbs — Fixed');
+console.log('📜 Proverbs — Fixed fetching');
 </script>
 </body>
 </html>
