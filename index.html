@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel Chat</title>
+  <title>✨ Sparkle Chat</title>
   <style>
     /* ============================================================
-       DESIGN SYSTEM — Optimized
+       SPARKLE DESIGN SYSTEM
        ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -20,17 +20,22 @@
 
     :root {
       --font: 'Press Start 2P', monospace;
-      --bg-primary: #1a1a2e;
-      --bg-secondary: #16213e;
-      --bg-tertiary: #12122a;
-      --bg-input: #0f0e17;
-      --accent: #e94560;
-      --accent-hover: #ff6b81;
+      --bg-primary: #0a0a1a;
+      --bg-secondary: #12122e;
+      --bg-tertiary: #0f0f2a;
+      --bg-input: #0a0a1a;
+      --accent: #ff6b9d;
+      --accent2: #ffd93d;
+      --accent3: #6bcbff;
+      --accent4: #a66cff;
+      --accent-hover: #ff8ab3;
       --text: #ffffff;
       --text-dim: rgba(255, 255, 255, 0.3);
-      --border: #e94560;
-      --success: #4caf50;
-      --error: #e94560;
+      --border: #ff6b9d;
+      --success: #6bcbff;
+      --error: #ff6b9d;
+      --glow: 0 0 20px rgba(255, 107, 157, 0.3);
+      --glow-strong: 0 0 40px rgba(255, 107, 157, 0.5);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
       --safe-left: env(safe-area-inset-left, 0px);
@@ -56,12 +61,23 @@
       align-items: center;
       padding: clamp(3px, 1vw, 8px);
       touch-action: manipulation;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
     }
 
     /* ============================================================
-       APP — Fluid sizing
+       PARTICLE CANVAS — Background magic
+       ============================================================ */
+    #particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       APP — Glowing container
        ============================================================ */
     .app {
       width: 100%;
@@ -73,16 +89,34 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+      box-shadow: var(--glow-strong), inset 0 0 60px rgba(255, 107, 157, 0.05);
       position: relative;
+      z-index: 1;
       padding-top: var(--safe-top);
       padding-bottom: var(--safe-bottom);
       padding-left: var(--safe-left);
       padding-right: var(--safe-right);
+      animation: borderPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes borderPulse {
+      0%,
+      100% {
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(255, 107, 157, 0.3), inset 0 0 60px rgba(255, 107, 157, 0.03);
+      }
+      33% {
+        border-color: var(--accent2);
+        box-shadow: 0 0 30px rgba(255, 217, 61, 0.3), inset 0 0 60px rgba(255, 217, 61, 0.03);
+      }
+      66% {
+        border-color: var(--accent3);
+        box-shadow: 0 0 30px rgba(107, 203, 255, 0.3), inset 0 0 60px rgba(107, 203, 255, 0.03);
+      }
     }
 
     /* ============================================================
-       HEADER — Fixed layout
+       HEADER — Glowing
        ============================================================ */
     .header {
       padding: clamp(6px, 1.2vw, 10px) clamp(8px, 1.5vw, 14px);
@@ -95,6 +129,30 @@
       gap: clamp(4px, 1vw, 8px);
       flex-shrink: 0;
       min-height: clamp(40px, 6vh, 48px);
+      position: relative;
+      overflow: visible;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent));
+      background-size: 200% 100%;
+      animation: rainbowLine 4s linear infinite;
+      filter: blur(2px);
+    }
+
+    @keyframes rainbowLine {
+      0% {
+        background-position: 0% 0%;
+      }
+      100% {
+        background-position: 200% 0%;
+      }
     }
 
     .header-brand {
@@ -106,18 +164,40 @@
 
     .header-brand .logo {
       font-size: clamp(0.6rem, 1.8vw, 0.9rem);
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-3px);
+      }
     }
 
     .header-brand .title {
       font-size: clamp(0.4rem, 1.2vw, 0.65rem);
       font-weight: 400;
       letter-spacing: 1px;
-      text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+      text-shadow: 0 0 20px rgba(255, 107, 157, 0.5);
       white-space: nowrap;
+      background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3), var(--accent4));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s ease-in-out infinite;
     }
 
-    .header-brand .title span {
-      color: var(--accent);
+    @keyframes shimmer {
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
     }
 
     .header-right {
@@ -130,7 +210,7 @@
     }
 
     /* ============================================================
-       STATUS BADGE — Compact
+       STATUS BADGE — Glowing
        ============================================================ */
     .status-badge {
       display: flex;
@@ -145,6 +225,18 @@
       min-height: clamp(20px, 3.5vh, 28px);
       min-width: clamp(28px, 5vw, 40px);
       justify-content: center;
+      box-shadow: 0 0 15px rgba(107, 203, 255, 0.2);
+      animation: glowPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%,
+      100% {
+        box-shadow: 0 0 15px rgba(107, 203, 255, 0.2);
+      }
+      50% {
+        box-shadow: 0 0 30px rgba(107, 203, 255, 0.4);
+      }
     }
 
     .status-badge .dot {
@@ -153,20 +245,28 @@
       background: var(--success);
       display: inline-block;
       flex-shrink: 0;
+      box-shadow: 0 0 10px rgba(107, 203, 255, 0.6);
+      animation: dotPulse 1s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%,
+      100% {
+        box-shadow: 0 0 10px rgba(107, 203, 255, 0.6);
+      }
+      50% {
+        box-shadow: 0 0 20px rgba(107, 203, 255, 0.9);
+      }
     }
 
     .status-badge .dot.off {
       background: var(--error);
+      box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
       animation: blink 0.8s infinite;
     }
 
-    .status-badge .count {
-      font-size: clamp(0.3rem, 0.7vw, 0.4rem);
-      margin-left: 1px;
-    }
-
     /* ============================================================
-       AUTH — Touch friendly
+       AUTH — Glowing inputs
        ============================================================ */
     .auth {
       display: flex;
@@ -185,7 +285,7 @@
       font-family: var(--font);
       font-size: clamp(0.3rem, 0.7vw, 0.4rem);
       width: clamp(50px, 12vw, 70px);
-      transition: 0.2s;
+      transition: 0.3s;
       min-height: clamp(24px, 4vh, 32px);
       flex: 1 1 auto;
       min-width: 40px;
@@ -193,12 +293,14 @@
       -webkit-appearance: none;
       appearance: none;
       border-radius: 0;
+      box-shadow: 0 0 10px rgba(255, 107, 157, 0.1);
     }
 
     .auth-input:focus {
       outline: none;
-      border-color: var(--accent-hover);
+      border-color: var(--accent2);
       width: clamp(60px, 15vw, 80px);
+      box-shadow: 0 0 30px rgba(255, 217, 61, 0.3);
     }
 
     .auth-input::placeholder {
@@ -206,13 +308,8 @@
       font-size: clamp(0.25rem, 0.5vw, 0.3rem);
     }
 
-    .auth-input:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
     /* ============================================================
-       BUTTONS — Min 44px touch target
+       BUTTONS — Glowing
        ============================================================ */
     .btn {
       padding: clamp(4px, 0.8vw, 8px) clamp(8px, 1.5vw, 14px);
@@ -222,7 +319,7 @@
       font-family: var(--font);
       font-size: clamp(0.3rem, 0.7vw, 0.4rem);
       cursor: pointer;
-      transition: 0.1s;
+      transition: 0.2s;
       text-transform: uppercase;
       min-height: clamp(24px, 4vh, 32px);
       min-width: clamp(32px, 6vw, 44px);
@@ -233,29 +330,58 @@
       flex-shrink: 0;
       touch-action: manipulation;
       user-select: none;
-      -webkit-touch-callout: none;
       border-radius: 0;
+      box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      transform: rotate(45deg);
+      transition: 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
     }
 
     .btn:active:not(:disabled) {
       transform: scale(0.95);
+      box-shadow: 0 0 40px rgba(255, 107, 157, 0.6);
     }
 
     .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
       transform: none !important;
+      box-shadow: none !important;
     }
 
     .btn--danger {
       background: var(--error);
       border-color: var(--error);
-      padding: clamp(4px, 0.8vw, 8px) clamp(6px, 1vw, 10px);
-      min-width: clamp(24px, 4vw, 32px);
+      box-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
+    }
+
+    .btn--join {
+      background: linear-gradient(135deg, var(--accent), var(--accent4));
+      border-color: var(--accent4);
+      box-shadow: 0 0 30px rgba(166, 108, 255, 0.4);
+    }
+
+    .btn--join:hover:not(:disabled) {
+      box-shadow: 0 0 50px rgba(166, 108, 255, 0.6);
     }
 
     /* ============================================================
-       MESSAGES — Optimized scrolling
+       MESSAGES — Sparkling background
        ============================================================ */
     .messages {
       flex: 1;
@@ -269,6 +395,18 @@
       -webkit-overflow-scrolling: touch;
       will-change: scroll-position;
       overscroll-behavior: contain;
+      position: relative;
+    }
+
+    .messages::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(255, 107, 157, 0.03) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .messages::-webkit-scrollbar {
@@ -280,8 +418,9 @@
     }
 
     .messages::-webkit-scrollbar-thumb {
-      background: var(--accent);
+      background: linear-gradient(180deg, var(--accent), var(--accent2), var(--accent3));
       border: 1px solid var(--bg-input);
+      border-radius: 0;
     }
 
     .status-msg {
@@ -290,26 +429,64 @@
       opacity: 0.4;
       padding: clamp(12px, 2vw, 20px) clamp(6px, 1vw, 12px);
       font-style: italic;
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
     }
 
     /* ============================================================
-       MESSAGE BUBBLES — Fluid width
+       MESSAGE BUBBLES — Glowing
        ============================================================ */
     .msg {
       padding: clamp(4px, 0.7vw, 8px) clamp(8px, 1.2vw, 14px);
       border: 2px solid var(--text);
       max-width: clamp(82%, 85%, 92%);
       word-wrap: break-word;
-      animation: fadeIn 0.2s steps(2);
+      animation: sparkleIn 0.3s steps(2);
       line-height: 1.5;
       font-size: clamp(0.35rem, 0.8vw, 0.45rem);
+      position: relative;
+      transition: 0.3s;
+    }
+
+    .msg::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      border: 2px solid transparent;
+      border-radius: 0;
+      opacity: 0;
+      transition: 0.3s;
+      pointer-events: none;
+    }
+
+    .msg:hover::before {
+      opacity: 1;
+      box-shadow: 0 0 30px rgba(255, 107, 157, 0.2);
+    }
+
+    @keyframes sparkleIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.95) rotate(-1deg);
+      }
+      50% {
+        opacity: 0.7;
+        transform: scale(1.03) rotate(0.5deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0);
+      }
     }
 
     .msg.own {
       align-self: flex-end;
-      background: var(--accent);
-      border-color: var(--accent-hover);
+      background: linear-gradient(135deg, var(--accent), var(--accent4));
+      border-color: var(--accent4);
       border-bottom-right-radius: 0;
+      box-shadow: 0 0 30px rgba(255, 107, 157, 0.2);
     }
 
     .msg.other {
@@ -317,19 +494,27 @@
       background: var(--bg-primary);
       border-color: #2a2a4e;
       border-bottom-left-radius: 0;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
     }
 
     .msg .sender {
       font-size: clamp(0.25rem, 0.5vw, 0.35rem);
       text-transform: uppercase;
-      opacity: 0.7;
+      opacity: 0.8;
       letter-spacing: 0.5px;
       margin-bottom: clamp(1px, 0.2vw, 3px);
+      color: var(--accent2);
+      text-shadow: 0 0 10px rgba(255, 217, 61, 0.3);
+    }
+
+    .msg.own .sender {
+      color: #fff;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
     }
 
     .msg .time {
       font-size: clamp(0.2rem, 0.4vw, 0.3rem);
-      opacity: 0.4;
+      opacity: 0.5;
       margin-left: clamp(3px, 0.5vw, 6px);
     }
 
@@ -340,7 +525,7 @@
     }
 
     /* ============================================================
-       INPUT — Keyboard aware
+       INPUT — Glowing
        ============================================================ */
     .input-area {
       padding: clamp(5px, 0.8vw, 8px) clamp(8px, 1.5vw, 14px) clamp(8px, 1.5vw, 14px);
@@ -348,6 +533,20 @@
       border-top: 2px solid var(--border);
       flex-shrink: 0;
       padding-bottom: calc(clamp(8px, 1.5vw, 14px) + var(--safe-bottom));
+      position: relative;
+    }
+
+    .input-area::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3), var(--accent4), var(--accent));
+      background-size: 200% 100%;
+      animation: rainbowLine 4s linear infinite;
+      filter: blur(2px);
     }
 
     .row {
@@ -365,26 +564,23 @@
       font-family: var(--font);
       font-size: clamp(0.35rem, 0.8vw, 0.45rem);
       min-width: 40px;
-      transition: 0.2s;
+      transition: 0.3s;
       min-height: clamp(32px, 5vh, 40px);
       -webkit-appearance: none;
       appearance: none;
       border-radius: 0;
+      box-shadow: 0 0 10px rgba(255, 107, 157, 0.05);
     }
 
     .row input:focus {
       outline: none;
-      border-color: var(--accent-hover);
+      border-color: var(--accent2);
+      box-shadow: 0 0 30px rgba(255, 217, 61, 0.2), inset 0 0 30px rgba(255, 217, 61, 0.05);
     }
 
     .row input::placeholder {
-      color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.15);
       font-size: clamp(0.3rem, 0.6vw, 0.35rem);
-    }
-
-    .row input:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
     }
 
     .row .btn {
@@ -394,24 +590,20 @@
       flex-shrink: 0;
     }
 
+    .row .btn--send {
+      background: linear-gradient(135deg, var(--accent2), var(--accent3));
+      border-color: var(--accent3);
+      box-shadow: 0 0 30px rgba(107, 203, 255, 0.3);
+      color: var(--bg-primary);
+    }
+
+    .row .btn--send:hover:not(:disabled) {
+      box-shadow: 0 0 50px rgba(107, 203, 255, 0.5);
+    }
+
     /* ============================================================
        ANIMATIONS
        ============================================================ */
-    @keyframes fadeIn {
-      0% {
-        opacity: 0;
-        transform: scale(0.95);
-      }
-      50% {
-        opacity: 0.5;
-        transform: scale(1.02);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
     @keyframes blink {
       0%,
       100% {
@@ -423,7 +615,7 @@
     }
 
     /* ============================================================
-       ULTRA SMALL (under 360px)
+       RESPONSIVE
        ============================================================ */
     @media (max-width: 360px) {
       .header {
@@ -431,16 +623,12 @@
         min-height: 32px;
         gap: 3px;
       }
-
       .header-brand .title {
         font-size: 0.35rem;
-        letter-spacing: 0.5px;
       }
-
       .header-brand .logo {
         font-size: 0.5rem;
       }
-
       .auth-input {
         font-size: 0.25rem;
         padding: 2px 4px;
@@ -448,138 +636,107 @@
         width: 40px;
         max-width: 50px;
       }
-
       .auth-input:focus {
         width: 50px;
       }
-
       .btn {
         font-size: 0.25rem;
         padding: 2px 6px;
         min-height: 18px;
         min-width: 24px;
       }
-
       .status-badge {
         font-size: 0.25rem;
         padding: 2px 4px;
         min-height: 18px;
         min-width: 20px;
       }
-
       .status-badge .dot {
         width: 4px;
         height: 4px;
       }
-
       .messages {
         padding: 4px 6px;
         gap: 2px;
       }
-
       .msg {
         padding: 2px 6px;
         max-width: 95%;
         font-size: 0.3rem;
       }
-
       .msg .sender {
         font-size: 0.2rem;
       }
-
       .msg .text {
         font-size: 0.3rem;
         line-height: 1.3;
       }
-
       .input-area {
         padding: 3px 6px 6px;
       }
-
       .row input {
         font-size: 0.3rem;
         padding: 4px 6px;
         min-height: 24px;
       }
-
       .row .btn {
         font-size: 0.3rem;
         padding: 4px 8px;
         min-height: 24px;
       }
-
-      .status-msg {
-        font-size: 0.25rem;
-        padding: 8px 4px;
-      }
     }
 
-    /* ============================================================
-       LANDSCAPE PHONES
-       ============================================================ */
     @media (max-height: 500px) and (orientation: landscape) {
       .app {
         max-height: 95vh;
       }
-
       .header {
         padding: 4px 10px;
         min-height: 32px;
       }
-
       .header-brand .title {
         font-size: 0.4rem;
       }
-
       .messages {
         padding: 4px 8px;
         gap: 2px;
       }
-
       .msg {
         padding: 2px 8px;
         max-width: 90%;
         font-size: 0.35rem;
       }
-
       .msg .sender {
         font-size: 0.25rem;
         margin-bottom: 1px;
       }
-
       .msg .text {
         font-size: 0.35rem;
         line-height: 1.3;
       }
-
       .input-area {
         padding: 3px 8px 6px;
       }
-
       .row input {
         min-height: 24px;
         padding: 4px 8px;
         font-size: 0.35rem;
       }
-
       .row .btn {
         min-height: 24px;
         padding: 4px 10px;
         font-size: 0.35rem;
       }
-
       .auth-input {
         min-height: 18px;
         font-size: 0.3rem;
         padding: 2px 6px;
       }
-
       .btn {
         min-height: 18px;
         font-size: 0.3rem;
         padding: 2px 8px;
       }
-
       .status-badge {
         font-size: 0.3rem;
         padding: 2px 6px;
@@ -587,9 +744,6 @@
       }
     }
 
-    /* ============================================================
-       ACCESSIBILITY — Reduced motion
-       ============================================================ */
     @media (prefers-reduced-motion: reduce) {
       * {
         animation-duration: 0.01ms !important;
@@ -597,18 +751,12 @@
         transition-duration: 0.01ms !important;
       }
     }
-
-    /* ============================================================
-       DARK MODE SUPPORT
-       ============================================================ */
-    @media (prefers-color-scheme: light) {
-      body {
-        background: var(--bg-primary);
-      }
-    }
   </style>
 </head>
 <body>
+
+  <!-- ===== PARTICLES BACKGROUND ===== -->
+  <canvas id="particles"></canvas>
 
   <!-- ============================================================
   APP
@@ -618,8 +766,8 @@
     <!-- ===== HEADER ===== -->
     <header class="header">
       <div class="header-brand">
-        <span class="logo" aria-hidden="true">🕹️</span>
-        <h1 class="title"><span>PIXEL</span></h1>
+        <span class="logo" aria-hidden="true">✨</span>
+        <h1 class="title"><span>SPARKLE</span></h1>
       </div>
       <div class="header-right">
         <div class="status-badge">
@@ -627,17 +775,8 @@
           <span class="count" id="onlineCount">0</span>
         </div>
         <div class="auth">
-          <input
-          type="text"
-          class="auth-input"
-          id="nameInput"
-          placeholder="NAME"
-          maxlength="20"
-          inputmode="text"
-          autocomplete="off"
-          aria-label="Username"
-          />
-          <button class="btn" id="joinBtn" aria-label="Join chat">JOIN</button>
+          <input type="text" class="auth-input" id="nameInput" placeholder="NAME" maxlength="20" inputmode="text" autocomplete="off" aria-label="Username" />
+          <button class="btn btn--join" id="joinBtn" aria-label="Join chat">✨ JOIN</button>
           <button class="btn btn--danger" id="leaveBtn" style="display:none" aria-label="Leave chat">✕</button>
         </div>
       </div>
@@ -645,23 +784,14 @@
 
     <!-- ===== MESSAGES ===== -->
     <div class="messages" id="messagesContainer" role="log" aria-live="polite">
-      <div class="status-msg">🔄 CONNECTING...</div>
+      <div class="status-msg">✨ CONNECTING...</div>
     </div>
 
     <!-- ===== INPUT ===== -->
     <footer class="input-area">
       <div class="row">
-        <input
-        type="text"
-        class="input-field"
-        id="messageInput"
-        placeholder="TYPE..."
-        disabled
-        inputmode="text"
-        autocomplete="off"
-        aria-label="Message input"
-        />
-        <button class="btn" id="sendBtn" disabled aria-label="Send message">SEND</button>
+        <input type="text" class="input-field" id="messageInput" placeholder="TYPE..." disabled inputmode="text" autocomplete="off" aria-label="Message input" />
+        <button class="btn btn--send" id="sendBtn" disabled aria-label="Send message">✨ SEND</button>
       </div>
     </footer>
   </div>
@@ -680,12 +810,109 @@
   <script>
     /**
      * ============================================================
-     * PIXEL CHAT — Optimized & Tested
+     * SPARKLE CHAT — Magical & Merry
      * ============================================================
      */
 
     // ============================================================
-    // 1. FIREBASE
+    // 1. PARTICLES SYSTEM
+    // ============================================================
+
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let stars = [];
+    let w, h;
+
+    function resize() {
+      w = canvas.width = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Create stars (twinkling background)
+    for (let i = 0; i < 80; i++) {
+      stars.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        r: Math.random() * 1.5 + 0.5,
+        a: Math.random(),
+        speed: 0.01 + Math.random() * 0.02,
+      });
+    }
+
+    // Create floating particles
+    const colors = ['#ff6b9d', '#ffd93d', '#6bcbff', '#a66cff', '#ff8ab3', '#ffb347'];
+    for (let i = 0; i < 50; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        size: Math.random() * 3 + 1,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5 - 0.2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        life: Math.random() * 100 + 50,
+        maxLife: Math.random() * 100 + 50,
+        glow: Math.random() * 10 + 5,
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw stars
+      stars.forEach(s => {
+        s.a += s.speed;
+        const alpha = Math.sin(s.a) * 0.5 + 0.5;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha * 0.5})`;
+        ctx.fill();
+      });
+
+      // Draw particles
+      particles.forEach(p => {
+        p.x += p.speedX;
+        p.y += p.speedY;
+        p.life--;
+
+        if (p.life <= 0 || p.x < 0 || p.x > w || p.y < 0 || p.y > h) {
+          p.x = Math.random() * w;
+          p.y = h;
+          p.life = p.maxLife;
+          p.speedX = (Math.random() - 0.5) * 0.5;
+          p.speedY = -Math.random() * 0.5 - 0.2;
+          p.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        const alpha = p.life / p.maxLife;
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.glow);
+        gradient.addColorStop(0, p.color + '80');
+        gradient.addColorStop(1, p.color + '00');
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = p.glow * alpha;
+        ctx.fill();
+
+        // Glow trail
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.glow * alpha * 0.5, 0, Math.PI * 2);
+        ctx.fillStyle = gradient;
+        ctx.shadowBlur = 0;
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawParticles);
+    }
+
+    drawParticles();
+
+    // ============================================================
+    // 2. FIREBASE
     // ============================================================
 
     firebase.initializeApp({
@@ -694,7 +921,7 @@
     const db = firebase.database();
 
     // ============================================================
-    // 2. DOM REFS
+    // 3. DOM REFS
     // ============================================================
 
     const DOM = {
@@ -709,7 +936,7 @@
     };
 
     // ============================================================
-    // 3. STATE
+    // 4. STATE
     // ============================================================
 
     let user = null;
@@ -718,7 +945,7 @@
     let statusTimeout = null;
 
     // ============================================================
-    // 4. HELPERS
+    // 5. HELPERS
     // ============================================================
 
     const status = (text) => {
@@ -761,29 +988,29 @@
       }
 
       if (on) {
-        status('✅ CONNECTED');
+        status('✨ CONNECTED ✨');
         statusTimeout = setTimeout(() => {
           const el = DOM.messages.querySelector('.status-msg');
-          if (el && el.textContent === '✅ CONNECTED') clearStatus();
+          if (el && el.textContent === '✨ CONNECTED ✨') clearStatus();
           statusTimeout = null;
-        }, 1000);
+        }, 1200);
       } else {
-        status('🔄 RECONNECTING...');
+        status('🌀 RECONNECTING...');
       }
     };
 
     // ============================================================
-    // 5. SEND
+    // 6. SEND
     // ============================================================
 
     const sendMessage = (text) => {
       if (!user) {
-        alert('SIGN IN FIRST!');
+        alert('✨ SIGN IN FIRST! ✨');
         return;
       }
       if (!text || !text.trim()) return;
       if (!connected) {
-        alert('WAITING FOR CONNECTION...');
+        alert('🌀 WAITING FOR CONNECTION...');
         return;
       }
 
@@ -792,14 +1019,14 @@
         uid: user.uid,
         text: text.trim(),
         timestamp: firebase.database.ServerValue.TIMESTAMP,
-      }).catch(() => alert('FAILED TO SEND.'));
+      }).catch(() => alert('✨ FAILED TO SEND ✨'));
 
       DOM.messageInput.value = '';
       DOM.messageInput.focus();
     };
 
     // ============================================================
-    // 6. RENDER
+    // 7. RENDER
     // ============================================================
 
     const renderMessage = (data) => {
@@ -808,16 +1035,20 @@
       el.className = `msg ${isOwn ? 'own' : 'other'}`;
       el.dataset.key = data._key;
 
+      // Sparkle emojis for random messages
+      const sparkles = ['✨', '🌟', '⭐', '💫', '🌈', '🎆', '🎇'];
+      const sparkle = sparkles[Math.floor(Math.random() * sparkles.length)];
+
       el.innerHTML = `
         <div class="sender">
-          ${data.name || 'ANON'}
+          ${isOwn ? '💫 ' : ''}${data.name || 'ANON'} ${isOwn ? '💫' : ''}
           <span class="time">${time(data.timestamp)}</span>
         </div>
         <div class="text">${data.text || ''}</div>
       `;
 
       const st = DOM.messages.querySelector('.status-msg');
-      if (st && (st.textContent === '✅ CONNECTED' || st.textContent === '🔄 CONNECTING...')) {
+      if (st && (st.textContent === '✨ CONNECTED ✨' || st.textContent === '🌀 RECONNECTING...')) {
         clearStatus();
       }
 
@@ -826,15 +1057,13 @@
     };
 
     // ============================================================
-    // 7. SUBSCRIBE
+    // 8. SUBSCRIBE
     // ============================================================
 
     const subscribe = () => {
-      // Clean up old listeners
       listeners.forEach(ref => ref.off());
       listeners = [];
 
-      // Connection status
       const presence = db.ref('.info/connected');
       presence.on('value', (snapshot) => {
         const on = snapshot.val() === true;
@@ -852,7 +1081,6 @@
       });
       listeners.push(presence);
 
-      // Online users
       const usersRef = db.ref('users');
       usersRef.on('value', (snapshot) => {
         if (connected) {
@@ -861,7 +1089,6 @@
       });
       listeners.push(usersRef);
 
-      // Messages
       const query = db.ref('messages').orderByKey().limitToLast(100);
 
       query.on('child_added', (snapshot) => {
@@ -879,23 +1106,22 @@
 
       listeners.push(query);
 
-      // Initial check
       query.once('value', (snapshot) => {
         if (!snapshot.exists()) {
           const st = DOM.messages.querySelector('.status-msg');
-          if (!st || st.textContent === '🔄 CONNECTING...' || st.textContent === '✅ CONNECTED') {
-            status('💬 NO MESSAGES YET');
+          if (!st || st.textContent === '🌀 RECONNECTING...' || st.textContent === '✨ CONNECTED ✨') {
+            status('💫 NO MESSAGES YET ✨');
           }
         }
       });
     };
 
     // ============================================================
-    // 8. AUTH
+    // 9. AUTH
     // ============================================================
 
     const login = () => {
-      const raw = DOM.nameInput.value.trim() || 'GUEST';
+      const raw = DOM.nameInput.value.trim() || 'STAR';
       const name = raw.toUpperCase().slice(0, 20);
 
       user = {
@@ -908,15 +1134,13 @@
       DOM.leaveBtn.style.display = 'inline-block';
       DOM.messageInput.disabled = false;
       DOM.sendBtn.disabled = false;
-      DOM.messageInput.placeholder = `MSG AS ${name}...`;
+      DOM.messageInput.placeholder = `✨ MSG AS ${name} ✨`;
 
       clearStatus();
-      status(`👾 ${name} JOINED`);
+      status(`🌟 ${name} JOINED ✨`);
 
-      // Re-subscribe with user
       subscribe();
 
-      // Force presence update
       if (connected) {
         const users = db.ref('users');
         const ref = users.child(user.uid);
@@ -931,14 +1155,13 @@
 
       setTimeout(() => {
         const el = DOM.messages.querySelector('.status-msg');
-        if (el && el.textContent === `👾 ${name} JOINED`) clearStatus();
+        if (el && el.textContent === `🌟 ${name} JOINED ✨`) clearStatus();
       }, 1500);
     };
 
     const logout = () => {
       if (user) db.ref('users').child(user.uid).remove();
 
-      // Clean up listeners
       listeners.forEach(ref => ref.off());
       listeners = [];
       user = null;
@@ -952,13 +1175,13 @@
       DOM.messageInput.value = '';
 
       DOM.messages.innerHTML = '';
-      status('👋 LEFT CHAT');
+      status('💫 LEFT CHAT ✨');
       DOM.onlineCount.textContent = '0';
       setOnline(connected);
     };
 
     // ============================================================
-    // 9. EVENTS — Optimized
+    // 10. EVENTS
     // ============================================================
 
     DOM.joinBtn.addEventListener('click', login);
@@ -982,7 +1205,7 @@
       }
     });
 
-    // Touch feedback for buttons
+    // Touch feedback
     document.querySelectorAll('.btn').forEach(btn => {
       btn.addEventListener('touchstart', function() {
         this.style.transform = 'scale(0.95)';
@@ -993,7 +1216,6 @@
       }, { passive: true });
     });
 
-    // Keyboard aware — scroll input into view
     DOM.messageInput.addEventListener('focus', () => {
       setTimeout(() => {
         DOM.messageInput.scrollIntoView({
@@ -1003,23 +1225,17 @@
       }, 300);
     });
 
-    // Prevent zoom on double tap
-    document.addEventListener('touchend', (e) => {
-      if (e.target.closest('.btn') || e.target.closest('input')) {
-        e.preventDefault();
-      }
-    }, { passive: false });
-
     // ============================================================
-    // 10. INIT
+    // 11. INIT
     // ============================================================
 
     setOnline(false);
     subscribe();
 
-    console.log('🕹️ PIXEL CHAT — OPTIMIZED');
+    console.log('✨ SPARKLE CHAT — MERRY & MAGICAL ✨');
     console.log('📡 Database:', firebase.app().options.databaseURL);
-    console.log('📱 Screen:', window.innerWidth + 'x' + window.innerHeight);
+    console.log('🌟 Particles:', particles.length);
+    console.log('⭐ Stars:', stars.length);
   </script>
 
 </body>
