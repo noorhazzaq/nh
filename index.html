@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel Chat</title>
+  <title>Pixel World Chat - Arcade Edition</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,15 +16,41 @@
       image-rendering: pixelated;
       touch-action: manipulation;
     }
+
+    /* --- CRT SCREEN SCANLINE EFFECT --- */
+    .crt-overlay {
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      );
+      background-size: 100% 4px;
+      pointer-events: none;
+    }
+
+    /* --- GLOWS & SPARKLES --- */
+    .glow-yellow {
+      text-shadow: 0 0 6px #facc15, 0 0 12px #eab308;
+    }
+    .glow-green {
+      text-shadow: 0 0 6px #4ade80, 0 0 12px #22c55e;
+    }
+    .glow-cyan {
+      text-shadow: 0 0 6px #22d3ee, 0 0 12px #06b6d4;
+    }
+    .glow-box {
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.45), inset 0 0 10px rgba(129, 140, 248, 0.3);
+    }
+
+    /* --- PIXEL BOX & BUTTON STYLING --- */
     .px-box {
       background: #1e1b4b;
-      border: 3px solid #4338ca;
-      box-shadow: inset -3px -3px 0 #0f172a, inset 3px 3px 0 #6366f1;
+      border: 3px solid #6366f1;
+      box-shadow: inset -3px -3px 0 #0f172a, inset 3px 3px 0 #818cf8, 0 0 10px rgba(99, 102, 241, 0.5);
     }
     .px-btn {
       background: #16a34a;
-      border: 2px solid #22c55e;
-      box-shadow: inset -2px -2px 0 #15803d, inset 2px 2px 0 #4ade80;
+      border: 2px solid #4ade80;
+      box-shadow: inset -2px -2px 0 #15803d, inset 2px 2px 0 #86efac, 0 0 8px rgba(34, 197, 94, 0.4);
     }
     .px-btn:active {
       box-shadow: inset 2px 2px 0 #15803d;
@@ -32,57 +58,74 @@
     }
     .px-btn-blue {
       background: #2563eb;
-      border: 2px solid #3b82f6;
-      box-shadow: inset -2px -2px 0 #1d4ed8, inset 2px 2px 0 #60a5fa;
+      border: 2px solid #60a5fa;
+      box-shadow: inset -2px -2px 0 #1d4ed8, inset 2px 2px 0 #93c5fd, 0 0 8px rgba(59, 130, 246, 0.4);
     }
+
+    /* --- ANIMATIONS --- */
+    @keyframes msgPop {
+      0% { opacity: 0; transform: translateY(6px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .animate-pop {
+      animation: msgPop 0.18s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    /* Custom Scrollbar */
     #v::-webkit-scrollbar { width: 6px; }
     #v::-webkit-scrollbar-track { background: #020617; }
-    #v::-webkit-scrollbar-thumb { background: #4338ca; }
+    #v::-webkit-scrollbar-thumb { background: #6366f1; }
   </style>
 </head>
-<body class="h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none">
+<body class="h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none overflow-hidden relative">
 
-  <!-- HEADER WITH NICKNAME CHANGE -->
-  <header class="px-box p-2 mb-2 flex items-center justify-between shrink-0">
+  <!-- BACKGROUND PARTICLE CANVAS -->
+  <canvas id="particleCanvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- CRT SCANLINE LAYER -->
+  <div class="crt-overlay absolute inset-0 z-50"></div>
+
+  <!-- HEADER WITH NICKNAME CHANGE & LIGHT EFFECT -->
+  <header class="px-box p-2 mb-2 flex items-center justify-between shrink-0 relative z-10">
     <div class="flex items-center gap-1.5 flex-1 mr-2">
-      <span class="text-[9px] text-yellow-300 shrink-0">⛏️</span>
+      <span class="text-[10px] text-yellow-300 animate-bounce shrink-0 glow-yellow">⛏️</span>
       <input 
         type="text" 
         id="nameInput" 
         maxlength="15" 
         value="Steve" 
         title="Click to edit handle"
-        class="bg-slate-900 border-2 border-indigo-700 text-green-400 text-[9px] px-1 py-0.5 w-28 focus:outline-none focus:border-yellow-400 font-bold"
+        class="bg-slate-900 border-2 border-indigo-500 text-green-400 text-[9px] px-1 py-0.5 w-28 focus:outline-none focus:border-yellow-400 font-bold glow-green"
       />
     </div>
-    <div class="text-[7px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/50 px-1.5 py-1 uppercase shrink-0">
-      ● LIVE
+    <div class="text-[7px] text-emerald-300 border border-emerald-400/50 bg-emerald-950/70 px-2 py-1 uppercase shrink-0 glow-green animate-pulse flex items-center gap-1">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#4ade80]"></span>
+      <span>LIVE</span>
     </div>
   </header>
 
-  <!-- CHAT VIEWPORT -->
-  <main id="v" class="flex-1 bg-black border-2 border-indigo-900 p-2 overflow-y-auto space-y-2 mb-2">
-    <div id="c" class="space-y-2">
-      <div class="text-[8px] text-yellow-400 bg-yellow-950/30 p-1.5 border border-yellow-800">
-        [SYS]: Send messages or share pixel images via camera/gallery button!
+  <!-- CHAT VIEWPORT WITH AMBIENT GLOW -->
+  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-2 relative z-10 glow-box">
+    <div id="c" class="space-y-2.5">
+      <div class="text-[8px] text-yellow-300 bg-yellow-950/50 p-2 border border-yellow-500/50 glow-yellow animate-pop">
+        ✨ [SYS]: Pixel World Chat initialized! Enjoy dynamic particles, neon glow, sound fx & photo sharing!
       </div>
     </div>
   </main>
 
   <!-- INPUT FORM WITH IMAGE ATTACHMENT -->
-  <footer class="shrink-0 space-y-1">
-    <!-- Image Preview Thumbnail (Hidden by default) -->
-    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border-2 border-indigo-800">
+  <footer class="shrink-0 space-y-1 relative z-10">
+    <!-- Image Preview Thumbnail -->
+    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border-2 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]">
       <img id="imgPreview" class="w-8 h-8 object-cover border border-yellow-400" />
-      <span class="text-[7px] text-yellow-300 flex-1">IMAGE ATTACHED</span>
+      <span class="text-[7px] text-yellow-300 flex-1 glow-yellow">📷 READY TO BROADCAST</span>
       <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
     </div>
 
     <form id="f" class="flex gap-1.5">
-      <!-- Hidden File Input -->
       <input type="file" id="fileInput" accept="image/*" class="hidden" />
 
-      <!-- Attach Image Button -->
+      <!-- Attach Button -->
       <button type="button" id="attachBtn" class="px-btn-blue text-[9px] text-white px-2.5 py-2 font-bold uppercase shrink-0">
         📷
       </button>
@@ -90,29 +133,29 @@
       <input 
         type="text" 
         id="i" 
-        placeholder="TYPE..." 
+        placeholder="TYPE MESSAGE..." 
         maxlength="200" 
-        class="flex-1 bg-slate-900 border-2 border-indigo-800 text-yellow-300 text-[9px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-600"
+        class="flex-1 bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[9px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 glow-yellow"
         autocomplete="off"
       />
 
+      <!-- Send Button -->
       <button type="submit" class="px-btn text-[9px] text-white px-3 py-2 font-bold uppercase shrink-0">
         SEND
       </button>
     </form>
   </footer>
 
-  <!-- LIGHTWEIGHT REALTIME MODULE -->
+  <!-- REALTIME ENGINE + SPARKLE/PARTICLE ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, set, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Initialize Firebase Database Connection
+    // 1. Firebase Setup
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
-    // Setup Username Handle
     const nameInput = document.getElementById('nameInput');
     nameInput.value = `Steve_${Math.floor(100 + Math.random() * 900)}`;
 
@@ -124,23 +167,104 @@
     const imgPreviewContainer = document.getElementById('imgPreviewContainer');
     const imgPreview = document.getElementById('imgPreview');
     const clearImgBtn = document.getElementById('clearImgBtn');
-    
     let currentBase64Image = "";
 
-    // Image Upload & Conversion Logic
+    // Web Audio API Synth Sound Effect for Retro Blips
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playRetroBeep(pitch = 440) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(pitch, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.12);
+    }
+
+    // 2. Background Pixel Dust Engine
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class PixelParticle {
+      constructor(x, y, color = null) {
+        this.x = x || Math.random() * canvas.width;
+        this.y = y || Math.random() * canvas.height;
+        this.size = Math.random() > 0.5 ? 4 : 2;
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.vy = -Math.random() * 1.5 - 0.5;
+        this.colors = ['#facc15', '#22d3ee', '#4ade80', '#a855f7', '#ec4899'];
+        this.color = color || this.colors[Math.floor(Math.random() * this.colors.length)];
+        this.alpha = 1;
+        this.decay = Math.random() * 0.015 + 0.005;
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= this.decay;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, this.alpha);
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 6;
+        ctx.fillRect(Math.floor(this.x), Math.floor(this.y), this.size, this.size);
+        ctx.restore();
+      }
+    }
+
+    // Spawn ambient floating particles
+    setInterval(() => {
+      if (particles.length < 45) {
+        particles.push(new PixelParticle());
+      }
+    }, 150);
+
+    // Particle Burst on message receive
+    function triggerBurst(x, y) {
+      for (let k = 0; k < 20; k++) {
+        particles.push(new PixelParticle(x, y));
+      }
+    }
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach((p, index) => {
+        p.update();
+        p.draw();
+        if (p.alpha <= 0) particles.splice(index, 1);
+      });
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    // 3. Image Upload Logic
     attachBtn.addEventListener('click', () => fileInput.click());
 
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
 
-      // Compress and resize image client-side to keep lightweight
       const reader = new FileReader();
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const maxDim = 300; // Resize max dimension to 300px
+          const cvs = document.createElement('canvas');
+          const maxDim = 280;
           let w = img.width, h = img.height;
           
           if (w > h && w > maxDim) {
@@ -151,15 +275,14 @@
             h = maxDim;
           }
 
-          canvas.width = w;
-          canvas.height = h;
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, w, h);
+          cvs.width = w;
+          cvs.height = h;
+          cvs.getContext('2d').drawImage(img, 0, 0, w, h);
 
-          // Get compressed Base64 JPEG
-          currentBase64Image = canvas.toDataURL('image/jpeg', 0.6);
+          currentBase64Image = cvs.toDataURL('image/jpeg', 0.6);
           imgPreview.src = currentBase64Image;
           imgPreviewContainer.classList.remove('hidden');
+          playRetroBeep(600);
         };
         img.src = event.target.result;
       };
@@ -172,26 +295,31 @@
       imgPreviewContainer.classList.add('hidden');
     });
 
+    // 4. Realtime Messages Stream
     const chatRef = ref(db, "global_pixel_chat");
 
-    // Realtime Incoming Stream
     onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
       const d = snap.val();
       if (d && d.s && (d.t || d.img)) {
         const isSelf = d.s === nameInput.value.trim();
         const div = document.createElement('div');
-        div.className = 'text-[8px] leading-relaxed break-words';
+        div.className = 'text-[8px] leading-relaxed break-words animate-pop';
         
-        let imgHtml = d.img ? `<div class="mt-1"><img src="${d.img}" class="max-w-[180px] max-h-[180px] border-2 border-indigo-700 bg-slate-900 p-0.5 object-contain" /></div>` : '';
+        let imgHtml = d.img ? `<div class="mt-1"><img src="${d.img}" class="max-w-[180px] max-h-[180px] border-2 border-indigo-400 bg-slate-900 p-0.5 object-contain shadow-[0_0_12px_rgba(99,102,241,0.6)]" /></div>` : '';
         let textHtml = d.t ? `<span class="text-white">${esc(d.t)}</span>` : '';
+        let colorClass = isSelf ? 'text-green-400 glow-green' : 'text-cyan-400 glow-cyan';
 
-        div.innerHTML = `<span class="${isSelf ? 'text-green-400' : 'text-cyan-400'}">${esc(d.s)}:</span> ${textHtml}${imgHtml}`;
+        div.innerHTML = `<span class="${colorClass}">${esc(d.s)}:</span> ${textHtml}${imgHtml}`;
         c.appendChild(div);
         v.scrollTop = v.scrollHeight;
+
+        // Visual & Audio Feedback
+        playRetroBeep(isSelf ? 700 : 520);
+        triggerBurst(window.innerWidth / 2, window.innerHeight - 80);
       }
     });
 
-    // Send Form Handler
+    // Send Handler
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const txt = i.value.trim();
@@ -203,7 +331,6 @@
       if (txt) payload.t = txt;
       if (currentBase64Image) payload.img = currentBase64Image;
 
-      // Reset form & image state
       i.value = '';
       currentBase64Image = "";
       fileInput.value = "";
