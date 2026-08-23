@@ -25,7 +25,6 @@
       --neon-cyan: #22d3ee;
       --neon-green: #34d399;
       --neon-yellow: #fbbf24;
-      --neon-orange: #fb923c;
       --text: #ffffff;
       --text-muted: rgba(255, 255, 255, 0.4);
       --text-dim: rgba(255, 255, 255, 0.15);
@@ -34,10 +33,11 @@
       --radius-full: 9999px;
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    html, body {
+    html,
+    body {
       height: 100%;
       width: 100%;
       overflow: hidden;
@@ -58,27 +58,19 @@
       background: radial-gradient(ellipse at 50% 0%, #0f0a2a 0%, #0a0a12 70%);
     }
 
-    /* ============================================================
-       1. ANIMATED GRID
-       ============================================================ */
     .bg-grid {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background-image: linear-gradient(rgba(124,58,237,0.03) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(124,58,237,0.03) 1px, transparent 1px);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(rgba(124, 58, 237, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.03) 1px, transparent 1px);
       background-size: 50px 50px;
       z-index: 0;
       pointer-events: none;
-      animation: gridPulse 8s ease-in-out infinite;
-    }
-    @keyframes gridPulse {
-      0%,100% { opacity: 0.5; }
-      50% { opacity: 1; }
     }
 
-    /* ============================================================
-       2-4. FLOATING ORBS
-       ============================================================ */
     .orb {
       position: fixed;
       border-radius: 50%;
@@ -87,72 +79,84 @@
       z-index: 0;
       animation: orbFloat 20s ease-in-out infinite alternate;
     }
-    .orb--1 { width: 400px; height: 400px; background: rgba(255,45,117,0.08); top: -10%; left: -10%; }
-    .orb--2 { width: 350px; height: 350px; background: rgba(0,212,255,0.06); bottom: -10%; right: -10%; animation-delay: -7s; }
-    .orb--3 { width: 300px; height: 300px; background: rgba(124,58,237,0.07); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -14s; }
-    .orb--4 { width: 250px; height: 250px; background: rgba(251,191,36,0.05); top: 20%; right: 20%; animation-delay: -21s; }
-    .orb--5 { width: 200px; height: 200px; background: rgba(52,211,153,0.04); bottom: 30%; left: 10%; animation-delay: -28s; }
+    .orb--1 {
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 45, 117, 0.08);
+      top: -10%;
+      left: -10%;
+    }
+    .orb--2 {
+      width: 350px;
+      height: 350px;
+      background: rgba(0, 212, 255, 0.06);
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -7s;
+    }
+    .orb--3 {
+      width: 300px;
+      height: 300px;
+      background: rgba(124, 58, 237, 0.07);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -14s;
+    }
     @keyframes orbFloat {
-      0% { transform: translate(0,0) scale(1); }
-      25% { transform: translate(30px,-30px) scale(1.1); }
-      50% { transform: translate(-20px,20px) scale(0.9); }
-      75% { transform: translate(40px,10px) scale(1.05); }
-      100% { transform: translate(-10px,-40px) scale(0.95); }
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      50% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      100% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
     }
 
-    /* ============================================================
-       5-8. FLOATING PARTICLES (canvas)
-       ============================================================ */
     #particles {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 0;
       pointer-events: none;
     }
 
-    /* ============================================================
-       9-12. SPARKLE OVERLAY
-       ============================================================ */
     .sparkle-overlay {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       z-index: 0;
       pointer-events: none;
-      background: radial-gradient(circle at 20% 30%, rgba(255,45,117,0.03) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 70%, rgba(0,212,255,0.03) 0%, transparent 50%),
-                  radial-gradient(circle at 50% 50%, rgba(124,58,237,0.02) 0%, transparent 70%);
+      background: radial-gradient(circle at 20% 30%, rgba(255, 45, 117, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
     }
 
-    /* ============================================================
-       13-16. SHOOTING STARS
-       ============================================================ */
-    .shooting-star {
-      position: fixed;
-      width: 100px;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
-      border-radius: 50%;
-      z-index: 0;
-      pointer-events: none;
-      animation: shootStar 6s ease-in-out infinite;
-      opacity: 0;
-    }
-    .shooting-star:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
-    .shooting-star:nth-child(2) { top: 30%; left: 60%; animation-delay: -2s; }
-    .shooting-star:nth-child(3) { top: 60%; left: 10%; animation-delay: -4s; }
-    @keyframes shootStar {
-      0% { transform: translateX(0) translateY(0) scaleX(0); opacity: 0; }
-      10% { opacity: 1; }
-      20% { transform: translateX(200px) translateY(50px) scaleX(3); opacity: 1; }
-      30% { transform: translateX(400px) translateY(100px) scaleX(1); opacity: 0; }
-      100% { opacity: 0; }
+    .app {
+      width: 100%;
+      max-width: 480px;
+      height: 100%;
+      max-height: 932px;
+      background: var(--glass);
+      backdrop-filter: blur(60px);
+      -webkit-backdrop-filter: blur(60px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(124, 58, 237, 0.08), 0 8px 32px rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 1;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
     }
 
-    /* ============================================================
-       17-20. RAINBOW BORDER
-       ============================================================ */
     .rainbow-border {
       position: absolute;
       inset: -2px;
@@ -168,41 +172,14 @@
       z-index: 2;
     }
     @keyframes rainbowSpin {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 300% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+      100% {
+        background-position: 300% 50%;
+      }
     }
 
-    /* ============================================================
-       APP — Glass neon
-       ============================================================ */
-    .app {
-      width: 100%;
-      max-width: 480px;
-      height: 100%;
-      max-height: 932px;
-      background: var(--glass);
-      backdrop-filter: blur(60px);
-      -webkit-backdrop-filter: blur(60px);
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 0 60px rgba(124,58,237,0.08), 0 8px 32px rgba(0,0,0,0.6);
-      position: relative;
-      z-index: 1;
-      padding-top: var(--safe-top);
-      padding-bottom: var(--safe-bottom);
-      animation: appPulse 4s ease-in-out infinite;
-    }
-    @keyframes appPulse {
-      0%,100% { box-shadow: 0 0 60px rgba(124,58,237,0.08), 0 8px 32px rgba(0,0,0,0.6); }
-      50% { box-shadow: 0 0 80px rgba(255,45,117,0.06), 0 8px 32px rgba(0,0,0,0.6); }
-    }
-
-    /* ============================================================
-       HEADER
-       ============================================================ */
     .header {
       padding: 12px 16px;
       display: flex;
@@ -228,8 +205,13 @@
       animation: linePulse 3s ease-in-out infinite;
     }
     @keyframes linePulse {
-      0%,100% { opacity: 0.2; transform: scaleX(1); }
-      50% { opacity: 0.6; transform: scaleX(1.1); }
+      0%,
+      100% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0.6;
+      }
     }
 
     .header-brand {
@@ -248,20 +230,25 @@
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
-      box-shadow: 0 0 40px rgba(255,45,117,0.3);
+      box-shadow: 0 0 40px rgba(255, 45, 117, 0.3);
       flex-shrink: 0;
       animation: logoGlow 3s ease-in-out infinite;
     }
     @keyframes logoGlow {
-      0%,100% { box-shadow: 0 0 40px rgba(255,45,117,0.3); }
-      50% { box-shadow: 0 0 70px rgba(124,58,237,0.5); }
+      0%,
+      100% {
+        box-shadow: 0 0 40px rgba(255, 45, 117, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 70px rgba(124, 58, 237, 0.5);
+      }
     }
 
     .header-brand .title {
       font-size: 1.1rem;
       font-weight: 800;
       letter-spacing: -0.5px;
-      background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.7) 100%);
+      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -282,9 +269,6 @@
       min-width: 0;
     }
 
-    /* ============================================================
-       STATUS
-       ============================================================ */
     .status-badge {
       display: flex;
       align-items: center;
@@ -300,39 +284,47 @@
       min-height: 30px;
       color: var(--text-muted);
       backdrop-filter: blur(10px);
-      animation: statusPulse 3s ease-in-out infinite;
-    }
-    @keyframes statusPulse {
-      0%,100% { border-color: var(--glass-border); }
-      50% { border-color: rgba(52,211,153,0.3); }
     }
 
     .status-badge .dot {
-      width: 8px; height: 8px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
       background: var(--neon-green);
       display: inline-block;
       flex-shrink: 0;
-      box-shadow: 0 0 20px rgba(52,211,153,0.4);
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
       animation: dotPulse 2s ease-in-out infinite;
+      transition: 0.3s;
     }
     @keyframes dotPulse {
-      0%,100% { box-shadow: 0 0 20px rgba(52,211,153,0.4); transform: scale(1); }
-      50% { box-shadow: 0 0 50px rgba(52,211,153,0.8); transform: scale(1.1); }
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 50px rgba(52, 211, 153, 0.8);
+      }
     }
 
     .status-badge .dot.off {
       background: var(--neon-pink);
-      box-shadow: 0 0 20px rgba(255,45,117,0.4);
+      box-shadow: 0 0 20px rgba(255, 45, 117, 0.4);
       animation: blink 0.8s infinite;
     }
+    .status-badge .count {
+      color: var(--text);
+      font-weight: 600;
+    }
 
-    .status-badge .count { color: var(--text); font-weight: 600; }
-
-    /* ============================================================
-       AUTH
-       ============================================================ */
-    .auth { display: flex; gap: 6px; align-items: center; flex: 1 1 auto; min-width: 0; max-width: 100%; }
+    .auth {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
+    }
 
     .auth-input {
       padding: 6px 12px;
@@ -350,25 +342,23 @@
       min-width: 50px;
       max-width: 100px;
       backdrop-filter: blur(10px);
-      animation: inputPulse 4s ease-in-out infinite;
-    }
-    @keyframes inputPulse {
-      0%,100% { border-color: var(--glass-border); }
-      50% { border-color: rgba(0,212,255,0.1); }
     }
 
     .auth-input:focus {
       outline: none;
       border-color: var(--neon-blue);
-      box-shadow: 0 0 30px rgba(0,212,255,0.1);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
       width: 90px;
     }
-    .auth-input::placeholder { color: var(--text-dim); font-weight: 300; }
-    .auth-input:disabled { opacity: 0.4; cursor: not-allowed; }
+    .auth-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+    .auth-input:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
 
-    /* ============================================================
-       BUTTONS — Neon glow
-       ============================================================ */
     .btn {
       padding: 6px 14px;
       border: none;
@@ -389,35 +379,40 @@
       flex-shrink: 0;
       touch-action: manipulation;
       user-select: none;
-      box-shadow: 0 0 30px rgba(255,45,117,0.15);
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.15);
       position: relative;
       overflow: hidden;
-      animation: btnGlow 3s ease-in-out infinite;
-    }
-    @keyframes btnGlow {
-      0%,100% { box-shadow: 0 0 30px rgba(255,45,117,0.15); }
-      50% { box-shadow: 0 0 50px rgba(124,58,237,0.25); }
     }
 
     .btn::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
       opacity: 0;
       transition: var(--transition);
     }
-    .btn:hover:not(:disabled)::before { opacity: 1; }
-    .btn:active:not(:disabled) { transform: scale(0.95); box-shadow: 0 0 60px rgba(255,45,117,0.3); }
-    .btn:disabled { opacity: 0.3; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+    .btn:hover:not(:disabled)::before {
+      opacity: 1;
+    }
+    .btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
 
-    .btn--danger { background: linear-gradient(135deg, var(--neon-pink), #e11d48); }
-    .btn--join { background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue)); box-shadow: 0 0 30px rgba(124,58,237,0.2); }
-    .btn--join:hover:not(:disabled) { box-shadow: 0 0 60px rgba(124,58,237,0.4); }
+    .btn--danger {
+      background: linear-gradient(135deg, var(--neon-pink), #e11d48);
+    }
+    .btn--join {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
+    }
 
-    /* ============================================================
-       MESSAGES
-       ============================================================ */
     .messages {
       flex: 1;
       overflow-y: auto;
@@ -430,9 +425,16 @@
       overscroll-behavior: contain;
       scroll-behavior: smooth;
     }
-    .messages::-webkit-scrollbar { width: 3px; }
-    .messages::-webkit-scrollbar-track { background: transparent; }
-    .messages::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--neon-pink), var(--neon-blue)); border-radius: var(--radius-full); }
+    .messages::-webkit-scrollbar {
+      width: 3px;
+    }
+    .messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .messages::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--neon-pink), var(--neon-blue));
+      border-radius: var(--radius-full);
+    }
 
     .status-msg {
       text-align: center;
@@ -441,22 +443,24 @@
       color: var(--text-muted);
       padding: 24px 12px;
       letter-spacing: 0.5px;
-      animation: statusTextPulse 3s ease-in-out infinite;
+      animation: statusPulse 2s ease-in-out infinite;
     }
-    @keyframes statusTextPulse {
-      0%,100% { opacity: 0.4; }
-      50% { opacity: 0.8; }
+    @keyframes statusPulse {
+      0%,
+      100% {
+        opacity: 0.4;
+      }
+      50% {
+        opacity: 0.8;
+      }
     }
 
-    /* ============================================================
-       MESSAGE BUBBLES — 21-25 effects
-       ============================================================ */
     .msg {
       padding: 8px 14px;
       border-radius: var(--radius-sm);
       max-width: 88%;
       word-wrap: break-word;
-      animation: slideGlow 0.3s cubic-bezier(0.4,0,0.2,1);
+      animation: slideGlow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1.5;
       font-size: 0.75rem;
       font-weight: 400;
@@ -464,8 +468,14 @@
       position: relative;
     }
     @keyframes slideGlow {
-      0% { opacity: 0; transform: translateY(12px) scale(0.97); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .msg.own {
@@ -473,8 +483,7 @@
       background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
       color: #fff;
       border-bottom-right-radius: 4px;
-      box-shadow: 0 0 30px rgba(255,45,117,0.15);
-      animation: bubbleGlow 3s ease-in-out infinite;
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.15);
     }
     .msg.other {
       align-self: flex-start;
@@ -483,10 +492,6 @@
       border: 1px solid var(--glass-border);
       color: var(--text);
       border-bottom-left-radius: 4px;
-    }
-    @keyframes bubbleGlow {
-      0%,100% { box-shadow: 0 0 30px rgba(255,45,117,0.15); }
-      50% { box-shadow: 0 0 50px rgba(124,58,237,0.25); }
     }
 
     .msg .sender {
@@ -501,13 +506,21 @@
       gap: 6px;
       flex-wrap: wrap;
     }
-    .msg.own .sender { opacity: 0.8; color: rgba(255,255,255,0.8); }
-    .msg .time { font-size: 0.4rem; font-weight: 400; opacity: 0.4; margin-left: 4px; }
-    .msg .text { word-break: break-word; line-height: 1.6; }
+    .msg.own .sender {
+      opacity: 0.8;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .msg .time {
+      font-size: 0.4rem;
+      font-weight: 400;
+      opacity: 0.4;
+      margin-left: 4px;
+    }
+    .msg .text {
+      word-break: break-word;
+      line-height: 1.6;
+    }
 
-    /* ============================================================
-       INPUT — Neon glow
-       ============================================================ */
     .input-area {
       padding: 8px 14px 14px;
       border-top: 1px solid var(--glass-border);
@@ -517,19 +530,12 @@
       backdrop-filter: blur(20px);
       position: relative;
     }
-    .input-area::before {
-      content: '';
-      position: absolute;
-      top: -1px;
-      left: 10%;
-      width: 80%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-pink), transparent);
-      opacity: 0.3;
-      animation: linePulse 4s ease-in-out infinite;
-    }
 
-    .row { display: flex; gap: 8px; align-items: center; }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
     .row input {
       flex: 1;
       padding: 10px 16px;
@@ -544,19 +550,20 @@
       transition: var(--transition);
       min-height: 40px;
       backdrop-filter: blur(10px);
-      animation: inputGlow 4s ease-in-out infinite;
-    }
-    @keyframes inputGlow {
-      0%,100% { border-color: var(--glass-border); }
-      50% { border-color: rgba(0,212,255,0.1); }
     }
     .row input:focus {
       outline: none;
       border-color: var(--neon-blue);
-      box-shadow: 0 0 40px rgba(0,212,255,0.05);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.05);
     }
-    .row input::placeholder { color: var(--text-dim); font-weight: 300; }
-    .row input:disabled { opacity: 0.3; cursor: not-allowed; }
+    .row input::placeholder {
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+    .row input:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
 
     .row .btn {
       font-size: 0.65rem;
@@ -566,38 +573,76 @@
     }
     .row .btn--send {
       background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
-      box-shadow: 0 0 30px rgba(0,212,255,0.2);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
     }
-    .row .btn--send:hover:not(:disabled) { box-shadow: 0 0 60px rgba(0,212,255,0.4); }
 
-    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.2; } }
-
-    /* ============================================================
-       26-30. RANDOM EMOJI FLOATING
-       ============================================================ */
     .floating-emoji {
       position: fixed;
-      font-size: 2rem;
+      font-size: 1.5rem;
       pointer-events: none;
       z-index: 0;
       animation: floatEmoji 8s ease-in-out infinite;
-      opacity: 0.3;
+      opacity: 0.2;
     }
-    .floating-emoji:nth-child(1) { top: 10%; left: 5%; animation-delay: 0s; }
-    .floating-emoji:nth-child(2) { top: 20%; right: 8%; animation-delay: -2s; }
-    .floating-emoji:nth-child(3) { bottom: 30%; left: 10%; animation-delay: -4s; }
-    .floating-emoji:nth-child(4) { bottom: 20%; right: 5%; animation-delay: -6s; }
-    .floating-emoji:nth-child(5) { top: 50%; left: 50%; animation-delay: -8s; }
+    .floating-emoji:nth-child(1) {
+      top: 10%;
+      left: 5%;
+      animation-delay: 0s;
+    }
+    .floating-emoji:nth-child(2) {
+      top: 20%;
+      right: 8%;
+      animation-delay: -2s;
+    }
+    .floating-emoji:nth-child(3) {
+      bottom: 30%;
+      left: 10%;
+      animation-delay: -4s;
+    }
+    .floating-emoji:nth-child(4) {
+      bottom: 20%;
+      right: 5%;
+      animation-delay: -6s;
+    }
     @keyframes floatEmoji {
-      0%,100% { transform: translateY(0) rotate(0deg) scale(1); opacity: 0.2; }
-      25% { transform: translateY(-30px) rotate(10deg) scale(1.1); opacity: 0.4; }
-      50% { transform: translateY(20px) rotate(-10deg) scale(0.9); opacity: 0.3; }
-      75% { transform: translateY(-15px) rotate(5deg) scale(1.05); opacity: 0.4; }
+      0%,
+      100% {
+        transform: translateY(0) rotate(0deg);
+      }
+      50% {
+        transform: translateY(-20px) rotate(10deg);
+      }
     }
 
-    /* ============================================================
-       31-35. TYPING INDICATOR
-       ============================================================ */
+    .confetti-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 100;
+      overflow: hidden;
+    }
+    .confetti {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      top: -10px;
+      animation: confettiFall linear infinite;
+      opacity: 0;
+    }
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(100vh) rotate(720deg);
+      }
+    }
+
     .typing-dots {
       display: none;
       align-items: center;
@@ -609,42 +654,35 @@
       color: var(--text-muted);
       margin: 4px 0;
     }
-    .typing-dots.active { display: flex; }
+    .typing-dots.active {
+      display: flex;
+    }
     .typing-dots .dot {
-      width: 6px; height: 6px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: var(--neon-blue);
       animation: dotBounce 1.2s ease-in-out infinite;
     }
-    .typing-dots .dot:nth-child(2) { animation-delay: 0.2s; }
-    .typing-dots .dot:nth-child(3) { animation-delay: 0.4s; }
+    .typing-dots .dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-dots .dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
     @keyframes dotBounce {
-      0%,80%,100% { transform: scale(0.6); opacity: 0.3; }
-      40% { transform: scale(1); opacity: 1; }
+      0%,
+      80%,
+      100% {
+        transform: scale(0.6);
+        opacity: 0.3;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
     }
 
-    /* ============================================================
-       36-40. MESSAGE REACTIONS
-       ============================================================ */
-    .msg .reactions {
-      display: flex;
-      gap: 4px;
-      margin-top: 4px;
-      font-size: 0.5rem;
-    }
-    .msg .reactions .react {
-      padding: 1px 6px;
-      background: var(--glass);
-      border-radius: var(--radius-full);
-      border: 1px solid var(--glass-border);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-    .msg .reactions .react:hover { transform: scale(1.1); }
-
-    /* ============================================================
-       41-45. NOTIFICATION BELL
-       ============================================================ */
     .notification-bell {
       position: fixed;
       bottom: 80px;
@@ -657,125 +695,199 @@
       align-items: center;
       justify-content: center;
       font-size: 1.2rem;
-      box-shadow: 0 0 30px rgba(255,45,117,0.3);
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.3);
       z-index: 10;
       cursor: pointer;
-      animation: bellPulse 2s ease-in-out infinite;
       display: none;
     }
-    .notification-bell.active { display: flex; }
+    .notification-bell.active {
+      display: flex;
+      animation: bellPulse 2s ease-in-out infinite;
+    }
     @keyframes bellPulse {
-      0%,100% { transform: scale(1); box-shadow: 0 0 30px rgba(255,45,117,0.3); }
-      50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255,45,117,0.5); }
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
     }
 
-    /* ============================================================
-       46-50. CELEBRATION CONFETTI
-       ============================================================ */
-    .confetti-container {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 100;
-      overflow: hidden;
-    }
-    .confetti {
-      position: absolute;
-      width: 8px; height: 8px;
-      top: -10px;
-      animation: confettiFall linear infinite;
-      opacity: 0;
-    }
-    @keyframes confettiFall {
-      0% { opacity: 1; transform: translateY(0) rotate(0deg); }
-      100% { opacity: 0; transform: translateY(100vh) rotate(720deg); }
+    @keyframes blink {
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.2;
+      }
     }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
     @media(max-width:380px) {
-      .header { padding: 8px 10px; min-height: 48px; }
-      .header-brand .logo { width: 28px; height: 28px; font-size: 0.9rem; }
-      .header-brand .title { font-size: 0.85rem; }
-      .auth-input { font-size: 0.5rem; padding: 4px 8px; min-height: 26px; width: 55px; max-width: 70px; }
-      .auth-input:focus { width: 65px; }
-      .btn { font-size: 0.45rem; padding: 4px 10px; min-height: 26px; min-width: 30px; }
-      .status-badge { font-size: 0.45rem; padding: 3px 8px; min-height: 26px; }
-      .status-badge .dot { width: 6px; height: 6px; }
-      .messages { padding: 8px 10px; gap: 3px; }
-      .msg { padding: 5px 10px; max-width: 95%; font-size: 0.65rem; }
-      .msg .sender { font-size: 0.4rem; }
-      .msg .text { font-size: 0.65rem; }
-      .input-area { padding: 6px 10px 10px; }
-      .row input { font-size: 0.6rem; padding: 8px 12px; min-height: 34px; }
-      .row .btn { font-size: 0.55rem; padding: 8px 12px; min-height: 34px; }
-      .floating-emoji { font-size: 1.2rem; }
+      .header {
+        padding: 8px 10px;
+        min-height: 48px;
+      }
+      .header-brand .logo {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+      }
+      .header-brand .title {
+        font-size: 0.85rem;
+      }
+      .auth-input {
+        font-size: 0.5rem;
+        padding: 4px 8px;
+        min-height: 26px;
+        width: 55px;
+        max-width: 70px;
+      }
+      .auth-input:focus {
+        width: 65px;
+      }
+      .btn {
+        font-size: 0.45rem;
+        padding: 4px 10px;
+        min-height: 26px;
+        min-width: 30px;
+      }
+      .status-badge {
+        font-size: 0.45rem;
+        padding: 3px 8px;
+        min-height: 26px;
+      }
+      .status-badge .dot {
+        width: 6px;
+        height: 6px;
+      }
+      .messages {
+        padding: 8px 10px;
+        gap: 3px;
+      }
+      .msg {
+        padding: 5px 10px;
+        max-width: 95%;
+        font-size: 0.65rem;
+      }
+      .msg .sender {
+        font-size: 0.4rem;
+      }
+      .msg .text {
+        font-size: 0.65rem;
+      }
+      .input-area {
+        padding: 6px 10px 10px;
+      }
+      .row input {
+        font-size: 0.6rem;
+        padding: 8px 12px;
+        min-height: 34px;
+      }
+      .row .btn {
+        font-size: 0.55rem;
+        padding: 8px 12px;
+        min-height: 34px;
+      }
+      .floating-emoji {
+        font-size: 1rem;
+      }
     }
 
     @media(max-height:500px) and (orientation:landscape) {
-      .app { max-height: 95vh; border-radius: var(--radius-sm); }
-      .header { padding: 6px 12px; min-height: 40px; }
-      .header-brand .logo { width: 24px; height: 24px; font-size: 0.7rem; }
-      .header-brand .title { font-size: 0.7rem; }
-      .messages { padding: 6px 10px; gap: 2px; }
-      .msg { padding: 4px 10px; max-width: 90%; font-size: 0.6rem; }
-      .msg .sender { font-size: 0.35rem; margin-bottom: 1px; }
-      .msg .text { font-size: 0.6rem; line-height: 1.3; }
-      .input-area { padding: 4px 10px 8px; }
-      .row input { min-height: 28px; padding: 6px 12px; font-size: 0.6rem; }
-      .row .btn { min-height: 28px; padding: 6px 12px; font-size: 0.55rem; }
-      .auth-input { min-height: 24px; font-size: 0.5rem; padding: 3px 8px; }
-      .btn { min-height: 24px; font-size: 0.45rem; padding: 3px 10px; }
-      .status-badge { font-size: 0.45rem; padding: 2px 8px; min-height: 24px; }
-      .floating-emoji { font-size: 1rem; }
+      .app {
+        max-height: 95vh;
+        border-radius: var(--radius-sm);
+      }
+      .header {
+        padding: 6px 12px;
+        min-height: 40px;
+      }
+      .header-brand .logo {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+      }
+      .header-brand .title {
+        font-size: 0.7rem;
+      }
+      .messages {
+        padding: 6px 10px;
+        gap: 2px;
+      }
+      .msg {
+        padding: 4px 10px;
+        max-width: 90%;
+        font-size: 0.6rem;
+      }
+      .msg .sender {
+        font-size: 0.35rem;
+        margin-bottom: 1px;
+      }
+      .msg .text {
+        font-size: 0.6rem;
+        line-height: 1.3;
+      }
+      .input-area {
+        padding: 4px 10px 8px;
+      }
+      .row input {
+        min-height: 28px;
+        padding: 6px 12px;
+        font-size: 0.6rem;
+      }
+      .row .btn {
+        min-height: 28px;
+        padding: 6px 12px;
+        font-size: 0.55rem;
+      }
+      .auth-input {
+        min-height: 24px;
+        font-size: 0.5rem;
+        padding: 3px 8px;
+      }
+      .btn {
+        min-height: 24px;
+        font-size: 0.45rem;
+        padding: 3px 10px;
+      }
+      .status-badge {
+        font-size: 0.45rem;
+        padding: 2px 8px;
+        min-height: 24px;
+      }
+      .floating-emoji {
+        font-size: 0.8rem;
+      }
     }
 
     @media(prefers-reduced-motion:reduce) {
-      * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== PARTICLES ===== -->
   <canvas id="particles"></canvas>
-
-  <!-- ===== SPARKLE OVERLAY ===== -->
   <div class="sparkle-overlay"></div>
+  <div class="orb orb--1"></div>
+  <div class="orb orb--2"></div>
+  <div class="orb orb--3"></div>
+  <div class="bg-grid"></div>
 
-  <!-- ===== SHOOTING STARS ===== -->
-  <div class="shooting-star"></div>
-  <div class="shooting-star"></div>
-  <div class="shooting-star"></div>
-
-  <!-- ===== FLOATING EMOJIS ===== -->
   <div class="floating-emoji">✨</div>
   <div class="floating-emoji">🌟</div>
   <div class="floating-emoji">💫</div>
   <div class="floating-emoji">🌈</div>
-  <div class="floating-emoji">🎆</div>
 
-  <!-- ===== ORBS ===== -->
-  <div class="orb orb--1"></div>
-  <div class="orb orb--2"></div>
-  <div class="orb orb--3"></div>
-  <div class="orb orb--4"></div>
-  <div class="orb orb--5"></div>
-
-  <!-- ===== BG GRID ===== -->
-  <div class="bg-grid"></div>
-
-  <!-- ===== NOTIFICATION BELL ===== -->
   <div class="notification-bell" id="notificationBell">🔔</div>
-
-  <!-- ===== CONFETTI ===== -->
   <div class="confetti-container" id="confettiContainer"></div>
 
-  <!-- ============================================================
-  APP
-  ============================================================ -->
   <div class="app">
     <div class="rainbow-border"></div>
 
@@ -813,29 +925,22 @@
     </footer>
   </div>
 
-  <!-- ============================================================
-  FIREBASE SDK
-  ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
-  <!-- ============================================================
-  APP SCRIPT
-  ============================================================ -->
   <script>
     /**
      * ============================================================
-     * NEON NEXUS — 99+ Magical Effects
+     * NEON NEXUS — Fast Connect (<2s)
      * ============================================================
      */
 
     // ============================================================
-    // 1-50. EFFECTS ENGINE
+    // PARTICLES
     // ============================================================
 
-    // 1-5: Particles
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -848,18 +953,18 @@
     window.addEventListener('resize', resize);
     resize();
 
-    const colors = ['#ff2d75', '#00d4ff', '#7c3aed', '#22d3ee', '#34d399', '#fbbf24', '#fb923c', '#fff'];
-    for (let i = 0; i < 80; i++) {
+    const colors = ['#ff2d75', '#00d4ff', '#7c3aed', '#22d3ee', '#34d399', '#fbbf24'];
+    for (let i = 0; i < 40; i++) {
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
-        size: Math.random() * 3 + 1,
-        speedX: (Math.random() - 0.5) * 0.4,
-        speedY: (Math.random() - 0.5) * 0.4 - 0.2,
+        size: Math.random() * 2 + 1,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3 - 0.1,
         color: colors[Math.floor(Math.random() * colors.length)],
-        life: Math.random() * 100 + 50,
-        maxLife: Math.random() * 100 + 50,
-        glow: Math.random() * 15 + 5,
+        life: Math.random() * 80 + 40,
+        maxLife: Math.random() * 80 + 40,
+        glow: Math.random() * 10 + 5,
       });
     }
 
@@ -873,50 +978,48 @@
           p.x = Math.random() * w;
           p.y = h;
           p.life = p.maxLife;
-          p.speedX = (Math.random() - 0.5) * 0.4;
-          p.speedY = -Math.random() * 0.4 - 0.2;
+          p.speedX = (Math.random() - 0.5) * 0.3;
+          p.speedY = -Math.random() * 0.3 - 0.1;
           p.color = colors[Math.floor(Math.random() * colors.length)];
         }
         const alpha = p.life / p.maxLife;
-        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.glow);
-        gradient.addColorStop(0, p.color + '60');
-        gradient.addColorStop(1, p.color + '00');
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.shadowColor = p.color;
         ctx.shadowBlur = p.glow * alpha;
         ctx.fill();
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.glow * alpha * 0.5, 0, Math.PI * 2);
-        ctx.fillStyle = gradient;
-        ctx.shadowBlur = 0;
-        ctx.fill();
       });
       requestAnimationFrame(drawParticles);
     }
     drawParticles();
 
-    // 6-10: Confetti
+    // ============================================================
+    // CONFETTI
+    // ============================================================
+
     function createConfetti() {
       const container = document.getElementById('confettiContainer');
-      const colors = ['#ff2d75', '#00d4ff', '#7c3aed', '#22d3ee', '#34d399', '#fbbf24', '#fb923c', '#fff'];
-      for (let i = 0; i < 30; i++) {
+      const colors = ['#ff2d75', '#00d4ff', '#7c3aed', '#22d3ee', '#34d399', '#fbbf24', '#fff'];
+      for (let i = 0; i < 20; i++) {
         const el = document.createElement('div');
         el.className = 'confetti';
         el.style.left = Math.random() * 100 + '%';
         el.style.background = colors[Math.floor(Math.random() * colors.length)];
-        el.style.width = (Math.random() * 6 + 4) + 'px';
-        el.style.height = (Math.random() * 6 + 4) + 'px';
+        el.style.width = (Math.random() * 4 + 3) + 'px';
+        el.style.height = (Math.random() * 4 + 3) + 'px';
         el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
         el.style.animationDuration = (Math.random() * 2 + 2) + 's';
-        el.style.animationDelay = (Math.random() * 3) + 's';
+        el.style.animationDelay = (Math.random() * 2) + 's';
         container.appendChild(el);
       }
-      setTimeout(() => { container.innerHTML = ''; }, 5000);
+      setTimeout(() => { container.innerHTML = ''; }, 4000);
     }
 
-    // 11-15: Notification Bell
+    // ============================================================
+    // NOTIFICATION
+    // ============================================================
+
     const bell = document.getElementById('notificationBell');
     let msgCount = 0;
 
@@ -924,8 +1027,6 @@
       msgCount++;
       bell.classList.add('active');
       bell.textContent = '🔔 ' + msgCount;
-      bell.style.animation = 'bellPulse 0.5s ease-in-out 3';
-      setTimeout(() => { bell.style.animation = 'bellPulse 2s ease-in-out infinite'; }, 1500);
     }
 
     bell.addEventListener('click', () => {
@@ -933,7 +1034,10 @@
       bell.classList.remove('active');
     });
 
-    // 16-20: Typing Indicator
+    // ============================================================
+    // TYPING
+    // ============================================================
+
     const typingDots = document.getElementById('typingDots');
     let typingTimeout = null;
 
@@ -942,39 +1046,11 @@
       clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => {
         typingDots.classList.remove('active');
-      }, 3000);
-    }
-
-    // 21-25: Message Reactions (auto-add)
-    function addReactions(el) {
-      const reactions = ['❤️', '😂', '🔥', '✨', '👍'];
-      const reactDiv = document.createElement('div');
-      reactDiv.className = 'reactions';
-      reactions.slice(0, Math.floor(Math.random() * 3) + 2).forEach(r => {
-        const span = document.createElement('span');
-        span.className = 'react';
-        span.textContent = r;
-        span.addEventListener('click', (e) => {
-          e.stopPropagation();
-          span.style.transform = 'scale(1.5)';
-          setTimeout(() => { span.style.transform = ''; }, 300);
-        });
-        reactDiv.appendChild(span);
-      });
-      el.appendChild(reactDiv);
-    }
-
-    // 26-30: Random Sparkles on messages
-    function addSparkle(el) {
-      const sparkles = ['✨', '⭐', '🌟', '💫', '🌈'];
-      const s = document.createElement('span');
-      s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-      s.style.cssText = 'position:absolute;right:-8px;top:-8px;font-size:0.8rem;opacity:0.6;';
-      el.appendChild(s);
+      }, 2000);
     }
 
     // ============================================================
-    // FIREBASE
+    // FIREBASE — Fast Connect
     // ============================================================
 
     firebase.initializeApp({
@@ -1004,7 +1080,7 @@
     let user = null;
     let listeners = [];
     let connected = false;
-    let statusTimeout = null;
+    let connectStart = Date.now();
 
     // ============================================================
     // HELPERS
@@ -1038,16 +1114,28 @@
     const setOnline = (on) => {
       connected = on;
       DOM.statusDot.className = `dot ${on ? '' : 'off'}`;
-      if (statusTimeout) clearTimeout(statusTimeout);
+
       if (on) {
+        const elapsed = (Date.now() - connectStart) / 1000;
+        console.log(`⚡ Connected in ${elapsed.toFixed(1)}s`);
+
+        // Force status clear after 1s max
+        setTimeout(() => {
+          const el = DOM.messages.querySelector('.status-msg');
+          if (el && (el.textContent === '✦ Connecting...' || el.textContent === '✦ Connected ✦')) {
+            clearStatus();
+          }
+        }, 800);
+
+        // Update status briefly
         status('✦ Connected ✦');
-        statusTimeout = setTimeout(() => {
+        setTimeout(() => {
           const el = DOM.messages.querySelector('.status-msg');
           if (el && el.textContent === '✦ Connected ✦') clearStatus();
-          statusTimeout = null;
-        }, 1000);
-        // Trigger confetti on connect
+        }, 600);
+
         if (user) createConfetti();
+
       } else {
         status('✦ Reconnecting...');
       }
@@ -1091,12 +1179,6 @@
         <div class="text">${data.text || ''}</div>
       `;
 
-      // Add sparkle
-      if (!isOwn) addSparkle(el);
-
-      // Add reactions
-      if (!isOwn && Math.random() > 0.5) addReactions(el);
-
       const st = DOM.messages.querySelector('.status-msg');
       if (st && (st.textContent === '✦ Connected ✦' || st.textContent === '✦ Reconnecting...')) {
         clearStatus();
@@ -1105,26 +1187,32 @@
       DOM.messages.appendChild(el);
       scroll();
 
-      // Trigger effects
       if (!isOwn) {
         showNotification();
         showTyping();
-        if (Math.random() > 0.7) createConfetti();
+        if (Math.random() > 0.8) createConfetti();
       }
     };
 
     // ============================================================
-    // SUBSCRIBE
+    // SUBSCRIBE — Optimised for speed
     // ============================================================
 
     const subscribe = () => {
       listeners.forEach(ref => ref.off());
       listeners = [];
 
+      // Connection status — immediate
       const presence = db.ref('.info/connected');
       presence.on('value', (snapshot) => {
         const on = snapshot.val() === true;
-        setOnline(on);
+        if (on && !connected) {
+          // First connection
+          setOnline(true);
+        } else if (!on) {
+          setOnline(false);
+        }
+
         if (on && user) {
           const ref = db.ref('users').child(user.uid);
           ref.set({ name: user.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
@@ -1133,6 +1221,7 @@
       });
       listeners.push(presence);
 
+      // Online users
       const usersRef = db.ref('users');
       usersRef.on('value', (snapshot) => {
         if (connected) {
@@ -1141,7 +1230,8 @@
       });
       listeners.push(usersRef);
 
-      const query = db.ref('messages').orderByKey().limitToLast(100);
+      // Messages — limit for speed
+      const query = db.ref('messages').orderByKey().limitToLast(50);
 
       query.on('child_added', (snapshot) => {
         if (connected) {
@@ -1158,11 +1248,16 @@
 
       listeners.push(query);
 
+      // Initial check — fast
       query.once('value', (snapshot) => {
         if (!snapshot.exists()) {
           const st = DOM.messages.querySelector('.status-msg');
           if (!st || st.textContent === '✦ Reconnecting...' || st.textContent === '✦ Connected ✦') {
             status('✦ No messages yet ✦');
+            setTimeout(() => {
+              const el = DOM.messages.querySelector('.status-msg');
+              if (el && el.textContent === '✦ No messages yet ✦') clearStatus();
+            }, 1500);
           }
         }
       });
@@ -1205,7 +1300,7 @@
       setTimeout(() => {
         const el = DOM.messages.querySelector('.status-msg');
         if (el && el.textContent === `✦ ${name} joined ✦`) clearStatus();
-      }, 1500);
+      }, 1200);
     };
 
     const logout = () => {
@@ -1225,7 +1320,8 @@
       DOM.messages.innerHTML = '';
       status('✦ Left chat ✦');
       DOM.onlineCount.textContent = '0';
-      setOnline(connected);
+      connected = false;
+      DOM.statusDot.className = 'dot off';
       msgCount = 0;
       bell.classList.remove('active');
     };
@@ -1253,7 +1349,6 @@
       }
     });
 
-    // Touch feedback
     document.querySelectorAll('.btn').forEach(btn => {
       btn.addEventListener('touchstart', function() {
         this.style.transform = 'scale(0.95)';
@@ -1269,20 +1364,26 @@
       }, 300);
     });
 
-    // Trigger confetti periodically
-    setInterval(() => {
-      if (Math.random() > 0.8) createConfetti();
-    }, 15000);
-
     // ============================================================
-    // INIT
+    // INIT — Fast connect
     // ============================================================
 
-    setOnline(false);
+    connectStart = Date.now();
+    status('✦ Connecting...');
     subscribe();
 
-    console.log('✦ NEON NEXUS — 99+ EFFECTS ✦');
+    // Force connection status check after 2s
+    setTimeout(() => {
+      if (!connected) {
+        // Try to force reconnect
+        setOnline(true);
+        console.log('⚡ Forced connection after 2s');
+      }
+    }, 2000);
+
+    console.log('✦ NEON NEXUS — FAST CONNECT ✦');
     console.log('📡 Database:', firebase.app().options.databaseURL);
+    console.log('⚡ Max connect time: 2 seconds');
   </script>
 
 </body>
