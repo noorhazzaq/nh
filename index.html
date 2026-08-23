@@ -1,106 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat</title>
+  <title>My Site</title>
+  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;My Site&quot;,&quot;short_name&quot;:&quot;Site&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#ffffff&quot;,&quot;theme_color&quot;:&quot;#000000&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23000'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23fff'%3E🚀%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}
-    body{background:#0f0e17;color:#fff;height:100vh;display:flex;justify-content:center;align-items:center;padding:8px}
-    .app{max-width:700px;width:100%;height:95vh;background:#1a1a2e;border-radius:24px;display:flex;flex-direction:column;overflow:hidden}
-    .h{padding:12px 20px;background:#16213e;border-bottom:2px solid #e94560;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
-    .h h1{font-size:1.2rem}
-    .h h1 span{color:#e94560}
-    .r{display:flex;gap:6px;align-items:center}
-    .r input,.r button{border:none;border-radius:20px;padding:8px 14px}
-    .r input{flex:1;background:#0f0e17;color:#fff;font-size:.9rem}
-    .r input:focus{outline:2px solid #e94560}
-    .r input:disabled{opacity:.4;cursor:not-allowed}
-    .r button{background:#e94560;color:#fff;font-weight:700;cursor:pointer;padding:8px 18px}
-    .r button:hover:not(:disabled){transform:scale(1.05);background:#ff6b81}
-    .r button:disabled{opacity:.4;cursor:not-allowed}
-    .msgs{flex:1;overflow-y:auto;padding:12px 16px;display:flex;flex-direction:column;gap:4px;background:#12122a}
-    .msgs::-webkit-scrollbar{width:4px}
-    .msgs::-webkit-scrollbar-thumb{background:#e94560;border-radius:10px}
-    .msg{padding:6px 14px;border-radius:16px;max-width:80%;word-wrap:break-word;animation:fadeIn .2s}
-    .msg.o{align-self:flex-end;background:#e94560;border-bottom-right-radius:4px}
-    .msg.t{align-self:flex-start;background:#2d2d44;border-bottom-left-radius:4px}
-    .msg .s{font-size:.6rem;font-weight:700;text-transform:uppercase;opacity:.6}
-    .msg .tm{font-size:.5rem;opacity:.4;margin-left:6px}
-    .status{text-align:center;font-size:.8rem;opacity:.4;padding:12px;font-style:italic}
-    .online{font-size:.75rem;opacity:.6;padding:4px 12px;background:#0f0e17;border-radius:20px}
-    .auth{display:flex;gap:6px;align-items:center}
-    .auth input{padding:4px 10px;border:none;border-radius:20px;background:#0f0e17;color:#fff;font-size:.85rem;width:100px}
-    .auth input:focus{outline:2px solid #e94560;width:130px}
-    .auth button{padding:4px 14px;border:none;border-radius:20px;background:#e94560;color:#fff;font-weight:600;cursor:pointer;font-size:.8rem}
-    .auth button:hover{transform:scale(1.05);background:#ff6b81}
-    .auth button.out{background:#2d2d44}
-    .auth button.out:hover{background:#3d3d5c}
-    .info{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-    .in{padding:8px 12px 12px;background:#16213e;border-top:1px solid #2d2d44}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-    @media(max-width:600px){.app{height:100vh;border-radius:0}.auth input{width:70px}.auth input:focus{width:90px}.msg{max-width:92%}}
+    body{min-height:100vh;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;justify-content:center;align-items:center;padding:20px}
+    .card{max-width:600px;width:100%;background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border-radius:32px;padding:48px 40px;box-shadow:0 30px 80px rgba(0,0,0,.3);text-align:center;animation:fadeUp .6s ease}
+    .card .icon{font-size:64px;margin-bottom:16px}
+    .card h1{font-size:2.5rem;font-weight:800;color:#1a1a2e;margin-bottom:8px}
+    .card p{font-size:1.1rem;color:#666;line-height:1.6;margin-bottom:24px}
+    .card .btn{display:inline-block;padding:14px 40px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:#fff;font-weight:700;font-size:1rem;border:none;border-radius:50px;cursor:pointer;transition:.3s;text-decoration:none}
+    .card .btn:hover{transform:scale(1.05);box-shadow:0 10px 30px rgba(102,126,234,.4)}
+    .card .features{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:32px;padding-top:32px;border-top:2px solid #f0f0f0}
+    .card .features .f{font-size:.85rem;color:#555}
+    .card .features .f span{display:block;font-size:28px;margin-bottom:4px}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @media(max-width:500px){.card{padding:32px 24px}.card h1{font-size:1.8rem}.card .features{grid-template-columns:1fr 1fr}}
   </style>
 </head>
 <body>
 
-<div class="app">
-  <div class="h">
-    <h1>💬 <span>Chat</span></h1>
-    <div class="info">
-      <span class="online" id="o">👤 0</span>
-      <div class="auth">
-        <input type="text" id="n" placeholder="Name..." maxlength="20" />
-        <button id="j">Join</button>
-        <button id="l" class="out" style="display:none">Leave</button>
-      </div>
-    </div>
-  </div>
-  <div class="msgs" id="m"><div class="status">👋 Sign in</div></div>
-  <div class="in">
-    <div class="r">
-      <input type="text" id="i" placeholder="Type..." disabled />
-      <button id="s" disabled>Send</button>
-    </div>
+<div class="card">
+  <div class="icon">🚀</div>
+  <h1>Welcome</h1>
+  <p>Build something amazing. This is your brand new website — clean, fast, and ready to go.</p>
+  <button class="btn" onclick="alert('Hello! 🎉')">Get Started</button>
+  <div class="features">
+    <div class="f"><span>⚡</span>Fast</div>
+    <div class="f"><span>📱</span>Responsive</div>
+    <div class="f"><span>🎨</span>Clean</div>
   </div>
 </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-
 <script>
-// Firebase
-firebase.initializeApp({databaseURL:"https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"});
-const db=firebase.database();
-
-// DOM shortcuts
-const $=id=>document.getElementById(id), m=$('m'), i=$('i'), s=$('s'), n=$('n'), j=$('j'), l=$('l'), o=$('o');
-let u=null, lst=[];
-
-// Status
-const st=t=>{let e=m.querySelector('.status');if(!e){e=document.createElement('div');e.className='status';m.appendChild(e)}e.textContent=t};
-const sc=()=>setTimeout(()=>m.scrollTop=m.scrollHeight,50);
-const tm=t=>t?new Date(t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}):'';
-
-// Send
-const sm=t=>{if(!u)return alert('Sign in!');if(!t||!t.trim())return;db.ref('messages').push({name:u.name,uid:u.uid,text:t.trim(),timestamp:firebase.database.ServerValue.TIMESTAMP}).catch(()=>alert('Failed.'));i.value='';i.focus()};
-
-// Render
-const rn=d=>{const ow=u&&d.uid===u.uid,el=document.createElement('div');el.className=`msg ${ow?'o':'t'}`;el.dataset.key=d._key;el.innerHTML=`<div class="s">${d.name||'Anonymous'}<span class="tm">${tm(d.timestamp)}</span></div><div class="text">${d.text||''}</div>`;const sts=m.querySelector('.status');if(sts)sts.remove();m.appendChild(el);sc()};
-
-// Subscribe
-const sub=()=>{lst.forEach(r=>r.off());lst=[];const q=db.ref('messages').orderByKey().limitToLast(100);q.on('child_added',s=>{const d=s.val();d._key=s.key;rn(d)});q.on('child_removed',s=>{const el=m.querySelector(`[data-key="${s.key}"]`);if(el)el.remove()});lst.push(q);q.once('value',s=>{if(!s.exists())st('💬 No messages')});
-const p=db.ref('.info/connected'),us=db.ref('users');p.on('value',s=>{if(s.val()&&u){const r=us.child(u.uid);r.set({name:u.name,lastSeen:firebase.database.ServerValue.TIMESTAMP});r.onDisconnect().remove()}});us.on('value',s=>{o.textContent=s.exists()?`👤 ${s.numChildren()}`:'👤 0'});lst.push(p)};
-
-// Auth
-const login=()=>{const nm=n.value.trim()||'Guest';u={name:nm,uid:'u_'+Date.now()+'_'+Math.random().toString(36).slice(2,6)};n.disabled=true;j.style.display='none';l.style.display='inline-block';i.disabled=false;s.disabled=false;i.placeholder=`Message as ${nm}...`;st(`✅ Signed in as ${nm}`);m.innerHTML='';sub()};
-const logout=()=>{if(u)db.ref('users').child(u.uid).remove();lst.forEach(r=>r.off());lst=[];u=null;n.disabled=false;j.style.display='inline-block';l.style.display='none';i.disabled=true;s.disabled=true;i.placeholder='Sign in...';i.value='';m.innerHTML='';st('👋 Left chat');o.textContent='👤 0'};
-
-// Events
-j.onclick=login;l.onclick=logout;n.onkeydown=e=>{if(e.key==='Enter')login()};s.onclick=()=>sm(i.value);i.onkeydown=e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sm(i.value)}};
-
-st('🌐 Connecting...');sub();if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
-console.log('💬 Chat ready');
+  console.log('🚀 Brand new site ready!');
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
 </script>
 
 </body>
