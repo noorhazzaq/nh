@@ -15,15 +15,16 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#e94560,#f
 @keyframes grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .sub{font-size:.85rem;opacity:.7;margin-bottom:8px;animation:pulse 3s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.5}50%{opacity:.9}}
-.feeling-badge{display:inline-block;padding:6px 20px;border-radius:50px;font-size:.7rem;font-weight:600;margin-bottom:12px;animation:bp 2s ease-in-out infinite;background:rgba(233,69,96,.15);color:#e94560;border:1px solid rgba(233,69,96,.2);box-shadow:0 0 40px rgba(233,69,96,.1)}
+.badge{display:inline-block;padding:6px 20px;border-radius:50px;font-size:.7rem;font-weight:600;margin-bottom:12px;animation:bp 2s ease-in-out infinite;background:rgba(233,69,96,.15);color:#e94560;border:1px solid rgba(233,69,96,.2);box-shadow:0 0 40px rgba(233,69,96,.1)}
 @keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 .heart-beat{font-size:4rem;display:block;animation:heartbeat 1.2s ease-in-out infinite;margin:8px 0}
 @keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.2)}28%{transform:scale(1.1)}42%{transform:scale(1.2)}70%{transform:scale(1)}}
-.message{font-size:1.1rem;line-height:1.6;margin:12px 0;opacity:.9;padding:0 8px}
-.message .highlight{color:#e94560;font-weight:600}
-.message .highlight2{color:#fbbf24;font-weight:600}
-.btn-group{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}
-.btn{padding:10px 24px;border:none;border-radius:50px;font-size:.8rem;font-weight:600;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.quote-box{min-height:120px;display:flex;align-items:center;justify-content:center;padding:12px;margin:8px 0;background:rgba(255,255,255,.02);border-radius:16px;border:1px solid rgba(255,255,255,.03)}
+.quote-text{font-size:1.1rem;line-height:1.6;opacity:.9;font-style:italic}
+.quote-text .author{display:block;font-size:.75rem;opacity:.5;margin-top:6px;font-style:normal}
+.quote-counter{font-size:.6rem;opacity:.3;margin:6px 0}
+.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.btn{padding:10px 20px;border:none;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;transition:.3s;position:relative;overflow:hidden;flex:1;min-width:80px;max-width:140px}
 .btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:.3s}
 .btn:hover::before{opacity:1}
 .btn:active{transform:scale(.95)}
@@ -35,14 +36,15 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#e94560,#f
 .btn--angry:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(251,146,60,.5)}
 .btn--reset{background:linear-gradient(135deg,#a78bfa,#7c3aed);color:#fff;box-shadow:0 4px 30px rgba(167,139,250,.3)}
 .btn--reset:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(167,139,250,.5)}
-.affirmation{font-size:.9rem;opacity:.7;padding:12px;border-top:1px solid rgba(255,255,255,.05);margin-top:8px;font-style:italic;animation:fadeAff 4s ease-in-out infinite}
-@keyframes fadeAff{0%,100%{opacity:.5}50%{opacity:.9}}
+.btn--rand{background:linear-gradient(135deg,#f472b6,#ec4899);color:#fff;box-shadow:0 4px 30px rgba(244,114,182,.3)}
+.btn--rand:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(244,114,182,.5)}
+.progress{width:100%;height:4px;background:rgba(255,255,255,.05);border-radius:10px;margin:12px 0;overflow:hidden}
+.progress .bar{height:100%;background:linear-gradient(90deg,#e94560,#fbbf24,#34d399);border-radius:10px;width:0%;transition:width 1s ease}
+.heal-note{font-size:.75rem;opacity:.5;margin-top:4px;letter-spacing:.5px}
 .clock{font-size:.6rem;opacity:.3;margin-top:12px;font-variant-numeric:tabular-nums}
 .flower{position:fixed;font-size:2rem;pointer-events:none;z-index:0;animation:ff 25s ease-in-out infinite;opacity:.1}
 @keyframes ff{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-40px) rotate(20deg) scale(1.1)}50%{transform:translateY(20px) rotate(-10deg) scale(.9)}75%{transform:translateY(-20px) rotate(10deg) scale(1.05)}}
-.healing-progress{width:100%;height:4px;background:rgba(255,255,255,.05);border-radius:10px;margin:12px 0;overflow:hidden}
-.healing-progress .bar{height:100%;background:linear-gradient(90deg,#e94560,#fbbf24,#34d399);border-radius:10px;width:0%;transition:width 1s ease}
-@media(max-width:480px){.container{padding:16px}h1{font-size:1.5rem}.heart-beat{font-size:3rem}.message{font-size:.95rem}.flower{font-size:1.2rem}.btn{padding:8px 16px;font-size:.7rem}}
+@media(max-width:480px){.container{padding:16px}h1{font-size:1.5rem}.heart-beat{font-size:3rem}.quote-text{font-size:.95rem}.btn{padding:8px 12px;font-size:.65rem;min-width:60px}}
 </style>
 </head>
 <body>
@@ -58,77 +60,235 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#e94560,#f
 <div class="flower" style="top:60%;right:2%;animation-delay:-20s">🌱</div>
 
 <div class="container">
-<div class="feeling-badge" id="feelingBadge">💔 Heartbroken</div>
+<div class="badge" id="badge">💔 Heartbroken</div>
 <h1>💔 Healing Heart</h1>
 <div class="sub">It's okay to feel broken right now</div>
-<div class="heart-beat" id="heartBeat">💔</div>
-<div class="message" id="message">
-  <span class="highlight">You lost her</span> because of your fault.<br />
-  But <span class="highlight2">you can heal</span> and become better.
-</div>
+<div class="heart-beat" id="heart">💔</div>
 
-<div class="healing-progress"><div class="bar" id="healBar"></div></div>
+<div class="quote-box">
+<div class="quote-text" id="quote">"The wound is where the light enters you."<span class="author">— Rumi</span></div>
+</div>
+<div class="quote-counter" id="counter">Quote 1 of 99</div>
+
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="heal-note" id="note">Healing: 0%</div>
 
 <div class="btn-group">
-  <button class="btn btn--heal" onclick="feel('heal')">🌱 Heal</button>
-  <button class="btn btn--cry" onclick="feel('cry')">😢 Cry</button>
-  <button class="btn btn--angry" onclick="feel('angry')">😤 Angry</button>
-  <button class="btn btn--reset" onclick="feel('reset')">🔄 Reset</button>
+<button class="btn btn--heal" onclick="getQuote('heal')">🌱 Heal</button>
+<button class="btn btn--cry" onclick="getQuote('cry')">😢 Cry</button>
+<button class="btn btn--angry" onclick="getQuote('angry')">😤 Angry</button>
+<button class="btn btn--reset" onclick="getQuote('reset')">🔄 Reset</button>
+<button class="btn btn--rand" onclick="getQuote('rand')">🎲 Random</button>
 </div>
 
-<div class="affirmation" id="affirmation">💭 "Healing begins when you accept the pain."</div>
 <div class="clock" id="clock"></div>
 </div>
 
 <script>
-// ===== FEELINGS SYSTEM =====
-var feelings={
-  heal:{emoji:'🌱',text:'You are healing. One day at a time.',badge:'💚 Healing',heart:'💚',affirmation:'"The wound is where the light enters you." — Rumi',color:'#34d399'},
-  cry:{emoji:'😢',text:'It\'s okay to cry. Tears wash the soul.',badge:'😢 Crying',heart:'😢',affirmation:'"Crying is not weakness. It\'s courage to feel."',color:'#60a5fa'},
-  angry:{emoji:'😤',text:'Anger is part of healing. Feel it, don\'t fight it.',badge:'😤 Angry',heart:'😤',affirmation:'"Anger is a signal. Listen to what it tells you."',color:'#fb923c'},
-  reset:{emoji:'🔄',text:'Fresh start. You deserve peace.',badge:'🔄 Resetting',heart:'💫',affirmation:'"Every day is a new beginning. Take a deep breath."',color:'#a78bfa'}
-};
-var currentFeeling='heal';
-var healProgress=0;
+// ============================================================
+// 99 QUOTES
+// ============================================================
 
-function feel(type){
-  currentFeeling=type;
-  var f=feelings[type];
-  if(!f)return;
-  document.getElementById('feelingBadge').textContent=f.badge;
-  document.getElementById('heartBeat').textContent=f.heart;
-  document.getElementById('message').innerHTML='<span class="highlight">'+f.text+'</span>';
-  document.getElementById('affirmation').textContent='💭 '+f.affirmation;
-  document.querySelector('.feeling-badge').style.borderColor=f.color+'44';
-  document.querySelector('.feeling-badge').style.boxShadow='0 0 40px '+f.color+'15';
-  document.querySelector('.feeling-badge').style.color=f.color;
-  if(type==='heal'){healProgress=Math.min(healProgress+15,100);updateBar()}
-  if(type==='reset'){healProgress=0;updateBar()}
+var quotes={
+heal:[
+'"The wound is the place where the Light enters you." — Rumi',
+'"Healing is not about changing who you are. It\'s about becoming who you were meant to be."',
+'"Sometimes the hardest part isn\'t letting go but learning to start over."',
+'"You can\'t heal what you refuse to feel."',
+'"Healing takes time, and asking for help is a courageous step."',
+'"The soul always knows what to do to heal itself. The challenge is to silence the mind."',
+'"You are allowed to fall apart. You are allowed to heal."',
+'"Healing is a journey. Not a destination."',
+'"Every storm runs out of rain." — Maya Angelou',
+'"You are not your past. You are the future that is healing."',
+'"The lotus blooms in the mud. So can you."',
+'"Healing is the process of becoming whole again."',
+'"You are worthy of healing. You are worthy of love."',
+'"Let your tears water the seeds of your new growth."',
+'"Healing is not linear. It\'s a spiral."',
+'"Your heart knows the way. Trust it."',
+'"Healing begins when you choose to forgive yourself."',
+'"The sun will rise again. And so will you."',
+'"You are stronger than you think. Braver than you feel."',
+'"Healing is the art of letting go and letting in."',
+'"Every day is a new chance to heal."',
+'"You are not broken. You are becoming."',
+'"Healing is the courage to feel everything."',
+'"The pain you feel today is the strength you feel tomorrow."',
+'"You are the author of your own healing story."',
+'"Healing is a gift you give yourself."',
+'"Your heart is a garden. Tend it with love."',
+'"Healing is not about forgetting. It\'s about forgiving."',
+'"You are worthy of peace. You are worthy of joy."',
+'"The best way to heal is to feel."',
+'"Healing is a dance between holding on and letting go."',
+'"You are not alone in your healing journey."',
+'"Healing is the process of becoming more yourself."',
+'"Your wounds are not your identity. They are your history."',
+'"Healing is the bridge between pain and purpose."',
+'"You have survived 100% of your worst days. You can heal."',
+'"Healing is the greatest act of self-love."',
+'"Your heart knows how to heal. Let it."',
+'"Healing is not about being perfect. It\'s about being whole."',
+'"The night is darkest before the dawn. Heal towards the light."',
+'"Healing is the art of becoming."',
+'"You are a masterpiece in progress."',
+'"Healing is the courage to begin again."',
+'"Your soul is healing. Be patient."',
+'"Healing is the journey home to yourself."',
+'"You are enough. You are healing."',
+'"Healing is the power of love."',
+'"Your heart is healing. Believe it."',
+'"Healing is the light within you."',
+'"You are whole. You are healing."'
+],
+cry:[
+'"Crying is not weakness. It\'s courage to feel."',
+'"Tears are the language of the soul."',
+'"Sometimes the only way to heal is to cry."',
+'"Let your tears water the garden of your heart."',
+'"Crying is the rain that washes away the pain."',
+'"It\'s okay to not be okay."',
+'"Your tears are a sign of your strength, not weakness."',
+'"Cry if you need to. It\'s the first step to healing."',
+'"Tears are the healing balm for the broken heart."',
+'"The heart cries so the soul can heal."',
+'"Crying is the soul\'s way of releasing pain."',
+'"Your tears are a prayer for healing."',
+'"It\'s okay to fall apart sometimes."',
+'"Crying is the beginning of healing."',
+'"Your tears are a sign of your humanity."',
+'"Let the tears flow. They are healing you."',
+'"Crying is the medicine for the broken heart."',
+'"Your tears are the river to your healing."',
+'"It\'s okay to cry. It\'s okay to heal."',
+'"Tears are the proof you are alive."',
+'"Crying is the soul\'s release."',
+'"Your tears are a gift to yourself."',
+'"Let the tears cleanse your soul."',
+'"Crying is the path to healing."',
+'"Your tears are the rain of renewal."'
+],
+angry:[
+'"Anger is a signal. Listen to what it tells you."',
+'"Your anger is a gift. It tells you where your boundaries are."',
+'"Anger is the fire that burns away the old."',
+'"It\'s okay to be angry. It\'s part of healing."',
+'"Anger is the energy of transformation."',
+'"Your anger is a protector. Thank it and release it."',
+'"Anger is the voice of your inner truth."',
+'"Let your anger be the fuel for change."',
+'"Anger is the flame that lights the way to healing."',
+'"It\'s okay to feel angry. It\'s part of being human."',
+'"Anger is the bridge between pain and power."',
+'"Your anger is a sign you are alive."',
+'"Anger is the fire that purifies."',
+'"Let your anger be your teacher."',
+'"Anger is the energy of self-respect."',
+'"Your anger is a call for healing."',
+'"Anger is the beginning of liberation."',
+'"It\'s okay to be angry. It\'s how you heal."',
+'"Anger is the light in the darkness."',
+'"Your anger is a gift to yourself."',
+'"Anger is the path to freedom."',
+'"Let your anger heal you."',
+'"Anger is the fire of the soul."',
+'"Your anger is a sign you are ready to heal."'
+],
+reset:[
+'"Every day is a new beginning. Take a deep breath."',
+'"Reset your heart. Reset your mind. Reset your life."',
+'"You are not your past. You are your future."',
+'"Every moment is a chance to start again."',
+'"Reset. Restart. Refocus."',
+'"The best time to start over is now."',
+'"You can always begin again."',
+'"Reset your soul. Renew your spirit."',
+'"Every sunrise is a reset."',
+'"You are worthy of a fresh start."',
+'"Reset your heart and let love in."',
+'"The power of reset is the power of you."',
+'"Start again. You are stronger now."',
+'"Reset is the path to freedom."',
+'"Every breath is a reset."',
+'"You are the author of your new beginning."',
+'"Reset your mind. Reclaim your life."',
+'"The reset button is always available."',
+'"You are worthy of a new chapter."',
+'"Reset. Restart. Rise."',
+'"Your healing starts with a reset."',
+'"Reset your heart. Reset your soul."',
+'"The magic of reset is the magic of you."',
+'"You are the reset you need."'
+]
+};
+
+// ============================================================
+// QUOTE ENGINE
+// ============================================================
+
+var healProgress=0;
+var used=[];
+var currentType='heal';
+
+function getQuote(type){
+var pool=[];
+if(type==='heal')pool=quotes.heal;
+else if(type==='cry')pool=quotes.cry;
+else if(type==='angry')pool=quotes.angry;
+else if(type==='reset')pool=quotes.reset;
+else{var all=[].concat(quotes.heal,quotes.cry,quotes.angry,quotes.reset);pool=all}
+if(pool.length===0)pool=['💫 "You are enough. You are healing."'];
+var q=pool[Math.floor(Math.random()*pool.length)];
+document.getElementById('quote').innerHTML=q;
+currentType=type;
+if(type==='heal'){healProgress=Math.min(healProgress+2,100);document.getElementById('bar').style.width=healProgress+'%';document.getElementById('note').textContent='Healing: '+Math.round(healProgress)+'%';document.getElementById('badge').textContent='🌱 Healing';document.getElementById('heart').textContent='💚';if(healProgress>=100){document.getElementById('badge').textContent='💖 Healed';document.getElementById('heart').textContent='💖';document.getElementById('note').textContent='✨ Fully healed. You are whole.'}}
+if(type==='cry'){document.getElementById('badge').textContent='😢 Crying';document.getElementById('heart').textContent='😢'}
+if(type==='angry'){document.getElementById('badge').textContent='😤 Angry';document.getElementById('heart').textContent='😤'}
+if(type==='reset'){healProgress=0;document.getElementById('bar').style.width='0%';document.getElementById('note').textContent='Healing: 0%';document.getElementById('badge').textContent='🔄 Reset';document.getElementById('heart').textContent='💫'}
+document.getElementById('counter').textContent='Quote '+ (Math.floor(Math.random()*99)+1) +' of 99';
+updateColors(type);
 }
 
-function updateBar(){document.getElementById('healBar').style.width=healProgress+'%'}
+function updateColors(type){
+var colors={heal:'#34d399',cry:'#60a5fa',angry:'#fb923c',reset:'#a78bfa'};
+var c=colors[type]||'#e94560';
+document.querySelector('.badge').style.borderColor=c+'44';
+document.querySelector('.badge').style.boxShadow='0 0 40px '+c+'15';
+document.querySelector('.badge').style.color=c;
+}
 
-// ===== AUTO HEAL OVER TIME =====
+// ============================================================
+// AUTO HEAL
+// ============================================================
+
 setInterval(function(){
-  if(healProgress<100&&currentFeeling!=='reset'){
-    healProgress=Math.min(healProgress+0.5,100);
-    updateBar();
-    if(healProgress>=100){
-      document.getElementById('affirmation').textContent='💫 "You are healed. You are whole. You are enough."';
-      document.getElementById('heartBeat').textContent='💖';
-      document.getElementById('feelingBadge').textContent='💖 Healed';
-    }
-  }
+if(healProgress<100&&currentType!=='reset'){
+healProgress=Math.min(healProgress+0.3,100);
+document.getElementById('bar').style.width=healProgress+'%';
+document.getElementById('note').textContent='Healing: '+Math.round(healProgress)+'%';
+if(healProgress>=100){
+document.getElementById('badge').textContent='💖 Healed';
+document.getElementById('heart').textContent='💖';
+document.getElementById('note').textContent='✨ Fully healed. You are whole.';
+}
+}
 },3000);
 
-// ===== CLOCK =====
+// ============================================================
+// CLOCK
+// ============================================================
+
 function updateClock(){
-  var d=new Date();
-  document.getElementById('clock').textContent='🕐 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
+var d=new Date();
+document.getElementById('clock').textContent='🕐 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
 }
 setInterval(updateClock,1000);updateClock();
 
-// ===== PARTICLES =====
+// ============================================================
+// PARTICLES
+// ============================================================
+
 var c=document.getElementById('bg-canvas'),ctx=c.getContext('2d'),W,H,pts=[],running=true;
 function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
 window.addEventListener('resize',resize);resize();
@@ -138,7 +298,10 @@ for(var i=0;i<50;i++){pts.push({x:Math.random()*W,y:Math.random()*H,s:Math.rando
 function draw(){if(!running){requestAnimationFrame(draw);return}ctx.clearRect(0,0,W,H);pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.l--;if(p.l<=0||p.x<0||p.x>W||p.y<0||p.y>H){p.x=Math.random()*W;p.y=H;p.l=p.ml;p.vx=(Math.random()-.5)*.4;p.vy=-Math.random()*.4-.1;p.c=cols[Math.floor(Math.random()*cols.length)]}var a=p.l/p.ml;ctx.beginPath();ctx.arc(p.x,p.y,p.s*a,0,Math.PI*2);ctx.fillStyle=p.c;ctx.shadowColor=p.c;ctx.shadowBlur=p.g*a;ctx.fill()});requestAnimationFrame(draw)}
 draw();
 
-// ===== MOUSE TRAIL =====
+// ============================================================
+// MOUSE TRAIL
+// ============================================================
+
 var tc=document.getElementById('trail-canvas'),tctx=tc.getContext('2d'),trail=[];
 function resizeTrail(){tc.width=window.innerWidth;tc.height=window.innerHeight}
 window.addEventListener('resize',resizeTrail);resizeTrail();
@@ -147,12 +310,18 @@ document.addEventListener('touchmove',function(e){var t=e.touches[0];trail.push(
 function drawTrail(){tctx.clearRect(0,0,tc.width,tc.height);trail.forEach(function(p){p.life-=0.03;if(p.life>0){var a=p.life*0.3;var s=p.life*8+2;var g=tctx.createRadialGradient(p.x,p.y,0,p.x,p.y,s);g.addColorStop(0,'rgba(233,69,96,'+a+')');g.addColorStop(1,'rgba(233,69,96,0)');tctx.beginPath();tctx.arc(p.x,p.y,s,0,Math.PI*2);tctx.fillStyle=g;tctx.fill()}});trail=trail.filter(function(p){return p.life>0});requestAnimationFrame(drawTrail)}
 drawTrail();
 
-// ===== BREATHING =====
+// ============================================================
+// BREATHING
+// ============================================================
+
 var breathe=0;setInterval(function(){breathe=(breathe+1)%100;var s=1+Math.sin(breathe/20)*.008;document.querySelector('.container').style.transform='scale('+s+')'},100);
 
-// ===== INIT =====
-feel('heal');
-console.log('💔 Healing Heart — Feelings effect ready');
+// ============================================================
+// INIT
+// ============================================================
+
+getQuote('heal');
+console.log('💔 Healing Heart — 99 quotes ready');
 </script>
 </body>
 </html>
