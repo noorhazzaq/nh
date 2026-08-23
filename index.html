@@ -30,6 +30,11 @@
       box-shadow: inset 2px 2px 0 #15803d;
       transform: translateY(1px);
     }
+    .px-btn-blue {
+      background: #2563eb;
+      border: 2px solid #3b82f6;
+      box-shadow: inset -2px -2px 0 #1d4ed8, inset 2px 2px 0 #60a5fa;
+    }
     #v::-webkit-scrollbar { width: 6px; }
     #v::-webkit-scrollbar-track { background: #020617; }
     #v::-webkit-scrollbar-thumb { background: #4338ca; }
@@ -59,23 +64,38 @@
   <main id="v" class="flex-1 bg-black border-2 border-indigo-900 p-2 overflow-y-auto space-y-2 mb-2">
     <div id="c" class="space-y-2">
       <div class="text-[8px] text-yellow-400 bg-yellow-950/30 p-1.5 border border-yellow-800">
-        [SYS]: Type a custom handle at top-left to rename!
+        [SYS]: Send messages or share pixel images via camera/gallery button!
       </div>
     </div>
   </main>
 
-  <!-- INPUT FORM -->
-  <footer class="shrink-0">
+  <!-- INPUT FORM WITH IMAGE ATTACHMENT -->
+  <footer class="shrink-0 space-y-1">
+    <!-- Image Preview Thumbnail (Hidden by default) -->
+    <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border-2 border-indigo-800">
+      <img id="imgPreview" class="w-8 h-8 object-cover border border-yellow-400" />
+      <span class="text-[7px] text-yellow-300 flex-1">IMAGE ATTACHED</span>
+      <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
+    </div>
+
     <form id="f" class="flex gap-1.5">
+      <!-- Hidden File Input -->
+      <input type="file" id="fileInput" accept="image/*" class="hidden" />
+
+      <!-- Attach Image Button -->
+      <button type="button" id="attachBtn" class="px-btn-blue text-[9px] text-white px-2.5 py-2 font-bold uppercase shrink-0">
+        📷
+      </button>
+
       <input 
         type="text" 
         id="i" 
         placeholder="TYPE..." 
-        required 
         maxlength="200" 
         class="flex-1 bg-slate-900 border-2 border-indigo-800 text-yellow-300 text-[9px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-600"
         autocomplete="off"
       />
+
       <button type="submit" class="px-btn text-[9px] text-white px-3 py-2 font-bold uppercase shrink-0">
         SEND
       </button>
@@ -87,42 +107,109 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, set, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Initialize Database Connection
+    // Initialize Firebase Database Connection
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
-    // Generate Initial User Handle
+    // Setup Username Handle
     const nameInput = document.getElementById('nameInput');
     nameInput.value = `Steve_${Math.floor(100 + Math.random() * 900)}`;
 
     const c = document.getElementById('c');
     const v = document.getElementById('v');
     const i = document.getElementById('i');
+    const fileInput = document.getElementById('fileInput');
+    const attachBtn = document.getElementById('attachBtn');
+    const imgPreviewContainer = document.getElementById('imgPreviewContainer');
+    const imgPreview = document.getElementById('imgPreview');
+    const clearImgBtn = document.getElementById('clearImgBtn');
+    
+    let currentBase64Image = "";
+
+    // Image Upload & Conversion Logic
+    attachBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Compress and resize image client-side to keep lightweight
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxDim = 300; // Resize max dimension to 300px
+          let w = img.width, h = img.height;
+          
+          if (w > h && w > maxDim) {
+            h = Math.round((h * maxDim) / w);
+            w = maxDim;
+          } else if (h > maxDim) {
+            w = Math.round((w * maxDim) / h);
+            h = maxDim;
+          }
+
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          // Get compressed Base64 JPEG
+          currentBase64Image = canvas.toDataURL('image/jpeg', 0.6);
+          imgPreview.src = currentBase64Image;
+          imgPreviewContainer.classList.remove('hidden');
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    clearImgBtn.addEventListener('click', () => {
+      currentBase64Image = "";
+      fileInput.value = "";
+      imgPreviewContainer.classList.add('hidden');
+    });
+
     const chatRef = ref(db, "global_pixel_chat");
 
-    // Realtime Incoming Message Stream
+    // Realtime Incoming Stream
     onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
       const d = snap.val();
-      if (d && d.s && d.t) {
+      if (d && d.s && (d.t || d.img)) {
         const isSelf = d.s === nameInput.value.trim();
         const div = document.createElement('div');
         div.className = 'text-[8px] leading-relaxed break-words';
-        div.innerHTML = `<span class="${isSelf ? 'text-green-400' : 'text-cyan-400'}">${esc(d.s)}:</span> <span class="text-white">${esc(d.t)}</span>`;
+        
+        let imgHtml = d.img ? `<div class="mt-1"><img src="${d.img}" class="max-w-[180px] max-h-[180px] border-2 border-indigo-700 bg-slate-900 p-0.5 object-contain" /></div>` : '';
+        let textHtml = d.t ? `<span class="text-white">${esc(d.t)}</span>` : '';
+
+        div.innerHTML = `<span class="${isSelf ? 'text-green-400' : 'text-cyan-400'}">${esc(d.s)}:</span> ${textHtml}${imgHtml}`;
         c.appendChild(div);
         v.scrollTop = v.scrollHeight;
       }
     });
 
-    // Send Form Event
+    // Send Form Handler
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const txt = i.value.trim();
       const handle = nameInput.value.trim() || 'Steve';
-      if (!txt) return;
+      
+      if (!txt && !currentBase64Image) return;
 
+      const payload = { s: handle, ts: Date.now() };
+      if (txt) payload.t = txt;
+      if (currentBase64Image) payload.img = currentBase64Image;
+
+      // Reset form & image state
       i.value = '';
-      await set(push(chatRef), { s: handle, t: txt, ts: Date.now() });
+      currentBase64Image = "";
+      fileInput.value = "";
+      imgPreviewContainer.classList.add('hidden');
+
+      await set(push(chatRef), payload);
     });
 
     function esc(s) {
