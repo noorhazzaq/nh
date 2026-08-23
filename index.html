@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Realtime Mesh Chat - Real IP Tracker</title>
+  <title>Realtime Mesh Chat - Verified Real IP</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome -->
@@ -25,12 +25,15 @@
       <div>
         <div class="flex items-center space-x-2">
           <h1 class="text-sm font-bold tracking-tight text-white">StreamMesh IP Engine</h1>
-          <span id="socketBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span id="socketStatusText">IP Verified</span>
+          <span id="socketBadge" class="bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
+            <span id="socketDot" class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+            <span id="socketStatusText">Initializing IP...</span>
           </span>
         </div>
-        <p class="text-[11px] text-gray-400">Your IP: <span id="myIpDisplay" class="font-mono text-indigo-300">Fetching...</span> | <span id="activeIpCount" class="font-bold text-white">0</span> Unique IP(s) Online</p>
+        <p class="text-[11px] text-gray-400">
+          Your IP: <span id="myIpDisplay" class="font-mono text-indigo-300">Fetching...</span> | 
+          <span id="activeIpCount" class="font-bold text-white">0</span> Unique Real IP(s) Online
+        </p>
       </div>
     </div>
 
@@ -53,7 +56,7 @@
       <!-- COMPOSER -->
       <footer class="bg-gray-900 border-t border-gray-800 p-3 shrink-0">
         <form id="chatForm" onsubmit="Engine.handleSendMessage(event)" class="flex items-center space-x-2">
-          <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2 text-xs text-gray-100 focus:outline-none focus:border-indigo-500 transition">
+          <input type="text" id="messageInput" placeholder="Type a message..." class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2 text-xs text-gray-100 focus:outline-none focus:border-indigo-500 transition" autocomplete="off">
           <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition">
             <span>Send</span>
             <i class="fa-solid fa-paper-plane text-[10px]"></i>
@@ -76,98 +79,126 @@
   <!-- APPLICATION MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
     import { getDatabase, ref, set, onValue, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Public Firebase Demo Instance Config (Or replace with your config)
+    // Public Firebase Instance
     const firebaseConfig = {
       databaseURL: "https://realtime-mesh-ip-default-rtdb.firebaseio.com"
     };
 
     const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
     const db = getDatabase(app);
 
     const State = {
-      myIp: "Detecting...",
-      sessionId: `session_${Math.random().toString(36).substr(2, 9)}`,
+      myIp: null,
+      sessionId: `session_${Math.random().toString(36).substring(2, 11)}`,
       onlineNodes: new Map(),
       messages: []
     };
 
-    // --- REAL IP DETECTION ENGINE ---
+    // Robust IP Fetcher with 3-Layer Redundancy
     async function fetchRealIP() {
-      try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        return data.ip;
-      } catch (err) {
-        // Fallback IP provider
+      const providers = [
+        async () => (await (await fetch('https://api.ipify.org?format=json')).json()).ip,
+        async () => (await (await fetch('https://ipapi.co/json/')).json()).ip,
+        async () => (await (await fetch('https://api.db-ip.com/v2/free/self')).json()).ipAddress
+      ];
+
+      for (const provider of providers) {
         try {
-          const res = await fetch('https://ipapi.co/json/');
-          const data = await res.json();
-          return data.ip;
-        } catch {
-          return "127.0.0.1";
+          const ip = await provider();
+          if (ip && ip.length >= 7) return ip;
+        } catch (e) {
+          console.warn("IP Provider failed, trying fallback...", e);
         }
       }
+      return "Unavailable (Blocker Active)";
     }
 
-    // --- ENGINE LOGIC ---
+    // Helper: Prevent XSS Injection
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      );
+    }
+
+    // Engine Core
     window.Engine = {
       async init() {
-        // 1. Fetch Real IP from Client Network
-        State.myIp = await fetchRealIP();
-        document.getElementById("myIpDisplay").innerText = State.myIp;
+        try {
+          // Authenticate Anonymously to solve Firebase permission barriers
+          await signInAnonymously(auth);
 
-        // 2. Register Presence in Realtime DB with IP
-        const presenceRef = ref(db, `presence/${State.sessionId}`);
-        const nodeData = {
-          ip: State.myIp,
-          userAgent: navigator.userAgent,
-          lastSeen: serverTimestamp()
-        };
+          // Resolve User Public IP
+          State.myIp = await fetchRealIP();
+          document.getElementById("myIpDisplay").innerText = State.myIp;
 
-        set(presenceRef, nodeData);
-        onDisconnect(presenceRef).remove(); // Auto purge when socket closes
+          UI.setSocketStatus(true, "IP Verified");
 
-        // Heartbeat to keep connection alive
-        setInterval(() => {
-          set(presenceRef, { ...nodeData, lastSeen: Date.now() });
-        }, 10000);
+          if (State.myIp.includes("Unavailable")) return;
 
-        // 3. Listen for Real Online Nodes across the world
-        onValue(ref(db, 'presence'), (snapshot) => {
-          const data = snapshot.val() || {};
-          State.onlineNodes.clear();
-          
-          const now = Date.now();
-          Object.values(data).forEach(node => {
-            // Filter out stale sessions (older than 30s)
-            if (node.lastSeen && (now - node.lastSeen < 30000 || typeof node.lastSeen !== 'number')) {
-              State.onlineNodes.set(node.ip, node);
-            }
+          // Register Session in Firebase Realtime Presence
+          const presenceRef = ref(db, `presence/${State.sessionId}`);
+          const heartbeatData = () => ({
+            ip: State.myIp,
+            sessionId: State.sessionId,
+            lastSeen: serverTimestamp()
           });
 
-          UI.renderRoster();
-        });
+          set(presenceRef, heartbeatData());
+          onDisconnect(presenceRef).remove();
 
-        // 4. Listen for Realtime Messages
-        onValue(ref(db, 'chat_messages'), (snapshot) => {
-          const data = snapshot.val() || {};
-          State.messages = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
-          UI.renderMessages();
-        });
+          // Heartbeat loop (runs every 10 seconds)
+          setInterval(() => {
+            set(presenceRef, heartbeatData());
+          }, 10000);
+
+          // Realtime Listener for Online Nodes
+          onValue(ref(db, 'presence'), (snapshot) => {
+            const data = snapshot.val() || {};
+            State.onlineNodes.clear();
+            const now = Date.now();
+
+            Object.values(data).forEach(node => {
+              if (!node || !node.ip) return;
+              
+              // Normalize Firebase serverTimestamp vs client timestamp comparison
+              const lastSeenTime = typeof node.lastSeen === 'number' ? node.lastSeen : now;
+              
+              // Drop stale sessions older than 25 seconds
+              if (now - lastSeenTime < 25000) {
+                State.onlineNodes.set(node.sessionId, node);
+              }
+            });
+
+            UI.renderRoster();
+          });
+
+          // Realtime Listener for Chat Messages
+          onValue(ref(db, 'chat_messages'), (snapshot) => {
+            const data = snapshot.val() || {};
+            State.messages = Object.values(data).sort((a, b) => a.timestamp - b.timestamp);
+            UI.renderMessages();
+          });
+
+        } catch (err) {
+          console.error("Initialization error:", err);
+          UI.setSocketStatus(false, "Connection Error");
+        }
       },
 
       handleSendMessage(e) {
         e.preventDefault();
         const input = document.getElementById("messageInput");
         const text = input.value.trim();
-        if (!text) return;
+        if (!text || !State.myIp) return;
 
-        const msgRef = ref(db, `chat_messages/msg_${Date.now()}`);
+        const msgRef = ref(db, `chat_messages/msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`);
         set(msgRef, {
           ip: State.myIp,
-          text: text,
+          text: escapeHTML(text),
           timestamp: Date.now(),
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
@@ -176,21 +207,38 @@
       }
     };
 
-    // --- UI RENDERER ---
+    // UI Controller
     window.UI = {
+      setSocketStatus(isOnline, text) {
+        const badge = document.getElementById("socketBadge");
+        const dot = document.getElementById("socketDot");
+        document.getElementById("socketStatusText").innerText = text;
+
+        if (isOnline) {
+          badge.className = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
+          dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
+        } else {
+          badge.className = "bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
+          dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+        }
+      },
+
       renderRoster() {
         const list = document.getElementById("userRosterList");
-        const uniqueIps = Array.from(State.onlineNodes.values());
+        const activeNodes = Array.from(State.onlineNodes.values());
+
+        // Deduplicate unique public IP addresses
+        const uniqueIps = [...new Set(activeNodes.map(n => n.ip))];
 
         document.getElementById("rosterBadge").innerText = uniqueIps.length;
         document.getElementById("activeIpCount").innerText = uniqueIps.length;
 
-        list.innerHTML = uniqueIps.map(node => `
+        list.innerHTML = uniqueIps.map(ip => `
           <div class="p-2 bg-gray-950 border border-gray-800 rounded-lg flex items-center justify-between">
             <div class="flex items-center space-x-2">
               <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-              <span class="font-mono text-xs font-semibold ${node.ip === State.myIp ? 'text-indigo-400' : 'text-gray-200'}">
-                ${node.ip} ${node.ip === State.myIp ? '(You)' : ''}
+              <span class="font-mono text-xs font-semibold ${ip === State.myIp ? 'text-indigo-400' : 'text-gray-200'}">
+                ${ip} ${ip === State.myIp ? '(You)' : ''}
               </span>
             </div>
             <span class="text-[9px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded font-mono">Verified IP</span>
