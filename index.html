@@ -51,7 +51,6 @@
       padding: 0.5rem;
       overflow: hidden;
     }
-    /* ===== CHAT CONTAINER ===== */
     .chat-container {
       max-width: 900px;
       width: 100%;
@@ -65,7 +64,6 @@
       overflow: hidden;
       position: relative;
     }
-    /* ===== HEADER ===== */
     .chat-header {
       padding: 1rem 1.5rem;
       background: var(--bg-header);
@@ -142,7 +140,6 @@
     .auth-section button.logout-btn:hover {
       background: #3d3d5c;
     }
-    /* ===== MESSAGES AREA ===== */
     .messages-area {
       flex: 1;
       overflow-y: auto;
@@ -170,7 +167,6 @@
       padding: 0.5rem;
       font-style: italic;
     }
-    /* ===== MESSAGES ===== */
     .message {
       padding: 0.5rem 1rem;
       border-radius: 1.2rem;
@@ -255,7 +251,42 @@
       max-width: 150px;
       height: 30px;
     }
-    /* ===== INPUT AREA ===== */
+    .message .text .poll {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 1rem;
+      border-radius: 0.8rem;
+      margin: 0.2rem 0;
+    }
+    .message .text .poll .poll-option {
+      padding: 0.2rem 0.5rem;
+      margin: 0.1rem 0;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 0.3rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .message .text .poll .poll-option:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .message .text .poll .poll-option .vote-bar {
+      height: 4px;
+      background: var(--accent);
+      border-radius: 2px;
+      margin-top: 0.1rem;
+      transition: width 0.3s ease;
+    }
+    .message .text pre {
+      background: #0f0e17;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      max-width: 100%;
+    }
+    .message .text pre code {
+      font-family: 'Courier New', monospace;
+      color: #a7a9be;
+    }
     .input-area {
       padding: 0.75rem 1rem 1rem;
       background: var(--bg-header);
@@ -316,7 +347,6 @@
     .input-row button.icon-btn:hover:not(:disabled) {
       background: #3d3d5c;
     }
-    /* ===== TOOLBAR ===== */
     .toolbar {
       display: flex;
       gap: 0.3rem;
@@ -335,16 +365,19 @@
       font-weight: 500;
       opacity: 0.8;
     }
-    .toolbar button:hover {
+    .toolbar button:hover:not(:disabled) {
       opacity: 1;
       transform: scale(1.05);
       background: var(--accent);
+    }
+    .toolbar button:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
     }
     .toolbar button.active {
       background: var(--accent);
       opacity: 1;
     }
-    /* ===== EMOJI PICKER ===== */
     .emoji-picker {
       display: none;
       flex-wrap: wrap;
@@ -371,7 +404,6 @@
       background: var(--msg-other);
       transform: scale(1.2);
     }
-    /* ===== STICKER PICKER ===== */
     .sticker-picker {
       display: none;
       flex-wrap: wrap;
@@ -398,7 +430,19 @@
       background: var(--msg-other);
       transform: scale(1.15);
     }
-    /* ===== ANIMATIONS ===== */
+    .recording-indicator {
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      background: var(--accent);
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      animation: pulse 1s ease-in-out infinite;
+    }
+    .recording-indicator.active {
+      display: flex;
+    }
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -427,7 +471,6 @@
       opacity: 0.7;
       animation: pulse 1.2s ease-in-out infinite;
     }
-    /* ===== RESPONSIVE ===== */
     @media (max-width: 600px) {
       .chat-container {
         height: 100vh;
@@ -522,6 +565,11 @@
         <button data-action="strike"><s>S</s></button>
       </div>
 
+      <div class="recording-indicator" id="recordingIndicator">
+        🔴 Recording...
+        <button id="stopRecordingBtn" style="background:transparent;border:none;color:#fff;cursor:pointer;">⏹️</button>
+      </div>
+
       <div class="emoji-picker" id="emojiPicker">
         <button>😊</button><button>😂</button><button>🤣</button><button>❤️</button>
         <button>🔥</button><button>👍</button><button>👎</button><button>🙏</button>
@@ -531,6 +579,7 @@
         <button>🥳</button><button>😤</button><button>🤯</button><button>😱</button>
         <button>🍕</button><button>🌮</button><button>🍔</button><button>☕</button>
         <button>🏆</button><button>🎯</button><button>💯</button><button>🔮</button>
+        <button>💔</button><button>💝</button><button>💖</button><button>💗</button>
       </div>
 
       <div class="sticker-picker" id="stickerPicker">
@@ -539,13 +588,14 @@
         <button>🐵</button><button>🦄</button><button>🐉</button><button>🐲</button>
         <button>🚀</button><button>🛸</button><button>👽</button><button>🤖</button>
         <button>🎃</button><button>👻</button><button>💀</button><button>👾</button>
+        <button>⭐</button><button>🌙</button><button>☀️</button><button>🌈</button>
       </div>
 
       <div class="input-row">
         <input type="text" id="messageInput" placeholder="Type a message..." disabled />
         <button id="sendBtn" disabled>Send</button>
         <button id="fileInputBtn" class="icon-btn" disabled>📎</button>
-        <input type="file" id="fileInput" accept="image/*,video/*" style="display:none" />
+        <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" />
       </div>
     </div>
   </div>
@@ -582,6 +632,8 @@
       stickerPicker: document.getElementById('stickerPicker'),
       fileInput: document.getElementById('fileInput'),
       fileBtn: document.getElementById('fileInputBtn'),
+      recordingIndicator: document.getElementById('recordingIndicator'),
+      stopRecording: document.getElementById('stopRecordingBtn'),
     };
 
     // ============================================================
@@ -589,8 +641,9 @@
     // ============================================================
     let currentUser = null;
     let listeners = [];
-    let typingTimeout = null;
-    let isTyping = false;
+    let mediaRecorder = null;
+    let audioChunks = [];
+    let pollVotes = {};
 
     // ============================================================
     // 4. CORE FUNCTIONS
@@ -621,8 +674,27 @@
       return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     }
 
+    function getFileType(file) {
+      if (file.type.startsWith('image/')) return 'image';
+      if (file.type.startsWith('video/')) return 'video';
+      if (file.type.startsWith('audio/')) return 'audio';
+      return 'file';
+    }
+
     // ============================================================
-    // 5. MESSAGE RENDERER
+    // 5. FILE STORAGE (Upload to Firebase Storage)
+    // ============================================================
+    async function uploadFile(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => resolve(e.target.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ============================================================
+    // 6. MESSAGE RENDERER
     // ============================================================
     function renderMessage(data) {
       const isOwn = currentUser && data.uid === currentUser.uid;
@@ -643,53 +715,61 @@
       // Content
       const content = document.createElement('div');
       content.className = 'text';
-
       let html = data.text || '';
 
-      // Auto-detect content types
+      // Parse message types
       if (html.startsWith('📸 ')) {
-        // Image
         const url = html.substring(4);
-        html = `<img src="${url}" alt="Image" loading="lazy" />`;
+        html = `<img src="${url}" alt="Image" loading="lazy" onerror="this.style.display='none'" />`;
       } else if (html.startsWith('🎬 ')) {
-        // Video
         const url = html.substring(4);
-        html = `<video controls src="${url}" preload="metadata"></video>`;
+        if (url.startsWith('http')) {
+          html = `<video controls src="${url}" preload="metadata"></video>`;
+        } else {
+          html = `<video controls src="${url}" preload="metadata"></video>`;
+        }
       } else if (html.startsWith('🎤 ')) {
-        // Voice
         const url = html.substring(4);
         html =
           `<div class="voice-msg">🎤 <audio controls src="${url}"></audio></div>`;
       } else if (html.startsWith('📍 ')) {
-        // Location
         const coords = html.substring(4);
         html =
           `<div class="location">📍 <a href="https://maps.google.com/maps?q=${coords}" target="_blank">${coords}</a></div>`;
       } else if (html.startsWith('📊 ')) {
-        // Poll
-        const options = html.substring(4).split('|');
-        let pollHtml = '<div class="location" style="background:rgba(255,255,255,0.05);padding:0.5rem;">📊 Poll:<br/>';
+        const pollData = html.substring(4);
+        const parts = pollData.split('|');
+        const question = parts[0] || 'Poll';
+        const options = parts.slice(1);
+        const pollId = data._key;
+
+        let pollHtml =
+          `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(question)}</strong><br/>`;
         options.forEach((opt, i) => {
-          pollHtml += `&nbsp;&nbsp;${i+1}. ${opt}<br/>`;
+          const votes = pollVotes[pollId]?.[i] || 0;
+          const total = pollVotes[pollId]?.total || 1;
+          const pct = Math.round((votes / total) * 100);
+          pollHtml += `
+                  <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
+                    ${escapeHTML(opt)} (${votes} votes)
+                    <div class="vote-bar" style="width:${pct}%"></div>
+                  </div>
+                `;
         });
         pollHtml += '</div>';
         html = pollHtml;
       } else if (html.startsWith('💻 ')) {
-        // Code
         const code = html.substring(4);
-        html =
-          `<pre style="background:#0f0e17;padding:0.5rem;border-radius:0.5rem;overflow-x:auto;font-size:0.8rem;"><code>${escapeHTML(code)}</code></pre>`;
+        html = `<pre><code>${escapeHTML(code)}</code></pre>`;
       } else if (html.startsWith('🎬 GIF: ')) {
-        // GIF
         const url = html.substring(8);
-        html = `<img class="gif" src="${url}" alt="GIF" loading="lazy" />`;
+        html = `<img class="gif" src="${url}" alt="GIF" loading="lazy" onerror="this.style.display='none'" />`;
       } else if (html.startsWith('🎨 ')) {
-        // Sticker
         const emoji = html.substring(4);
         html = `<span class="sticker">${emoji}</span>`;
       }
 
-      // Bold / Italic / Strike (simple markdown)
+      // Markdown
       html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
       html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
       html = html.replace(/~~(.*?)~~/g, '<s>$1</s>');
@@ -697,16 +777,105 @@
       content.innerHTML = html;
       div.appendChild(content);
 
-      // Remove status on first message
+      // Remove status
       const status = DOM.messages.querySelector('.status');
       if (status) status.remove();
 
       DOM.messages.appendChild(div);
       scrollBottom();
+
+      // Poll vote handlers
+      div.querySelectorAll('.poll-option').forEach(el => {
+        el.addEventListener('click', () => {
+          const pollId = el.dataset.pollId;
+          const option = parseInt(el.dataset.option);
+          votePoll(pollId, option);
+        });
+      });
     }
 
     // ============================================================
-    // 6. FIREBASE SUBSCRIPTIONS
+    // 7. POLL SYSTEM
+    // ============================================================
+    function votePoll(pollId, optionIndex) {
+      if (!currentUser) return;
+      const voteKey = `poll_${pollId}`;
+      const userVoteRef = db.ref('polls/' + pollId + '/votes/' + currentUser.uid);
+
+      userVoteRef.once('value', (snap) => {
+        if (snap.exists()) {
+          alert('You already voted on this poll!');
+          return;
+        }
+        userVoteRef.set(optionIndex);
+        // Update local votes
+        if (!pollVotes[pollId]) pollVotes[pollId] = {};
+        pollVotes[pollId][optionIndex] = (pollVotes[pollId][optionIndex] || 0) + 1;
+        pollVotes[pollId].total = (pollVotes[pollId].total || 0) + 1;
+        // Re-render the poll
+        const pollEl = document.querySelector(`[data-poll-id="${pollId}"]`);
+        if (pollEl) {
+          const messageEl = pollEl.closest('.message');
+          if (messageEl) {
+            const data = {
+              text: messageEl.querySelector('.text').innerHTML,
+              _key: pollId
+            };
+            // Refresh the poll display
+            renderPoll(pollId);
+          }
+        }
+      });
+    }
+
+    function renderPoll(pollId) {
+      const pollEl = document.querySelector(`[data-poll-id="${pollId}"]`);
+      if (!pollEl) return;
+      const messageEl = pollEl.closest('.message');
+      if (!messageEl) return;
+
+      // Re-fetch poll data from Firebase
+      db.ref('polls/' + pollId).once('value', (snap) => {
+        const data = snap.val();
+        if (!data) return;
+        const votes = data.votes || {};
+        const total = Object.keys(votes).length;
+        const options = data.options || [];
+
+        let html = `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(data.question)}</strong><br/>`;
+        const counts = {};
+        Object.values(votes).forEach(v => {
+          counts[v] = (counts[v] || 0) + 1;
+        });
+
+        options.forEach((opt, i) => {
+          const count = counts[i] || 0;
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+          html += `
+                  <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
+                    ${escapeHTML(opt)} (${count} votes)
+                    <div class="vote-bar" style="width:${pct}%"></div>
+                  </div>
+                `;
+        });
+        html += '</div>';
+
+        const content = messageEl.querySelector('.text');
+        content.innerHTML = html;
+
+        // Re-attach vote handlers
+        messageEl.querySelectorAll('.poll-option').forEach(el => {
+          el.addEventListener('click', () => {
+            const pid = el.dataset.pollId;
+            const opt = parseInt(el.dataset.option);
+            votePoll(pid, opt);
+          });
+        });
+      });
+    }
+
+    // ============================================================
+    // 8. FIREBASE SUBSCRIPTIONS
     // ============================================================
     function subscribeMessages() {
       listeners.forEach(ref => ref.off());
@@ -731,7 +900,13 @@
         if (!snap.exists()) setStatus('💬 No messages yet. Say hello!');
       });
 
-      // Presence
+      // Poll votes subscription
+      const pollRef = db.ref('polls');
+      pollRef.on('child_changed', (snap) => {
+        renderPoll(snap.key);
+      });
+      listeners.push(pollRef);
+
       setupPresence();
     }
 
@@ -755,18 +930,37 @@
     }
 
     // ============================================================
-    // 7. SEND MESSAGE
+    // 9. SEND MESSAGE
     // ============================================================
     function sendMessage(text) {
       if (!currentUser) { alert('Sign in first!'); return; }
       if (!text || !text.trim()) return;
 
-      db.ref('messages').push({
+      const msgData = {
         name: currentUser.name,
         uid: currentUser.uid,
         text: text.trim(),
         timestamp: firebase.database.ServerValue.TIMESTAMP
-      }).catch(err => {
+      };
+
+      // If it's a poll, store poll data separately
+      if (text.startsWith('📊 ')) {
+        const pollData = text.substring(4);
+        const parts = pollData.split('|');
+        const question = parts[0];
+        const options = parts.slice(1);
+        if (options.length >= 2) {
+          const pollId = db.ref('messages').push().key;
+          db.ref('polls/' + pollId).set({
+            question: question,
+            options: options,
+            votes: {}
+          });
+          msgData.text = `📊 ${question}|${options.join('|')}`;
+        }
+      }
+
+      db.ref('messages').push(msgData).catch(err => {
         console.error('Send error:', err);
         alert('Failed to send. Check connection.');
       });
@@ -776,26 +970,69 @@
     }
 
     // ============================================================
-    // 8. FILE HANDLING (Image/Video/Voice)
+    // 10. FILE HANDLING
     // ============================================================
-    function handleFile(file) {
+    async function handleFile(file) {
       if (!currentUser) { alert('Sign in first!'); return; }
 
-      const type = file.type;
-      let prefix = '📸 ';
-      if (type.startsWith('video/')) prefix = '🎬 ';
-      else if (type.startsWith('audio/')) prefix = '🎤 ';
+      try {
+        const type = getFileType(file);
+        let prefix = '📸 ';
+        if (type === 'video') prefix = '🎬 ';
+        else if (type === 'audio') prefix = '🎤 ';
 
-      // Read as data URL (for demo - in production use Firebase Storage)
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        sendMessage(prefix + e.target.result);
-      };
-      reader.readAsDataURL(file);
+        // Convert to base64
+        const dataUrl = await uploadFile(file);
+        sendMessage(prefix + dataUrl);
+      } catch (err) {
+        console.error('File upload error:', err);
+        alert('Failed to upload file.');
+      }
     }
 
     // ============================================================
-    // 9. AUTH
+    // 11. VOICE RECORDING
+    // ============================================================
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+
+        mediaRecorder.ondataavailable = (event) => {
+          audioChunks.push(event.data);
+        };
+
+        mediaRecorder.onstop = async () => {
+          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+          const file = new File([audioBlob], 'voice.webm', { type: 'audio/webm' });
+          await handleFile(file);
+          DOM.recordingIndicator.classList.remove('active');
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+        DOM.recordingIndicator.classList.add('active');
+        DOM.input.disabled = true;
+        DOM.send.disabled = true;
+
+      } catch (err) {
+        console.error('Recording error:', err);
+        alert('Could not access microphone. Please allow microphone access.');
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        mediaRecorder.stop();
+        DOM.recordingIndicator.classList.remove('active');
+        DOM.input.disabled = false;
+        DOM.send.disabled = false;
+      }
+    }
+
+    // ============================================================
+    // 12. AUTH
     // ============================================================
     function login() {
       const name = DOM.username.value.trim() || 'Guest';
@@ -811,6 +1048,9 @@
       DOM.send.disabled = false;
       DOM.fileBtn.disabled = false;
       DOM.input.placeholder = `Message as ${name}...`;
+
+      // Enable toolbar buttons
+      DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = false);
 
       setStatus(`✅ Signed in as ${name}`);
       DOM.messages.innerHTML = '';
@@ -831,13 +1071,17 @@
       DOM.fileBtn.disabled = true;
       DOM.input.placeholder = 'Sign in to chat...';
       DOM.input.value = '';
+
+      // Disable toolbar buttons
+      DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
       DOM.messages.innerHTML = '';
       setStatus('👋 You left the chat. Sign in to rejoin.');
       DOM.online.textContent = '👤 0 online';
     }
 
     // ============================================================
-    // 10. TOOLBAR ACTIONS
+    // 13. TOOLBAR ACTIONS
     // ============================================================
     function togglePicker(type) {
       const pickers = {
@@ -848,18 +1092,19 @@
       if (!picker) return;
 
       const isOpen = picker.classList.contains('open');
-      // Close all
       Object.values(pickers).forEach(p => p.classList.remove('open'));
       if (!isOpen) picker.classList.add('open');
     }
 
     // ============================================================
-    // 11. EVENT BINDINGS
+    // 14. EVENT BINDINGS
     // ============================================================
     // Auth
     DOM.login.addEventListener('click', login);
     DOM.logout.addEventListener('click', logout);
-    DOM.username.addEventListener('keydown', (e) => { if (e.key === 'Enter') login(); });
+    DOM.username.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') login();
+    });
 
     // Send
     DOM.send.addEventListener('click', () => sendMessage(DOM.input.value));
@@ -872,12 +1117,23 @@
 
     // File input
     DOM.fileBtn.addEventListener('click', () => DOM.fileInput.click());
-    DOM.fileInput.addEventListener('change', (e) => {
+    DOM.fileInput.addEventListener('change', async (e) => {
       if (e.target.files.length) {
-        handleFile(e.target.files[0]);
+        await handleFile(e.target.files[0]);
         e.target.value = '';
       }
     });
+
+    // Voice recording
+    DOM.toolbar.querySelector('[data-action="voice"]').addEventListener('click', () => {
+      if (mediaRecorder && mediaRecorder.state === 'recording') {
+        stopRecording();
+      } else {
+        startRecording();
+      }
+    });
+
+    DOM.stopRecording.addEventListener('click', stopRecording);
 
     // Toolbar
     DOM.toolbar.addEventListener('click', (e) => {
@@ -893,7 +1149,7 @@
           togglePicker('sticker');
           break;
         case 'gif':
-          const gifUrl = prompt('Enter GIF URL:');
+          const gifUrl = prompt('Enter GIF URL (e.g., https://media.giphy.com/media/xxx/giphy.gif):');
           if (gifUrl) sendMessage('🎬 GIF: ' + gifUrl);
           break;
         case 'image':
@@ -903,13 +1159,7 @@
           DOM.fileInput.click();
           break;
         case 'voice':
-          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            alert('Voice recording: Click OK to start recording (demo)');
-            // In production, use MediaRecorder API
-            DOM.fileInput.click();
-          } else {
-            alert('Voice recording not supported in this browser.');
-          }
+          // Handled above
           break;
         case 'location':
           if (navigator.geolocation) {
@@ -918,34 +1168,43 @@
                 const coords = `${pos.coords.latitude},${pos.coords.longitude}`;
                 sendMessage('📍 ' + coords);
               },
-              () => alert('Location access denied.')
+              () => alert('Location access denied. Please enable location services.')
             );
           } else {
-            alert('Geolocation not supported.');
+            alert('Geolocation is not supported by your browser.');
           }
           break;
         case 'poll':
-          const options = prompt('Enter poll options (comma separated):');
-          if (options) {
-            const opts = options.split(',').map(o => o.trim()).filter(o => o);
-            if (opts.length >= 2) sendMessage('📊 ' + opts.join('|'));
+          const question = prompt('Enter poll question:');
+          if (question) {
+            const options = prompt('Enter poll options (comma separated, min 2):');
+            if (options) {
+              const opts = options.split(',').map(o => o.trim()).filter(o => o);
+              if (opts.length >= 2) {
+                sendMessage('📊 ' + question + '|' + opts.join('|'));
+              } else {
+                alert('Please enter at least 2 options.');
+              }
+            }
           }
           break;
         case 'code':
-          const code = prompt('Enter code:');
+          const code = prompt('Enter your code:');
           if (code) sendMessage('💻 ' + code);
           break;
         case 'bold':
-          DOM.input.value += ' **bold** ';
+          DOM.input.value += ' **bold text** ';
           DOM.input.focus();
           break;
         case 'italic':
-          DOM.input.value += ' *italic* ';
+          DOM.input.value += ' *italic text* ';
           DOM.input.focus();
           break;
         case 'strike':
-          DOM.input.value += ' ~~strike~~ ';
+          DOM.input.value += ' ~~strikethrough text~~ ';
           DOM.input.focus();
+          break;
+        default:
           break;
       }
     });
@@ -969,7 +1228,7 @@
       }
     });
 
-    // Click outside to close pickers
+    // Close pickers on outside click
     document.addEventListener('click', (e) => {
       if (!e.target.closest('.input-area')) {
         DOM.emojiPicker.classList.remove('open');
@@ -978,8 +1237,11 @@
     });
 
     // ============================================================
-    // 12. INIT
+    // 15. INIT
     // ============================================================
+    // Disable toolbar initially
+    DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
     setStatus('🌐 Connecting...');
     subscribeMessages();
 
