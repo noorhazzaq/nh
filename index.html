@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel World Chat</title>
+  <title>Pixel World Chat (64kbps Mode)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
@@ -79,7 +79,7 @@
   <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-1 z-10">
     <div id="c" class="space-y-2 text-[8px]">
       <div class="text-[7px] text-yellow-300 bg-yellow-950/50 p-1.5 border border-yellow-500/50 glow-yellow animate-pop">
-        ✨ Pixel Chat Ready! Type <span class="text-white font-bold">/help</span> for commands.
+        ⚡ 64kbps Ultra-Low Bandwidth Mode Active!
       </div>
     </div>
   </main>
@@ -101,19 +101,19 @@
     </div>
 
     <div id="voicePreviewContainer" class="hidden flex items-center gap-2 bg-purple-950 p-1 border border-purple-500 text-[6px]">
-      <span class="text-purple-300 animate-pulse">🎙️ VOICE READY</span>
+      <span class="text-purple-300 animate-pulse">🎙️ SYNTH MELODY READY</span>
       <button type="button" id="clearVoiceBtn" class="text-[8px] text-red-400 font-bold px-1 ml-auto">X</button>
     </div>
 
     <div class="flex items-center gap-1 bg-slate-900 p-1 border border-indigo-800 text-[6px] flex-wrap">
       <select id="prioritySelect" class="bg-black border border-yellow-500 text-yellow-400 font-bold p-0.5">
-        <option value="NORMAL">PRIO: NORM</option><option value="HIGH">PRIO: HIGH</option>
+        <option value="N">PRIO: NORM</option><option value="H">PRIO: HIGH</option>
       </select>
       <select id="sfxSelect" class="bg-black border border-indigo-500 text-yellow-300 p-0.5">
-        <option value="beep">SFX: BEEP</option><option value="coin">SFX: COIN</option>
+        <option value="b">SFX: BEEP</option><option value="c">SFX: COIN</option>
       </select>
       <select id="stickerSelect" class="bg-black border border-indigo-500 text-cyan-300 p-0.5">
-        <option value="">STICKER: NONE</option><option value="pixel_heart">💖 HEART</option><option value="pixel_sword">⚔️ SWORD</option>
+        <option value="">STICKER: NONE</option><option value="h">💖 HEART</option><option value="s">⚔️ SWORD</option>
       </select>
       <label class="flex items-center gap-0.5 text-slate-300 cursor-pointer ml-auto">
         <input type="checkbox" id="spoilerCheck" />
@@ -124,11 +124,11 @@
     <form id="f" class="flex gap-1">
       <input type="file" id="fileInput" accept="image/*" class="hidden" />
       <button type="button" id="attachBtn" class="bg-indigo-700 border border-indigo-400 text-[8px] text-white px-2 py-2">📷</button>
-      <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2">🎙️</button>
+      <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2">🎵</button>
 
       <div class="relative flex-1">
-        <input type="text" id="i" placeholder="TYPE MESSAGE..." maxlength="200" class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[8px] p-2 pr-8 focus:outline-none glow-yellow" autocomplete="off" />
-        <span id="charCounter" class="absolute right-2 top-2 text-[6px] text-slate-500">0/200</span>
+        <input type="text" id="i" placeholder="TYPE MESSAGE..." maxlength="160" class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[8px] p-2 pr-8 focus:outline-none glow-yellow" autocomplete="off" />
+        <span id="charCounter" class="absolute right-2 top-2 text-[6px] text-slate-500">0/160</span>
       </div>
 
       <button type="submit" id="sendBtn" class="px-btn text-[8px] text-white px-2.5 py-2 font-bold uppercase">SEND</button>
@@ -143,11 +143,11 @@
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
-    const USER_ID = `usr_${Math.random().toString(36).substring(2, 9)}`;
+    const USER_ID = `u_${Math.random().toString(36).substring(2, 7)}`;
 
     // DOM References
     const nameInput = document.getElementById('nameInput');
-    nameInput.value = `Player_${Math.floor(100 + Math.random() * 900)}`;
+    nameInput.value = `P_${Math.floor(10 + Math.random() * 90)}`;
     const avatarSelect = document.getElementById('avatarSelect');
     const badgeSelect = document.getElementById('badgeSelect');
     const prioritySelect = document.getElementById('prioritySelect');
@@ -165,7 +165,7 @@
     const pinnedBanner = document.getElementById('pinnedBanner'), pinnedContent = document.getElementById('pinnedContent');
     const searchInput = document.getElementById('searchInput'), typingIndicator = document.getElementById('typingIndicator');
 
-    let currentBase64Image = "", currentVoiceNote = null, replyParentId = null, audioMuted = false, coinsMined = 0;
+    let currentBase64Image = "", currentSynthMelody = null, replyParentId = null, audioMuted = false, coinsMined = 0;
 
     themeSelect.addEventListener('change', e => document.getElementById('appBody').className = `h-full text-white flex flex-col p-2 bg-slate-950 select-none overflow-hidden relative ${e.target.value}`);
     audioToggleBtn.addEventListener('click', () => audioToggleBtn.textContent = (audioMuted = !audioMuted) ? '🔇' : '🔊');
@@ -174,27 +174,31 @@
     document.getElementById('closeGameBtn').addEventListener('click', () => document.getElementById('miniGamePanel').classList.add('hidden'));
     document.getElementById('mineCoinBtn').addEventListener('click', () => {
       document.getElementById('coinScore').textContent = `${++coinsMined} COINS`;
-      playCustomSFX('coin');
+      playCustomSFX('c');
     });
 
-    // Realtime Typing Engine with disconnect cleanup fix
+    // Throttled typing notification (4s interval to preserve data)
     const typingRef = ref(db, `typing/${USER_ID}`);
     onDisconnect(typingRef).remove();
-    let typingTimer = null;
+    let typingTimer = null, lastTypingSent = 0;
 
     i.addEventListener('input', () => {
-      charCounter.textContent = `${i.value.length}/200`;
-      set(typingRef, { handle: nameInput.value.trim() });
+      charCounter.textContent = `${i.value.length}/160`;
+      const now = Date.now();
+      if (now - lastTypingSent > 4000) {
+        set(typingRef, { h: nameInput.value.trim() });
+        lastTypingSent = now;
+      }
       clearTimeout(typingTimer);
-      typingTimer = setTimeout(() => set(typingRef, null), 1500);
+      typingTimer = setTimeout(() => { set(typingRef, null); lastTypingSent = 0; }, 2000);
     });
 
     onValue(ref(db, 'typing'), snap => {
       const data = snap.val();
       if (data) {
-        const typers = Object.values(data).filter(t => t && t.handle !== nameInput.value.trim());
+        const typers = Object.values(data).filter(t => t && t.h !== nameInput.value.trim());
         if (typers.length > 0) {
-          typingIndicator.textContent = `💬 ${typers[0].handle} is typing...`;
+          typingIndicator.textContent = `💬 ${typers[0].h} is typing...`;
           typingIndicator.classList.remove('hidden');
           return;
         }
@@ -202,7 +206,7 @@
       typingIndicator.classList.add('hidden');
     });
 
-    // Audio Engine safely initialized
+    // Audio Engine
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -210,14 +214,14 @@
     }
     window.addEventListener('pointerdown', initAudio, { once: true });
 
-    function playCustomSFX(type = 'beep') {
+    function playCustomSFX(type = 'b') {
       if (audioMuted) return;
       initAudio();
       if (!audioCtx || audioCtx.state !== 'running') return;
       try {
         const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
         osc.connect(gain); gain.connect(audioCtx.destination);
-        if (type === 'coin') {
+        if (type === 'c') {
           osc.type = 'sine'; osc.frequency.setValueAtTime(987.77, audioCtx.currentTime);
           osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08);
           gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
@@ -232,38 +236,37 @@
       } catch (err) {}
     }
 
-    // Voice Engine
-    let mediaRecorder = null, audioChunks = [], isRecording = false;
-    document.getElementById('voiceNoteBtn').addEventListener('click', async () => {
+    function playSynthMelody(notes) {
+      if (audioMuted || !notes || !Array.isArray(notes)) return;
       initAudio();
-      if (!isRecording) {
-        if (navigator.mediaDevices?.getUserMedia) {
-          try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorder = new MediaRecorder(stream); audioChunks = [];
-            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
-            mediaRecorder.onstop = () => {
-              const r = new FileReader();
-              r.onloadend = () => { currentVoiceNote = r.result; voicePreviewContainer.classList.remove('hidden'); };
-              r.readAsDataURL(new Blob(audioChunks, { type: 'audio/webm' }));
-              stream.getTracks().forEach(t => t.stop());
-            };
-            mediaRecorder.start(); isRecording = true;
-            document.getElementById('voiceNoteBtn').textContent = '⏹️';
-            return;
-          } catch (e) {}
-        }
-      } else {
-        if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-        isRecording = false; document.getElementById('voiceNoteBtn').textContent = '🎙️';
-      }
+      if (!audioCtx || audioCtx.state !== 'running') return;
+      notes.forEach((freq, idx) => {
+        try {
+          const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+          osc.connect(gain); gain.connect(audioCtx.destination);
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
+          gain.gain.setValueAtTime(0.05, audioCtx.currentTime + idx * 0.12);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.12 + 0.1);
+          osc.start(audioCtx.currentTime + idx * 0.12);
+          osc.stop(audioCtx.currentTime + idx * 0.12 + 0.1);
+        } catch(e) {}
+      });
+    }
+
+    // 64kbps Safe "Voice Note" (Synthesizer Chords, ~30 bytes total)
+    document.getElementById('voiceNoteBtn').addEventListener('click', () => {
+      const presets = [[523, 659, 783], [440, 554, 659], [349, 440, 523], [392, 493, 587]];
+      currentSynthMelody = presets[Math.floor(Math.random() * presets.length)];
+      voicePreviewContainer.classList.remove('hidden');
+      playSynthMelody(currentSynthMelody);
     });
 
     document.getElementById('clearVoiceBtn').addEventListener('click', () => {
-      currentVoiceNote = null; voicePreviewContainer.classList.add('hidden');
+      currentSynthMelody = null; voicePreviewContainer.classList.add('hidden');
     });
 
-    // File Handler with Auto-Canvas Compressor
+    // Highly Compressed Micro Canvas Downscaler (Max 80px, Q=0.20 -> ~1.5KB output)
     document.getElementById('attachBtn').addEventListener('click', () => fileInput.click());
     fileInput.addEventListener('change', e => {
       const file = e.target.files[0];
@@ -274,12 +277,12 @@
         img.onload = () => {
           const cvs = document.createElement('canvas');
           let w = img.width, h = img.height;
-          if (w > 200) { h = Math.round((h * 200) / w); w = 200; }
+          if (w > 80) { h = Math.round((h * 80) / w); w = 80; }
           cvs.width = w; cvs.height = h;
           cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-          currentBase64Image = cvs.toDataURL('image/jpeg', 0.5);
+          currentBase64Image = cvs.toDataURL('image/jpeg', 0.20);
           imgPreview.src = currentBase64Image;
-          imgMetaText.textContent = `${w}x${h}px`;
+          imgMetaText.textContent = `${w}x${h}px (~${Math.round(currentBase64Image.length/1024)}KB)`;
           imgPreviewContainer.classList.remove('hidden');
         };
         img.src = ev.target.result;
@@ -314,40 +317,40 @@
       const msgId = snap.key, d = snap.val();
       if (!d || !d.s) return;
 
-      if (d.isPinned) {
+      if (d.p) {
         pinnedContent.textContent = `${d.s}: ${d.t || '[MEDIA]'}`;
         pinnedBanner.classList.remove('hidden');
       }
 
-      const isSelf = d.uid === USER_ID;
+      const isSelf = d.u === USER_ID;
       let div = document.getElementById(`msg-${msgId}`) || document.createElement('div');
       div.id = `msg-${msgId}`; div.dataset.msgid = msgId;
 
-      if (d.isDeleted) {
+      if (d.d) {
         div.innerHTML = `<div class="text-slate-500 italic text-[6px]">🚫 [Message recalled]</div>`;
         if (!div.parentNode) c.appendChild(div);
         return { isSelf };
       }
 
-      div.className = `animate-pop bg-slate-900/80 p-1.5 border border-indigo-900/60 rounded space-y-1 ${d.prio === 'HIGH' ? 'border-yellow-500 bg-yellow-950/20' : ''}`;
+      div.className = `animate-pop bg-slate-900/80 p-1.5 border border-indigo-900/60 rounded space-y-1 ${d.pr === 'H' ? 'border-yellow-500 bg-yellow-950/20' : ''}`;
       const timeStr = new Date(d.ts || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
       let textHtml = d.t ? `<div class="text-white my-0.5 ${d.sp ? 'spoiler-hidden bg-slate-800' : ''}" onclick="this.classList.remove('spoiler-hidden')">${esc(d.t)}</div>` : '';
-      let imgHtml = d.img ? `<img src="${esc(d.img)}" class="max-w-[120px] max-h-[120px] border border-indigo-400 bg-slate-900 my-1" />` : '';
-      let voiceHtml = d.v ? `<audio controls src="${esc(d.v)}" class="h-6 w-32 my-1"></audio>` : '';
+      let imgHtml = d.m ? `<img src="${esc(d.m)}" class="max-w-[80px] max-h-[80px] border border-indigo-400 bg-slate-900 my-1" />` : '';
+      let synthHtml = d.sn ? `<button type="button" onclick="window.playSynthMelody([${d.sn.join(',')}])" class="text-[6px] bg-purple-900 border border-purple-500 px-1 py-0.5 my-1 rounded text-purple-200">▶ PLAY SYNTH</button>` : '';
 
       div.innerHTML = `
         <div class="flex items-center justify-between border-b border-indigo-950 pb-0.5 text-[5.5px] text-slate-400">
           <div class="flex items-center gap-1">
-            <span>${d.av || '⛏️'}</span>
+            <span>${d.a || '⛏️'}</span>
             <span class="${isSelf ? 'text-green-400' : 'text-cyan-400'} font-bold">${esc(d.s)}</span>
-            <span class="bg-indigo-900 text-indigo-200 px-0.5 rounded">${esc(d.bdg || 'PLAYER')}</span>
+            <span class="bg-indigo-900 text-indigo-200 px-0.5 rounded">${esc(d.b || 'PLAYER')}</span>
           </div>
           <span>${timeStr}</span>
         </div>
         ${textHtml}
-        ${d.stk ? `<div class="text-[10px]">${d.stk === 'pixel_heart' ? '💖' : '⚔️'}</div>` : ''}
-        ${imgHtml}${voiceHtml}
+        ${d.st ? `<div class="text-[10px]">${d.st === 'h' ? '💖' : '⚔️'}</div>` : ''}
+        ${imgHtml}${synthHtml}
         <div class="flex items-center justify-end gap-2 text-[5px] text-slate-500 pt-0.5 border-t border-indigo-950">
           <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
           <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
@@ -359,7 +362,9 @@
       return { isSelf };
     }
 
-    // Global Delegated Actions
+    window.playSynthMelody = playSynthMelody;
+
+    // Delegated Actions
     c.addEventListener('click', e => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
@@ -369,23 +374,24 @@
         replyTargetText.textContent = `Replying to @${sender}`;
         replyBanner.classList.remove('hidden');
       } else if (action === 'pin') {
-        update(ref(db, `global_pixel_chat/${msgid}`), { isPinned: true });
-        playCustomSFX('coin');
+        update(ref(db, `global_pixel_chat/${msgid}`), { p: true });
+        playCustomSFX('c');
       } else if (action === 'recall') {
-        update(ref(db, `global_pixel_chat/${msgid}`), { isDeleted: true });
+        update(ref(db, `global_pixel_chat/${msgid}`), { d: true });
       }
     });
 
-    onChildAdded(query(chatRef, limitToLast(30)), snap => {
+    // Reduced initial fetch buffer to 10 items to reduce startup bandwidth load
+    onChildAdded(query(chatRef, limitToLast(10)), snap => {
       const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 100;
       const { isSelf } = renderMessageNode(snap) || {};
       if (isNearBottom || isSelf) v.scrollTop = v.scrollHeight;
-      if (snap.val()?.sfx) playCustomSFX(snap.val().sfx);
+      if (snap.val()?.fx) playCustomSFX(snap.val().fx);
     });
 
     onChildChanged(chatRef, snap => renderMessageNode(snap));
 
-    // Submit handler with minimized payload keys
+    // Submit handler with minimal JSON key mappings
     document.getElementById('f').addEventListener('submit', async e => {
       e.preventDefault();
       const txt = i.value.trim();
@@ -394,27 +400,27 @@
       if (txt === '/clear') return c.innerHTML = '', i.value = '';
       if (txt === '/roll') i.value = `🎲 Rolled ${Math.floor(Math.random() * 100) + 1}!`;
 
-      if (!i.value.trim() && !currentBase64Image && !currentVoiceNote) return;
+      if (!i.value.trim() && !currentBase64Image && !currentSynthMelody) return;
 
       document.getElementById('sendBtn').disabled = true;
 
       const payload = {
         ts: Date.now(),
-        s: nameInput.value.trim() || 'Player',
-        uid: USER_ID,
-        av: avatarSelect.value,
-        bdg: badgeSelect.value,
+        s: nameInput.value.trim() || 'P',
+        u: USER_ID,
+        a: avatarSelect.value,
+        b: badgeSelect.value,
         t: i.value.trim(),
-        img: currentBase64Image || null,
-        prio: prioritySelect.value,
-        v: currentVoiceNote || null,
-        sfx: sfxSelect.value,
+        m: currentBase64Image || null,
+        pr: prioritySelect.value,
+        sn: currentSynthMelody || null,
+        fx: sfxSelect.value,
         sp: spoilerCheck.checked,
-        stk: stickerSelect.value || null
+        st: stickerSelect.value || null
       };
 
-      i.value = ''; charCounter.textContent = '0/200';
-      currentBase64Image = ""; currentVoiceNote = null; fileInput.value = "";
+      i.value = ''; charCounter.textContent = '0/160';
+      currentBase64Image = ""; currentSynthMelody = null; fileInput.value = "";
       imgPreviewContainer.classList.add('hidden'); voicePreviewContainer.classList.add('hidden');
       replyBanner.classList.add('hidden'); replyParentId = null; spoilerCheck.checked = false;
 
