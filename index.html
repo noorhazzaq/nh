@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Pixel World Chat - Arcade Edition</title>
+  <title>Pixel World Chat - Complete Metadata Edition</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,7 +44,11 @@
       border: 2px solid #4ade80;
       box-shadow: inset -2px -2px 0 #15803d, inset 2px 2px 0 #86efac, 0 0 8px rgba(34, 197, 94, 0.4);
     }
-    .px-btn:active {
+    .px-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .px-btn:active:not(:disabled) {
       box-shadow: inset 2px 2px 0 #15803d;
       transform: translateY(1px);
     }
@@ -79,36 +83,59 @@
   <!-- HEADER -->
   <header class="px-box p-2 mb-2 flex items-center justify-between shrink-0 relative z-10">
     <div class="flex items-center gap-1.5 flex-1 mr-2">
-      <span class="text-[10px] text-yellow-300 animate-bounce shrink-0 glow-yellow">⛏️</span>
+      <!-- Feature 7: Avatar Selector -->
+      <select id="avatarSelect" class="bg-slate-900 text-[10px] border border-indigo-500 rounded p-0.5 text-yellow-300">
+        <option value="⛏️">⛏️</option>
+        <option value="🧙‍♂️">🧙‍♂️</option>
+        <option value="🤖">🤖</option>
+        <option value="👾">👾</option>
+      </select>
       <input 
         type="text" 
         id="nameInput" 
         maxlength="15" 
         value="Steve" 
         title="Click to edit handle"
-        class="bg-slate-900 border-2 border-indigo-500 text-green-400 text-[9px] px-1 py-0.5 w-28 focus:outline-none focus:border-yellow-400 font-bold glow-green"
+        class="bg-slate-900 border-2 border-indigo-500 text-green-400 text-[9px] px-1 py-0.5 w-24 focus:outline-none focus:border-yellow-400 font-bold glow-green"
       />
+      <!-- Feature 9: User Badge -->
+      <select id="badgeSelect" class="bg-slate-900 text-[7px] border border-indigo-500 rounded p-0.5 text-cyan-300">
+        <option value="PLAYER">PLAYER</option>
+        <option value="VIP">VIP</option>
+        <option value="MOD">MOD</option>
+      </select>
     </div>
-    <div class="text-[7px] text-emerald-300 border border-emerald-400/50 bg-emerald-950/70 px-2 py-1 uppercase shrink-0 glow-green animate-pulse flex items-center gap-1">
+
+    <!-- Feature 10: Active Status Indicator -->
+    <div id="presenceBadge" class="text-[7px] text-emerald-300 border border-emerald-400/50 bg-emerald-950/70 px-2 py-1 uppercase shrink-0 glow-green animate-pulse flex items-center gap-1">
       <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#4ade80]"></span>
-      <span>LIVE</span>
+      <span id="presenceText">ONLINE</span>
     </div>
   </header>
 
   <!-- CHAT VIEWPORT -->
-  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2 mb-2 relative z-10 glow-box">
-    <div id="c" class="space-y-2.5">
+  <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2.5 mb-2 relative z-10 glow-box">
+    <div id="c" class="space-y-3">
       <div class="text-[8px] text-yellow-300 bg-yellow-950/50 p-2 border border-yellow-500/50 glow-yellow animate-pop">
-        ✨ [SYS]: Pixel World Chat ready! Fully optimized & verified.
+        ✨ [SYS]: Pixel World Chat fully initialized with all 21 Metadata & Tracking features.
       </div>
     </div>
   </main>
+
+  <!-- REPLY BANNER -->
+  <div id="replyBanner" class="hidden shrink-0 bg-indigo-950 border-t-2 border-x-2 border-indigo-500 p-1 flex justify-between items-center relative z-10 text-[7px]">
+    <span id="replyTargetText" class="text-cyan-300 truncate">Replying to...</span>
+    <button type="button" id="cancelReplyBtn" class="text-red-400 font-bold px-1">X</button>
+  </div>
 
   <!-- INPUT FORM -->
   <footer class="shrink-0 space-y-1 relative z-10">
     <div id="imgPreviewContainer" class="hidden flex items-center gap-2 bg-slate-900 p-1 border-2 border-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.5)]">
       <img id="imgPreview" class="w-8 h-8 object-cover border border-yellow-400" alt="Preview" />
-      <span class="text-[7px] text-yellow-300 flex-1 glow-yellow">📷 READY TO BROADCAST</span>
+      <div class="flex-1 overflow-hidden">
+        <div class="text-[7px] text-yellow-300 glow-yellow">📷 READY TO BROADCAST</div>
+        <div id="imgMetaText" class="text-[6px] text-slate-400 truncate">0x0 | 0 KB</div>
+      </div>
       <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
     </div>
 
@@ -119,14 +146,18 @@
         📷
       </button>
 
-      <input 
-        type="text" 
-        id="i" 
-        placeholder="TYPE MESSAGE..." 
-        maxlength="200" 
-        class="flex-1 bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[9px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 glow-yellow"
-        autocomplete="off"
-      />
+      <!-- Feature 12: Character Counter -->
+      <div class="relative flex-1 flex items-center">
+        <input 
+          type="text" 
+          id="i" 
+          placeholder="TYPE MESSAGE..." 
+          maxlength="200" 
+          class="w-full bg-slate-900 border-2 border-indigo-600 text-yellow-300 text-[9px] p-2 pr-8 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 glow-yellow"
+          autocomplete="off"
+        />
+        <span id="charCounter" class="absolute right-2 text-[6px] text-slate-500">0/200</span>
+      </div>
 
       <button type="submit" id="sendBtn" class="px-btn text-[9px] text-white px-3 py-2 font-bold uppercase shrink-0">
         SEND
@@ -137,28 +168,59 @@
   <!-- REALTIME ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     // Initialize Database
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
+    // Local State
+    const APP_VERSION = "v2.1.0-arcade"; // Feature 8: App/Client Version
+    const USER_ID = `user_${Math.random().toString(36).substring(2, 9)}`; // Feature 6: Client User ID
+
     const nameInput = document.getElementById('nameInput');
     nameInput.value = `Steve_${Math.floor(100 + Math.random() * 900)}`;
+    const avatarSelect = document.getElementById('avatarSelect');
+    const badgeSelect = document.getElementById('badgeSelect');
 
     const c = document.getElementById('c');
     const v = document.getElementById('v');
     const i = document.getElementById('i');
+    const charCounter = document.getElementById('charCounter');
     const fileInput = document.getElementById('fileInput');
     const attachBtn = document.getElementById('attachBtn');
     const imgPreviewContainer = document.getElementById('imgPreviewContainer');
     const imgPreview = document.getElementById('imgPreview');
+    const imgMetaText = document.getElementById('imgMetaText');
     const clearImgBtn = document.getElementById('clearImgBtn');
     const sendBtn = document.getElementById('sendBtn');
-    let currentBase64Image = "";
+    
+    const replyBanner = document.getElementById('replyBanner');
+    const replyTargetText = document.getElementById('replyTargetText');
+    const cancelReplyBtn = document.getElementById('cancelReplyBtn');
 
-    // SAFE AUDIO ENGINE (Prevents double init & state conflicts)
+    let currentBase64Image = "";
+    let currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
+    let replyParentId = null; // Feature 17: Reply Parent ID
+
+    // Detect Platform (Feature 19: Sender Platform / OS)
+    const getPlatform = () => {
+      const ua = navigator.userAgent;
+      if (/android/i.test(ua)) return "Android";
+      if (/iPad|iPhone|iPod/.test(ua)) return "iOS";
+      if (/mac/i.test(ua)) return "macOS";
+      if (/win/i.test(ua)) return "Windows";
+      return "Web";
+    };
+
+    // Feature 20: Timezone Offset
+    const getTimezoneOffsetStr = () => {
+      const offset = -new Date().getTimezoneOffset() / 60;
+      return `UTC${offset >= 0 ? '+' : ''}${offset}`;
+    };
+
+    // Safe Audio Engine
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) {
@@ -189,12 +251,10 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.1);
-      } catch (err) {
-        // Ignored safely
-      }
+      } catch (err) {}
     }
 
-    // PARTICLE ENGINE
+    // Canvas & Particle Engine
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -263,7 +323,12 @@
     }
     renderParticles();
 
-    // IMAGE UPLOAD HANDLING (Cleaned Canvas Allocation)
+    // Feature 12: Live Character Counter
+    i.addEventListener('input', () => {
+      charCounter.textContent = `${i.value.length}/200`;
+    });
+
+    // Image Upload Handling (Captures Features 14 & 15: Media Specs)
     attachBtn.addEventListener('click', (e) => {
       e.preventDefault();
       fileInput.click();
@@ -273,7 +338,9 @@
       const file = e.target.files[0];
       if (!file) return;
 
+      const sizeKb = Math.round(file.size / 1024);
       const reader = new FileReader();
+      
       reader.onload = (event) => {
         const img = new Image();
         img.onload = () => {
@@ -295,10 +362,12 @@
           tempCtx.drawImage(img, 0, 0, w, h);
 
           currentBase64Image = cvs.toDataURL('image/jpeg', 0.6);
+          currentImageMeta = { width: w, height: h, sizeKb: sizeKb };
+
           imgPreview.src = currentBase64Image;
+          imgMetaText.textContent = `${w}x${h}px | ${sizeKb} KB`;
           imgPreviewContainer.classList.remove('hidden');
           
-          // Cleanup
           cvs.width = 0;
           cvs.height = 0;
           playRetroBeep(600);
@@ -310,56 +379,170 @@
 
     clearImgBtn.addEventListener('click', () => {
       currentBase64Image = "";
+      currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
       fileInput.value = "";
       imgPreviewContainer.classList.add('hidden');
     });
 
-    // FIREBASE REALTIME MESSAGES (Smart Scroll Lock Included)
-    const chatRef = ref(db, "global_pixel_chat");
-
-    onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
-      const d = snap.val();
-      if (d && d.s && (d.t || d.img)) {
-        const isSelf = d.s === nameInput.value.trim();
-        const div = document.createElement('div');
-        div.className = 'text-[8px] leading-relaxed break-words animate-pop';
-        
-        const senderSpan = document.createElement('span');
-        senderSpan.className = isSelf ? 'text-green-400 glow-green' : 'text-cyan-400 glow-cyan';
-        senderSpan.textContent = d.s + ': ';
-        div.appendChild(senderSpan);
-
-        if (d.t) {
-          const textSpan = document.createElement('span');
-          textSpan.className = 'text-white';
-          textSpan.textContent = d.t;
-          div.appendChild(textSpan);
-        }
-
-        if (d.img) {
-          const imgWrapper = document.createElement('div');
-          imgWrapper.className = 'mt-1';
-          const imgEl = document.createElement('img');
-          imgEl.src = d.img;
-          imgEl.className = 'max-w-[180px] max-h-[180px] border-2 border-indigo-400 bg-slate-900 p-0.5 object-contain shadow-[0_0_12px_rgba(99,102,241,0.6)]';
-          imgWrapper.appendChild(imgEl);
-          div.appendChild(imgWrapper);
-        }
-
-        c.appendChild(div);
-
-        // Smart Scroll: Auto-scroll only if user is near the bottom
-        const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 120;
-        if (isNearBottom || isSelf) {
-          v.scrollTop = v.scrollHeight;
-        }
-
-        playRetroBeep(isSelf ? 700 : 520);
-        triggerBurst(window.innerWidth / 2, window.innerHeight - 80);
-      }
+    // Cancel Reply Handling
+    cancelReplyBtn.addEventListener('click', () => {
+      replyParentId = null;
+      replyBanner.classList.add('hidden');
     });
 
-    // FORM SUBMISSION (With Try/Catch & UI Disable)
+    // Realtime Database Reference
+    const chatRef = ref(db, "global_pixel_chat");
+
+    // Feature 21: Intersection Observer for Read Receipts
+    const observerOptions = { root: v, threshold: 0.6 };
+    const readObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const msgId = entry.target.dataset.msgid;
+          const senderId = entry.target.dataset.senderid;
+          if (msgId && senderId !== USER_ID) {
+            // Update read receipts in Firebase safely
+            const readRef = ref(db, `global_pixel_chat/${msgId}/readReceipts/${USER_ID}`);
+            set(readRef, { handle: nameInput.value.trim(), ts: Date.now() });
+            readObserver.unobserve(entry.target);
+          }
+        }
+      });
+    }, observerOptions);
+
+    // Render / Update Chat Node
+    function renderMessageNode(snap) {
+      const msgId = snap.key;
+      const d = snap.val();
+      if (!d || !d.s) return;
+
+      const isSelf = d.senderUserId === USER_ID || d.s === nameInput.value.trim();
+      let existingDiv = document.getElementById(`msg-${msgId}`);
+      const div = existingDiv || document.createElement('div');
+      
+      div.id = `msg-${msgId}`;
+      div.dataset.msgid = msgId;
+      div.dataset.senderid = d.senderUserId || '';
+      div.className = 'text-[8px] leading-relaxed break-words animate-pop bg-slate-900/60 p-2 border border-indigo-900/60 rounded relative space-y-1';
+
+      // Feature 1: Sent Time & Feature 2: Local Time
+      const dateObj = new Date(d.sentTime || d.ts || Date.now());
+      const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+      // Feature 3: Delivery Status Flag
+      const statusText = d.serverReceivedTs ? '✓✓' : '✓';
+
+      // Feature 11: Message Type Flag
+      const msgType = d.msgType || 'text';
+
+      // Header Line (Features 7, 9, 10, 19, 20)
+      let headerHtml = `
+        <div class="flex items-center justify-between border-b border-indigo-950 pb-1 text-[6px] text-slate-400">
+          <div class="flex items-center gap-1">
+            <span>${d.avatar || '⛏️'}</span>
+            <span class="${isSelf ? 'text-green-400 glow-green' : 'text-cyan-400 glow-cyan'} font-bold">${esc(d.s)}</span>
+            <span class="bg-indigo-900 text-indigo-200 px-1 rounded">${esc(d.badge || 'PLAYER')}</span>
+          </div>
+          <div class="flex items-center gap-1">
+            <span>${d.platform || 'Web'}</span>
+            <span>•</span>
+            <span>${timeStr} (${d.tzOffset || 'UTC'})</span>
+            <span class="text-emerald-400">${statusText}</span>
+          </div>
+        </div>
+      `;
+
+      // Feature 17: Reply Parent Preview
+      let replyHtml = '';
+      if (d.replyParentId) {
+        replyHtml = `<div class="bg-indigo-950/80 border-l-2 border-yellow-400 p-1 text-[6px] text-yellow-200/80 truncate">↩️ Replying to post ${d.replyParentId.substring(0, 6)}...</div>`;
+      }
+
+      // Feature 18: Mention Formatting & Text Body
+      let textHtml = '';
+      if (d.t) {
+        let formattedText = esc(d.t).replace(/(@\w+)/g, '<span class="text-yellow-300 font-bold underline">$1</span>');
+        textHtml = `<div class="text-white my-0.5">${formattedText} ${d.isEdited ? '<span class="text-[5px] text-slate-500">(edited)</span>' : ''}</div>`;
+      }
+
+      // Image Block (Features 14 & 15)
+      let imgHtml = '';
+      if (d.img) {
+        const aspectStyle = (d.mediaWidth && d.mediaHeight) ? `aspect-ratio: ${d.mediaWidth}/${d.mediaHeight};` : '';
+        imgHtml = `
+          <div class="mt-1">
+            <img src="${d.img}" style="${aspectStyle}" class="max-w-[180px] max-h-[180px] border-2 border-indigo-400 bg-slate-900 p-0.5 object-contain shadow-[0_0_12px_rgba(99,102,241,0.6)]" />
+            <div class="text-[5px] text-slate-400 mt-0.5">${d.mediaWidth || 0}x${d.mediaHeight || 0}px | ${d.mediaSizeKb || 0} KB</div>
+          </div>
+        `;
+      }
+
+      // Feature 16: Reaction Buttons & Display
+      let reactionsHtml = '<div class="flex flex-wrap items-center gap-1 mt-1 text-[6px]">';
+      const emojis = ['👍', '❤️', '🔥', '🎉'];
+      emojis.forEach(emo => {
+        const count = d.reactions && d.reactions[emo] ? Object.keys(d.reactions[emo]).length : 0;
+        reactionsHtml += `
+          <button type="button" onclick="window.toggleReaction('${msgId}', '${emo}')" class="bg-indigo-950 border border-indigo-700 px-1 rounded hover:bg-indigo-900 text-[6px]">
+            ${emo} ${count > 0 ? count : ''}
+          </button>
+        `;
+      });
+      reactionsHtml += '</div>';
+
+      // Feature 21: Read Receipts Display
+      let readCount = d.readReceipts ? Object.keys(d.readReceipts).length : 0;
+      let footerMetaHtml = `
+        <div class="flex items-center justify-between text-[5px] text-slate-500 pt-1 border-t border-indigo-950/50">
+          <span>ID: ${msgId.substring(0, 8)} | Len: ${d.charCount || 0}</span>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="window.setReplyTarget('${msgId}', '${esc(d.s)}')" class="text-cyan-400 hover:underline">REPLY</button>
+            <span>• Read by ${readCount}</span>
+          </div>
+        </div>
+      `;
+
+      div.innerHTML = headerHtml + replyHtml + textHtml + imgHtml + reactionsHtml + footerMetaHtml;
+
+      if (!existingDiv) {
+        c.appendChild(div);
+        readObserver.observe(div);
+      }
+
+      return { isSelf };
+    }
+
+    // Attach Global Window Helpers for Dynamic DOM Buttons
+    window.toggleReaction = (msgId, emoji) => {
+      const rxRef = ref(db, `global_pixel_chat/${msgId}/reactions/${emoji}/${USER_ID}`);
+      set(rxRef, true);
+      playRetroBeep(800);
+    };
+
+    window.setReplyTarget = (msgId, senderName) => {
+      replyParentId = msgId;
+      replyTargetText.textContent = `Replying to @${senderName} (${msgId.substring(0, 6)}...)`;
+      replyBanner.classList.remove('hidden');
+    };
+
+    // Firebase Event Listeners
+    onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
+      const { isSelf } = renderMessageNode(snap) || {};
+      
+      const isNearBottom = v.scrollHeight - v.clientHeight - v.scrollTop < 120;
+      if (isNearBottom || isSelf) {
+        v.scrollTop = v.scrollHeight;
+      }
+
+      playRetroBeep(isSelf ? 700 : 520);
+      triggerBurst(window.innerWidth / 2, window.innerHeight - 80);
+    });
+
+    onChildChanged(chatRef, (snap) => {
+      renderMessageNode(snap);
+    });
+
+    // Form Submission (Captures all 21 Metadata Attributes)
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const txt = i.value.trim();
@@ -367,16 +550,56 @@
       
       if (!txt && !currentBase64Image) return;
 
-      const payload = { s: handle, ts: Date.now() };
-      if (txt) payload.t = txt;
-      if (currentBase64Image) payload.img = currentBase64Image;
+      // Extract Mentions (Feature 18)
+      const mentions = txt.match(/@\w+/g) || [];
 
-      // Lock UI during transit
+      // Build Complete 21-Feature Payload
+      const payload = {
+        // Time & Delivery
+        sentTime: Date.now(),                          // 1. Sent Timestamp
+        serverReceivedTs: serverTimestamp(),          // 4. Server Received Timestamp
+        expiryTimer: 0,                                // 5. Self-Destruct Timer (0 = infinite)
+
+        // Sender & Session
+        clientMsgId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`, // 6. Client UUID
+        s: handle,                                     // Sender Handle
+        senderUserId: USER_ID,                         // Sender Unique ID
+        avatar: avatarSelect.value,                    // 7. Avatar Selector
+        appVersion: APP_VERSION,                       // 8. Client Version
+        badge: badgeSelect.value,                      // 9. User Badge
+        activeStatus: 'ONLINE',                        // 10. Active Status
+
+        // Content & Media
+        msgType: currentBase64Image ? 'image' : 'text',// 11. Message Type
+        t: txt,                                        // Message Body
+        charCount: txt.length,                         // 12. Character Count
+        isEdited: false,                               // 13. Edited Indicator
+        mediaWidth: currentImageMeta.width,            // 14. Media Width
+        mediaHeight: currentImageMeta.height,          // 14. Media Height
+        mediaSizeKb: currentImageMeta.sizeKb,          // 15. Media File Size
+        img: currentBase64Image || null,               // Base64 Image
+
+        // Interactive & Context
+        reactions: {},                                 // 16. Reaction Map
+        replyParentId: replyParentId,                  // 17. Reply Parent ID
+        mentions: mentions,                            // 18. Mention List
+        platform: getPlatform(),                       // 19. Sender Platform / OS
+        tzOffset: getTimezoneOffsetStr(),              // 20. Sender Timezone Offset
+        readReceipts: {}                               // 21. Read Receipts Array
+      };
+
+      // Lock UI
       sendBtn.disabled = true;
       i.value = '';
+      charCounter.textContent = '0/200';
       currentBase64Image = "";
+      currentImageMeta = { width: 0, height: 0, sizeKb: 0 };
       fileInput.value = "";
       imgPreviewContainer.classList.add('hidden');
+      
+      // Reset Reply State
+      replyParentId = null;
+      replyBanner.classList.add('hidden');
 
       try {
         await set(push(chatRef), payload);
@@ -386,6 +609,11 @@
         sendBtn.disabled = false;
       }
     });
+
+    function esc(s) {
+      if (!s) return '';
+      return s.replace(/[&<>'"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[m]));
+    }
   </script>
 </body>
 </html>
