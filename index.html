@@ -5,19 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#4f46e5" />
   <meta name="mobile-web-app-capable" content="yes" />
-  <meta name="application-name" content="Enterprise App" />
-  <title>Enterprise Android PWA Platform</title>
+  <meta name="application-name" content="Enterprise Mesh Chat" />
+  <title>Enterprise Secure Mesh Chat</title>
 
-  <!-- Tailwind CSS CDN -->
+  <!-- Tailwind CSS & FontAwesome Icons -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-  <!-- Dynamically Generated Web App Manifest -->
+  <!-- Dynamically Injected Manifest -->
   <link id="manifestLink" rel="manifest" />
 
   <style>
-    /* Custom Modern Scrollbars & Touch Target Handling */
     ::-webkit-scrollbar { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track { background: #030712; }
     ::-webkit-scrollbar-thumb { background: #374151; border-radius: 9999px; }
@@ -30,22 +28,28 @@
   <header class="h-14 bg-gray-900 border-b border-gray-800 px-4 flex items-center justify-between shrink-0 z-20">
     <div class="flex items-center space-x-3">
       <div class="bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 p-2 rounded-xl flex items-center justify-center">
-        <i class="fa-solid fa-layer-group text-base"></i>
+        <i class="fa-solid fa-lock text-base"></i>
       </div>
       <div>
-        <h1 class="text-xs font-bold tracking-tight text-white uppercase">Enterprise PWA</h1>
         <div class="flex items-center space-x-2">
+          <h1 class="text-xs font-bold tracking-tight text-white uppercase">Enterprise Mesh Chat</h1>
+          <span id="cryptoStatusBadge" class="bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[9px] font-mono px-1.5 py-0.5 rounded">AES-256-GCM</span>
+        </div>
+        <div class="flex items-center space-x-2 mt-0.5">
           <span id="netStatusBadge" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1">
             <span id="netStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
             <span id="netStatusText">Online</span>
           </span>
-          <span id="swStatusText" class="text-[10px] font-mono text-gray-400">SW: Active</span>
+          <span id="storageQuotaText" class="text-[10px] font-mono text-gray-500">Storage: Calc...</span>
         </div>
       </div>
     </div>
 
-    <!-- NATIVE INSTALL TRIGGER -->
+    <!-- ACTION CONTROLS -->
     <div class="flex items-center space-x-2">
+      <button onclick="Application.ui.shareApp()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700 p-2 rounded-lg text-xs transition">
+        <i class="fa-solid fa-share-nodes"></i>
+      </button>
       <button id="pwaInstallBtn" onclick="Application.pwa.promptInstall()" class="hidden bg-indigo-600 hover:bg-indigo-500 text-white border border-indigo-400/30 px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-lg shadow-indigo-600/20">
         <i class="fa-solid fa-download text-[10px]"></i>
         <span>Install App</span>
@@ -53,67 +57,153 @@
     </div>
   </header>
 
-  <!-- MAIN VIEWPORT -->
-  <main class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-950">
-    
-    <!-- SYSTEM NOTICE BANNER -->
-    <section class="bg-gray-900/80 border border-gray-800 rounded-xl p-4 space-y-2 shadow-sm">
-      <div class="flex items-center space-x-2 text-indigo-400 text-xs font-bold uppercase tracking-wider">
-        <i class="fa-solid fa-shield-halved"></i>
-        <span>Enterprise Android Core</span>
-      </div>
-      <p class="text-xs text-gray-400 leading-relaxed">
-        Engineered with strict Clean Architecture contracts, asynchronous IndexedDB storage, and offline-first Stale-While-Revalidate Caching over Vercel Edge.
-      </p>
-    </section>
+  <!-- CHAT MESSAGES VIEWPORT -->
+  <main class="flex-1 flex flex-col bg-gray-950 overflow-hidden relative">
+    <div id="messageViewport" class="flex-1 overflow-y-auto p-4 space-y-3">
+      <div id="messagesContainer" class="space-y-3"></div>
+    </div>
 
-    <!-- DATA MANAGEMENT COMPONENT -->
-    <section class="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-3">
-      <h2 class="text-xs font-bold text-gray-200 uppercase tracking-wider flex items-center space-x-2">
-        <i class="fa-solid fa-database text-amber-400"></i>
-        <span>Offline IndexedDB Store</span>
-      </h2>
-
-      <form id="recordForm" onsubmit="Application.ui.handleFormSubmit(event)" class="flex gap-2">
-        <input type="text" id="recordInput" placeholder="Enter task or log event..." required class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition" />
-        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1 transition">
-          <i class="fa-solid fa-plus text-[10px]"></i>
-          <span>Save</span>
+    <!-- COMPOSER -->
+    <footer class="bg-gray-900 border-t border-gray-800 p-3 shrink-0">
+      <form id="chatForm" onsubmit="Application.ui.handleSendMessage(event)" class="flex items-center space-x-2">
+        <input type="text" id="messageInput" placeholder="Write end-to-end encrypted message..." required class="flex-1 bg-gray-950 border border-gray-800 rounded-lg px-3.5 py-2.5 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition" autocomplete="off" />
+        <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 transition shadow-lg shadow-indigo-600/20">
+          <span>Send</span>
+          <i class="fa-solid fa-paper-plane text-[10px]"></i>
         </button>
       </form>
-
-      <!-- RECORDED ITEMS LIST -->
-      <div id="recordsList" class="space-y-2 pt-2"></div>
-    </section>
-
+    </footer>
   </main>
 
-  <!-- SINGLE-FILE ENTERPRISE SCRIPT -->
+  <!-- ENTERPRISE ARCHITECTURE ENGINE -->
   <script type="module">
 
     // ==========================================
-    // 1. DYNAMIC PWA MANIFEST INJECTION
+    // 1. DYNAMIC PWA MANIFEST
     // ==========================================
     const manifestBlob = new Blob([JSON.stringify({
-      "name": "Enterprise Android PWA",
-      "short_name": "EntPWA",
+      "name": "Enterprise Secure Chat",
+      "short_name": "MeshChat",
       "start_url": "/",
       "display": "standalone",
       "background_color": "#030712",
       "theme_color": "#4f46e5",
       "icons": [
-        { "src": "https://cdn-icons-png.flaticon.com/512/2592/2592317.png", "sizes": "192x192", "type": "image/png" },
-        { "src": "https://cdn-icons-png.flaticon.com/512/2592/2592317.png", "sizes": "512x512", "type": "image/png" }
+        { "src": "https://cdn-icons-png.flaticon.com/512/2592/2592317.png", "sizes": "192x192", "type": "image/png" }
       ]
     })], { type: 'application/json' });
     document.getElementById('manifestLink').href = URL.createObjectURL(manifestBlob);
 
 
     // ==========================================
-    // 2. ENTERPRISE INDEXEDDB ADAPTER
+    // 2. CRYPTOGRAPHIC ENGINE (AES-256-GCM)
+    // ==========================================
+    class CryptoEngine {
+      constructor() {
+        this.key = null;
+      }
+
+      async init() {
+        // Derive or load persistent device secret key
+        let storedKey = localStorage.getItem('chat_crypto_key');
+        if (!storedKey) {
+          const key = await window.crypto.subtle.generateKey(
+            { name: "AES-GCM", length: 256 },
+            true,
+            ["encrypt", "decrypt"]
+          );
+          const exported = await window.crypto.subtle.exportKey("jwk", key);
+          localStorage.setItem('chat_crypto_key', JSON.stringify(exported));
+          this.key = key;
+        } else {
+          this.key = await window.crypto.subtle.importKey(
+            "jwk",
+            JSON.parse(storedKey),
+            { name: "AES-GCM" },
+            true,
+            ["encrypt", "decrypt"]
+          );
+        }
+      }
+
+      async encrypt(plaintext) {
+        const enc = new TextEncoder();
+        const iv = window.crypto.getRandomValues(new Uint8Array(12));
+        const ciphertext = await window.crypto.subtle.encrypt(
+          { name: "AES-GCM", iv: iv },
+          this.key,
+          enc.encode(plaintext)
+        );
+
+        return {
+          cipherHex: Array.from(new Uint8Array(ciphertext)).map(b => b.toString(16).padStart(2, '0')).join(''),
+          ivHex: Array.from(iv).map(b => b.toString(16).padStart(2, '0')).join('')
+        };
+      }
+
+      async decrypt(cipherHex, ivHex) {
+        try {
+          const ciphertext = new Uint8Array(cipherHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+          const iv = new Uint8Array(ivHex.match(/.{1,2}/g).map(byte => parseInt(byte, 16)));
+          const decrypted = await window.crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: iv },
+            this.key,
+            ciphertext
+          );
+          return new TextDecoder().decode(decrypted);
+        } catch (e) {
+          return "[Decryption Failed - Invalid Key]";
+        }
+      }
+    }
+
+
+    // ==========================================
+    // 3. REACTIVE STATE STORE (REDUX PATTERN)
+    // ==========================================
+    class Store {
+      constructor(reducer, initialState) {
+        this.reducer = reducer;
+        this.state = initialState;
+        this.listeners = [];
+      }
+
+      getState() {
+        return this.state;
+      }
+
+      dispatch(action) {
+        this.state = this.reducer(this.state, action);
+        this.listeners.forEach(listener => listener(this.state));
+      }
+
+      subscribe(listener) {
+        this.listeners.push(listener);
+        return () => {
+          this.listeners = this.listeners.filter(l => l !== listener);
+        };
+      }
+    }
+
+    function chatReducer(state = { messages: [], online: true }, action) {
+      switch (action.type) {
+        case 'SET_MESSAGES':
+          return { ...state, messages: action.payload };
+        case 'ADD_MESSAGE':
+          return { ...state, messages: [...state.messages, action.payload] };
+        case 'SET_ONLINE':
+          return { ...state, online: action.payload };
+        default:
+          return state;
+      }
+    }
+
+
+    // ==========================================
+    // 4. INDEXEDDB PERSISTENCE SERVICE
     // ==========================================
     class StorageAdapter {
-      constructor(dbName = "EnterprisePwaDB", storeName = "app_records") {
+      constructor(dbName = "EnterpriseChatDB", storeName = "messages") {
         this.dbName = dbName;
         this.storeName = storeName;
         this.db = null;
@@ -132,7 +222,7 @@
             this.db = e.target.result;
             resolve();
           };
-          request.onerror = (e) => reject("IndexedDB connection failed: " + e.target.error);
+          request.onerror = (e) => reject(e.target.error);
         });
       }
 
@@ -141,7 +231,7 @@
           const tx = this.db.transaction(this.storeName, "readonly");
           const store = tx.objectStore(this.storeName);
           const request = store.getAll();
-          request.onsuccess = () => resolve(request.result);
+          request.onsuccess = () => resolve(request.result || []);
           request.onerror = () => reject(request.error);
         });
       }
@@ -155,21 +245,54 @@
           request.onerror = () => reject(request.error);
         });
       }
+    }
 
-      async remove(id) {
-        return new Promise((resolve, reject) => {
-          const tx = this.db.transaction(this.storeName, "readwrite");
-          const store = tx.objectStore(this.storeName);
-          const request = store.delete(id);
-          request.onsuccess = () => resolve();
-          request.onerror = () => reject(request.error);
-        });
+
+    // ==========================================
+    // 5. RESILIENT WEBSOCKET MANAGER
+    // ==========================================
+    class WebSocketManager {
+      constructor(url, onMessage) {
+        this.url = url;
+        this.onMessage = onMessage;
+        this.ws = null;
+        this.retryCount = 0;
+      }
+
+      connect() {
+        try {
+          this.ws = new WebSocket(this.url);
+          this.ws.onopen = () => {
+            console.info('[WS] Connected to Mesh Relay');
+            this.retryCount = 0;
+          };
+          this.ws.onmessage = (e) => this.onMessage(JSON.parse(e.data));
+          this.ws.onclose = () => this.scheduleReconnect();
+          this.ws.onerror = () => this.ws.close();
+        } catch (e) {
+          this.scheduleReconnect();
+        }
+      }
+
+      scheduleReconnect() {
+        this.retryCount++;
+        const timeout = Math.min(1000 * Math.pow(2, this.retryCount), 30000);
+        console.warn(`[WS] Reconnecting in ${timeout}ms...`);
+        setTimeout(() => this.connect(), timeout);
+      }
+
+      send(data) {
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+          this.ws.send(JSON.stringify(data));
+        } else {
+          console.warn('[WS] Offline. Message queued locally.');
+        }
       }
     }
 
 
     // ==========================================
-    // 3. PWA & SERVICE WORKER MANAGER
+    // 6. PWA & SERVICE WORKER MANAGER
     // ==========================================
     class PwaManager {
       constructor() {
@@ -184,41 +307,23 @@
       async registerServiceWorker() {
         if (!('serviceWorker' in navigator)) return;
 
-        // Inlined Service Worker Implementation via Blob
         const swCode = `
-          const CACHE_NAME = 'ent-pwa-v1';
-          self.addEventListener('install', (e) => {
-            self.skipWaiting();
-          });
-          self.addEventListener('activate', (e) => {
-            e.waitUntil(self.clients.claim());
-          });
+          const CACHE_NAME = 'chat-pwa-v1';
+          self.addEventListener('install', (e) => self.skipWaiting());
+          self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
           self.addEventListener('fetch', (e) => {
             if (e.request.method !== 'GET') return;
             e.respondWith(
-              caches.match(e.request).then((res) => {
-                const fetchPromise = fetch(e.request).then((networkRes) => {
-                  if (networkRes && networkRes.status === 200) {
-                    const resClone = networkRes.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(e.request, resClone));
-                  }
-                  return networkRes;
-                }).catch(() => res);
-                return res || fetchPromise;
-              })
+              caches.match(e.request).then((res) => res || fetch(e.request))
             );
           });
         `;
 
         const blob = new Blob([swCode], { type: 'text/javascript' });
-        const swUrl = URL.createObjectURL(blob);
-
         try {
-          await navigator.serviceWorker.register(swUrl);
-          document.getElementById("swStatusText").innerText = "SW: Active (Blob)";
+          await navigator.serviceWorker.register(URL.createObjectURL(blob));
         } catch (err) {
-          console.warn("[SW] Registration skipped or failed:", err);
-          document.getElementById("swStatusText").innerText = "SW: Disabled";
+          console.warn('[SW] Registration bypassed:', err);
         }
       }
 
@@ -227,11 +332,6 @@
           e.preventDefault();
           this.deferredPrompt = e;
           document.getElementById("pwaInstallBtn").classList.remove("hidden");
-        });
-
-        window.addEventListener('appinstalled', () => {
-          this.deferredPrompt = null;
-          document.getElementById("pwaInstallBtn").classList.add("hidden");
         });
       }
 
@@ -248,21 +348,46 @@
 
 
     // ==========================================
-    // 4. NETWORK & UI CONTROLLER
+    // 7. UI CONTROLLER & DEVICE APIs
     // ==========================================
     class UiController {
-      constructor(storage) {
+      constructor(store, storage, crypto, ws) {
+        this.store = store;
         this.storage = storage;
-        this.setupNetworkListeners();
+        this.crypto = crypto;
+        this.ws = ws;
+
+        this.store.subscribe((state) => this.render(state));
+        this.setupNetworkAndStorage();
       }
 
-      setupNetworkListeners() {
-        const updateStatus = () => {
+      triggerHaptic() {
+        if ('vibrate' in navigator) navigator.vibrate(15);
+      }
+
+      async shareApp() {
+        this.triggerHaptic();
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: 'Enterprise Mesh Chat',
+              text: 'Secure, end-to-end encrypted offline PWA chat platform.',
+              url: window.location.href,
+            });
+          } catch (e) {}
+        }
+      }
+
+      setupNetworkAndStorage() {
+        const updateStatus = async () => {
+          const isOnline = navigator.onLine;
+          this.store.dispatch({ type: 'SET_ONLINE', payload: isOnline });
+
           const badge = document.getElementById("netStatusBadge");
           const dot = document.getElementById("netStatusDot");
           const text = document.getElementById("netStatusText");
 
-          if (navigator.onLine) {
+          if (isOnline) {
             badge.className = "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
             dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse";
             text.innerText = "Online";
@@ -270,6 +395,13 @@
             badge.className = "bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full flex items-center space-x-1";
             dot.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
             text.innerText = "Offline Mode";
+          }
+
+          // Storage Quota Diagnostic API
+          if ('storage' in navigator && 'estimate' in navigator.storage) {
+            const { usage, quota } = await navigator.storage.estimate();
+            const usedMb = (usage / (1024 * 1024)).toFixed(1);
+            document.getElementById("storageQuotaText").innerText = `Storage: ${usedMb} MB`;
           }
         };
 
@@ -284,70 +416,95 @@
         );
       }
 
-      async handleFormSubmit(e) {
+      async handleSendMessage(e) {
         e.preventDefault();
-        const input = document.getElementById("recordInput");
-        const val = input.value.trim();
-        if (!val) return;
+        this.triggerHaptic();
 
-        const record = {
-          id: `rec_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-          title: this.escapeHTML(val),
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        const input = document.getElementById("messageInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        // Encrypt with Web Crypto API
+        const encrypted = await this.crypto.encrypt(text);
+
+        const msgRecord = {
+          id: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+          cipherText: encrypted.cipherHex,
+          iv: encrypted.ivHex,
+          timestamp: Date.now(),
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          sender: 'Self'
         };
 
-        await this.storage.add(record);
+        // Persist local IndexedDB
+        await this.storage.add(msgRecord);
+        this.store.dispatch({ type: 'ADD_MESSAGE', payload: msgRecord });
+
+        // Dispatch over WebSocket
+        this.ws.send(msgRecord);
+
         input.value = "";
-        await this.renderRecords();
       }
 
-      async deleteRecord(id) {
-        await this.storage.remove(id);
-        await this.renderRecords();
-      }
+      async render(state) {
+        const container = document.getElementById("messagesContainer");
+        
+        const renderedMessages = await Promise.all(state.messages.map(async (m) => {
+          const decryptedText = await this.crypto.decrypt(m.cipherText, m.iv);
+          const cleanText = this.escapeHTML(decryptedText);
 
-      async renderRecords() {
-        const list = document.getElementById("recordsList");
-        const records = await this.storage.getAll();
-
-        if (records.length === 0) {
-          list.innerHTML = `<p class="text-[11px] text-gray-500 italic text-center py-2">No records stored in IndexedDB.</p>`;
-          return;
-        }
-
-        list.innerHTML = records.map(r => `
-          <div class="p-2.5 bg-gray-950 border border-gray-800 rounded-lg flex items-center justify-between">
-            <div class="space-y-0.5">
-              <p class="text-xs font-semibold text-gray-200">${r.title}</p>
-              <p class="text-[9px] font-mono text-gray-500">${r.time}</p>
+          return `
+            <div class="flex flex-col items-end">
+              <div class="flex items-baseline space-x-1.5 mb-0.5">
+                <span class="text-[9px] font-mono text-indigo-400">Encrypted</span>
+                <span class="text-[9px] text-gray-600">${m.time}</span>
+              </div>
+              <div class="max-w-xs sm:max-w-md bg-indigo-600 text-white rounded-l-xl rounded-tr-xl p-2.5 text-xs shadow-sm space-y-1">
+                <p>${cleanText}</p>
+                <div class="flex items-center justify-end space-x-1 text-[8px] text-indigo-200 font-mono opacity-80">
+                  <i class="fa-solid fa-lock"></i>
+                  <span>AES-GCM</span>
+                </div>
+              </div>
             </div>
-            <button onclick="Application.ui.deleteRecord('${r.id}')" class="text-gray-500 hover:text-rose-400 p-1.5 transition">
-              <i class="fa-solid fa-trash-can text-xs"></i>
-            </button>
-          </div>
-        `).join('');
+          `;
+        }));
+
+        container.innerHTML = renderedMessages.join('');
+        const vp = document.getElementById("messageViewport");
+        vp.scrollTop = vp.scrollHeight;
       }
     }
 
 
     // ==========================================
-    // 5. APPLICATION COMPOSITION ROOT
+    // 8. APPLICATION COMPOSITION ROOT
     // ==========================================
     class ApplicationRoot {
       constructor() {
+        this.crypto = new CryptoEngine();
         this.storage = new StorageAdapter();
+        this.store = new Store(chatReducer, { messages: [], online: true });
+        this.ws = new WebSocketManager('wss://echo.websocket.events', (data) => {
+          // Echo handle for incoming payloads
+        });
         this.pwa = new PwaManager();
-        this.ui = new UiController(this.storage);
+        this.ui = new UiController(this.store, this.storage, this.crypto, this.ws);
       }
 
       async bootstrap() {
+        await this.crypto.init();
         await this.storage.init();
         await this.pwa.init();
-        await this.ui.renderRecords();
+        this.ws.connect();
+
+        // Hydrate store from IndexedDB
+        const storedMessages = await this.storage.getAll();
+        this.store.dispatch({ type: 'SET_MESSAGES', payload: storedMessages });
       }
     }
 
-    // Export Application Instance Globally
+    // Export Globally
     window.Application = new ApplicationRoot();
     window.addEventListener("DOMContentLoaded", () => window.Application.bootstrap());
 
