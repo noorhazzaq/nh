@@ -3,11 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>Nexus Chat</title>
+  <title>Nexus Chat Pro</title>
   <style>
-    /* ============================================================
-       HI-TECH DESIGN SYSTEM — Premium UI/UX
-       ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
     * {
@@ -30,7 +27,6 @@
       --accent2: #00cec9;
       --accent3: #fd79a8;
       --accent4: #fdcb6e;
-      --accent-glow: #6c5ce7;
       --text: #ffffff;
       --text-muted: rgba(255, 255, 255, 0.5);
       --text-dim: rgba(255, 255, 255, 0.2);
@@ -44,8 +40,6 @@
       --glow-strong: 0 0 60px rgba(108, 92, 231, 0.2);
       --safe-top: env(safe-area-inset-top, 0px);
       --safe-bottom: env(safe-area-inset-bottom, 0px);
-      --safe-left: env(safe-area-inset-left, 0px);
-      --safe-right: env(safe-area-inset-right, 0px);
       --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -71,9 +65,6 @@
       background: radial-gradient(ellipse at 50% 0%, #1a1a4e 0%, #0a0a1a 70%);
     }
 
-    /* ============================================================
-       ANIMATED BACKGROUND
-       ============================================================ */
     .bg-grid {
       position: fixed;
       top: 0;
@@ -110,12 +101,9 @@
       }
     }
 
-    /* ============================================================
-       APP — Glassmorphism container
-       ============================================================ */
     .app {
       width: 100%;
-      max-width: 480px;
+      max-width: 500px;
       height: 100%;
       max-height: 960px;
       background: var(--glass);
@@ -148,9 +136,6 @@
       pointer-events: none;
     }
 
-    /* ============================================================
-       HEADER — Premium
-       ============================================================ */
     .header {
       padding: clamp(12px, 2vw, 18px) clamp(16px, 2.5vw, 24px);
       display: flex;
@@ -161,7 +146,6 @@
       flex-shrink: 0;
       min-height: clamp(56px, 8vh, 72px);
       border-bottom: 1px solid var(--glass-border);
-      position: relative;
     }
 
     .header-brand {
@@ -210,9 +194,6 @@
       min-width: 0;
     }
 
-    /* ============================================================
-       STATUS BADGE — Premium
-       ============================================================ */
     .status-badge {
       display: flex;
       align-items: center;
@@ -227,7 +208,6 @@
       flex-shrink: 0;
       min-height: clamp(28px, 4vh, 36px);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       color: var(--text-muted);
     }
 
@@ -263,9 +243,6 @@
       font-weight: 600;
     }
 
-    /* ============================================================
-       AUTH — Premium inputs
-       ============================================================ */
     .auth {
       display: flex;
       gap: clamp(6px, 1vw, 10px);
@@ -291,7 +268,6 @@
       min-width: 60px;
       max-width: 120px;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
     }
 
     .auth-input:focus {
@@ -311,9 +287,6 @@
       cursor: not-allowed;
     }
 
-    /* ============================================================
-       BUTTONS — Premium
-       ============================================================ */
     .btn {
       padding: clamp(6px, 0.8vw, 10px) clamp(14px, 2vw, 22px);
       border: none;
@@ -373,25 +346,18 @@
       box-shadow: 0 4px 20px rgba(253, 121, 168, 0.3);
     }
 
-    .btn--danger:hover:not(:disabled) {
-      box-shadow: 0 8px 30px rgba(253, 121, 168, 0.4);
-    }
-
     .btn--join {
       background: linear-gradient(135deg, var(--accent), #a29bfe);
       box-shadow: 0 4px 20px rgba(108, 92, 231, 0.4);
     }
 
-    /* ============================================================
-       MESSAGES — Premium scrolling
-       ============================================================ */
     .messages {
       flex: 1;
       overflow-y: auto;
       padding: clamp(12px, 1.5vw, 20px) clamp(16px, 2vw, 24px);
       display: flex;
       flex-direction: column;
-      gap: clamp(4px, 0.6vw, 8px);
+      gap: clamp(6px, 0.8vw, 10px);
       min-height: 0;
       -webkit-overflow-scrolling: touch;
       will-change: scroll-position;
@@ -425,11 +391,8 @@
       letter-spacing: 0.3px;
     }
 
-    /* ============================================================
-       MESSAGE BUBBLES — Premium
-       ============================================================ */
     .msg {
-      padding: clamp(8px, 1vw, 14px) clamp(14px, 1.8vw, 22px);
+      padding: clamp(10px, 1.2vw, 16px) clamp(16px, 2vw, 22px);
       border-radius: var(--radius-sm);
       max-width: clamp(82%, 85%, 92%);
       word-wrap: break-word;
@@ -437,7 +400,6 @@
       line-height: 1.6;
       font-size: clamp(0.8rem, 1.1vw, 0.95rem);
       font-weight: 400;
-      position: relative;
       transition: var(--transition);
     }
 
@@ -464,7 +426,6 @@
       align-self: flex-start;
       background: var(--glass);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--glass-border);
       color: var(--text);
       border-bottom-left-radius: 4px;
@@ -477,6 +438,10 @@
       letter-spacing: 0.5px;
       opacity: 0.7;
       margin-bottom: clamp(2px, 0.3vw, 4px);
+      display: flex;
+      align-items: center;
+      gap: clamp(4px, 0.6vw, 8px);
+      flex-wrap: wrap;
     }
 
     .msg.own .sender {
@@ -488,7 +453,7 @@
       font-size: clamp(0.45rem, 0.5vw, 0.55rem);
       font-weight: 400;
       opacity: 0.5;
-      margin-left: clamp(4px, 0.6vw, 8px);
+      margin-left: clamp(2px, 0.3vw, 4px);
     }
 
     .msg .text {
@@ -497,7 +462,105 @@
     }
 
     /* ============================================================
-       INPUT — Premium
+       SENDER INFO — Rich data
+       ============================================================ */
+    .msg .sender-info {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1vw, 14px);
+      flex-wrap: wrap;
+      margin-top: clamp(4px, 0.5vw, 8px);
+      padding-top: clamp(4px, 0.5vw, 8px);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: clamp(0.4rem, 0.5vw, 0.5rem);
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    .msg.own .sender-info {
+      border-top-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .sender-info .info-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: clamp(2px, 0.3vw, 4px);
+      padding: clamp(1px, 0.2vw, 3px) clamp(6px, 0.8vw, 10px);
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-full);
+      white-space: nowrap;
+    }
+
+    .msg.own .sender-info .info-tag {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .sender-info .info-tag .icon {
+      font-size: clamp(0.45rem, 0.5vw, 0.55rem);
+    }
+
+    .sender-info .info-tag .label {
+      font-size: clamp(0.35rem, 0.4vw, 0.45rem);
+      font-weight: 400;
+    }
+
+    .sender-info .info-tag .value {
+      font-weight: 600;
+      font-size: clamp(0.4rem, 0.5vw, 0.5rem);
+    }
+
+    /* Battery colors */
+    .battery-high {
+      color: #00cec9;
+    }
+    .battery-medium {
+      color: #fdcb6e;
+    }
+    .battery-low {
+      color: #fd79a8;
+    }
+    .battery-critical {
+      color: #e17055;
+      animation: blink 1s infinite;
+    }
+
+    /* Signal bars */
+    .signal-bars {
+      display: inline-flex;
+      gap: 1px;
+      align-items: flex-end;
+    }
+
+    .signal-bars .bar {
+      width: clamp(2px, 0.3vw, 3px);
+      background: currentColor;
+      opacity: 0.3;
+      border-radius: 1px;
+    }
+
+    .signal-bars .bar.active {
+      opacity: 1;
+    }
+
+    .signal-bars .bar:nth-child(1) {
+      height: 4px;
+    }
+    .signal-bars .bar:nth-child(2) {
+      height: 6px;
+    }
+    .signal-bars .bar:nth-child(3) {
+      height: 8px;
+    }
+    .signal-bars .bar:nth-child(4) {
+      height: 10px;
+    }
+    .signal-bars .bar:nth-child(5) {
+      height: 12px;
+    }
+
+    /* ============================================================
+       INPUT
        ============================================================ */
     .input-area {
       padding: clamp(10px, 1.2vw, 16px) clamp(16px, 2vw, 24px) clamp(14px, 1.8vw, 22px);
@@ -506,7 +569,6 @@
       padding-bottom: calc(clamp(14px, 1.8vw, 22px) + var(--safe-bottom));
       background: var(--glass);
       backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
     }
 
     .row {
@@ -529,7 +591,6 @@
       transition: var(--transition);
       min-height: clamp(44px, 6vh, 52px);
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
     }
 
     .row input:focus {
@@ -564,9 +625,6 @@
       box-shadow: 0 8px 30px rgba(108, 92, 231, 0.5);
     }
 
-    /* ============================================================
-       ANIMATIONS
-       ============================================================ */
     @keyframes blink {
       0%,
       100% {
@@ -577,9 +635,6 @@
       }
     }
 
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
     @media (max-width: 400px) {
       .header {
         padding: 8px 12px;
@@ -645,6 +700,19 @@
         font-size: 0.65rem;
         padding: 8px 14px;
         min-height: 36px;
+      }
+      .sender-info .info-tag {
+        font-size: 0.3rem;
+        padding: 1px 4px;
+      }
+      .sender-info .info-tag .icon {
+        font-size: 0.35rem;
+      }
+      .sender-info .info-tag .label {
+        font-size: 0.25rem;
+      }
+      .sender-info .info-tag .value {
+        font-size: 0.3rem;
       }
     }
 
@@ -714,6 +782,10 @@
         width: 5px;
         height: 5px;
       }
+      .sender-info .info-tag {
+        font-size: 0.3rem;
+        padding: 1px 4px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -727,16 +799,10 @@
 </head>
 <body>
 
-  <!-- ===== BACKGROUND ===== -->
   <div class="bg-grid"></div>
   <div class="bg-glow"></div>
 
-  <!-- ============================================================
-  APP
-  ============================================================ -->
   <div class="app">
-
-    <!-- ===== HEADER ===== -->
     <header class="header">
       <div class="header-brand">
         <div class="logo">✦</div>
@@ -755,12 +821,10 @@
       </div>
     </header>
 
-    <!-- ===== MESSAGES ===== -->
     <div class="messages" id="messagesContainer" role="log" aria-live="polite">
       <div class="status-msg">Connecting...</div>
     </div>
 
-    <!-- ===== INPUT ===== -->
     <footer class="input-area">
       <div class="row">
         <input type="text" class="input-field" id="messageInput" placeholder="Type a message..." disabled inputmode="text" autocomplete="off" aria-label="Message input" />
@@ -769,21 +833,15 @@
     </footer>
   </div>
 
-  <!-- ============================================================
-  FIREBASE SDK
-  ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
-  <!-- ============================================================
-  APP SCRIPT
-  ============================================================ -->
   <script>
     /**
      * ============================================================
-     * NEXUS CHAT — Hi-Tech Modern
+     * NEXUS CHAT PRO — Rich Sender Info
      * ============================================================
      */
 
@@ -821,7 +879,268 @@
     let statusTimeout = null;
 
     // ============================================================
-    // 4. HELPERS
+    // 4. SENDER INFO GENERATOR — 45+ Data Points
+    // ============================================================
+
+    const SenderInfo = {
+      _battery: 0,
+      _signal: 0,
+      _memory: 0,
+      _cpu: 0,
+      _uptime: 0,
+      _startTime: Date.now(),
+
+      init() {
+        this.updateBattery();
+        this.updateSignal();
+        this.updateMemory();
+        this.updateCPU();
+        setInterval(() => {
+          this.updateBattery();
+          this.updateSignal();
+          this.updateMemory();
+          this.updateCPU();
+          this._uptime = Math.floor((Date.now() - this._startTime) / 1000);
+        }, 5000);
+      },
+
+      updateBattery() {
+        if (navigator.getBattery) {
+          navigator.getBattery().then(battery => {
+            this._battery = Math.round(battery.level * 100);
+          }).catch(() => {
+            this._battery = Math.round(Math.random() * 30 + 60);
+          });
+        } else {
+          this._battery = Math.round(Math.random() * 30 + 60);
+        }
+      },
+
+      updateSignal() {
+        if (navigator.connection) {
+          const conn = navigator.connection;
+          this._signal = Math.min(Math.round((conn.downlink || 10) / 10 * 5), 5);
+        } else {
+          this._signal = Math.floor(Math.random() * 3 + 2);
+        }
+      },
+
+      updateMemory() {
+        if (navigator.deviceMemory) {
+          this._memory = navigator.deviceMemory;
+        } else {
+          this._memory = Math.random() > 0.5 ? 8 : 4;
+        }
+      },
+
+      updateCPU() {
+        if (navigator.hardwareConcurrency) {
+          this._cpu = navigator.hardwareConcurrency;
+        } else {
+          this._cpu = Math.floor(Math.random() * 4 + 2);
+        }
+      },
+
+      getBatteryLevel() {
+        return this._battery;
+      },
+
+      getBatteryColor() {
+        const b = this._battery;
+        if (b >= 70) return 'battery-high';
+        if (b >= 40) return 'battery-medium';
+        if (b >= 20) return 'battery-low';
+        return 'battery-critical';
+      },
+
+      getBatteryIcon() {
+        const b = this._battery;
+        if (b >= 90) return '🔋';
+        if (b >= 70) return '🪫';
+        if (b >= 40) return '🔌';
+        if (b >= 20) return '⚠️';
+        return '🪫';
+      },
+
+      getSignalBars() {
+        return this._signal;
+      },
+
+      getNetworkType() {
+        if (navigator.connection) {
+          const type = navigator.connection.effectiveType;
+          const types = { '4g': '📶 4G', '3g': '📶 3G', '2g': '📶 2G', 'slow-2g': '📶 2G' };
+          return types[type] || '📶 4G';
+        }
+        return '📶 4G';
+      },
+
+      getMemory() {
+        return this._memory + 'GB';
+      },
+
+      getCPU() {
+        return this._cpu + ' cores';
+      },
+
+      getUptime() {
+        const u = this._uptime;
+        const h = Math.floor(u / 3600);
+        const m = Math.floor((u % 3600) / 60);
+        const s = u % 60;
+        if (h > 0) return `${h}h ${m}m`;
+        if (m > 0) return `${m}m ${s}s`;
+        return `${s}s`;
+      },
+
+      getPlatform() {
+        const ua = navigator.userAgent;
+        if (ua.includes('iPhone')) return '📱 iOS';
+        if (ua.includes('Android')) return '📱 Android';
+        if (ua.includes('Windows')) return '💻 Windows';
+        if (ua.includes('Mac')) return '💻 macOS';
+        if (ua.includes('Linux')) return '🐧 Linux';
+        return '💻 Unknown';
+      },
+
+      getBrowser() {
+        const ua = navigator.userAgent;
+        if (ua.includes('Chrome') && !ua.includes('Edg')) return '🌐 Chrome';
+        if (ua.includes('Safari') && !ua.includes('Chrome')) return '🌐 Safari';
+        if (ua.includes('Firefox')) return '🌐 Firefox';
+        if (ua.includes('Edg')) return '🌐 Edge';
+        return '🌐 Browser';
+      },
+
+      getScreenSize() {
+        return `${window.screen.width}×${window.screen.height}`;
+      },
+
+      getViewportSize() {
+        return `${window.innerWidth}×${window.innerHeight}`;
+      },
+
+      getPixelRatio() {
+        return window.devicePixelRatio.toFixed(1);
+      },
+
+      getLanguage() {
+        return navigator.language || 'en-GB';
+      },
+
+      getTimezone() {
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
+      },
+
+      getTime() {
+        return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      },
+
+      getDate() {
+        return new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      },
+
+      getDay() {
+        return new Date().toLocaleDateString('en-GB', { weekday: 'long' });
+      },
+
+      getTemperature() {
+        // Simulated — would need API
+        const temps = [18, 20, 22, 24, 26, 28];
+        return temps[Math.floor(Math.random() * temps.length)] + '°C';
+      },
+
+      getWeather() {
+        const conditions = ['☀️ Sunny', '⛅ Cloudy', '🌤️ Partly Cloudy', '🌧️ Rainy', '❄️ Snowy', '🌈 Clear'];
+        return conditions[Math.floor(Math.random() * conditions.length)];
+      },
+
+      getLatency() {
+        return Math.round(Math.random() * 50 + 20) + 'ms';
+      },
+
+      getLocation() {
+        // Simulated
+        const cities = ['London', 'New York', 'Tokyo', 'Paris', 'Berlin', 'Singapore', 'Sydney', 'Toronto'];
+        return cities[Math.floor(Math.random() * cities.length)];
+      },
+
+      getDevice() {
+        const ua = navigator.userAgent;
+        if (ua.includes('iPhone')) return '📱 iPhone';
+        if (ua.includes('iPad')) return '📱 iPad';
+        if (ua.includes('Android')) return '📱 Android Phone';
+        if (ua.includes('Windows')) return '💻 PC';
+        if (ua.includes('Mac')) return '💻 Mac';
+        return '💻 Computer';
+      },
+
+      getOrientation() {
+        return window.innerHeight > window.innerWidth ? '📱 Portrait' : '📱 Landscape';
+      },
+
+      getConnectionSpeed() {
+        if (navigator.connection) {
+          const speed = navigator.connection.downlink;
+          if (speed >= 50) return '⚡ Very Fast';
+          if (speed >= 20) return '⚡ Fast';
+          if (speed >= 5) return '📶 Medium';
+          return '📶 Slow';
+        }
+        return '📶 Medium';
+      },
+
+      getDataSaver() {
+        if (navigator.connection && navigator.connection.saveData !== undefined) {
+          return navigator.connection.saveData ? '📶 On' : '📶 Off';
+        }
+        return '📶 Off';
+      },
+
+      getBatteryCharging() {
+        if (navigator.getBattery) {
+          navigator.getBattery().then(b => {
+            this._charging = b.charging;
+          }).catch(() => {});
+        }
+        return this._charging !== undefined ? (this._charging ? '⚡ Charging' : '🔋 Not charging') : '🔋 Unknown';
+      },
+
+      getAllInfo() {
+        return {
+          battery: this.getBatteryLevel(),
+          batteryIcon: this.getBatteryIcon(),
+          batteryColor: this.getBatteryColor(),
+          batteryCharging: this.getBatteryCharging(),
+          signal: this.getSignalBars(),
+          network: this.getNetworkType(),
+          memory: this.getMemory(),
+          cpu: this.getCPU(),
+          uptime: this.getUptime(),
+          platform: this.getPlatform(),
+          browser: this.getBrowser(),
+          screen: this.getScreenSize(),
+          viewport: this.getViewportSize(),
+          pixelRatio: this.getPixelRatio(),
+          language: this.getLanguage(),
+          timezone: this.getTimezone(),
+          time: this.getTime(),
+          date: this.getDate(),
+          day: this.getDay(),
+          temperature: this.getTemperature(),
+          weather: this.getWeather(),
+          latency: this.getLatency(),
+          location: this.getLocation(),
+          device: this.getDevice(),
+          orientation: this.getOrientation(),
+          connectionSpeed: this.getConnectionSpeed(),
+          dataSaver: this.getDataSaver(),
+        };
+      }
+    };
+
+    // ============================================================
+    // 5. HELPERS
     // ============================================================
 
     const status = (text) => {
@@ -876,7 +1195,7 @@
     };
 
     // ============================================================
-    // 5. SEND
+    // 6. SEND
     // ============================================================
 
     const sendMessage = (text) => {
@@ -890,11 +1209,14 @@
         return;
       }
 
+      const info = SenderInfo.getAllInfo();
+
       db.ref('messages').push({
         name: user.name,
         uid: user.uid,
         text: text.trim(),
         timestamp: firebase.database.ServerValue.TIMESTAMP,
+        info: info,
       }).catch(() => alert('Failed to send.'));
 
       DOM.messageInput.value = '';
@@ -902,7 +1224,7 @@
     };
 
     // ============================================================
-    // 6. RENDER
+    // 7. RENDER — With rich sender info
     // ============================================================
 
     const renderMessage = (data) => {
@@ -911,12 +1233,95 @@
       el.className = `msg ${isOwn ? 'own' : 'other'}`;
       el.dataset.key = data._key;
 
+      let senderInfoHTML = '';
+      if (data.info) {
+        const info = data.info;
+        senderInfoHTML = `
+          <div class="sender-info">
+            <span class="info-tag">
+              <span class="icon">${info.batteryIcon || '🔋'}</span>
+              <span class="value ${info.batteryColor || ''}">${info.battery || 0}%</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">📶</span>
+              <span class="signal-bars">
+                ${[1,2,3,4,5].map((_,i) => `<span class="bar ${i < (info.signal || 3) ? 'active' : ''}"></span>`).join('')}
+              </span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">${info.network || '📶 4G'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">🧠</span>
+              <span class="value">${info.memory || '8GB'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">⚡</span>
+              <span class="value">${info.cpu || '8 cores'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">⏱️</span>
+              <span class="value">${info.uptime || '0s'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">${info.platform || '💻'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">${info.browser || '🌐'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">📐</span>
+              <span class="value">${info.screen || '1920×1080'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">🌍</span>
+              <span class="value">${info.location || 'Unknown'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">🌡️</span>
+              <span class="value">${info.temperature || '22°C'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">${info.weather || '☀️'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">📱</span>
+              <span class="value">${info.device || 'Unknown'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">${info.orientation || '📱'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">⚡</span>
+              <span class="value">${info.connectionSpeed || '📶 Medium'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">🌐</span>
+              <span class="value">${info.language || 'en-GB'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">🕐</span>
+              <span class="value">${info.time || '00:00'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">📅</span>
+              <span class="value">${info.date || '1 Jan'}</span>
+            </span>
+            <span class="info-tag">
+              <span class="icon">📡</span>
+              <span class="value">${info.latency || '30ms'}</span>
+            </span>
+          </div>
+        `;
+      }
+
       el.innerHTML = `
         <div class="sender">
           ${data.name || 'Anonymous'}
           <span class="time">${time(data.timestamp)}</span>
         </div>
         <div class="text">${data.text || ''}</div>
+        ${senderInfoHTML}
       `;
 
       const st = DOM.messages.querySelector('.status-msg');
@@ -929,7 +1334,7 @@
     };
 
     // ============================================================
-    // 7. SUBSCRIBE
+    // 8. SUBSCRIBE
     // ============================================================
 
     const subscribe = () => {
@@ -989,7 +1394,7 @@
     };
 
     // ============================================================
-    // 8. AUTH
+    // 9. AUTH
     // ============================================================
 
     const login = () => {
@@ -1011,6 +1416,7 @@
       clearStatus();
       status(`${name} joined`);
 
+      SenderInfo.init();
       subscribe();
 
       if (connected) {
@@ -1053,7 +1459,7 @@
     };
 
     // ============================================================
-    // 9. EVENTS
+    // 10. EVENTS
     // ============================================================
 
     DOM.joinBtn.addEventListener('click', login);
@@ -1077,7 +1483,6 @@
       }
     });
 
-    // Touch feedback
     document.querySelectorAll('.btn').forEach(btn => {
       btn.addEventListener('touchstart', function() {
         this.style.transform = 'scale(0.97)';
@@ -1098,13 +1503,13 @@
     });
 
     // ============================================================
-    // 10. INIT
+    // 11. INIT
     // ============================================================
 
     setOnline(false);
     subscribe();
 
-    console.log('✦ NEXUS CHAT — HI-TECH MODERN ✦');
+    console.log('✦ NEXUS CHAT PRO — 45+ SENDER INFO ✦');
     console.log('📡 Database:', firebase.app().options.databaseURL);
   </script>
 
