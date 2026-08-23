@@ -61,15 +61,18 @@
     .row input:disabled{opacity:.3}
     .row .btn{font-size:.65rem;padding:6px 14px;min-height:32px;flex-shrink:0}
 
-    /* ===== VIDEO CALL OVERLAY — TWO-WAY ===== */
+    /* ===== VIDEO CALL OVERLAY ===== */
     .call-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px}
     .call-overlay.active{display:flex;animation:fadeIn .3s}
     @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
 
     .call-grid{width:100%;max-width:600px;display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative}
-    .call-grid video{width:100%;border-radius:var(--radius);background:#0a0a12;border:2px solid var(--border);max-height:40vh;object-fit:cover}
+    .call-grid video{width:100%;border-radius:var(--radius);background:#0a0a12;border:2px solid var(--border);max-height:40vh;object-fit:cover;min-height:150px}
     .call-grid .remote{grid-column:1;grid-row:1}
     .call-grid .local{grid-column:2;grid-row:1}
+
+    .call-grid .remote.blank{display:flex;align-items:center;justify-content:center;background:#0a0a12;color:var(--muted);font-size:.8rem;min-height:150px}
+    .call-grid .remote.blank::after{content:'👤 Waiting for other...';position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
 
     .call-info{display:flex;flex-direction:column;align-items:center;gap:4px}
     .call-info .status{font-size:.7rem;color:var(--muted)}
@@ -85,7 +88,9 @@
     .call-actions .camera.off{background:var(--blue);color:#fff}
     .call-actions .switch{background:var(--card);color:var(--text);font-size:1rem}
 
-    /* ===== RESPONSIVE ===== */
+    .debug-log{position:fixed;bottom:10px;left:10px;font-size:.4rem;color:var(--muted);max-width:200px;opacity:.5;z-index:200;pointer-events:none;line-height:1.3;display:none}
+    .debug-log.active{display:block}
+
     @media(max-width:380px){
       .header{padding:6px 8px}
       .brand .logo{width:22px;height:22px;font-size:.6rem}
@@ -97,7 +102,7 @@
       .row input{font-size:.6rem;padding:4px 8px;min-height:26px}
       .row .btn{font-size:.55rem;padding:4px 8px;min-height:26px}
       .call-grid{grid-template-columns:1fr 1fr;gap:4px}
-      .call-grid video{max-height:30vh}
+      .call-grid video{max-height:30vh;min-height:100px}
       .call-actions button{width:36px;height:36px;font-size:.9rem}
       .call-actions .end{width:42px;height:42px;font-size:1.1rem}
     }
@@ -112,7 +117,7 @@
       .input-area{padding:2px 6px 6px}
       .row input{min-height:20px;padding:3px 8px;font-size:.5rem}
       .row .btn{min-height:20px;padding:3px 8px;font-size:.45rem}
-      .call-grid video{max-height:25vh}
+      .call-grid video{max-height:25vh;min-height:80px}
       .call-actions button{width:30px;height:30px;font-size:.7rem}
       .call-actions .end{width:36px;height:36px;font-size:.9rem}
     }
@@ -140,6 +145,9 @@
       <button class="end" id="endCallBtn" title="End call">📞</button>
     </div>
   </div>
+
+  <!-- ===== DEBUG LOG ===== -->
+  <div class="debug-log" id="debugLog"></div>
 
   <!-- ===== APP ===== -->
   <div class="app">
@@ -196,7 +204,8 @@
   <script>
     /**
      * ============================================================
-     * TWO-WAY VIDEO CALL — A Sees B, B Sees A
+     * TWO-WAY VIDEO CALL — FIXED
+     * A Sees B, B Sees A
      * ============================================================
      */
 
@@ -245,6 +254,7 @@
       cameraBtn: $('cameraBtn'),
       switchBtn: $('switchBtn'),
       endCallBtn: $('endCallBtn'),
+      debugLog: $('debugLog'),
     };
     const typingEl = $('typing');
 
@@ -254,8 +264,7 @@
 
     let user = null,
       listeners = [],
-      connected = !1,
-      start = Date.now();
+      connected = !1;
     let localStream = null,
       remoteStream = null,
       peerConnection = null;
@@ -266,9 +275,23 @@
       cameraOff = !1,
       usingFrontCamera = !0;
     let callListeners = [];
+    let isOfferer = !1;
+    let remoteVideoReady = !1;
 
     // ============================================================
-    // 4. HELPERS
+    // 4. DEBUG LOG
+    // ============================================================
+
+    function debug(msg) {
+      const el = D.debugLog;
+      el.classList.add('active');
+      const time = new Date().toLocaleTimeString();
+      el.textContent = time + ' | ' + msg;
+      console.log('[📹 DEBUG]', msg);
+    }
+
+    // ============================================================
+    // 5. HELPERS
     // ============================================================
 
     function setStatus(t) {
@@ -292,7 +315,7 @@
       connected = on;
       D.dot.className = 'dot' + (on ? '' : ' off');
       if (on) {
-        console.log('⚡ Connected');
+        debug('Connected to Firebase');
         setStatus('✦ Connected ✦');
         setTimeout(() => { const e = D.msgs.querySelector('.status-msg'); if (e && e.textContent === '✦ Connected ✦')
             clearStatus() }, 600);
@@ -300,7 +323,7 @@
     }
 
     // ============================================================
-    // 5. WEBRTC — TWO-WAY VIDEO CALL
+    // 6. WEBRTC — TWO-WAY VIDEO CALL (FIXED)
     // ============================================================
 
     const CALL_CONFIG = {
@@ -308,6 +331,7 @@
         { urls: 'stun:stun.l.google.com:19302' },
         { urls: 'stun:stun1.l.google.com:19302' },
         { urls: 'stun:stun2.l.google.com:19302' },
+        { urls: 'stun:stun3.l.google.com:19302' },
       ]
     };
 
@@ -320,45 +344,92 @@
         },
         audio: true
       };
+      debug('Getting media: ' + (usingFrontCamera ? 'front' : 'back') + ' camera');
       return await navigator.mediaDevices.getUserMedia(constraints);
     }
 
     async function startCall() {
       if (!user) return alert('Sign in first!');
       if (callActive) return endCall();
+      isOfferer = !0;
 
       try {
+        debug('Starting call as offerer...');
+
         // Get local media
         localStream = await getMedia();
         D.localVideo.srcObject = localStream;
+        debug('Local stream acquired');
 
         // Create peer connection
         peerConnection = new RTCPeerConnection(CALL_CONFIG);
+        debug('Peer connection created');
 
         // Add local tracks
         localStream.getTracks().forEach(track => {
           peerConnection.addTrack(track, localStream);
+          debug('Added track: ' + track.kind);
         });
 
-        // Handle remote stream (B sees A)
+        // Handle remote stream
         peerConnection.ontrack = (event) => {
+          debug('ontrack fired! Remote stream received');
           remoteStream = event.streams[0];
           D.remoteVideo.srcObject = remoteStream;
+          remoteVideoReady = !0;
+          D.remoteVideo.classList.remove('blank');
+          debug('Remote video attached');
         };
 
         // Handle ICE candidates
         peerConnection.onicecandidate = (event) => {
           if (event.candidate) {
+            debug('ICE candidate: ' + event.candidate.candidate.slice(0, 50) + '...');
             db.ref('calls/' + user.uid + '/candidate').push({
               candidate: event.candidate,
               from: user.uid
             });
+          } else {
+            debug('ICE gathering complete');
+          }
+        };
+
+        // Handle ICE connection state
+        peerConnection.oniceconnectionstatechange = () => {
+          debug('ICE state: ' + peerConnection.iceConnectionState);
+          if (peerConnection.iceConnectionState === 'connected') {
+            D.callStatus.textContent = 'Connected';
+            debug('ICE connected!');
+          } else if (peerConnection.iceConnectionState === 'failed') {
+            debug('ICE failed! Retrying...');
+            D.callStatus.textContent = 'Connection failed, retrying...';
+          }
+        };
+
+        // Handle connection state
+        peerConnection.onconnectionstatechange = () => {
+          debug('Connection state: ' + peerConnection.connectionState);
+          if (peerConnection.connectionState === 'connected') {
+            debug('P2P connection established!');
+            D.callStatus.textContent = 'Connected';
+            startCallTimer();
+            callActive = !0;
+            D.callBtn.textContent = '📹 End Call';
+            D.callBtn.classList.add('active');
+          } else if (peerConnection.connectionState === 'failed') {
+            debug('Connection failed!');
+            D.callStatus.textContent = 'Connection failed. Retrying...';
+            setTimeout(() => {
+              if (callActive) restartCall();
+            }, 2000);
           }
         };
 
         // Create offer
+        debug('Creating offer...');
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer);
+        debug('Offer created and set');
 
         // Send offer to Firebase
         await db.ref('calls/' + user.uid + '/offer').set({
@@ -366,6 +437,7 @@
           from: user.uid,
           name: user.name
         });
+        debug('Offer sent to Firebase');
 
         // Cleanup old listeners
         callListeners.forEach(ref => { try { ref.off() } catch (e) {} });
@@ -376,13 +448,13 @@
         answerRef.on('value', async (snapshot) => {
           const data = snapshot.val();
           if (data && data.sdp && peerConnection && !peerConnection.currentRemoteDescription) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-            D.callStatus.textContent = 'Connected';
-            startCallTimer();
-            callActive = true;
-            D.callBtn.textContent = '📹 End Call';
-            D.callBtn.classList.add('active');
-            db.ref('calls/' + user.uid + '/status').set('connected');
+            debug('Answer received from ' + data.from);
+            try {
+              await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+              debug('Remote description set from answer');
+            } catch (e) {
+              debug('Error setting remote description: ' + e.message);
+            }
           }
         });
         callListeners.push(answerRef);
@@ -394,7 +466,10 @@
           if (data && data.from !== user.uid && peerConnection) {
             try {
               await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-            } catch (e) { /* ignore */ }
+              debug('ICE candidate added from ' + data.from);
+            } catch (e) {
+              debug('ICE candidate error: ' + e.message);
+            }
           }
         });
         callListeners.push(candidateRef);
@@ -403,6 +478,7 @@
         const endRef = db.ref('calls/' + user.uid + '/end');
         endRef.on('value', (snapshot) => {
           if (snapshot.val() === true) {
+            debug('Call ended by remote');
             endCall();
           }
         });
@@ -413,12 +489,12 @@
         D.callBtn.textContent = '📹 End Call';
         D.callBtn.classList.add('active');
         db.ref('calls/' + user.uid + '/status').set('calling');
-
-        console.log('📹 Call started as ' + (usingFrontCamera ? 'front' : 'back') + ' camera');
+        debug('Call overlay active, waiting for answer...');
 
       } catch (e) {
+        debug('Start call error: ' + e.message);
         console.error('Call error:', e);
-        alert('Could not start call. Please allow camera and microphone access.');
+        alert('Could not start call: ' + e.message);
         endCall();
       }
     }
@@ -426,48 +502,94 @@
     async function answerCall(offerData, callerId) {
       if (callActive) return;
       if (!offerData) return;
+      isOfferer = !1;
 
       try {
+        debug('Answering call from ' + callerId);
+
         // Get local media
         localStream = await getMedia();
         D.localVideo.srcObject = localStream;
+        debug('Local stream acquired for answer');
 
         // Create peer connection
         peerConnection = new RTCPeerConnection(CALL_CONFIG);
+        debug('Peer connection created for answer');
 
         // Add local tracks
         localStream.getTracks().forEach(track => {
           peerConnection.addTrack(track, localStream);
+          debug('Added track: ' + track.kind);
         });
 
-        // Handle remote stream (A sees B)
+        // Handle remote stream
         peerConnection.ontrack = (event) => {
+          debug('ontrack fired! Remote stream received (answerer)');
           remoteStream = event.streams[0];
           D.remoteVideo.srcObject = remoteStream;
+          remoteVideoReady = !0;
+          D.remoteVideo.classList.remove('blank');
+          debug('Remote video attached (answerer)');
         };
 
         // Handle ICE candidates
         peerConnection.onicecandidate = (event) => {
           if (event.candidate) {
+            debug('ICE candidate (answerer): ' + event.candidate.candidate.slice(0, 50) + '...');
             db.ref('calls/' + callerId + '/candidate').push({
               candidate: event.candidate,
               from: user.uid
             });
+          } else {
+            debug('ICE gathering complete (answerer)');
+          }
+        };
+
+        // Handle ICE connection state
+        peerConnection.oniceconnectionstatechange = () => {
+          debug('ICE state (answerer): ' + peerConnection.iceConnectionState);
+          if (peerConnection.iceConnectionState === 'connected') {
+            D.callStatus.textContent = 'Connected';
+            debug('ICE connected! (answerer)');
+          } else if (peerConnection.iceConnectionState === 'failed') {
+            debug('ICE failed! (answerer)');
+            D.callStatus.textContent = 'Connection failed, retrying...';
+          }
+        };
+
+        // Handle connection state
+        peerConnection.onconnectionstatechange = () => {
+          debug('Connection state (answerer): ' + peerConnection.connectionState);
+          if (peerConnection.connectionState === 'connected') {
+            debug('P2P connection established! (answerer)');
+            D.callStatus.textContent = 'Connected';
+            startCallTimer();
+            callActive = !0;
+            D.callBtn.textContent = '📹 End Call';
+            D.callBtn.classList.add('active');
+          } else if (peerConnection.connectionState === 'failed') {
+            debug('Connection failed! (answerer)');
+            D.callStatus.textContent = 'Connection failed. Retrying...';
           }
         };
 
         // Set remote description
+        debug('Setting remote description from offer...');
         await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.sdp));
+        debug('Remote description set');
 
         // Create answer
+        debug('Creating answer...');
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
+        debug('Answer created and set');
 
         // Send answer
         await db.ref('calls/' + callerId + '/answer').set({
           sdp: answer,
           from: user.uid
         });
+        debug('Answer sent to ' + callerId);
 
         // Cleanup old listeners
         callListeners.forEach(ref => { try { ref.off() } catch (e) {} });
@@ -480,7 +602,10 @@
           if (data && data.from !== user.uid && peerConnection) {
             try {
               await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
-            } catch (e) { /* ignore */ }
+              debug('ICE candidate added from ' + data.from);
+            } catch (e) {
+              debug('ICE candidate error: ' + e.message);
+            }
           }
         });
         callListeners.push(candidateRef);
@@ -489,29 +614,36 @@
         const endRef = db.ref('calls/' + callerId + '/end');
         endRef.on('value', (snapshot) => {
           if (snapshot.val() === true) {
+            debug('Call ended by remote');
             endCall();
           }
         });
         callListeners.push(endRef);
 
         D.callOverlay.classList.add('active');
-        D.callStatus.textContent = 'Connected';
-        startCallTimer();
-        callActive = true;
+        D.callStatus.textContent = 'Connecting...';
         D.callBtn.textContent = '📹 End Call';
         D.callBtn.classList.add('active');
         db.ref('calls/' + user.uid + '/status').set('connected');
-
-        console.log('📹 Call answered with ' + (usingFrontCamera ? 'front' : 'back') + ' camera');
+        debug('Call overlay active, waiting for connection...');
 
       } catch (e) {
+        debug('Answer call error: ' + e.message);
         console.error('Answer error:', e);
-        alert('Could not answer call.');
+        alert('Could not answer call: ' + e.message);
         endCall();
       }
     }
 
+    async function restartCall() {
+      debug('Restarting call...');
+      endCall();
+      setTimeout(() => startCall(), 1000);
+    }
+
     function endCall() {
+      debug('Ending call...');
+
       // Stop timer
       if (callTimerInterval) {
         clearInterval(callTimerInterval);
@@ -528,39 +660,45 @@
       if (peerConnection) {
         peerConnection.close();
         peerConnection = null;
+        debug('Peer connection closed');
       }
 
       // Stop local stream
       if (localStream) {
         localStream.getTracks().forEach(t => t.stop());
         localStream = null;
+        debug('Local stream stopped');
       }
 
-      // Clear streams
+      // Clear remote stream
       remoteStream = null;
+      remoteVideoReady = !1;
       D.localVideo.srcObject = null;
       D.remoteVideo.srcObject = null;
+      D.remoteVideo.classList.remove('blank');
 
       // Cleanup Firebase
       if (user) {
         try { db.ref('calls/' + user.uid).remove() } catch (e) {}
+        debug('Firebase call data cleaned');
       }
 
-      callActive = false;
+      callActive = !1;
+      isOfferer = !1;
       D.callOverlay.classList.remove('active');
       D.callBtn.textContent = '📹 Start Call';
       D.callBtn.classList.remove('active');
       D.callStatus.textContent = 'Call ended';
       setTimeout(() => { D.callStatus.textContent = '' }, 2000);
 
-      muted = false;
-      cameraOff = false;
+      muted = !1;
+      cameraOff = !1;
       D.muteBtn.textContent = '🔇';
       D.muteBtn.classList.remove('muted');
       D.cameraBtn.textContent = '📷';
       D.cameraBtn.classList.remove('off');
 
-      console.log('📹 Call ended');
+      debug('Call ended cleanly');
     }
 
     function startCallTimer() {
@@ -580,6 +718,7 @@
       localStream.getAudioTracks().forEach(t => t.enabled = !muted);
       D.muteBtn.textContent = muted ? '🔊' : '🔇';
       D.muteBtn.classList.toggle('muted', muted);
+      debug('Mute: ' + (muted ? 'on' : 'off'));
     }
 
     function toggleCamera() {
@@ -588,43 +727,40 @@
       localStream.getVideoTracks().forEach(t => t.enabled = !cameraOff);
       D.cameraBtn.textContent = cameraOff ? '📷❌' : '📷';
       D.cameraBtn.classList.toggle('off', cameraOff);
+      debug('Camera: ' + (cameraOff ? 'off' : 'on'));
     }
 
     async function switchCamera() {
       if (!localStream) return;
       usingFrontCamera = !usingFrontCamera;
+      debug('Switching to ' + (usingFrontCamera ? 'front' : 'back') + ' camera');
 
-      // Get new stream with new camera
       try {
         const newStream = await getMedia();
-        // Replace tracks
         const videoTrack = newStream.getVideoTracks()[0];
         const oldVideoTrack = localStream.getVideoTracks()[0];
         localStream.removeTrack(oldVideoTrack);
         localStream.addTrack(videoTrack);
         oldVideoTrack.stop();
 
-        // Update local video
         D.localVideo.srcObject = localStream;
 
-        // Update peer connection
         if (peerConnection) {
           const senders = peerConnection.getSenders();
           const sender = senders.find(s => s.track && s.track.kind === 'video');
           if (sender) {
-            sender.replaceTrack(videoTrack);
+            await sender.replaceTrack(videoTrack);
+            debug('Track replaced in peer connection');
           }
         }
-
-        console.log('🔄 Switched to ' + (usingFrontCamera ? 'front' : 'back') + ' camera');
       } catch (e) {
-        console.error('Switch camera error:', e);
+        debug('Switch camera error: ' + e.message);
         alert('Could not switch camera.');
       }
     }
 
     // ============================================================
-    // 6. LISTEN FOR INCOMING CALLS
+    // 7. LISTEN FOR INCOMING CALLS
     // ============================================================
 
     function listenForCalls() {
@@ -639,12 +775,13 @@
         if (!data.offer) return;
         if (data.answer) return;
 
-        // Show incoming call
+        debug('Incoming call from ' + (data.name || 'Unknown'));
         D.callStatus.textContent = '📞 Incoming from ' + (data.name || 'Unknown');
 
         // Auto-answer after 0.5s
         setTimeout(() => {
           if (!callActive && user) {
+            debug('Auto-answering call from ' + callerId);
             answerCall(data.offer, callerId);
           }
         }, 500);
@@ -652,7 +789,7 @@
     }
 
     // ============================================================
-    // 7. SEND
+    // 8. SEND
     // ============================================================
 
     function sendMessage(t) {
@@ -675,7 +812,7 @@
     }
 
     // ============================================================
-    // 8. RENDER
+    // 9. RENDER
     // ============================================================
 
     function render(data) {
@@ -697,7 +834,7 @@
     }
 
     // ============================================================
-    // 9. SUBSCRIBE
+    // 10. SUBSCRIBE
     // ============================================================
 
     function subscribe() {
@@ -753,7 +890,7 @@
     }
 
     // ============================================================
-    // 10. AUTH
+    // 11. AUTH
     // ============================================================
 
     function login() {
@@ -778,6 +915,7 @@
       D.count.textContent = '1';
       setTimeout(() => { const e = D.msgs.querySelector('.status-msg'); if (e && e.textContent === '✦ ' + n +
           ' joined ✦') clearStatus() }, 1200);
+      debug('User logged in: ' + user.name);
     }
 
     function logout() {
@@ -803,10 +941,11 @@
       D.callBtn.disabled = !0;
       D.callBtn.textContent = '📹 Start Call';
       D.callBtn.classList.remove('active');
+      debug('User logged out');
     }
 
     // ============================================================
-    // 11. EVENTS
+    // 12. EVENTS
     // ============================================================
 
     D.join.onclick = login;
@@ -831,16 +970,16 @@
           block: 'center' }) }, 300) });
 
     // ============================================================
-    // 12. BOOT
+    // 13. BOOT
     // ============================================================
 
     function startApp() {
-      start = Date.now();
+      debug('App starting...');
       setStatus('✦ Connecting...');
       D.callBtn.disabled = !0;
       subscribe();
       setTimeout(() => { if (!connected) setOnline(!0) }, 2000);
-      console.log('📹 Two-Way Video Call — A↔B');
+      console.log('📹 Two-Way Video Call — FIXED');
     }
 
     initFirebase();
