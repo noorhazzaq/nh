@@ -2,11 +2,11 @@
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>Pixel Chat</title>
   <style>
     /* ============================================================
-       PIXEL DESIGN SYSTEM
+       PIXEL DESIGN SYSTEM — PHONE FIRST
        ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
@@ -15,6 +15,7 @@
       padding: 0;
       box-sizing: border-box;
       image-rendering: pixelated;
+      -webkit-tap-highlight-color: transparent;
     }
 
     html,
@@ -22,6 +23,9 @@
       height: 100%;
       width: 100%;
       overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
     }
 
     body {
@@ -31,44 +35,48 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: clamp(4px, 1vw, 12px);
+      padding: 6px;
+      touch-action: manipulation;
     }
 
     /* ============================================================
-       APP — Fits all screens
+       APP — Phone optimized
        ============================================================ */
     .app {
       width: 100%;
-      max-width: min(700px, 100%);
-      height: min(95vh, 800px, calc(100vh - 16px));
+      max-width: 430px;
+      height: 100%;
+      max-height: 932px;
       background: #16213e;
       border: 2px solid #e94560;
       display: flex;
       flex-direction: column;
       overflow: hidden;
       box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+      border-radius: 0;
+      position: relative;
     }
 
     /* ============================================================
-       HEADER
+       HEADER — Phone optimized
        ============================================================ */
     .header {
-      padding: clamp(8px, 1.5vw, 16px) clamp(12px, 2vw, 20px);
+      padding: 8px 12px;
       background: #0f0e17;
       border-bottom: 2px solid #e94560;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: clamp(4px, 1vw, 10px);
+      gap: 4px;
       flex-shrink: 0;
-      min-height: clamp(44px, 6vh, 56px);
+      min-height: 44px;
     }
 
     .header h1 {
-      font-size: clamp(0.5rem, 1.5vw, 0.85rem);
+      font-size: 0.55rem;
       font-weight: 400;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
       text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
       white-space: nowrap;
     }
@@ -80,30 +88,32 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: clamp(6px, 1.5vw, 14px);
-      flex-wrap: wrap;
+      gap: 6px;
       flex: 1 1 auto;
       justify-content: flex-end;
+      min-width: 0;
     }
 
     /* ============================================================
-       STATUS
+       STATUS — Phone optimized
        ============================================================ */
     .status-badge {
       display: flex;
       align-items: center;
-      gap: clamp(3px, 0.5vw, 6px);
-      padding: clamp(3px, 0.5vw, 6px) clamp(6px, 1vw, 12px);
+      gap: 3px;
+      padding: 3px 8px;
       background: #1a1a2e;
       border: 2px solid #4caf50;
-      font-size: clamp(0.35rem, 1vw, 0.5rem);
+      font-size: 0.35rem;
       white-space: nowrap;
       flex-shrink: 0;
+      min-width: 32px;
+      justify-content: center;
     }
 
     .status-badge .dot {
-      width: clamp(6px, 1vw, 8px);
-      height: clamp(6px, 1vw, 8px);
+      width: 6px;
+      height: 6px;
       background: #4caf50;
       display: inline-block;
       flex-shrink: 0;
@@ -114,36 +124,47 @@
       animation: blink 0.8s infinite;
     }
 
+    .status-badge .count {
+      font-size: 0.35rem;
+      margin-left: 1px;
+    }
+
     /* ============================================================
-       AUTH
+       AUTH — Phone optimized
        ============================================================ */
     .auth {
       display: flex;
-      gap: clamp(4px, 0.8vw, 8px);
+      gap: 4px;
       align-items: center;
-      flex-wrap: wrap;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .auth input {
-      padding: clamp(3px, 0.6vw, 6px) clamp(6px, 1vw, 12px);
+      padding: 3px 8px;
       border: 2px solid #e94560;
       background: #1a1a2e;
       color: #ffffff;
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(0.35rem, 0.9vw, 0.5rem);
-      width: clamp(60px, 12vw, 100px);
+      font-size: 0.35rem;
+      width: 60px;
       transition: 0.2s;
-      min-height: clamp(22px, 3.5vh, 30px);
+      min-height: 24px;
+      flex: 1 1 auto;
+      min-width: 40px;
+      max-width: 80px;
     }
 
     .auth input:focus {
       outline: none;
       border-color: #ff6b81;
-      width: clamp(70px, 15vw, 130px);
+      width: 70px;
     }
 
     .auth input::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 0.3rem;
     }
 
     .auth input:disabled {
@@ -152,32 +173,27 @@
     }
 
     .btn {
-      padding: clamp(3px, 0.6vw, 6px) clamp(8px, 1.2vw, 16px);
+      padding: 3px 10px;
       border: 2px solid #e94560;
       background: #e94560;
       color: #ffffff;
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(0.35rem, 0.9vw, 0.5rem);
+      font-size: 0.35rem;
       cursor: pointer;
       transition: 0.1s;
       text-transform: uppercase;
-      min-height: clamp(22px, 3.5vh, 30px);
+      min-height: 24px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       white-space: nowrap;
       flex-shrink: 0;
-    }
-
-    .btn:hover:not(:disabled) {
-      background: #ff6b81;
-      transform: translate(-2px, -2px);
-      box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
+      touch-action: manipulation;
+      user-select: none;
     }
 
     .btn:active:not(:disabled) {
-      transform: translate(2px, 2px);
-      box-shadow: none;
+      transform: scale(0.95);
     }
 
     .btn:disabled {
@@ -189,29 +205,26 @@
     .btn--danger {
       background: #e94560;
       border-color: #e94560;
-    }
-
-    .btn--danger:hover:not(:disabled) {
-      background: #ff6b81;
-      border-color: #ff6b81;
+      padding: 3px 8px;
     }
 
     /* ============================================================
-       MESSAGES
+       MESSAGES — Phone optimized
        ============================================================ */
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: clamp(8px, 1.5vw, 16px);
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: clamp(3px, 0.5vw, 6px);
+      gap: 3px;
       background: #12122a;
       min-height: 0;
+      -webkit-overflow-scrolling: touch;
     }
 
     .messages::-webkit-scrollbar {
-      width: clamp(4px, 0.6vw, 6px);
+      width: 3px;
     }
 
     .messages::-webkit-scrollbar-track {
@@ -220,27 +233,28 @@
 
     .messages::-webkit-scrollbar-thumb {
       background: #e94560;
-      border: 2px solid #0f0e17;
+      border: 1px solid #0f0e17;
     }
 
     .status-msg {
       text-align: center;
-      font-size: clamp(0.35rem, 0.8vw, 0.5rem);
+      font-size: 0.35rem;
       opacity: 0.4;
-      padding: clamp(12px, 2vw, 24px);
+      padding: 16px 8px;
       font-style: italic;
     }
 
     /* ============================================================
-       MESSAGE
+       MESSAGE — Phone optimized
        ============================================================ */
     .msg {
-      padding: clamp(4px, 0.8vw, 10px) clamp(8px, 1.2vw, 16px);
+      padding: 4px 10px;
       border: 2px solid #ffffff;
-      max-width: clamp(75%, 82%, 88%);
+      max-width: 88%;
       word-wrap: break-word;
       animation: fadeIn 0.2s steps(2);
-      line-height: 1.6;
+      line-height: 1.5;
+      font-size: 0.4rem;
     }
 
     .msg.own {
@@ -253,35 +267,35 @@
     .msg.other {
       align-self: flex-start;
       background: #1a1a2e;
-      border-color: #12122a;
+      border-color: #2a2a4e;
       border-bottom-left-radius: 0;
     }
 
     .msg .sender {
-      font-size: clamp(0.3rem, 0.7vw, 0.45rem);
+      font-size: 0.3rem;
       text-transform: uppercase;
       opacity: 0.7;
-      letter-spacing: 1px;
-      margin-bottom: clamp(2px, 0.3vw, 4px);
+      letter-spacing: 0.5px;
+      margin-bottom: 2px;
     }
 
     .msg .time {
-      font-size: clamp(0.25rem, 0.5vw, 0.35rem);
+      font-size: 0.25rem;
       opacity: 0.4;
-      margin-left: clamp(3px, 0.5vw, 6px);
+      margin-left: 4px;
     }
 
     .msg .text {
-      font-size: clamp(0.4rem, 0.9vw, 0.6rem);
+      font-size: 0.4rem;
       word-break: break-word;
-      line-height: 1.8;
+      line-height: 1.6;
     }
 
     /* ============================================================
-       INPUT
+       INPUT — Phone optimized
        ============================================================ */
     .input-area {
-      padding: clamp(6px, 1vw, 14px) clamp(10px, 1.5vw, 18px) clamp(10px, 1.5vw, 18px);
+      padding: 6px 10px 10px;
       background: #0f0e17;
       border-top: 2px solid #e94560;
       flex-shrink: 0;
@@ -289,21 +303,24 @@
 
     .row {
       display: flex;
-      gap: clamp(4px, 0.8vw, 10px);
+      gap: 6px;
       align-items: center;
     }
 
     .row input {
       flex: 1;
-      padding: clamp(6px, 1vw, 12px) clamp(8px, 1.2vw, 16px);
+      padding: 6px 10px;
       border: 2px solid #e94560;
       background: #12122a;
       color: #ffffff;
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(0.35rem, 0.8vw, 0.55rem);
+      font-size: 0.4rem;
       min-width: 40px;
       transition: 0.2s;
-      min-height: clamp(28px, 4vh, 38px);
+      min-height: 32px;
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
     }
 
     .row input:focus {
@@ -313,6 +330,7 @@
 
     .row input::placeholder {
       color: rgba(255, 255, 255, 0.2);
+      font-size: 0.35rem;
     }
 
     .row input:disabled {
@@ -321,9 +339,10 @@
     }
 
     .row .btn {
-      font-size: clamp(0.35rem, 0.8vw, 0.55rem);
-      padding: clamp(6px, 1vw, 12px) clamp(10px, 1.5vw, 20px);
-      min-height: clamp(28px, 4vh, 38px);
+      font-size: 0.4rem;
+      padding: 6px 14px;
+      min-height: 32px;
+      flex-shrink: 0;
     }
 
     /* ============================================================
@@ -355,38 +374,45 @@
     }
 
     /* ============================================================
-       ULTRA SMALL SCREENS (under 400px)
+       SMALL PHONES (under 380px)
        ============================================================ */
-    @media (max-width: 400px) {
+    @media (max-width: 380px) {
+      body {
+        padding: 4px;
+      }
+
       .header {
-        padding: 6px 10px;
-        min-height: 38px;
+        padding: 5px 8px;
+        min-height: 36px;
       }
 
       .header h1 {
-        font-size: 0.45rem;
+        font-size: 0.4rem;
+        letter-spacing: 0.5px;
       }
 
       .auth input {
-        width: 50px;
         font-size: 0.3rem;
         padding: 2px 6px;
-        min-height: 18px;
+        min-height: 20px;
+        width: 45px;
+        max-width: 60px;
       }
 
       .auth input:focus {
-        width: 60px;
+        width: 55px;
       }
 
       .btn {
         font-size: 0.3rem;
         padding: 2px 8px;
-        min-height: 18px;
+        min-height: 20px;
       }
 
       .status-badge {
         font-size: 0.3rem;
         padding: 2px 6px;
+        min-width: 26px;
       }
 
       .status-badge .dot {
@@ -394,9 +420,19 @@
         height: 5px;
       }
 
+      .status-badge .count {
+        font-size: 0.3rem;
+      }
+
+      .messages {
+        padding: 5px 6px;
+        gap: 2px;
+      }
+
       .msg {
         padding: 3px 8px;
-        max-width: 95%;
+        max-width: 92%;
+        font-size: 0.35rem;
       }
 
       .msg .sender {
@@ -405,69 +441,91 @@
 
       .msg .text {
         font-size: 0.35rem;
-      }
-
-      .row input {
-        font-size: 0.3rem;
-        padding: 4px 8px;
-        min-height: 22px;
-      }
-
-      .row .btn {
-        font-size: 0.3rem;
-        padding: 4px 8px;
-        min-height: 22px;
+        line-height: 1.4;
       }
 
       .input-area {
-        padding: 4px 8px 8px;
+        padding: 4px 6px 8px;
       }
 
-      .messages {
-        padding: 6px;
+      .row input {
+        font-size: 0.35rem;
+        padding: 4px 8px;
+        min-height: 28px;
+      }
+
+      .row .btn {
+        font-size: 0.35rem;
+        padding: 4px 10px;
+        min-height: 28px;
       }
 
       .status-msg {
         font-size: 0.3rem;
-        padding: 8px;
+        padding: 12px 6px;
       }
     }
 
     /* ============================================================
-       LARGE SCREENS (over 1200px)
+       VERY SMALL PHONES (under 320px)
        ============================================================ */
-    @media (min-width: 1200px) {
-      .app {
-        max-width: 700px;
-        height: 800px;
-      }
-
+    @media (max-width: 320px) {
       .header h1 {
-        font-size: 1rem;
+        font-size: 0.35rem;
       }
 
       .auth input {
-        font-size: 0.55rem;
-        padding: 8px 14px;
+        width: 35px;
+        font-size: 0.25rem;
+        padding: 2px 4px;
+        min-height: 16px;
+      }
+
+      .auth input:focus {
+        width: 45px;
       }
 
       .btn {
-        font-size: 0.55rem;
-        padding: 8px 18px;
+        font-size: 0.25rem;
+        padding: 2px 6px;
+        min-height: 16px;
+      }
+
+      .status-badge {
+        font-size: 0.25rem;
+        padding: 2px 4px;
+        min-width: 20px;
+      }
+
+      .status-badge .dot {
+        width: 4px;
+        height: 4px;
+      }
+
+      .msg {
+        padding: 2px 6px;
+        max-width: 95%;
+        font-size: 0.3rem;
+      }
+
+      .msg .sender {
+        font-size: 0.2rem;
       }
 
       .msg .text {
-        font-size: 0.65rem;
+        font-size: 0.3rem;
       }
 
       .row input {
-        font-size: 0.6rem;
-        padding: 12px 18px;
+        font-size: 0.3rem;
+        padding: 3px 6px;
+        min-height: 22px;
       }
 
       .row .btn {
-        font-size: 0.6rem;
-        padding: 12px 22px;
+        font-size: 0.3rem;
+        padding: 3px 8px;
+        min-height: 22px;
       }
     }
 
@@ -475,9 +533,13 @@
        LANDSCAPE PHONES
        ============================================================ */
     @media (max-height: 500px) and (orientation: landscape) {
+      body {
+        padding: 4px;
+      }
+
       .app {
-        height: 92vh;
-        max-height: 450px;
+        max-height: 95vh;
+        border-width: 2px;
       }
 
       .header {
@@ -489,6 +551,19 @@
         font-size: 0.4rem;
       }
 
+      .auth input {
+        min-height: 18px;
+        padding: 2px 6px;
+        font-size: 0.3rem;
+        width: 50px;
+      }
+
+      .btn {
+        min-height: 18px;
+        padding: 2px 8px;
+        font-size: 0.3rem;
+      }
+
       .messages {
         padding: 4px 8px;
         gap: 2px;
@@ -497,6 +572,7 @@
       .msg {
         padding: 2px 8px;
         max-width: 90%;
+        font-size: 0.35rem;
       }
 
       .msg .sender {
@@ -506,36 +582,23 @@
 
       .msg .text {
         font-size: 0.35rem;
-        line-height: 1.4;
+        line-height: 1.3;
       }
 
       .input-area {
-        padding: 4px 8px 8px;
+        padding: 3px 8px 6px;
       }
 
       .row input {
-        padding: 4px 8px;
-        min-height: 20px;
-        font-size: 0.3rem;
+        min-height: 22px;
+        padding: 3px 8px;
+        font-size: 0.35rem;
       }
 
       .row .btn {
-        padding: 4px 10px;
-        min-height: 20px;
-        font-size: 0.3rem;
-      }
-
-      .auth input {
-        padding: 2px 6px;
-        min-height: 16px;
-        font-size: 0.3rem;
-        width: 50px;
-      }
-
-      .btn {
-        padding: 2px 8px;
-        min-height: 16px;
-        font-size: 0.3rem;
+        min-height: 22px;
+        padding: 3px 10px;
+        font-size: 0.35rem;
       }
 
       .status-badge {
@@ -546,6 +609,38 @@
       .status-badge .dot {
         width: 4px;
         height: 4px;
+      }
+    }
+
+    /* ============================================================
+       SAFE AREA (Notch phones)
+       ============================================================ */
+    @supports (padding: max(0px)) {
+      .app {
+        padding-left: max(0px, env(safe-area-inset-left));
+        padding-right: max(0px, env(safe-area-inset-right));
+        padding-top: max(0px, env(safe-area-inset-top));
+        padding-bottom: max(0px, env(safe-area-inset-bottom));
+      }
+    }
+
+    /* ============================================================
+       DARK MODE SUPPORT
+       ============================================================ */
+    @media (prefers-color-scheme: light) {
+      body {
+        background: #1a1a2e;
+      }
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
@@ -559,14 +654,14 @@
 
     <!-- ===== HEADER ===== -->
     <header class="header">
-      <h1>🕹️ <span>PIXEL</span> CHAT</h1>
+      <h1>🕹️ <span>PIXEL</span></h1>
       <div class="header-right">
         <div class="status-badge">
           <span class="dot" id="statusDot"></span>
-          <span id="onlineCount">0</span>
+          <span class="count" id="onlineCount">0</span>
         </div>
         <div class="auth">
-          <input type="text" id="nameInput" placeholder="NAME" maxlength="20" />
+          <input type="text" id="nameInput" placeholder="NAME" maxlength="20" inputmode="text" autocomplete="off" />
           <button class="btn" id="joinBtn">JOIN</button>
           <button class="btn btn--danger" id="leaveBtn" style="display:none">✕</button>
         </div>
@@ -581,7 +676,7 @@
     <!-- ===== INPUT ===== -->
     <footer class="input-area">
       <div class="row">
-        <input type="text" id="messageInput" placeholder="TYPE..." disabled />
+        <input type="text" id="messageInput" placeholder="TYPE..." disabled inputmode="text" autocomplete="off" />
         <button class="btn" id="sendBtn" disabled>SEND</button>
       </div>
     </footer>
@@ -601,7 +696,7 @@
   <script>
     /**
      * ============================================================
-     * PIXEL CHAT — Optimized for All Screens
+     * PIXEL CHAT — Phone-First
      * ============================================================
      */
 
@@ -636,6 +731,7 @@
     let user = null;
     let listeners = [];
     let connected = false;
+    let statusTimeout = null;
 
     // ============================================================
     // 4. HELPERS
@@ -657,9 +753,9 @@
     };
 
     const scroll = () => {
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         DOM.messages.scrollTop = DOM.messages.scrollHeight;
-      }, 50);
+      });
     };
 
     const time = (ts) => {
@@ -674,12 +770,19 @@
     const setOnline = (on) => {
       connected = on;
       DOM.statusDot.className = `dot ${on ? '' : 'off'}`;
+
+      if (statusTimeout) {
+        clearTimeout(statusTimeout);
+        statusTimeout = null;
+      }
+
       if (on) {
         status('✅ CONNECTED');
-        setTimeout(() => {
+        statusTimeout = setTimeout(() => {
           const el = DOM.messages.querySelector('.status-msg');
           if (el && el.textContent === '✅ CONNECTED') clearStatus();
-        }, 1200);
+          statusTimeout = null;
+        }, 1000);
       } else {
         status('🔄 RECONNECTING...');
       }
@@ -690,9 +793,15 @@
     // ============================================================
 
     const sendMessage = (text) => {
-      if (!user) return alert('SIGN IN FIRST!');
+      if (!user) {
+        alert('SIGN IN FIRST!');
+        return;
+      }
       if (!text || !text.trim()) return;
-      if (!connected) return alert('WAITING FOR CONNECTION...');
+      if (!connected) {
+        alert('WAITING FOR CONNECTION...');
+        return;
+      }
 
       db.ref('messages').push({
         name: user.name,
@@ -865,14 +974,17 @@
     };
 
     // ============================================================
-    // 9. EVENTS
+    // 9. EVENTS — Phone optimized
     // ============================================================
 
     DOM.joinBtn.addEventListener('click', login);
     DOM.leaveBtn.addEventListener('click', logout);
 
     DOM.nameInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') login();
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        login();
+      }
     });
 
     DOM.sendBtn.addEventListener('click', () => {
@@ -886,6 +998,24 @@
       }
     });
 
+    // Touch feedback for buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.95)';
+      }, { passive: true });
+
+      btn.addEventListener('touchend', function() {
+        this.style.transform = '';
+      }, { passive: true });
+    });
+
+    // Prevent zoom on double tap
+    document.addEventListener('touchend', (e) => {
+      if (e.target.closest('.btn') || e.target.closest('input')) {
+        e.preventDefault();
+      }
+    }, { passive: false });
+
     // ============================================================
     // 10. INIT
     // ============================================================
@@ -893,7 +1023,7 @@
     setOnline(false);
     subscribe();
 
-    console.log('🕹️ PIXEL CHAT READY');
+    console.log('🕹️ PIXEL CHAT — PHONE FIRST');
     console.log('📡 Database:', firebase.app().options.databaseURL);
   </script>
 
