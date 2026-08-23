@@ -2,21 +2,29 @@
 <html lang="en" class="h-full bg-slate-950">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#020617" />
   <title>Pixel World Chat</title>
-  
-  <!-- Pixel Font & Icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Google Font Preconnect & Loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 
   <style>
-    body {
+    :root {
       font-family: 'Press Start 2P', monospace;
+    }
+    body {
       image-rendering: pixelated;
       touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
-    /* Minecraft-Style Box Shadow & Borders */
+
+    /* Pixel Art Framing Mechanics */
     .pixel-box {
       background-color: #312e81;
       border: 4px solid #4338ca;
@@ -26,165 +34,134 @@
       background-color: #16a34a;
       border: 3px solid #22c55e;
       box-shadow: inset -3px -3px 0px 0px #15803d, inset 3px 3px 0px 0px #4ade80;
+      transition: transform 0.05s ease;
     }
     .pixel-btn:active {
       box-shadow: inset 3px 3px 0px 0px #15803d;
       transform: translateY(2px);
     }
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #020617; }
-    ::-webkit-scrollbar-thumb { background: #4338ca; border-radius: 0px; }
+
+    /* Custom Retro Scrollbar */
+    #viewport::-webkit-scrollbar { width: 8px; }
+    #viewport::-webkit-scrollbar-track { background: #020617; }
+    #viewport::-webkit-scrollbar-thumb { background: #4338ca; }
+    #viewport { overscroll-behavior-y: contain; }
   </style>
 </head>
-<body class="h-full text-white flex flex-col justify-between p-2 sm:p-4 bg-slate-950">
+<body class="h-full text-white flex flex-col justify-between p-2 sm:p-4 bg-slate-950 select-none antialiased">
 
-  <!-- PIXEL HEADER -->
+  <!-- TOP HEADER -->
   <header class="pixel-box p-3 mb-2 flex items-center justify-between shrink-0">
-    <div>
-      <h1 class="text-[10px] sm:text-xs text-yellow-300 tracking-wider uppercase">⛏️ PIXEL WORLD CHAT</h1>
-      <p id="myPeerIdDisplay" class="text-[8px] text-indigo-200 mt-1">ID: GENERATING...</p>
+    <div class="space-y-1">
+      <h1 class="text-[10px] sm:text-xs text-yellow-300 tracking-wider uppercase">⛏️ REALTIME PIXEL CHAT</h1>
+      <p id="playerTag" class="text-[8px] text-indigo-200">PLAYER: INITIALIZING...</p>
     </div>
-    <button onclick="connectGlobalPeer()" class="pixel-btn text-[8px] text-white px-2 py-1.5 uppercase">
-      + CONNECT PEER
-    </button>
+    <div class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/50 px-2 py-1 uppercase tracking-wider flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+      <span>LIVE</span>
+    </div>
   </header>
 
-  <!-- CHAT DISPLAY SCREEN -->
-  <main class="flex-1 bg-black border-4 border-indigo-900/60 p-3 overflow-y-auto space-y-3 mb-2 rounded-none">
+  <!-- CHAT VIEWPORT -->
+  <main id="viewport" class="flex-1 bg-black border-4 border-indigo-900/60 p-3 overflow-y-auto mb-2 rounded-none">
     <div id="chatBox" class="space-y-3">
-      <!-- Welcome Message -->
-      <div class="text-[9px] text-yellow-400 bg-yellow-950/40 p-2 border border-yellow-700/50">
-        [SYSTEM]: Welcome to Pixel World Chat! Share your ID with a friend worldwide to start P2P chat, or broadcast messages globally over WebRTC.
+      <div class="text-[9px] leading-relaxed text-yellow-400 bg-yellow-950/40 p-2 border border-yellow-700/50">
+        [SYSTEM]: Connected to global server. Messages sync live across all active devices!
       </div>
     </div>
   </main>
 
-  <!-- PIXEL COMPOSER FORM -->
+  <!-- COMPOSER -->
   <footer class="shrink-0">
-    <form id="pixelChatForm" onsubmit="sendMessage(event)" class="flex gap-2">
+    <form id="pixelChatForm" class="flex gap-2">
       <input 
         type="text" 
         id="msgInput" 
         placeholder="TYPE MESSAGE..." 
         required 
-        class="flex-1 bg-slate-900 border-4 border-indigo-800 text-yellow-300 text-[10px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-500"
+        maxlength="250"
+        class="flex-1 bg-slate-900 border-4 border-indigo-800 text-yellow-300 text-[10px] p-2.5 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 rounded-none"
         autocomplete="off"
       />
-      <button type="submit" class="pixel-btn text-[10px] text-white px-4 py-2 font-bold uppercase">
+      <button type="submit" class="pixel-btn text-[10px] text-white px-4 py-2.5 font-bold uppercase shrink-0">
         SEND
       </button>
     </form>
   </footer>
 
-  <!-- GLOBAL WEBRTC MESH LOGIC -->
-  <script>
-    // 1. Generate Random Minecraft-Style User Handle
-    const randomSeed = Math.floor(1000 + Math.random() * 9000);
-    const myPlayerName = `Steve_${randomSeed}`;
-    const myPeerId = `px_${Math.random().toString(36).substring(2, 8)}`;
+  <!-- REALTIME ENGINE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    let peer = null;
-    const activeConnections = new Map();
+    // Firebase Initialization
+    const app = initializeApp({
+      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    });
+    const db = getDatabase(app);
 
-    // 2. Initialize Worldwide WebRTC Peer Connection
-    function initGlobalPeer() {
-      peer = new Peer(myPeerId);
+    // User Identity Setup
+    const randomId = Math.floor(1000 + Math.random() * 9000);
+    const playerName = `Steve_${randomId}`;
+    document.getElementById('playerTag').textContent = `PLAYER: ${playerName}`;
 
-      peer.on('open', (id) => {
-        document.getElementById('myPeerIdDisplay').innerText = `NAME: ${myPlayerName} | ID: ${id}`;
-      });
+    // DOM References
+    const chatBox = document.getElementById('chatBox');
+    const viewport = document.getElementById('viewport');
+    const msgInput = document.getElementById('msgInput');
+    const chatForm = document.getElementById('pixelChatForm');
 
-      // Handle Incoming Worldwide Connections
-      peer.on('connection', (conn) => {
-        setupPeerEvents(conn);
-      });
+    // Database Queries
+    const chatRef = ref(db, "global_pixel_chat");
+    const recentMessagesQuery = query(chatRef, limitToLast(50));
 
-      peer.on('error', (err) => {
-        console.warn('Peer Connection Error:', err);
-      });
-    }
+    // Stream Incoming Messages
+    onChildAdded(recentMessagesQuery, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.sender && data.text) {
+        appendMessage(data.sender, data.text, data.sender === playerName);
+      }
+    });
 
-    // 3. Register Peer Connection Handlers
-    function setupPeerEvents(conn) {
-      conn.on('open', () => {
-        activeConnections.set(conn.peer, conn);
-        appendSystemMessage(`[WORLD]: Player connected (${conn.peer})`);
-      });
-
-      conn.on('data', (data) => {
-        appendMessage(data.sender, data.text, false);
-      });
-
-      conn.on('close', () => {
-        activeConnections.delete(conn.peer);
-        appendSystemMessage(`[WORLD]: Player disconnected (${conn.peer})`);
-      });
-    }
-
-    // 4. Connect directly to a peer anywhere in the world by ID
-    function connectGlobalPeer() {
-      const targetId = prompt("Enter Friend's Global Pixel ID:");
-      if (!targetId || activeConnections.has(targetId.trim())) return;
-
-      const conn = peer.connect(targetId.trim());
-      setupPeerEvents(conn);
-    }
-
-    // 5. Send Chat Message
-    function sendMessage(e) {
+    // Form Submit Handler
+    chatForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const input = document.getElementById('msgInput');
-      const text = input.value.trim();
+      const text = msgInput.value.trim();
       if (!text) return;
 
-      const payload = {
-        sender: myPlayerName,
-        text: text,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-      };
+      msgInput.value = '';
 
-      // Broadcast to all connected global peers
-      activeConnections.forEach((conn) => {
-        if (conn.open) conn.send(payload);
-      });
+      try {
+        const newMessageRef = push(chatRef);
+        await set(newMessageRef, {
+          sender: playerName,
+          text: text,
+          timestamp: Date.now()
+        });
+      } catch (err) {
+        console.error("Failed to dispatch message:", err);
+      }
+    });
 
-      // Display locally
-      appendMessage(myPlayerName, text, true);
-      input.value = '';
-    }
-
-    // 6. UI Append Helpers
+    // Safe HTML Escaping & Message Injection
     function appendMessage(sender, text, isSelf) {
-      const chatBox = document.getElementById('chatBox');
       const colorClass = isSelf ? 'text-green-400' : 'text-cyan-400';
-      
-      const msgHtml = `
-        <div class="text-[9px] leading-relaxed break-words">
-          <span class="${colorClass}">${sender}:</span> 
-          <span class="text-white">${escapeHTML(text)}</span>
-        </div>
-      `;
+      const safeSender = escapeHTML(sender);
+      const safeText = escapeHTML(text);
 
-      chatBox.insertAdjacentHTML('beforeend', msgHtml);
-      const viewport = document.querySelector('main');
+      const msgContainer = document.createElement('div');
+      msgContainer.className = 'text-[9px] leading-relaxed break-words';
+      msgContainer.innerHTML = `<span class="${colorClass}">${safeSender}:</span> <span class="text-white">${safeText}</span>`;
+
+      chatBox.appendChild(msgContainer);
       viewport.scrollTop = viewport.scrollHeight;
     }
 
-    function appendSystemMessage(text) {
-      const chatBox = document.getElementById('chatBox');
-      chatBox.insertAdjacentHTML('beforeend', `
-        <div class="text-[8px] text-indigo-400 italic">${escapeHTML(text)}</div>
-      `);
-    }
-
     function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, 
-        tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
+      return str.replace(/[&<>'"]/g, tag => 
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
       );
     }
-
-    // Bootstrap on window load
-    window.onload = initGlobalPeer;
   </script>
 </body>
 </html>
