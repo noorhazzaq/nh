@@ -66,7 +66,7 @@
   <canvas id="particleCanvas" class="absolute inset-0 pointer-events-none z-0"></canvas>
   <div class="crt-overlay absolute inset-0 z-50"></div>
 
-  <!-- PINNED MESSAGE BANNER (Feature 30) -->
+  <!-- PINNED MESSAGE BANNER -->
   <div id="pinnedBanner" class="hidden bg-yellow-950/90 border-2 border-yellow-500 p-1.5 mb-1.5 flex justify-between items-center z-10 text-[7px] text-yellow-300 shadow-[0_0_10px_rgba(234,179,8,0.4)]">
     <div class="flex items-center gap-1 truncate flex-1">
       <span>📌 PINNED:</span>
@@ -99,7 +99,6 @@
     </div>
 
     <div class="flex items-center gap-2">
-      <!-- Feature 22: Priority Toggle -->
       <select id="prioritySelect" class="bg-slate-900 text-[6px] border border-yellow-500 rounded p-0.5 text-yellow-400 font-bold">
         <option value="NORMAL">PRIO: NORM</option>
         <option value="HIGH">PRIO: HIGH</option>
@@ -117,7 +116,7 @@
   <main id="v" class="flex-1 bg-black/90 border-2 border-indigo-600 p-2 overflow-y-auto space-y-2.5 mb-2 relative z-10 glow-box">
     <div id="c" class="space-y-3">
       <div class="text-[7px] text-yellow-300 bg-yellow-950/50 p-2 border border-yellow-500/50 glow-yellow animate-pop">
-        ✨ [SYS]: Pixel World Chat fully updated with 42 total Tracking & Interactive features!
+        ✨ [SYS]: Pixel World Chat initialized with Realtime Data Stream Engine!
       </div>
     </div>
   </main>
@@ -140,7 +139,7 @@
       <button type="button" id="clearImgBtn" class="text-[8px] text-red-400 font-bold px-1">X</button>
     </div>
 
-    <!-- EXTRA CONTROLS BAR (Features 34, 35, 37, 38) -->
+    <!-- EXTRA CONTROLS BAR -->
     <div class="flex items-center gap-1 bg-slate-900 p-1 border border-indigo-800 text-[6px]">
       <select id="sfxSelect" class="bg-black border border-indigo-500 text-yellow-300 rounded p-0.5">
         <option value="beep">SFX: BEEP</option>
@@ -168,7 +167,6 @@
         📷
       </button>
 
-      <!-- Feature 23 & 24: Voice Snippet Generator -->
       <button type="button" id="voiceNoteBtn" class="bg-purple-700 border border-purple-400 text-[8px] text-white px-2 py-2 font-bold uppercase shrink-0">
         🎙️
       </button>
@@ -194,13 +192,13 @@
   <!-- REALTIME ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getDatabase, ref, push, set, update, remove, onChildAdded, onChildChanged, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+    import { getDatabase, ref, push, set, update, onChildAdded, onChildChanged, query, limitToLast, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
     const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
     }));
 
-    const APP_VERSION = "v3.0.0-master";
+    const APP_VERSION = "v3.1.0-realtime";
     const USER_ID = `usr_${Math.random().toString(36).substring(2, 9)}`;
 
     const nameInput = document.getElementById('nameInput');
@@ -239,17 +237,65 @@
     let replyParentId = null;
     let typingStartTime = Date.now();
 
-    // Feature 40: Typing Duration Tracking
-    i.addEventListener('focus', () => { typingStartTime = Date.now(); });
-
-    // Feature 26, 27, 28, 29, 41: Browser Hardware Context
-    const getNetworkType = () => navigator.connection ? navigator.connection.effectiveType : "WiFi/4G";
-    const getBatteryEstimate = async () => {
-      if (navigator.getBattery) {
-        try { const b = await navigator.getBattery(); return Math.round(b.level * 100) + "%"; } catch(e){}
+    // 1. DYNAMIC REAL-TIME GEO LOCATION FETCH
+    let cachedCity = "Locating...";
+    async function fetchRealLocation() {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.city) cachedCity = `${data.city}, ${data.country_code}`;
+        }
+      } catch (err) {
+        cachedCity = "Unknown Loc";
       }
-      return "100%";
+    }
+    fetchRealLocation();
+
+    // 2. DYNAMIC REAL-TIME BATTERY STATUS ENGINE
+    let currentBattery = "100%";
+    async function initBatteryMonitoring() {
+      if (navigator.getBattery) {
+        try {
+          const b = await navigator.getBattery();
+          const updateBat = () => {
+            currentBattery = `${Math.round(b.level * 100)}%${b.charging ? '⚡' : ''}`;
+          };
+          updateBat();
+          b.addEventListener('levelchange', updateBat);
+          b.addEventListener('chargingchange', updateBat);
+        } catch(e) {}
+      }
+    }
+    initBatteryMonitoring();
+
+    // 3. REAL-TIME NETWORK MONITOR
+    const getRealNetworkType = () => {
+      if (!navigator.onLine) return "OFFLINE";
+      const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      return conn ? (conn.effectiveType || conn.type || "ONLINE").toUpperCase() : "ONLINE";
     };
+
+    // 4. REAL-TIME MEMORY HEAP METRICS
+    const getRealHeapUsageKb = () => {
+      if (window.performance && window.performance.memory) {
+        return Math.round(window.performance.memory.usedJSHeapSize / 1024);
+      }
+      return 0;
+    };
+
+    // 5. REAL-TIME CRYPTOGRAPHIC SHA-256 SIGNATURE
+    async function generateRealSha256(str) {
+      try {
+        const msgUint8 = new TextEncoder().encode(str);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return 'sha256_' + hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 8);
+      } catch (e) {
+        return 'sig_' + Math.random().toString(36).substring(2, 8);
+      }
+    }
+
     const getPlatform = () => {
       const ua = navigator.userAgent;
       if (/android/i.test(ua)) return "Android";
@@ -258,22 +304,15 @@
       if (/win/i.test(ua)) return "Windows";
       return "Web";
     };
+
     const getTimezoneOffsetStr = () => {
       const offset = -new Date().getTimezoneOffset() / 60;
       return `UTC${offset >= 0 ? '+' : ''}${offset}`;
     };
 
-    // Feature 42: Simple Hash Generator
-    const generateHash = (str) => {
-      let hash = 0;
-      for (let idx = 0; idx < str.length; idx++) {
-        hash = ((hash << 5) - hash) + str.charCodeAt(idx);
-        hash |= 0;
-      }
-      return 'sig_' + Math.abs(hash).toString(16);
-    };
+    i.addEventListener('focus', () => { typingStartTime = Date.now(); });
 
-    // Safe Audio Engine (Feature 35 Ambient Sound Effects)
+    // Audio Engine
     let audioCtx = null;
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -355,14 +394,12 @@
 
     i.addEventListener('input', () => { charCounter.textContent = `${i.value.length}/200`; });
 
-    // Voice Snippet Simulator (Feature 23 & 24)
     voiceNoteBtn.addEventListener('click', () => {
       currentVoiceNote = { duration: "2.4s", synthPitch: 680 };
       alert("🎙️ Simulated 2.4s Retro Voice Snippet recorded!");
       playCustomSFX('coin');
     });
 
-    // Image Upload
     attachBtn.addEventListener('click', (e) => { e.preventDefault(); fileInput.click(); });
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -409,7 +446,6 @@
 
     const chatRef = ref(db, "global_pixel_chat");
 
-    // Feature 21: Read Receipts Observer
     const readObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -423,7 +459,7 @@
       });
     }, { root: v, threshold: 0.6 });
 
-    // RENDER MESSAGE WITH ALL 42 FEATURES
+    // RENDER ENGINE
     function renderMessageNode(snap) {
       const msgId = snap.key;
       const d = snap.val();
@@ -458,7 +494,6 @@
       const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const statusText = d.serverReceivedTs ? '✓✓' : '✓';
 
-      // Feature 22, 25, 26, 27, 28, 29 Header
       let headerHtml = `
         <div class="flex items-center justify-between border-b border-indigo-950 pb-1 text-[5.5px] text-slate-400 flex-wrap gap-1">
           <div class="flex items-center gap-1">
@@ -470,7 +505,7 @@
           <div class="flex items-center gap-1">
             <span>${d.platform || 'Web'}</span>
             <span>•</span>
-            <span>${d.netType || 'WiFi'}</span>
+            <span>${d.netType || 'ONLINE'}</span>
             <span>•</span>
             <span>${timeStr}</span>
             <span class="text-emerald-400 font-bold">${statusText}</span>
@@ -478,12 +513,10 @@
         </div>
       `;
 
-      // Feature 17, 39: Reply & Forward Header
       let replyHtml = '';
       if (d.replyParentId) replyHtml += `<div class="bg-indigo-950/80 border-l-2 border-yellow-400 p-0.5 text-[5.5px] text-yellow-200/80 truncate">↩️ Replying to ${d.replyParentId.substring(0, 6)}...</div>`;
       if (d.forwardedFrom) replyHtml += `<div class="text-[5.5px] text-purple-300 italic">↪️ Forwarded from ${esc(d.forwardedFrom)}</div>`;
 
-      // Feature 37, 38: Spoiler & Sticker
       let textHtml = '';
       if (d.t) {
         let formattedText = esc(d.t).replace(/(@\w+)/g, '<span class="text-yellow-300 font-bold underline">$1</span>');
@@ -495,7 +528,6 @@
         textHtml += `<div class="text-[12px] my-1">${d.stickerId === 'pixel_heart' ? '💖' : d.stickerId === 'pixel_sword' ? '⚔️' : '⭐'} [PIXEL STICKER]</div>`;
       }
 
-      // Feature 23 & 24: Voice Snippet Render
       let voiceHtml = '';
       if (d.voiceSnippet) {
         voiceHtml = `
@@ -509,7 +541,6 @@
         `;
       }
 
-      // Feature 14 & 15: Image Media Block
       let imgHtml = '';
       if (d.img) {
         const aspectStyle = (d.mediaWidth && d.mediaHeight) ? `aspect-ratio: ${d.mediaWidth}/${d.mediaHeight};` : '';
@@ -521,7 +552,6 @@
         `;
       }
 
-      // Feature 16 & 36: Reactions & Upvote/Downvote Score
       let reactionsHtml = '<div class="flex flex-wrap items-center gap-1 my-1 text-[5.5px]">';
       const emojis = ['👍', '❤️', '🔥'];
       emojis.forEach(emo => {
@@ -543,13 +573,12 @@
       `;
       reactionsHtml += '</div>';
 
-      // Feature 21, 30, 31, 32, 41, 42 Footer Controls
       let readCount = d.readReceipts ? Object.keys(d.readReceipts).length : 0;
       let bookmarkCount = d.bookmarks ? Object.keys(d.bookmarks).length : 0;
 
       let footerMetaHtml = `
         <div class="flex items-center justify-between text-[5px] text-slate-500 pt-1 border-t border-indigo-950/60 flex-wrap gap-1">
-          <span title="${d.sigHash || ''}">LOC: ${d.geoCity || 'Kuala Lumpur'} | Bat: ${d.battery || '90%'}</span>
+          <span title="Sig: ${d.sigHash || 'N/A'} | Heap: ${d.heapUsageKb || 0}KB">LOC: ${esc(d.geoCity || 'Global')} | Bat: ${d.battery || '100%'}</span>
           <div class="flex items-center gap-1.5">
             <button type="button" data-action="reply" data-msgid="${msgId}" data-sender="${esc(d.s)}" class="text-cyan-400 hover:underline">REPLY</button>
             <button type="button" data-action="pin" data-msgid="${msgId}" class="text-yellow-400 hover:underline">PIN</button>
@@ -570,7 +599,7 @@
       return { isSelf };
     }
 
-    // EVENT DELEGATION FOR ALL MESSAGES
+    // EVENT DELEGATION
     c.addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
@@ -602,7 +631,7 @@
       }
     });
 
-    // Realtime Sync
+    // Realtime Sync Handlers
     onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
       const d = snap.val();
       const { isSelf } = renderMessageNode(snap) || {};
@@ -615,7 +644,7 @@
 
     onChildChanged(chatRef, (snap) => { renderMessageNode(snap); });
 
-    // SUBMIT FORM WITH ALL 42 FEATURES
+    // FIXED REALTIME MESSAGE WRITE LOGIC
     document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
       const txt = i.value.trim();
@@ -623,18 +652,20 @@
       
       if (!txt && !currentBase64Image && !currentVoiceNote) return;
 
+      sendBtn.disabled = true;
+
       const mentions = txt.match(/@\w+/g) || [];
-      const batteryStr = await getBatteryEstimate();
       const typingTimeMs = Date.now() - typingStartTime;
+      const realNetwork = getRealNetworkType();
+      const realHeap = getRealHeapUsageKb();
+      const realSig = await generateRealSha256(`${handle}_${txt}_${Date.now()}`);
 
       const payload = {
-        // Features 1 to 5: Time & Delivery Metrics
         sentTime: Date.now(),
         serverReceivedTs: serverTimestamp(),
         expiryTimer: 0,
 
-        // Features 6 to 10: Sender & Session
-        clientMsgId: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+        clientMsgId: `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
         s: handle,
         senderUserId: USER_ID,
         avatar: avatarSelect.value,
@@ -642,53 +673,43 @@
         badge: badgeSelect.value,
         activeStatus: 'ONLINE',
 
-        // Features 11 to 15: Content & Media Specs
         msgType: currentVoiceNote ? 'voice' : (currentBase64Image ? 'image' : 'text'),
         t: txt,
         charCount: txt.length,
         isEdited: false,
-        mediaWidth: currentImageMeta.width,
-        mediaHeight: currentImageMeta.height,
-        mediaSizeKb: currentImageMeta.sizeKb,
+        mediaWidth: currentImageMeta.width || 0,
+        mediaHeight: currentImageMeta.height || 0,
+        mediaSizeKb: currentImageMeta.sizeKb || 0,
         img: currentBase64Image || null,
 
-        // Features 16 to 21: Interactive & Context
-        reactions: {},
-        replyParentId: replyParentId,
+        reactions: false,
+        replyParentId: replyParentId || null,
         mentions: mentions,
         platform: getPlatform(),
         tzOffset: getTimezoneOffsetStr(),
-        readReceipts: {},
 
-        // Features 22 to 26: Priority, Voice & Network
-        priority: prioritySelect.value,                  // 22. Priority Level
-        voiceSnippet: currentVoiceNote,                  // 23 & 24. Voice Note & Duration
-        geoCity: 'Kuala Lumpur',                         // 25. Geo City Tag
-        netType: getNetworkType(),                       // 26. Network Type
+        priority: prioritySelect.value,
+        voiceSnippet: currentVoiceNote || null,
+        geoCity: cachedCity,
+        netType: realNetwork,
 
-        // Features 27 to 31: Hardware & Pins
-        battery: batteryStr,                             // 27. Battery Level
-        locale: navigator.language || 'en-US',          // 28. Language/Locale
-        screenRes: `${window.innerWidth}x${window.innerHeight}`, // 29. Screen Resolution
-        isPinned: false,                                 // 30. Pin Status
-        bookmarks: {},                                   // 31. Bookmarks Map
+        battery: currentBattery,
+        locale: navigator.language || 'en-US',
+        screenRes: `${window.innerWidth}x${window.innerHeight}`,
+        isPinned: false,
 
-        // Features 32 to 36: Recall, Customization & Scores
-        isDeleted: false,                                // 32. Recall Status
-        sfxTag: sfxSelect.value,                         // 35. Ambient SFX Tag
-        upvotes: {},                                     // 36. Upvote Score
-        downvotes: {},                                   // 36. Downvote Score
+        isDeleted: false,
+        sfxTag: sfxSelect.value,
 
-        // Features 37 to 42: Spoilers, Integrity & Metrics
-        isSpoiler: spoilerCheck.checked,                 // 37. Spoiler Flag
-        stickerId: stickerSelect.value,                  // 38. Sticker Identifier
-        forwardedFrom: null,                             // 39. Forwarded Flag
-        typingDurationMs: typingTimeMs,                  // 40. Typing Duration
-        heapUsageKb: window.performance?.memory ? Math.round(window.performance.memory.usedJSHeapSize / 1024) : 0, // 41. Heap Footprint
-        sigHash: generateHash(`${handle}_${txt}_${Date.now()}`) // 42. Cryptographic Hash Signature
+        isSpoiler: spoilerCheck.checked,
+        stickerId: stickerSelect.value || null,
+        forwardedFrom: null,
+        typingDurationMs: typingTimeMs,
+        heapUsageKb: realHeap,
+        sigHash: realSig
       };
 
-      sendBtn.disabled = true;
+      // Reset Inputs
       i.value = '';
       charCounter.textContent = '0/200';
       currentBase64Image = "";
@@ -701,9 +722,10 @@
       spoilerCheck.checked = false;
 
       try {
-        await set(push(chatRef), payload);
+        const newMsgRef = push(chatRef);
+        await set(newMsgRef, payload);
       } catch (err) {
-        console.error("Transmission failed:", err);
+        console.error("Realtime Transmission failed:", err);
       } finally {
         sendBtn.disabled = false;
       }
