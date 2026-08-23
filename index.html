@@ -3,164 +3,130 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#020617" />
-  <title>Pixel World Chat</title>
-
-  <!-- Google Font Preconnect & Loading -->
+  <title>Pixel Chat</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
-    :root {
-      font-family: 'Press Start 2P', monospace;
-    }
     body {
+      font-family: 'Press Start 2P', monospace;
       image-rendering: pixelated;
       touch-action: manipulation;
-      -webkit-tap-highlight-color: transparent;
     }
-
-    /* Pixel Art Framing Mechanics */
-    .pixel-box {
-      background-color: #312e81;
-      border: 4px solid #4338ca;
-      box-shadow: inset -4px -4px 0px 0px #1e1b4b, inset 4px 4px 0px 0px #6366f1;
+    .px-box {
+      background: #1e1b4b;
+      border: 3px solid #4338ca;
+      box-shadow: inset -3px -3px 0 #0f172a, inset 3px 3px 0 #6366f1;
     }
-    .pixel-btn {
-      background-color: #16a34a;
-      border: 3px solid #22c55e;
-      box-shadow: inset -3px -3px 0px 0px #15803d, inset 3px 3px 0px 0px #4ade80;
-      transition: transform 0.05s ease;
+    .px-btn {
+      background: #16a34a;
+      border: 2px solid #22c55e;
+      box-shadow: inset -2px -2px 0 #15803d, inset 2px 2px 0 #4ade80;
     }
-    .pixel-btn:active {
-      box-shadow: inset 3px 3px 0px 0px #15803d;
-      transform: translateY(2px);
+    .px-btn:active {
+      box-shadow: inset 2px 2px 0 #15803d;
+      transform: translateY(1px);
     }
-
-    /* Custom Retro Scrollbar */
-    #viewport::-webkit-scrollbar { width: 8px; }
-    #viewport::-webkit-scrollbar-track { background: #020617; }
-    #viewport::-webkit-scrollbar-thumb { background: #4338ca; }
-    #viewport { overscroll-behavior-y: contain; }
+    #v::-webkit-scrollbar { width: 6px; }
+    #v::-webkit-scrollbar-track { background: #020617; }
+    #v::-webkit-scrollbar-thumb { background: #4338ca; }
   </style>
 </head>
-<body class="h-full text-white flex flex-col justify-between p-2 sm:p-4 bg-slate-950 select-none antialiased">
+<body class="h-full text-white flex flex-col justify-between p-2 bg-slate-950 select-none">
 
-  <!-- TOP HEADER -->
-  <header class="pixel-box p-3 mb-2 flex items-center justify-between shrink-0">
-    <div class="space-y-1">
-      <h1 class="text-[10px] sm:text-xs text-yellow-300 tracking-wider uppercase">⛏️ REALTIME PIXEL CHAT</h1>
-      <p id="playerTag" class="text-[8px] text-indigo-200">PLAYER: INITIALIZING...</p>
+  <!-- HEADER WITH NICKNAME CHANGE -->
+  <header class="px-box p-2 mb-2 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-1.5 flex-1 mr-2">
+      <span class="text-[9px] text-yellow-300 shrink-0">⛏️</span>
+      <input 
+        type="text" 
+        id="nameInput" 
+        maxlength="15" 
+        value="Steve" 
+        title="Click to edit handle"
+        class="bg-slate-900 border-2 border-indigo-700 text-green-400 text-[9px] px-1 py-0.5 w-28 focus:outline-none focus:border-yellow-400 font-bold"
+      />
     </div>
-    <div class="text-[8px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/50 px-2 py-1 uppercase tracking-wider flex items-center gap-1.5">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-      <span>LIVE</span>
+    <div class="text-[7px] text-emerald-400 border border-emerald-500/30 bg-emerald-950/50 px-1.5 py-1 uppercase shrink-0">
+      ● LIVE
     </div>
   </header>
 
   <!-- CHAT VIEWPORT -->
-  <main id="viewport" class="flex-1 bg-black border-4 border-indigo-900/60 p-3 overflow-y-auto mb-2 rounded-none">
-    <div id="chatBox" class="space-y-3">
-      <div class="text-[9px] leading-relaxed text-yellow-400 bg-yellow-950/40 p-2 border border-yellow-700/50">
-        [SYSTEM]: Connected to global server. Messages sync live across all active devices!
+  <main id="v" class="flex-1 bg-black border-2 border-indigo-900 p-2 overflow-y-auto space-y-2 mb-2">
+    <div id="c" class="space-y-2">
+      <div class="text-[8px] text-yellow-400 bg-yellow-950/30 p-1.5 border border-yellow-800">
+        [SYS]: Type a custom handle at top-left to rename!
       </div>
     </div>
   </main>
 
-  <!-- COMPOSER -->
+  <!-- INPUT FORM -->
   <footer class="shrink-0">
-    <form id="pixelChatForm" class="flex gap-2">
+    <form id="f" class="flex gap-1.5">
       <input 
         type="text" 
-        id="msgInput" 
-        placeholder="TYPE MESSAGE..." 
+        id="i" 
+        placeholder="TYPE..." 
         required 
-        maxlength="250"
-        class="flex-1 bg-slate-900 border-4 border-indigo-800 text-yellow-300 text-[10px] p-2.5 focus:outline-none focus:border-yellow-400 placeholder-indigo-500 rounded-none"
+        maxlength="200" 
+        class="flex-1 bg-slate-900 border-2 border-indigo-800 text-yellow-300 text-[9px] p-2 focus:outline-none focus:border-yellow-400 placeholder-indigo-600"
         autocomplete="off"
       />
-      <button type="submit" class="pixel-btn text-[10px] text-white px-4 py-2.5 font-bold uppercase shrink-0">
+      <button type="submit" class="px-btn text-[9px] text-white px-3 py-2 font-bold uppercase shrink-0">
         SEND
       </button>
     </form>
   </footer>
 
-  <!-- REALTIME ENGINE -->
+  <!-- LIGHTWEIGHT REALTIME MODULE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getDatabase, ref, push, set, onChildAdded, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-    // Firebase Initialization
-    const app = initializeApp({
+    // Initialize Database Connection
+    const db = getDatabase(initializeApp({
       databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    });
-    const db = getDatabase(app);
+    }));
 
-    // User Identity Setup
-    const randomId = Math.floor(1000 + Math.random() * 9000);
-    const playerName = `Steve_${randomId}`;
-    document.getElementById('playerTag').textContent = `PLAYER: ${playerName}`;
+    // Generate Initial User Handle
+    const nameInput = document.getElementById('nameInput');
+    nameInput.value = `Steve_${Math.floor(100 + Math.random() * 900)}`;
 
-    // DOM References
-    const chatBox = document.getElementById('chatBox');
-    const viewport = document.getElementById('viewport');
-    const msgInput = document.getElementById('msgInput');
-    const chatForm = document.getElementById('pixelChatForm');
-
-    // Database Queries
+    const c = document.getElementById('c');
+    const v = document.getElementById('v');
+    const i = document.getElementById('i');
     const chatRef = ref(db, "global_pixel_chat");
-    const recentMessagesQuery = query(chatRef, limitToLast(50));
 
-    // Stream Incoming Messages
-    onChildAdded(recentMessagesQuery, (snapshot) => {
-      const data = snapshot.val();
-      if (data && data.sender && data.text) {
-        appendMessage(data.sender, data.text, data.sender === playerName);
+    // Realtime Incoming Message Stream
+    onChildAdded(query(chatRef, limitToLast(40)), (snap) => {
+      const d = snap.val();
+      if (d && d.s && d.t) {
+        const isSelf = d.s === nameInput.value.trim();
+        const div = document.createElement('div');
+        div.className = 'text-[8px] leading-relaxed break-words';
+        div.innerHTML = `<span class="${isSelf ? 'text-green-400' : 'text-cyan-400'}">${esc(d.s)}:</span> <span class="text-white">${esc(d.t)}</span>`;
+        c.appendChild(div);
+        v.scrollTop = v.scrollHeight;
       }
     });
 
-    // Form Submit Handler
-    chatForm.addEventListener('submit', async (e) => {
+    // Send Form Event
+    document.getElementById('f').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const text = msgInput.value.trim();
-      if (!text) return;
+      const txt = i.value.trim();
+      const handle = nameInput.value.trim() || 'Steve';
+      if (!txt) return;
 
-      msgInput.value = '';
-
-      try {
-        const newMessageRef = push(chatRef);
-        await set(newMessageRef, {
-          sender: playerName,
-          text: text,
-          timestamp: Date.now()
-        });
-      } catch (err) {
-        console.error("Failed to dispatch message:", err);
-      }
+      i.value = '';
+      await set(push(chatRef), { s: handle, t: txt, ts: Date.now() });
     });
 
-    // Safe HTML Escaping & Message Injection
-    function appendMessage(sender, text, isSelf) {
-      const colorClass = isSelf ? 'text-green-400' : 'text-cyan-400';
-      const safeSender = escapeHTML(sender);
-      const safeText = escapeHTML(text);
-
-      const msgContainer = document.createElement('div');
-      msgContainer.className = 'text-[9px] leading-relaxed break-words';
-      msgContainer.innerHTML = `<span class="${colorClass}">${safeSender}:</span> <span class="text-white">${safeText}</span>`;
-
-      chatBox.appendChild(msgContainer);
-      viewport.scrollTop = viewport.scrollHeight;
-    }
-
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, tag => 
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)
-      );
+    function esc(s) {
+      return s.replace(/[&<>'"]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[m]));
     }
   </script>
 </body>
