@@ -1,22 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="space">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>App Hub</title>
+  <title>Cosmic Realtime Hub</title>
+  
+  <!-- Firebase Compatibility SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <style>
-    /* 1. RESET & BASE LAYOUT */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
+    /* ----------------------------------------------------
+       1. THEMES & VARIABLE CONFIGURATION
+    ---------------------------------------------------- */
+    :root[data-theme="space"] {
       --bg-main: #03030a;
-      --card-bg: rgba(15, 15, 30, 0.6);
+      --card-bg: rgba(15, 15, 30, 0.7);
       --accent-cyan: #38bdf8;
       --accent-purple: #c084fc;
       --accent-pink: #f472b6;
       --accent-danger: #ef4444;
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
+      --border: rgba(255, 255, 255, 0.15);
+      --msg-bg: rgba(255, 255, 255, 0.05);
     }
+    :root[data-theme="cyberpunk"] {
+      --bg-main: #05050d;
+      --card-bg: rgba(20, 10, 35, 0.85);
+      --accent-cyan: #00f0ff;
+      --accent-purple: #ff007f;
+      --accent-pink: #ffe600;
+      --accent-danger: #ff003c;
+      --text-main: #00f0ff;
+      --text-muted: #ff007f;
+      --border: rgba(0, 240, 255, 0.3);
+      --msg-bg: rgba(255, 0, 127, 0.1);
+    }
+    :root[data-theme="sunset"] {
+      --bg-main: #1a0b1e;
+      --card-bg: rgba(45, 15, 40, 0.75);
+      --accent-cyan: #f97316;
+      --accent-purple: #fbbf24;
+      --accent-pink: #f43f5e;
+      --accent-danger: #e11d48;
+      --text-main: #fff7ed;
+      --text-muted: #fdba74;
+      --border: rgba(251, 191, 36, 0.2);
+      --msg-bg: rgba(249, 115, 22, 0.1);
+    }
+    :root[data-theme="monochrome"] {
+      --bg-main: #09090b;
+      --card-bg: rgba(24, 24, 27, 0.85);
+      --accent-cyan: #e4e4e7;
+      --accent-purple: #a1a1aa;
+      --accent-pink: #71717a;
+      --accent-danger: #f87171;
+      --text-main: #fafafa;
+      --text-muted: #a1a1aa;
+      --border: rgba(255, 255, 255, 0.2);
+      --msg-bg: rgba(255, 255, 255, 0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
     body {
       background: var(--bg-main);
       color: var(--text-main);
@@ -25,58 +72,113 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
+      padding: 1.5rem 1rem;
+      transition: background 0.3s ease, color 0.3s ease;
     }
 
-    /* 2. LAYOUT CONTAINERS */
-    .app-viewport { width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 1.25rem; z-index: 2; }
+    #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+    /* ----------------------------------------------------
+       2. LAYOUT & CONTAINERS
+    ---------------------------------------------------- */
+    .app-viewport { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 1rem; z-index: 2; }
+    
     .card {
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 1.25rem;
+      padding: 1rem;
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
     }
 
-    /* 3. UTILITY & FORM CONTROL STYLES */
     .row { display: flex; align-items: center; gap: 0.5rem; }
     .col { display: flex; flex-direction: column; gap: 0.5rem; }
     .flex-1 { flex: 1; }
-    .text-sm { font-size: 0.85rem; color: var(--text-muted); }
+    .text-sm { font-size: 0.75rem; color: var(--text-muted); }
     .text-glow {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      font-weight: bold;
     }
 
-    input, button, select, textarea {
-      font: inherit;
-      color: inherit;
-      background: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      padding: 0.6rem 0.8rem;
-      outline: none;
+    /* Controls & Inputs */
+    input, select, button {
+      font: inherit; color: inherit; background: rgba(0, 0, 0, 0.4);
+      border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; outline: none;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent-cyan); }
+    input:focus, select:focus { border-color: var(--accent-cyan); }
     button {
-      cursor: pointer;
-      font-weight: 600;
-      border: none;
+      cursor: pointer; font-weight: 600; border: none;
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
-      transition: opacity 0.2s, transform 0.1s;
+      color: #fff; transition: opacity 0.2s, transform 0.1s;
     }
     button:hover { opacity: 0.9; }
-    button:active { transform: scale(0.97); }
-    button.btn-danger {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid var(--accent-danger);
-      color: #f87171;
+    button:active { transform: scale(0.96); }
+    .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 6px; }
+    .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--accent-danger); color: #f87171; }
+
+    /* ----------------------------------------------------
+       3. CHAT COMPONENT STYLES
+    ---------------------------------------------------- */
+    .chat-card { height: 600px; display: flex; flex-direction: column; }
+    .chat-header { border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
+    
+    .announcement-banner {
+      background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-cyan);
+      border-radius: 8px; padding: 0.5rem; font-size: 0.8rem; color: var(--accent-cyan);
+      display: flex; justify-content: space-between; align-items: center;
     }
 
-    /* 4. CANVAS BACKGROUND */
-    #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .chat-messages {
+      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;
+      padding: 0.75rem 0.25rem; margin: 0.5rem 0; scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Drag & Drop Overlay Zone */
+    .chat-messages.drag-over {
+      background: rgba(56, 189, 248, 0.1); border: 2px dashed var(--accent-cyan);
+    }
+
+    .chat-msg {
+      background: var(--msg-bg); border: 1px solid var(--border);
+      border-radius: 12px; padding: 0.6rem 0.8rem; font-size: 0.85rem; position: relative;
+    }
+    .chat-msg .author-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+    .chat-msg .avatar { width: 20px; height: 20px; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 4px; }
+    .chat-msg .time { font-size: 0.65rem; color: var(--text-muted); }
+    .chat-msg .quoted-box {
+      background: rgba(0, 0, 0, 0.3); border-left: 3px solid var(--accent-purple);
+      padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 6px; color: var(--text-muted);
+    }
+    .chat-msg img.msg-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 6px; cursor: pointer; }
+    
+    /* Reactions */
+    .reactions-row { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+    .reaction-pill {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px;
+      padding: 2px 6px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 2px;
+    }
+    .action-bar { display: none; position: absolute; right: 8px; top: -10px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
+    .chat-msg:hover .action-bar { display: flex; gap: 4px; }
+
+    /* Audio Visualizer Box */
+    .audio-container { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+    .viz-canvas { width: 100%; height: 30px; background: rgba(0,0,0,0.4); border-radius: 4px; }
+
+    /* Typing Indicator */
+    .typing-box { font-size: 0.75rem; color: var(--accent-cyan); height: 18px; font-style: italic; }
+
+    /* Lightbox Modal */
+    .lightbox {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 100; justify-content: center; align-items: center; padding: 1rem;
+    }
+    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
   </style>
 </head>
 <body>
@@ -86,28 +188,89 @@
   <main class="app-viewport">
     
     <!-- HEADER MODULE -->
-    <header class="card col" id="header-module">
+    <header class="card col">
       <div class="row" style="justify-content: space-between;">
-        <h1 class="text-glow" style="font-size: 1.4rem;">Application</h1>
-        <span class="text-sm" id="system-status">Online</span>
+        <h1 class="text-glow" style="font-size: 1.2rem;">Cosmic Hub</h1>
+        <div class="row">
+          <select id="theme-select" class="btn-sm">
+            <option value="space">🌌 Space</option>
+            <option value="cyberpunk">⚡ Cyberpunk</option>
+            <option value="sunset">🌅 Sunset</option>
+            <option value="monochrome">🔳 Mono</option>
+          </select>
+          <button id="sound-toggle" class="btn-sm" title="Toggle Sound">🔔</button>
+        </div>
+      </div>
+
+      <!-- Admin Zack Panel -->
+      <div id="admin-bar" class="row" style="display: none; background: rgba(239, 68, 68, 0.15); padding: 6px; border-radius: 8px; border: 1px solid var(--accent-danger);">
+        <span class="text-sm" style="color: #f87171; font-weight: bold;">Zack Controls:</span>
+        <button id="set-pin-btn" class="btn-sm flex-1">Set Pin Banner</button>
+        <button id="clear-all-btn" class="btn-sm btn-danger">Wipe All</button>
       </div>
     </header>
 
-    <!-- CONTENT / WORKSPACE MODULE -->
-    <section class="card col" id="workspace-module">
-      <!-- Logic components inject here -->
+    <!-- CHAT MODULE -->
+    <section class="card chat-card">
+      <div class="chat-header col">
+        <div class="row" style="justify-content: space-between;">
+          <div class="row">
+            <span class="text-glow">🌌 Global Stream</span>
+            <span class="text-sm" id="online-count">🟢 Sync</span>
+          </div>
+          <input type="text" id="search-input" placeholder="🔍 Search..." class="btn-sm" style="width: 110px;">
+        </div>
+
+        <!-- Realtime Pinned Announcement -->
+        <div id="pin-banner" class="announcement-banner" style="display: none;">
+          <span id="pin-text">📌 Announcement here...</span>
+          <button id="unpin-btn" class="btn-sm btn-danger" style="display:none; padding:0 4px;">✕</button>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div class="chat-messages" id="chat-messages"></div>
+
+      <!-- Quoted Message Reply Bar -->
+      <div id="reply-preview" class="row" style="display: none; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;">
+        <span class="text-sm flex-1" id="reply-text">Replying to...</span>
+        <button id="cancel-reply" class="btn-sm btn-danger" style="padding: 0 4px;">✕</button>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="typing-box"></div>
+
+      <!-- Chat Controls Input Form -->
+      <form class="col" id="chat-form">
+        <div class="row">
+          <input type="text" id="username-input" placeholder="Name" maxlength="15" style="width: 30%;" required>
+          <input type="text" id="message-input" placeholder="Message or Ctrl+V image..." class="flex-1" autocomplete="off">
+        </div>
+
+        <div class="row">
+          <input type="file" id="media-input" accept="image/*" style="display: none;">
+          <button type="button" id="attach-btn" class="btn-sm" title="Attach Image">📷</button>
+          <button type="button" id="voice-btn" class="btn-sm" title="Record Voice">🎙️</button>
+          <button type="submit" class="flex-1" style="padding: 0.4rem;">Send ✨</button>
+        </div>
+      </form>
     </section>
 
   </main>
 
+  <!-- Fullscreen Lightbox Modal -->
+  <div class="lightbox" id="lightbox">
+    <img id="lightbox-img" src="" alt="Fullscreen Media">
+  </div>
+
   <script>
     /* ----------------------------------------------------
-       SECTION 1: CANVAS & ANIMATION ENGINE (STYLE/BG)
+       SECTION 1: STAR CANVAS ENGINE (STYLE)
     ---------------------------------------------------- */
     const CanvasEngine = (() => {
       const canvas = document.getElementById('bg-canvas');
       const ctx = canvas.getContext('2d');
-      let width, height, particles = [];
+      let width, height, stars = [];
 
       function init() {
         resize();
@@ -118,96 +281,511 @@
       function resize() {
         width = canvas.width = window.innerWidth;
         height = canvas.height = window.innerHeight;
-        particles = Array.from({ length: Math.floor((width * height) / 4000) }, () => ({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          r: Math.random() * 1.5 + 0.5,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: (Math.random() - 0.5) * 0.3,
+        stars = Array.from({ length: Math.floor((width * height) / 3000) }, () => ({
+          x: Math.random() * width, y: Math.random() * height,
+          r: Math.random() * 1.5 + 0.3,
+          vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
           alpha: Math.random()
         }));
       }
 
       function loop() {
         ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => {
-          p.x = (p.x + p.vx + width) % width;
-          p.y = (p.y + p.vy + height) % height;
+        stars.forEach(s => {
+          s.x = (s.x + s.vx + width) % width;
+          s.y = (s.y + s.vy + height) % height;
           ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(192, 132, 252, ${p.alpha})`;
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(192, 132, 252, ${s.alpha})`;
           ctx.fill();
         });
         requestAnimationFrame(loop);
       }
-
       return { init };
     })();
 
     /* ----------------------------------------------------
-       SECTION 2: STATE STORE & UTILITIES (LOGIC)
+       SECTION 2: AUDIO SFX ENGINE
     ---------------------------------------------------- */
-    const Store = (() => {
-      const state = {
-        user: localStorage.getItem('app_user') || '',
-        data: []
-      };
+    const AudioEngine = (() => {
+      let enabled = true;
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+      function playPop() {
+        if (!enabled) return;
+        if (ctx.state === 'suspended') ctx.resume();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
+      }
 
       return {
-        get: (key) => state[key],
-        set: (key, val) => {
-          state[key] = val;
-          if (key === 'user') localStorage.setItem('app_user', val);
-        }
+        playPop,
+        toggle: () => { enabled = !enabled; return enabled; }
       };
     })();
-
-    const Utils = {
-      escape: (str) => String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)),
-      timeNow: () => new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
 
     /* ----------------------------------------------------
-       SECTION 3: APPLICATION CONTROLLER (FUNCTION)
+       SECTION 3: FIREBASE & CORE LOGIC
     ---------------------------------------------------- */
-    const AppController = (() => {
-      function init() {
-        CanvasEngine.init();
-        bindEvents();
-        render();
+    // Initialize Firebase
+    const firebaseConfig = {
+      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    
+    // DB References
+    const chatRef = db.ref("global_cosmic_chat/messages");
+    const pinRef = db.ref("global_cosmic_chat/pinned");
+    const typingRef = db.ref("global_cosmic_chat/typing");
+    const bansRef = db.ref("global_cosmic_chat/banned_users");
+
+    // UI Elements
+    const chatMessages = document.getElementById('chat-messages');
+    const chatForm = document.getElementById('chat-form');
+    const usernameInput = document.getElementById('username-input');
+    const messageInput = document.getElementById('message-input');
+    const themeSelect = document.getElementById('theme-select');
+    const soundToggle = document.getElementById('sound-toggle');
+    const adminBar = document.getElementById('admin-bar');
+    const setPinBtn = document.getElementById('set-pin-btn');
+    const clearAllBtn = document.getElementById('clear-all-btn');
+    const pinBanner = document.getElementById('pin-banner');
+    const pinText = document.getElementById('pin-text');
+    const unpinBtn = document.getElementById('unpin-btn');
+    const attachBtn = document.getElementById('attach-btn');
+    const mediaInput = document.getElementById('media-input');
+    const voiceBtn = document.getElementById('voice-btn');
+    const searchInput = document.getElementById('search-input');
+    const replyPreview = document.getElementById('reply-preview');
+    const replyText = document.getElementById('reply-text');
+    const cancelReply = document.getElementById('cancel-reply');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    // State Variables
+    let activeReply = null;
+    let rawMessagesData = {};
+    let bannedList = {};
+    let isRecording = false;
+    let mediaRecorder, audioChunks = [];
+
+    // Helper: Avatar Generator SVG Data URL
+    function generateAvatar(name) {
+      const colors = ['#38bdf8', '#c084fc', '#f472b6', '#4ade80', '#fbbf24'];
+      let charCode = 0;
+      for (let i = 0; i < name.length; i++) charCode += name.charCodeAt(i);
+      const color = colors[charCode % colors.length];
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="${color}"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">${name.charAt(0).toUpperCase()}</text></svg>`;
+      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+    }
+
+    function escapeHTML(str) {
+      return str ? String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
+    }
+
+    /* ----------------------------------------------------
+       SECTION 4: INITIALIZATION & EVENT HANDLERS
+    ---------------------------------------------------- */
+    function init() {
+      CanvasEngine.init();
+
+      // Load Saved User & Theme
+      if (localStorage.getItem('cosmic_username')) {
+        usernameInput.value = localStorage.getItem('cosmic_username');
+      }
+      if (localStorage.getItem('cosmic_theme')) {
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('cosmic_theme'));
+        themeSelect.value = localStorage.getItem('cosmic_theme');
       }
 
-      function bindEvents() {
-        // Global delegate listener pattern
-        document.addEventListener('click', (e) => {
-          const action = e.target.dataset.action;
-          if (action && ControllerActions[action]) {
-            ControllerActions[action](e.target);
-          }
-        });
-      }
+      checkAdminStatus();
+      bindEvents();
+      setupFirebaseListeners();
+    }
 
-      const ControllerActions = {
-        'clear-all': () => {
-          const user = Store.get('user').toLowerCase().trim();
-          if (user === 'zack') {
-            Store.set('data', []);
-            render();
-          } else {
-            alert('Only zack can clear all chat.');
+    function checkAdminStatus() {
+      const isZack = usernameInput.value.trim().toLowerCase() === 'zack';
+      adminBar.style.display = isZack ? 'flex' : 'none';
+      unpinBtn.style.display = isZack ? 'inline-block' : 'none';
+    }
+
+    function bindEvents() {
+      // Username changes
+      usernameInput.addEventListener('input', () => {
+        localStorage.setItem('cosmic_username', usernameInput.value.trim());
+        checkAdminStatus();
+      });
+
+      // Theme Selector
+      themeSelect.addEventListener('change', (e) => {
+        document.documentElement.setAttribute('data-theme', e.target.value);
+        localStorage.setItem('cosmic_theme', e.target.value);
+      });
+
+      // Sound Toggle
+      soundToggle.addEventListener('click', () => {
+        const active = AudioEngine.toggle();
+        soundToggle.innerText = active ? '🔔' : '🔕';
+      });
+
+      // Lightbox close
+      lightbox.addEventListener('click', () => lightbox.style.display = 'none');
+
+      // Cancel Reply
+      cancelReply.addEventListener('click', () => {
+        activeReply = null;
+        replyPreview.style.display = 'none';
+      });
+
+      // Search Filter
+      searchInput.addEventListener('input', renderAllMessages);
+
+      // Typing Indicator Broadcast
+      messageInput.addEventListener('input', () => {
+        const name = usernameInput.value.trim();
+        if (!name) return;
+        if (messageInput.value.length > 0) {
+          typingRef.child(name.replace(/[.#$/[\]]/g, "")).set(true);
+        } else {
+          typingRef.child(name.replace(/[.#$/[\]]/g, "")).remove();
+        }
+      });
+
+      // Paste Images directly from Clipboard
+      messageInput.addEventListener('paste', (e) => {
+        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+        for (let item of items) {
+          if (item.kind === 'file' && item.type.startsWith('image/')) {
+            uploadImageFile(item.getAsFile());
           }
         }
+      });
+
+      // Drag and Drop Images
+      chatMessages.addEventListener('dragover', (e) => { e.preventDefault(); chatMessages.classList.add('drag-over'); });
+      chatMessages.addEventListener('dragleave', () => chatMessages.classList.remove('drag-over'));
+      chatMessages.addEventListener('drop', (e) => {
+        e.preventDefault();
+        chatMessages.classList.remove('drag-over');
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+          uploadImageFile(e.dataTransfer.files[0]);
+        }
+      });
+
+      // Image File Input Trigger
+      attachBtn.addEventListener('click', () => mediaInput.click());
+      mediaInput.addEventListener('change', (e) => {
+        if (e.target.files[0]) uploadImageFile(e.target.files[0]);
+      });
+
+      // Voice Recorder Handler
+      voiceBtn.addEventListener('click', toggleVoiceRecord);
+
+      // Form Submit (Text Messages)
+      chatForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = usernameInput.value.trim();
+        const text = messageInput.value.trim();
+        if (!name || (!text && !activeReply)) return;
+
+        if (bannedList[name.toLowerCase()]) {
+          alert('You are banned from sending messages in this chat.');
+          return;
+        }
+
+        const msgObj = {
+          username: name,
+          message: text,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+
+        if (activeReply) {
+          msgObj.quoted = activeReply;
+          activeReply = null;
+          replyPreview.style.display = 'none';
+        }
+
+        chatRef.push(msgObj);
+        messageInput.value = '';
+        typingRef.child(name.replace(/[.#$/[\]]/g, "")).remove();
+      });
+
+      // ADMIN CONTROLS (Zack Only)
+      setPinBtn.addEventListener('click', () => {
+        const pinMsg = prompt('Enter global pinned message:');
+        if (pinMsg) pinRef.set(pinMsg);
+      });
+
+      unpinBtn.addEventListener('click', () => pinRef.remove());
+
+      clearAllBtn.addEventListener('click', () => {
+        if (confirm('Wipe ALL realtime chat messages?')) {
+          chatRef.remove();
+        }
+      });
+    }
+
+    /* ----------------------------------------------------
+       SECTION 5: REALTIME FIREBASE LISTENERS
+    ---------------------------------------------------- */
+    function setupFirebaseListeners() {
+      // Listen for Messages
+      chatRef.limitToLast(100).on('value', (snapshot) => {
+        rawMessagesData = snapshot.val() || {};
+        renderAllMessages();
+        AudioEngine.playPop();
+      });
+
+      // Listen for Pinned Banner
+      pinRef.on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val) {
+          pinText.innerText = `📌 ${val}`;
+          pinBanner.style.display = 'flex';
+        } else {
+          pinBanner.style.display = 'none';
+        }
+      });
+
+      // Listen for Typing Users
+      typingRef.on('value', (snapshot) => {
+        const typers = snapshot.val() ? Object.keys(snapshot.val()) : [];
+        const myName = usernameInput.value.trim().replace(/[.#$/[\]]/g, "");
+        const activeTypers = typers.filter(t => t !== myName);
+        
+        if (activeTypers.length > 0) {
+          typingIndicator.innerText = `${activeTypers.join(', ')} ${activeTypers.length === 1 ? 'is' : 'are'} typing...`;
+        } else {
+          typingIndicator.innerText = '';
+        }
+      });
+
+      // Listen for Banned Users
+      bansRef.on('value', (snapshot) => {
+        bannedList = snapshot.val() || {};
+      });
+    }
+
+    /* ----------------------------------------------------
+       SECTION 6: RENDER & AUDIO VISUALIZER LOGIC
+    ---------------------------------------------------- */
+    function renderAllMessages() {
+      chatMessages.innerHTML = '';
+      const filter = searchInput.value.toLowerCase().trim();
+      const isZack = usernameInput.value.trim().toLowerCase() === 'zack';
+
+      Object.keys(rawMessagesData).forEach(id => {
+        const msg = rawMessagesData[id];
+        
+        // Search Filter Check
+        if (filter) {
+          const matchUser = msg.username.toLowerCase().includes(filter);
+          const matchText = msg.message && msg.message.toLowerCase().includes(filter);
+          if (!matchUser && !matchText) return;
+        }
+
+        const msgCard = document.createElement('div');
+        msgCard.className = 'chat-msg';
+
+        // Quoted snippet
+        let quoteHtml = '';
+        if (msg.quoted) {
+          quoteHtml = `<div class="quoted-box"><strong>${escapeHTML(msg.quoted.user)}:</strong> ${escapeHTML(msg.quoted.text)}</div>`;
+        }
+
+        // Image Attachment snippet
+        let imgHtml = '';
+        if (msg.image) {
+          imgHtml = `<img src="${msg.image}" class="msg-img" onclick="openLightbox('${msg.image}')">`;
+        }
+
+        // Audio Note Visualizer snippet
+        let audioHtml = '';
+        if (msg.audio) {
+          audioHtml = `
+            <div class="audio-container">
+              <audio src="${msg.audio}" controls style="width:100%; height:30px;"></audio>
+              <canvas class="viz-canvas" id="viz-${id}"></canvas>
+            </div>
+          `;
+        }
+
+        // Reactions snippet
+        let reactionsHtml = '';
+        if (msg.reactions) {
+          reactionsHtml = `<div class="reactions-row">`;
+          Object.keys(msg.reactions).forEach(emoji => {
+            const count = Object.keys(msg.reactions[emoji]).length;
+            reactionsHtml += `<span class="reaction-pill" onclick="toggleReaction('${id}', '${emoji}')">${emoji} ${count}</span>`;
+          });
+          reactionsHtml += `</div>`;
+        }
+
+        // Admin Actions HTML
+        let adminActions = '';
+        if (isZack) {
+          adminActions = `
+            <button class="btn-sm btn-danger" onclick="deleteMessage('${id}')" title="Delete Message">🗑️</button>
+            <button class="btn-sm btn-danger" onclick="banUser('${msg.username}')" title="Ban User">🚫</button>
+          `;
+        }
+
+        msgCard.innerHTML = `
+          <div class="action-bar">
+            <button class="btn-sm" onclick="setReply('${escapeHTML(msg.username)}', '${escapeHTML(msg.message || 'Media')}')">💬</button>
+            <button class="btn-sm" onclick="toggleReaction('${id}', '❤️')">❤️</button>
+            <button class="btn-sm" onclick="toggleReaction('${id}', '🔥')">🔥</button>
+            <button class="btn-sm" onclick="toggleReaction('${id}', '👍')">👍</button>
+            ${adminActions}
+          </div>
+          <div class="author-row">
+            <div>
+              <img src="${generateAvatar(msg.username)}" class="avatar">
+              <strong style="color: var(--accent-purple);">${escapeHTML(msg.username)}</strong>
+            </div>
+            <span class="time">${msg.timestamp || ''}</span>
+          </div>
+          ${quoteHtml}
+          ${msg.message ? `<div style="color: var(--text-main);">${escapeHTML(msg.message)}</div>` : ''}
+          ${imgHtml}
+          ${audioHtml}
+          ${reactionsHtml}
+        `;
+
+        chatMessages.appendChild(msgCard);
+
+        // Render Canvas Audio Visualizer if audio exists
+        if (msg.audio) {
+          setTimeout(() => drawAudioWaveform(msg.audio, `viz-${id}`), 50);
+        }
+      });
+
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    /* ----------------------------------------------------
+       SECTION 7: MEDIA & AUDIO RECORDING HELPERS
+    ---------------------------------------------------- */
+    function uploadImageFile(file) {
+      const name = usernameInput.value.trim();
+      if (!name) return alert('Enter name first!');
+      if (bannedList[name.toLowerCase()]) return alert('You are banned.');
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        chatRef.push({
+          username: name,
+          image: e.target.result,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
       };
+      reader.readAsDataURL(file);
+    }
 
-      function render() {
-        // Master view dispatcher
+    async function toggleVoiceRecord() {
+      const name = usernameInput.value.trim();
+      if (!name) return alert('Enter name first!');
+      if (bannedList[name.toLowerCase()]) return alert('You are banned.');
+
+      if (!isRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              chatRef.push({
+                username: name,
+                audio: reader.result,
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+              });
+            };
+            reader.readAsDataURL(blob);
+            stream.getTracks().forEach(t => t.stop());
+          };
+          mediaRecorder.start();
+          isRecording = true;
+          voiceBtn.innerText = '🛑 Recording...';
+          voiceBtn.style.background = 'var(--accent-danger)';
+        } catch(e) {
+          alert('Microphone access denied or unsupported.');
+        }
+      } else {
+        mediaRecorder.stop();
+        isRecording = false;
+        voiceBtn.innerText = '🎙️';
+        voiceBtn.style.background = '';
       }
+    }
 
-      return { init };
-    })();
+    function drawAudioWaveform(audioSrc, canvasId) {
+      const cvs = document.getElementById(canvasId);
+      if (!cvs) return;
+      const cCtx = cvs.getContext('2d');
+      cCtx.clearRect(0, 0, cvs.width, cvs.height);
+      
+      cCtx.fillStyle = '#38bdf8';
+      const bars = 30;
+      const width = cvs.width / bars;
+      for (let i = 0; i < bars; i++) {
+        const height = Math.random() * (cvs.height - 5) + 2;
+        cCtx.fillRect(i * width, cvs.height - height, width - 2, height);
+      }
+    }
 
-    // Initialize application on DOM ready
-    document.addEventListener('DOMContentLoaded', AppController.init);
+    /* ----------------------------------------------------
+       SECTION 8: GLOBAL INTERACTION FUNCTIONS
+    ---------------------------------------------------- */
+    window.openLightbox = (src) => {
+      lightboxImg.src = src;
+      lightbox.style.display = 'flex';
+    };
+
+    window.setReply = (user, text) => {
+      activeReply = { user, text };
+      replyText.innerText = `Replying to ${user}: "${text.substring(0, 30)}..."`;
+      replyPreview.style.display = 'flex';
+    };
+
+    window.toggleReaction = (msgId, emoji) => {
+      const name = usernameInput.value.trim().replace(/[.#$/[\]]/g, "");
+      if (!name) return alert('Enter name first!');
+      const reactRef = db.ref(`global_cosmic_chat/messages/${msgId}/reactions/${emoji}/${name}`);
+      reactRef.once('value', snapshot => {
+        if (snapshot.exists()) reactRef.remove();
+        else reactRef.set(true);
+      });
+    };
+
+    // Zack Admin Actions
+    window.deleteMessage = (msgId) => {
+      if (usernameInput.value.trim().toLowerCase() !== 'zack') return;
+      db.ref(`global_cosmic_chat/messages/${msgId}`).remove();
+    };
+
+    window.banUser = (userName) => {
+      if (usernameInput.value.trim().toLowerCase() !== 'zack') return;
+      if (confirm(`Ban user ${userName} from chatting?`)) {
+        bansRef.child(userName.toLowerCase()).set(true);
+      }
+    };
+
+    // Start App
+    document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
 </html>
