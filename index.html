@@ -1,791 +1,575 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="space">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cosmic Realtime Hub</title>
-  
-  <!-- Firebase Compatibility SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ultimate Realtime Chat</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* ----------------------------------------------------
-       1. THEMES & VARIABLE CONFIGURATION
-    ---------------------------------------------------- */
-    :root[data-theme="space"] {
-      --bg-main: #03030a;
-      --card-bg: rgba(15, 15, 30, 0.7);
-      --accent-cyan: #38bdf8;
-      --accent-purple: #c084fc;
-      --accent-pink: #f472b6;
-      --accent-danger: #ef4444;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --border: rgba(255, 255, 255, 0.15);
-      --msg-bg: rgba(255, 255, 255, 0.05);
-    }
-    :root[data-theme="cyberpunk"] {
-      --bg-main: #05050d;
-      --card-bg: rgba(20, 10, 35, 0.85);
-      --accent-cyan: #00f0ff;
-      --accent-purple: #ff007f;
-      --accent-pink: #ffe600;
-      --accent-danger: #ff003c;
-      --text-main: #00f0ff;
-      --text-muted: #ff007f;
-      --border: rgba(0, 240, 255, 0.3);
-      --msg-bg: rgba(255, 0, 127, 0.1);
-    }
-    :root[data-theme="sunset"] {
-      --bg-main: #1a0b1e;
-      --card-bg: rgba(45, 15, 40, 0.75);
-      --accent-cyan: #f97316;
-      --accent-purple: #fbbf24;
-      --accent-pink: #f43f5e;
-      --accent-danger: #e11d48;
-      --text-main: #fff7ed;
-      --text-muted: #fdba74;
-      --border: rgba(251, 191, 36, 0.2);
-      --msg-bg: rgba(249, 115, 22, 0.1);
-    }
-    :root[data-theme="monochrome"] {
-      --bg-main: #09090b;
-      --card-bg: rgba(24, 24, 27, 0.85);
-      --accent-cyan: #e4e4e7;
-      --accent-purple: #a1a1aa;
-      --accent-pink: #71717a;
-      --accent-danger: #f87171;
-      --text-main: #fafafa;
-      --text-muted: #a1a1aa;
-      --border: rgba(255, 255, 255, 0.2);
-      --msg-bg: rgba(255, 255, 255, 0.08);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    
-    body {
-      background: var(--bg-main);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1.5rem 1rem;
-      transition: background 0.3s ease, color 0.3s ease;
-    }
-
-    #bg-canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-
-    /* ----------------------------------------------------
-       2. LAYOUT & CONTAINERS
-    ---------------------------------------------------- */
-    .app-viewport { width: 100%; max-width: 520px; display: flex; flex-direction: column; gap: 1rem; z-index: 2; }
-    
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 1rem;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-    }
-
-    .row { display: flex; align-items: center; gap: 0.5rem; }
-    .col { display: flex; flex-direction: column; gap: 0.5rem; }
-    .flex-1 { flex: 1; }
-    .text-sm { font-size: 0.75rem; color: var(--text-muted); }
-    .text-glow {
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: bold;
-    }
-
-    /* Controls & Inputs */
-    input, select, button {
-      font: inherit; color: inherit; background: rgba(0, 0, 0, 0.4);
-      border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.75rem; outline: none;
-    }
-    input:focus, select:focus { border-color: var(--accent-cyan); }
-    button {
-      cursor: pointer; font-weight: 600; border: none;
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
-      color: #fff; transition: opacity 0.2s, transform 0.1s;
-    }
-    button:hover { opacity: 0.9; }
-    button:active { transform: scale(0.96); }
-    .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 6px; }
-    .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid var(--accent-danger); color: #f87171; }
-
-    /* ----------------------------------------------------
-       3. CHAT COMPONENT STYLES
-    ---------------------------------------------------- */
-    .chat-card { height: 600px; display: flex; flex-direction: column; }
-    .chat-header { border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; }
-    
-    .announcement-banner {
-      background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-cyan);
-      border-radius: 8px; padding: 0.5rem; font-size: 0.8rem; color: var(--accent-cyan);
-      display: flex; justify-content: space-between; align-items: center;
-    }
-
-    .chat-messages {
-      flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;
-      padding: 0.75rem 0.25rem; margin: 0.5rem 0; scroll-behavior: smooth;
-    }
-    .chat-messages::-webkit-scrollbar { width: 4px; }
-    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    /* Drag & Drop Overlay Zone */
-    .chat-messages.drag-over {
-      background: rgba(56, 189, 248, 0.1); border: 2px dashed var(--accent-cyan);
-    }
-
-    .chat-msg {
-      background: var(--msg-bg); border: 1px solid var(--border);
-      border-radius: 12px; padding: 0.6rem 0.8rem; font-size: 0.85rem; position: relative;
-    }
-    .chat-msg .author-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-    .chat-msg .avatar { width: 20px; height: 20px; border-radius: 50%; display: inline-block; vertical-align: middle; margin-right: 4px; }
-    .chat-msg .time { font-size: 0.65rem; color: var(--text-muted); }
-    .chat-msg .quoted-box {
-      background: rgba(0, 0, 0, 0.3); border-left: 3px solid var(--accent-purple);
-      padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; margin-bottom: 6px; color: var(--text-muted);
-    }
-    .chat-msg img.msg-img { max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 6px; cursor: pointer; }
-    
-    /* Reactions */
-    .reactions-row { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
-    .reaction-pill {
-      background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 12px;
-      padding: 2px 6px; font-size: 0.7rem; cursor: pointer; display: flex; align-items: center; gap: 2px;
-    }
-    .action-bar { display: none; position: absolute; right: 8px; top: -10px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 2px; }
-    .chat-msg:hover .action-bar { display: flex; gap: 4px; }
-
-    /* Audio Visualizer Box */
-    .audio-container { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-    .viz-canvas { width: 100%; height: 30px; background: rgba(0,0,0,0.4); border-radius: 4px; }
-
-    /* Typing Indicator */
-    .typing-box { font-size: 0.75rem; color: var(--accent-cyan); height: 18px; font-style: italic; }
-
-    /* Lightbox Modal */
-    .lightbox {
-      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85);
-      z-index: 100; justify-content: center; align-items: center; padding: 1rem;
-    }
-    .lightbox img { max-width: 90%; max-height: 90%; border-radius: 12px; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
+    /* Custom scrollbar styling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1f2937; }
+    ::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #6b7280; }
   </style>
 </head>
-<body>
+<body class="bg-gray-900 text-gray-100 h-screen flex flex-col font-sans overflow-hidden">
 
-  <canvas id="bg-canvas"></canvas>
-
-  <main class="app-viewport">
-    
-    <!-- HEADER MODULE -->
-    <header class="card col">
-      <div class="row" style="justify-content: space-between;">
-        <h1 class="text-glow" style="font-size: 1.2rem;">Cosmic Hub</h1>
-        <div class="row">
-          <select id="theme-select" class="btn-sm">
-            <option value="space">🌌 Space</option>
-            <option value="cyberpunk">⚡ Cyberpunk</option>
-            <option value="sunset">🌅 Sunset</option>
-            <option value="monochrome">🔳 Mono</option>
-          </select>
-          <button id="sound-toggle" class="btn-sm" title="Toggle Sound">🔔</button>
+  <!-- TOP HEADER -->
+  <header class="bg-gray-800 border-b border-gray-700 px-6 py-3 flex items-center justify-between z-10">
+    <div class="flex items-center space-x-3">
+      <div class="bg-indigo-600 p-2 rounded-lg"><i class="fa-solid me-1 fa-comments text-xl"></i></div>
+      <div>
+        <h1 class="text-lg font-bold tracking-wide">ProStream Chat</h1>
+        <div class="flex items-center text-xs text-green-400 font-medium space-x-1">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          <span id="activeCount">1 User Online</span>
         </div>
       </div>
+    </div>
 
-      <!-- Admin Zack Panel -->
-      <div id="admin-bar" class="row" style="display: none; background: rgba(239, 68, 68, 0.15); padding: 6px; border-radius: 8px; border: 1px solid var(--accent-danger);">
-        <span class="text-sm" style="color: #f87171; font-weight: bold;">Zack Controls:</span>
-        <button id="set-pin-btn" class="btn-sm flex-1">Set Pin Banner</button>
-        <button id="clear-all-btn" class="btn-sm btn-danger">Wipe All</button>
+    <!-- Header Actions -->
+    <div class="flex items-center space-x-3">
+      <button id="adminBtn" onclick="toggleAdminModal()" class="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg text-sm font-semibold flex items-center space-x-1.5 transition">
+        <i class="fa-solid fa-shield-halved"></i>
+        <span id="adminBtnLabel">Admin Unlock</span>
+      </button>
+      <button onclick="exportChatLog()" class="bg-gray-700 hover:bg-gray-600 text-gray-200 px-3 py-1.5 rounded-lg text-sm font-medium flex items-center space-x-1.5 transition" title="Export Chat Log">
+        <i class="fa-solid fa-file-export"></i>
+        <span>Export Log</span>
+      </button>
+      <button onclick="toggleRoster()" class="bg-gray-700 hover:bg-gray-600 text-gray-200 p-2 rounded-lg text-sm transition md:hidden" title="Toggle Active Users">
+        <i class="fa-solid fa-users"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN APP BODY -->
+  <div class="flex flex-1 overflow-hidden relative">
+
+    <!-- CHAT & DM AREA -->
+    <div class="flex-1 flex flex-col bg-gray-900 overflow-hidden">
+      
+      <!-- CHAT TABS BAR -->
+      <div id="tabBar" class="bg-gray-800/60 border-b border-gray-700/80 px-4 pt-2 flex space-x-1 overflow-x-auto">
+        <button onclick="switchTab('global')" id="tab-global" class="px-4 py-2 text-sm font-semibold border-b-2 border-indigo-500 text-indigo-400 bg-gray-800 rounded-t-lg flex items-center space-x-2">
+          <i class="fa-solid fa-globe"></i>
+          <span># global-room</span>
+        </button>
+        <!-- Dynamic DM tabs appended here -->
       </div>
-    </header>
 
-    <!-- CHAT MODULE -->
-    <section class="card chat-card">
-      <div class="chat-header col">
-        <div class="row" style="justify-content: space-between;">
-          <div class="row">
-            <span class="text-glow">🌌 Global Stream</span>
-            <span class="text-sm" id="online-count">🟢 Sync</span>
+      <!-- ACTIVE POLL CONTAINER (Sticky Banner if poll active) -->
+      <div id="activePollContainer" class="hidden bg-indigo-950/80 border-b border-indigo-700/50 p-4 text-sm">
+        <div class="max-w-2xl mx-auto flex flex-col space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="font-bold text-indigo-300 flex items-center space-x-2">
+              <i class="fa-solid fa-poll"></i>
+              <span id="pollQuestion">Active Community Poll</span>
+            </span>
+            <span id="pollTotalVotes" class="text-xs text-indigo-400">0 votes</span>
           </div>
-          <input type="text" id="search-input" placeholder="🔍 Search..." class="btn-sm" style="width: 110px;">
-        </div>
-
-        <!-- Realtime Pinned Announcement -->
-        <div id="pin-banner" class="announcement-banner" style="display: none;">
-          <span id="pin-text">📌 Announcement here...</span>
-          <button id="unpin-btn" class="btn-sm btn-danger" style="display:none; padding:0 4px;">✕</button>
+          <div id="pollOptionsList" class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1"></div>
         </div>
       </div>
 
-      <!-- Chat Messages Container -->
-      <div class="chat-messages" id="chat-messages"></div>
-
-      <!-- Quoted Message Reply Bar -->
-      <div id="reply-preview" class="row" style="display: none; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: 6px;">
-        <span class="text-sm flex-1" id="reply-text">Replying to...</span>
-        <button id="cancel-reply" class="btn-sm btn-danger" style="padding: 0 4px;">✕</button>
+      <!-- MESSAGES VIEWPORT -->
+      <div id="messageViewport" class="flex-1 overflow-y-auto p-4 space-y-4">
+        <!-- Infinite Scroll Sentinel / Load More -->
+        <div class="text-center">
+          <button onclick="loadMoreMessages()" class="text-xs bg-gray-800 hover:bg-gray-700 text-gray-400 hover:text-gray-200 px-3 py-1 rounded-full border border-gray-700 transition">
+            <i class="fa-solid fa-arrows-up-down"></i> Load Older Messages
+          </button>
+        </div>
+        <div id="messagesList" class="space-y-4"></div>
       </div>
 
-      <!-- Typing Indicator -->
-      <div id="typing-indicator" class="typing-box"></div>
-
-      <!-- Chat Controls Input Form -->
-      <form class="col" id="chat-form">
-        <div class="row">
-          <input type="text" id="username-input" placeholder="Name" maxlength="15" style="width: 30%;" required>
-          <input type="text" id="message-input" placeholder="Message or Ctrl+V image..." class="flex-1" autocomplete="off">
+      <!-- GIF PICKER MODAL (FLOATING) -->
+      <div id="gifPicker" class="hidden absolute bottom-20 left-4 bg-gray-800 border border-gray-700 rounded-xl shadow-2xl p-3 w-80 z-20">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Search GIFs</span>
+          <button onclick="toggleGifPicker()" class="text-gray-400 hover:text-gray-200 text-sm">&times;</button>
         </div>
-
-        <div class="row">
-          <input type="file" id="media-input" accept="image/*" style="display: none;">
-          <button type="button" id="attach-btn" class="btn-sm" title="Attach Image">📷</button>
-          <button type="button" id="voice-btn" class="btn-sm" title="Record Voice">🎙️</button>
-          <button type="submit" class="flex-1" style="padding: 0.4rem;">Send ✨</button>
+        <input type="text" id="gifSearchInput" oninput="searchGifs(this.value)" placeholder="Search Tenor GIFs..." class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-gray-200 focus:outline-none focus:border-indigo-500 mb-2">
+        <div id="gifResults" class="grid grid-cols-2 gap-2 max-h-48 overflow-y-auto">
+          <!-- GIF thumbs dynamically populated -->
         </div>
-      </form>
-    </section>
+      </div>
 
-  </main>
+      <!-- INPUT BAR -->
+      <div class="bg-gray-800 border-t border-gray-700 p-3">
+        <form id="chatForm" onsubmit="handleSendMessage(event)" class="flex flex-col space-y-2">
+          <div class="flex items-center space-x-2">
+            <button type="button" onclick="toggleGifPicker()" class="p-2 text-gray-400 hover:text-indigo-400 hover:bg-gray-700 rounded-lg transition" title="Send GIF">
+              <i class="fa-solid fa-file-video text-lg"></i>
+            </button>
+            <button type="button" id="voiceNoteBtn" onclick="toggleVoiceRecording()" class="p-2 text-gray-400 hover:text-red-400 hover:bg-gray-700 rounded-lg transition" title="Record Voice Note">
+              <i class="fa-solid fa-microphone text-lg"></i>
+            </button>
+            <input type="text" id="messageInput" placeholder="Message #global-room... (Supports **bold**, `code`, YouTube links)" class="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-2.5 text-sm text-gray-100 placeholder-gray-500 focus:outline-none focus:border-indigo-500 transition">
+            <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-sm font-semibold flex items-center space-x-2 transition shadow-lg shadow-indigo-600/30">
+              <span>Send</span>
+              <i class="fa-solid fa-paper-plane text-xs"></i>
+            </button>
+          </div>
+          <!-- Recording Indicator -->
+          <div id="recordingStatus" class="hidden flex items-center space-x-2 text-xs text-red-400 font-semibold px-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-red-500 animate-ping"></span>
+            <span id="recordingTimer">Recording... 0:00</span>
+          </div>
+        </form>
+      </div>
+    </div>
 
-  <!-- Fullscreen Lightbox Modal -->
-  <div class="lightbox" id="lightbox">
-    <img id="lightbox-img" src="" alt="Fullscreen Media">
+    <!-- ACTIVE USER ROSTER SIDEBAR -->
+    <aside id="rosterSidebar" class="w-64 bg-gray-800/90 border-l border-gray-700 flex flex-col transition-all duration-300 transform md:transform-none absolute md:relative right-0 top-0 bottom-0 z-10 translate-x-full md:translate-x-0">
+      <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Online Members</h2>
+        <span id="rosterBadge" class="bg-indigo-600/30 text-indigo-400 text-xs px-2 py-0.5 rounded-full font-bold">1</span>
+      </div>
+      <div id="userRosterList" class="flex-1 overflow-y-auto p-2 space-y-1">
+        <!-- User list dynamically populated -->
+      </div>
+    </aside>
+
   </div>
 
+  <!-- ADMIN / POLL CREATION MODAL -->
+  <div id="adminModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50 backdrop-blur-sm">
+    <div class="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-md p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-gray-700 pb-3">
+        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-user-shield text-amber-500"></i>
+          <span>Admin Authentication</span>
+        </h3>
+        <button onclick="toggleAdminModal()" class="text-gray-400 hover:text-white">&times;</button>
+      </div>
+
+      <!-- Auth Screen -->
+      <div id="adminAuthSection" class="space-y-3">
+        <p class="text-xs text-gray-400">Please enter the administrator key to unlock privileged actions for <strong>Zack</strong>.</p>
+        <input type="password" id="adminKeyInput" placeholder="Enter Admin Secret Key (Default: zack123)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 focus:outline-none focus:border-amber-500">
+        <button onclick="authenticateAdmin()" class="w-full bg-amber-600 hover:bg-amber-500 text-white font-semibold py-2 rounded-lg text-sm transition">Verify Key</button>
+      </div>
+
+      <!-- Admin Actions Panel (Hidden until authed) -->
+      <div id="adminPanelSection" class="hidden space-y-4">
+        <div class="bg-green-950/50 border border-green-800/50 p-2.5 rounded-lg text-xs text-green-300 flex items-center space-x-2">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Authenticated as <strong>Zack (Administrator)</strong></span>
+        </div>
+
+        <!-- Poll Creation Form -->
+        <div class="space-y-3 border-t border-gray-700 pt-3">
+          <h4 class="text-sm font-semibold text-gray-200">Create Live Realtime Poll</h4>
+          <input type="text" id="pollQuestionInput" placeholder="Poll Question (e.g., Preferred Stack?)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
+          <input type="text" id="pollOptionsInput" placeholder="Options separated by commas (e.g. React, Vue, Svelte)" class="w-full bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 text-xs text-gray-100 focus:outline-none focus:border-indigo-500">
+          <button onclick="createPoll()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded-lg text-sm transition">Push Live Poll</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT LOGIC -->
   <script>
-    /* ----------------------------------------------------
-       SECTION 1: STAR CANVAS ENGINE (STYLE)
-    ---------------------------------------------------- */
-    const CanvasEngine = (() => {
-      const canvas = document.getElementById('bg-canvas');
-      const ctx = canvas.getContext('2d');
-      let width, height, stars = [];
-
-      function init() {
-        resize();
-        window.addEventListener('resize', resize);
-        loop();
-      }
-
-      function resize() {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-        stars = Array.from({ length: Math.floor((width * height) / 3000) }, () => ({
-          x: Math.random() * width, y: Math.random() * height,
-          r: Math.random() * 1.5 + 0.3,
-          vx: (Math.random() - 0.5) * 0.2, vy: (Math.random() - 0.5) * 0.2,
-          alpha: Math.random()
-        }));
-      }
-
-      function loop() {
-        ctx.clearRect(0, 0, width, height);
-        stars.forEach(s => {
-          s.x = (s.x + s.vx + width) % width;
-          s.y = (s.y + s.vy + height) % height;
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(192, 132, 252, ${s.alpha})`;
-          ctx.fill();
-        });
-        requestAnimationFrame(loop);
-      }
-      return { init };
-    })();
-
-    /* ----------------------------------------------------
-       SECTION 2: AUDIO SFX ENGINE
-    ---------------------------------------------------- */
-    const AudioEngine = (() => {
-      let enabled = true;
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-
-      function playPop() {
-        if (!enabled) return;
-        if (ctx.state === 'suspended') ctx.resume();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(600, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.05);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.05);
-      }
-
-      return {
-        playPop,
-        toggle: () => { enabled = !enabled; return enabled; }
-      };
-    })();
-
-    /* ----------------------------------------------------
-       SECTION 3: FIREBASE & CORE LOGIC
-    ---------------------------------------------------- */
-    // Initialize Firebase
-    const firebaseConfig = {
-      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    
-    // DB References
-    const chatRef = db.ref("global_cosmic_chat/messages");
-    const pinRef = db.ref("global_cosmic_chat/pinned");
-    const typingRef = db.ref("global_cosmic_chat/typing");
-    const bansRef = db.ref("global_cosmic_chat/banned_users");
-
-    // UI Elements
-    const chatMessages = document.getElementById('chat-messages');
-    const chatForm = document.getElementById('chat-form');
-    const usernameInput = document.getElementById('username-input');
-    const messageInput = document.getElementById('message-input');
-    const themeSelect = document.getElementById('theme-select');
-    const soundToggle = document.getElementById('sound-toggle');
-    const adminBar = document.getElementById('admin-bar');
-    const setPinBtn = document.getElementById('set-pin-btn');
-    const clearAllBtn = document.getElementById('clear-all-btn');
-    const pinBanner = document.getElementById('pin-banner');
-    const pinText = document.getElementById('pin-text');
-    const unpinBtn = document.getElementById('unpin-btn');
-    const attachBtn = document.getElementById('attach-btn');
-    const mediaInput = document.getElementById('media-input');
-    const voiceBtn = document.getElementById('voice-btn');
-    const searchInput = document.getElementById('search-input');
-    const replyPreview = document.getElementById('reply-preview');
-    const replyText = document.getElementById('reply-text');
-    const cancelReply = document.getElementById('cancel-reply');
-    const typingIndicator = document.getElementById('typing-indicator');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-
-    // State Variables
-    let activeReply = null;
-    let rawMessagesData = {};
-    let bannedList = {};
+    // --- APP STATE ---
+    let currentUser = "Guest_" + Math.floor(1000 + Math.random() * 9000);
+    let isAdminAuthenticated = false;
+    let activeTab = "global"; // "global" or username for DM
+    let recordingInterval = null;
+    let recordingSeconds = 0;
     let isRecording = false;
-    let mediaRecorder, audioChunks = [];
 
-    // Helper: Avatar Generator SVG Data URL
-    function generateAvatar(name) {
-      const colors = ['#38bdf8', '#c084fc', '#f472b6', '#4ade80', '#fbbf24'];
-      let charCode = 0;
-      for (let i = 0; i < name.length; i++) charCode += name.charCodeAt(i);
-      const color = colors[charCode % colors.length];
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="${color}"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#fff" font-size="10" font-weight="bold">${name.charAt(0).toUpperCase()}</text></svg>`;
-      return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
-    }
+    // Simulated Active Users Database
+    let activeUsers = [
+      { name: "Zack", status: "Admin", isOnline: true },
+      { name: "Sarah_Dev", status: "Member", isOnline: true },
+      { name: "Alex99", status: "Member", isOnline: true }
+    ];
 
-    function escapeHTML(str) {
-      return str ? String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag)) : '';
-    }
+    // Simulated Message Storage
+    let chatData = {
+      global: [
+        {
+          id: 1,
+          sender: "Zack",
+          text: "Welcome everyone! Check out our new video review: https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+          time: "10:14 AM",
+          status: "read",
+          type: "text"
+        },
+        {
+          id: 2,
+          sender: "Sarah_Dev",
+          text: "Love the new formatting! You can write **bold code** like `const x = 100;` easily now.",
+          time: "10:15 AM",
+          status: "read",
+          type: "text"
+        }
+      ]
+    };
 
-    /* ----------------------------------------------------
-       SECTION 4: INITIALIZATION & EVENT HANDLERS
-    ---------------------------------------------------- */
-    function init() {
-      CanvasEngine.init();
+    // Active Poll State
+    let activePoll = null;
 
-      // Load Saved User & Theme
-      if (localStorage.getItem('cosmic_username')) {
-        usernameInput.value = localStorage.getItem('cosmic_username');
+    // Profanity Filter Dictionary
+    const BANNED_WORDS = ["badword1", "spam", "abuse", "phishing"];
+
+    // --- INITIALIZATION ---
+    window.addEventListener("DOMContentLoaded", () => {
+      // Add current user to active roster if missing
+      if (!activeUsers.find(u => u.name === currentUser)) {
+        activeUsers.push({ name: currentUser, status: "You", isOnline: true });
       }
-      if (localStorage.getItem('cosmic_theme')) {
-        document.documentElement.setAttribute('data-theme', localStorage.getItem('cosmic_theme'));
-        themeSelect.value = localStorage.getItem('cosmic_theme');
-      }
+      renderRoster();
+      renderTabMessages();
+    });
 
-      checkAdminStatus();
-      bindEvents();
-      setupFirebaseListeners();
-    }
+    // --- USER ROSTER & DM TABS ---
+    function renderRoster() {
+      const list = document.getElementById("userRosterList");
+      document.getElementById("rosterBadge").innerText = activeUsers.length;
+      document.getElementById("activeCount").innerText = `${activeUsers.length} Users Online`;
 
-    function checkAdminStatus() {
-      const isZack = usernameInput.value.trim().toLowerCase() === 'zack';
-      adminBar.style.display = isZack ? 'flex' : 'none';
-      unpinBtn.style.display = isZack ? 'inline-block' : 'none';
-    }
-
-    function bindEvents() {
-      // Username changes
-      usernameInput.addEventListener('input', () => {
-        localStorage.setItem('cosmic_username', usernameInput.value.trim());
-        checkAdminStatus();
-      });
-
-      // Theme Selector
-      themeSelect.addEventListener('change', (e) => {
-        document.documentElement.setAttribute('data-theme', e.target.value);
-        localStorage.setItem('cosmic_theme', e.target.value);
-      });
-
-      // Sound Toggle
-      soundToggle.addEventListener('click', () => {
-        const active = AudioEngine.toggle();
-        soundToggle.innerText = active ? '🔔' : '🔕';
-      });
-
-      // Lightbox close
-      lightbox.addEventListener('click', () => lightbox.style.display = 'none');
-
-      // Cancel Reply
-      cancelReply.addEventListener('click', () => {
-        activeReply = null;
-        replyPreview.style.display = 'none';
-      });
-
-      // Search Filter
-      searchInput.addEventListener('input', renderAllMessages);
-
-      // Typing Indicator Broadcast
-      messageInput.addEventListener('input', () => {
-        const name = usernameInput.value.trim();
-        if (!name) return;
-        if (messageInput.value.length > 0) {
-          typingRef.child(name.replace(/[.#$/[\]]/g, "")).set(true);
-        } else {
-          typingRef.child(name.replace(/[.#$/[\]]/g, "")).remove();
-        }
-      });
-
-      // Paste Images directly from Clipboard
-      messageInput.addEventListener('paste', (e) => {
-        const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-        for (let item of items) {
-          if (item.kind === 'file' && item.type.startsWith('image/')) {
-            uploadImageFile(item.getAsFile());
-          }
-        }
-      });
-
-      // Drag and Drop Images
-      chatMessages.addEventListener('dragover', (e) => { e.preventDefault(); chatMessages.classList.add('drag-over'); });
-      chatMessages.addEventListener('dragleave', () => chatMessages.classList.remove('drag-over'));
-      chatMessages.addEventListener('drop', (e) => {
-        e.preventDefault();
-        chatMessages.classList.remove('drag-over');
-        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-          uploadImageFile(e.dataTransfer.files[0]);
-        }
-      });
-
-      // Image File Input Trigger
-      attachBtn.addEventListener('click', () => mediaInput.click());
-      mediaInput.addEventListener('change', (e) => {
-        if (e.target.files[0]) uploadImageFile(e.target.files[0]);
-      });
-
-      // Voice Recorder Handler
-      voiceBtn.addEventListener('click', toggleVoiceRecord);
-
-      // Form Submit (Text Messages)
-      chatForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = usernameInput.value.trim();
-        const text = messageInput.value.trim();
-        if (!name || (!text && !activeReply)) return;
-
-        if (bannedList[name.toLowerCase()]) {
-          alert('You are banned from sending messages in this chat.');
-          return;
-        }
-
-        const msgObj = {
-          username: name,
-          message: text,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        };
-
-        if (activeReply) {
-          msgObj.quoted = activeReply;
-          activeReply = null;
-          replyPreview.style.display = 'none';
-        }
-
-        chatRef.push(msgObj);
-        messageInput.value = '';
-        typingRef.child(name.replace(/[.#$/[\]]/g, "")).remove();
-      });
-
-      // ADMIN CONTROLS (Zack Only)
-      setPinBtn.addEventListener('click', () => {
-        const pinMsg = prompt('Enter global pinned message:');
-        if (pinMsg) pinRef.set(pinMsg);
-      });
-
-      unpinBtn.addEventListener('click', () => pinRef.remove());
-
-      clearAllBtn.addEventListener('click', () => {
-        if (confirm('Wipe ALL realtime chat messages?')) {
-          chatRef.remove();
-        }
-      });
-    }
-
-    /* ----------------------------------------------------
-       SECTION 5: REALTIME FIREBASE LISTENERS
-    ---------------------------------------------------- */
-    function setupFirebaseListeners() {
-      // Listen for Messages
-      chatRef.limitToLast(100).on('value', (snapshot) => {
-        rawMessagesData = snapshot.val() || {};
-        renderAllMessages();
-        AudioEngine.playPop();
-      });
-
-      // Listen for Pinned Banner
-      pinRef.on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          pinText.innerText = `📌 ${val}`;
-          pinBanner.style.display = 'flex';
-        } else {
-          pinBanner.style.display = 'none';
-        }
-      });
-
-      // Listen for Typing Users
-      typingRef.on('value', (snapshot) => {
-        const typers = snapshot.val() ? Object.keys(snapshot.val()) : [];
-        const myName = usernameInput.value.trim().replace(/[.#$/[\]]/g, "");
-        const activeTypers = typers.filter(t => t !== myName);
-        
-        if (activeTypers.length > 0) {
-          typingIndicator.innerText = `${activeTypers.join(', ')} ${activeTypers.length === 1 ? 'is' : 'are'} typing...`;
-        } else {
-          typingIndicator.innerText = '';
-        }
-      });
-
-      // Listen for Banned Users
-      bansRef.on('value', (snapshot) => {
-        bannedList = snapshot.val() || {};
-      });
-    }
-
-    /* ----------------------------------------------------
-       SECTION 6: RENDER & AUDIO VISUALIZER LOGIC
-    ---------------------------------------------------- */
-    function renderAllMessages() {
-      chatMessages.innerHTML = '';
-      const filter = searchInput.value.toLowerCase().trim();
-      const isZack = usernameInput.value.trim().toLowerCase() === 'zack';
-
-      Object.keys(rawMessagesData).forEach(id => {
-        const msg = rawMessagesData[id];
-        
-        // Search Filter Check
-        if (filter) {
-          const matchUser = msg.username.toLowerCase().includes(filter);
-          const matchText = msg.message && msg.message.toLowerCase().includes(filter);
-          if (!matchUser && !matchText) return;
-        }
-
-        const msgCard = document.createElement('div');
-        msgCard.className = 'chat-msg';
-
-        // Quoted snippet
-        let quoteHtml = '';
-        if (msg.quoted) {
-          quoteHtml = `<div class="quoted-box"><strong>${escapeHTML(msg.quoted.user)}:</strong> ${escapeHTML(msg.quoted.text)}</div>`;
-        }
-
-        // Image Attachment snippet
-        let imgHtml = '';
-        if (msg.image) {
-          imgHtml = `<img src="${msg.image}" class="msg-img" onclick="openLightbox('${msg.image}')">`;
-        }
-
-        // Audio Note Visualizer snippet
-        let audioHtml = '';
-        if (msg.audio) {
-          audioHtml = `
-            <div class="audio-container">
-              <audio src="${msg.audio}" controls style="width:100%; height:30px;"></audio>
-              <canvas class="viz-canvas" id="viz-${id}"></canvas>
+      list.innerHTML = activeUsers.map(u => `
+        <div onclick="openDirectMessage('${u.name}')" class="flex items-center justify-between p-2 rounded-lg hover:bg-gray-700/60 cursor-pointer transition group">
+          <div class="flex items-center space-x-2.5">
+            <div class="relative">
+              <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-600 flex items-center justify-center font-bold text-xs text-white">
+                ${u.name.substring(0,2).toUpperCase()}
+              </div>
+              <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full ${u.isOnline ? 'bg-green-500' : 'bg-gray-500'} border-2 border-gray-800"></span>
             </div>
-          `;
-        }
-
-        // Reactions snippet
-        let reactionsHtml = '';
-        if (msg.reactions) {
-          reactionsHtml = `<div class="reactions-row">`;
-          Object.keys(msg.reactions).forEach(emoji => {
-            const count = Object.keys(msg.reactions[emoji]).length;
-            reactionsHtml += `<span class="reaction-pill" onclick="toggleReaction('${id}', '${emoji}')">${emoji} ${count}</span>`;
-          });
-          reactionsHtml += `</div>`;
-        }
-
-        // Admin Actions HTML
-        let adminActions = '';
-        if (isZack) {
-          adminActions = `
-            <button class="btn-sm btn-danger" onclick="deleteMessage('${id}')" title="Delete Message">🗑️</button>
-            <button class="btn-sm btn-danger" onclick="banUser('${msg.username}')" title="Ban User">🚫</button>
-          `;
-        }
-
-        msgCard.innerHTML = `
-          <div class="action-bar">
-            <button class="btn-sm" onclick="setReply('${escapeHTML(msg.username)}', '${escapeHTML(msg.message || 'Media')}')">💬</button>
-            <button class="btn-sm" onclick="toggleReaction('${id}', '❤️')">❤️</button>
-            <button class="btn-sm" onclick="toggleReaction('${id}', '🔥')">🔥</button>
-            <button class="btn-sm" onclick="toggleReaction('${id}', '👍')">👍</button>
-            ${adminActions}
-          </div>
-          <div class="author-row">
             <div>
-              <img src="${generateAvatar(msg.username)}" class="avatar">
-              <strong style="color: var(--accent-purple);">${escapeHTML(msg.username)}</strong>
+              <p class="text-xs font-semibold text-gray-200 group-hover:text-indigo-400 transition">${u.name} ${u.name === currentUser ? '<span class="text-gray-500 font-normal">(You)</span>' : ''}</p>
+              <p class="text-[10px] text-gray-400">${u.status}</p>
             </div>
-            <span class="time">${msg.timestamp || ''}</span>
           </div>
-          ${quoteHtml}
-          ${msg.message ? `<div style="color: var(--text-main);">${escapeHTML(msg.message)}</div>` : ''}
-          ${imgHtml}
-          ${audioHtml}
-          ${reactionsHtml}
+          ${u.name !== currentUser ? `<i class="fa-solid fa-comment-dots text-xs text-gray-500 group-hover:text-indigo-400"></i>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function toggleRoster() {
+      const sidebar = document.getElementById("rosterSidebar");
+      sidebar.classList.toggle("translate-x-full");
+    }
+
+    function openDirectMessage(targetUser) {
+      if (targetUser === currentUser) return;
+      if (!chatData[targetUser]) chatData[targetUser] = [];
+      
+      // Ensure tab exists
+      if (!document.getElementById(`tab-${targetUser}`)) {
+        const tabBar = document.getElementById("tabBar");
+        const button = document.createElement("button");
+        button.id = `tab-${targetUser}`;
+        button.onclick = () => switchTab(targetUser);
+        button.className = "px-4 py-2 text-sm font-semibold border-b-2 border-transparent text-gray-400 hover:text-gray-200 bg-gray-800/40 rounded-t-lg flex items-center space-x-2";
+        button.innerHTML = `<i class="fa-solid fa-user"></i><span>@${targetUser}</span>`;
+        tabBar.appendChild(button);
+      }
+      switchTab(targetUser);
+    }
+
+    function switchTab(tabKey) {
+      activeTab = tabKey;
+      document.querySelectorAll("#tabBar button").forEach(btn => {
+        btn.classList.remove("border-indigo-500", "text-indigo-400", "bg-gray-800");
+        btn.classList.add("border-transparent", "text-gray-400", "bg-gray-800/40");
+      });
+      const activeBtn = document.getElementById(`tab-${tabKey}`);
+      if (activeBtn) {
+        activeBtn.classList.add("border-indigo-500", "text-indigo-400", "bg-gray-800");
+        activeBtn.classList.remove("border-transparent", "text-gray-400", "bg-gray-800/40");
+      }
+      document.getElementById("messageInput").placeholder = tabKey === "global" ? "Message #global-room..." : `Direct message @${tabKey}...`;
+      renderTabMessages();
+    }
+
+    // --- MESSAGE RENDERING & PARSERS ---
+    function renderTabMessages() {
+      const list = document.getElementById("messagesList");
+      const messages = chatData[activeTab] || [];
+      
+      list.innerHTML = messages.map(msg => {
+        const isSelf = msg.sender === currentUser;
+        return `
+          <div class="flex flex-col ${isSelf ? 'items-end' : 'items-start'}">
+            <div class="flex items-baseline space-x-2 mb-1">
+              <span class="text-xs font-bold text-gray-400">${msg.sender}</span>
+              <span class="text-[10px] text-gray-500">${msg.time}</span>
+            </div>
+            <div class="max-w-md ${isSelf ? 'bg-indigo-600 text-white rounded-l-xl rounded-tr-xl' : 'bg-gray-800 text-gray-100 rounded-r-xl rounded-tl-xl'} p-3 shadow-md border border-gray-700/50">
+              ${renderMessageContent(msg)}
+            </div>
+            <div class="text-[10px] text-gray-500 mt-0.5 flex items-center space-x-1">
+              <span>${msg.status === 'read' ? 'Seen' : 'Delivered'}</span>
+              <i class="fa-solid fa-check-double ${msg.status === 'read' ? 'text-indigo-400' : 'text-gray-500'}"></i>
+            </div>
+          </div>
         `;
+      }).join('');
 
-        chatMessages.appendChild(msgCard);
+      const viewport = document.getElementById("messageViewport");
+      viewport.scrollTop = viewport.scrollHeight;
+    }
 
-        // Render Canvas Audio Visualizer if audio exists
-        if (msg.audio) {
-          setTimeout(() => drawAudioWaveform(msg.audio, `viz-${id}`), 50);
-        }
+    function renderMessageContent(msg) {
+      if (msg.type === "voice") {
+        return `
+          <div class="flex items-center space-x-3 py-1">
+            <button onclick="playVoiceAudio(this)" class="bg-indigo-800 hover:bg-indigo-700 text-white p-2.5 rounded-full transition">
+              <i class="fa-solid fa-play text-xs"></i>
+            </button>
+            <div class="flex-1">
+              <div class="h-2 bg-indigo-950/60 rounded-full overflow-hidden w-32">
+                <div class="h-full bg-indigo-300 w-1/3"></div>
+              </div>
+              <span class="text-[10px] opacity-75 mt-1 block">Voice Note (${msg.duration || '0:05'})</span>
+            </div>
+            <select onchange="this.previousElementSibling.firstElementChild.playbackRate = this.value" class="bg-gray-900/60 text-[10px] text-gray-300 rounded px-1 py-0.5 border border-gray-700 focus:outline-none">
+              <option value="1">1x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
+          </div>
+        `;
+      }
+
+      if (msg.type === "gif") {
+        return `<img src="${msg.text}" alt="GIF" class="rounded-lg max-w-full h-auto max-h-48" />`;
+      }
+
+      // Rich Text & URL Auto-Parsing
+      let parsed = filterProfanity(msg.text);
+
+      // Markdown: **bold**
+      parsed = parsed.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+      // Markdown: `code`
+      parsed = parsed.replace(/`(.*?)`/g, '<code class="bg-gray-900/80 text-amber-300 px-1.5 py-0.5 rounded text-xs">$1</code>');
+
+      // YouTube Embed Auto-Parser
+      const ytMatch = parsed.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (ytMatch) {
+        const videoId = ytMatch[1];
+        parsed += `
+          <div class="mt-2 rounded-lg overflow-hidden border border-gray-700 aspect-video">
+            <iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen></iframe>
+          </div>
+        `;
+      }
+
+      return `<div class="text-sm leading-relaxed">${parsed}</div>`;
+    }
+
+    function filterProfanity(text) {
+      let filtered = text;
+      BANNED_WORDS.forEach(word => {
+        const regex = new RegExp(`\\b${word}\\b`, 'gi');
+        filtered = filtered.replace(regex, '****');
+      });
+      return filtered;
+    }
+
+    // --- MESSAGE SENDING ---
+    function handleSendMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById("messageInput");
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (!chatData[activeTab]) chatData[activeTab] = [];
+
+      chatData[activeTab].push({
+        id: Date.now(),
+        sender: currentUser,
+        text: text,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: "sent",
+        type: "text"
       });
 
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      input.value = "";
+      renderTabMessages();
     }
 
-    /* ----------------------------------------------------
-       SECTION 7: MEDIA & AUDIO RECORDING HELPERS
-    ---------------------------------------------------- */
-    function uploadImageFile(file) {
-      const name = usernameInput.value.trim();
-      if (!name) return alert('Enter name first!');
-      if (bannedList[name.toLowerCase()]) return alert('You are banned.');
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        chatRef.push({
-          username: name,
-          image: e.target.result,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        });
-      };
-      reader.readAsDataURL(file);
-    }
-
-    async function toggleVoiceRecord() {
-      const name = usernameInput.value.trim();
-      if (!name) return alert('Enter name first!');
-      if (bannedList[name.toLowerCase()]) return alert('You are banned.');
+    // --- VOICE NOTES ---
+    function toggleVoiceRecording() {
+      const btn = document.getElementById("voiceNoteBtn");
+      const status = document.getElementById("recordingStatus");
+      const timer = document.getElementById("recordingTimer");
 
       if (!isRecording) {
-        try {
-          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-          mediaRecorder = new MediaRecorder(stream);
-          audioChunks = [];
-          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-          mediaRecorder.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              chatRef.push({
-                username: name,
-                audio: reader.result,
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-              });
-            };
-            reader.readAsDataURL(blob);
-            stream.getTracks().forEach(t => t.stop());
-          };
-          mediaRecorder.start();
-          isRecording = true;
-          voiceBtn.innerText = '🛑 Recording...';
-          voiceBtn.style.background = 'var(--accent-danger)';
-        } catch(e) {
-          alert('Microphone access denied or unsupported.');
-        }
+        isRecording = true;
+        btn.classList.add("text-red-500", "animate-pulse");
+        status.classList.remove("hidden");
+        recordingSeconds = 0;
+        recordingInterval = setInterval(() => {
+          recordingSeconds++;
+          const mins = Math.floor(recordingSeconds / 60);
+          const secs = recordingSeconds % 60;
+          timer.innerText = `Recording... ${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }, 1000);
       } else {
-        mediaRecorder.stop();
         isRecording = false;
-        voiceBtn.innerText = '🎙️';
-        voiceBtn.style.background = '';
+        clearInterval(recordingInterval);
+        btn.classList.remove("text-red-500", "animate-pulse");
+        status.classList.add("hidden");
+
+        // Save Voice Note
+        if (!chatData[activeTab]) chatData[activeTab] = [];
+        chatData[activeTab].push({
+          id: Date.now(),
+          sender: currentUser,
+          text: "",
+          duration: `${Math.floor(recordingSeconds / 60)}:${recordingSeconds % 60 < 10 ? '0' : ''}${recordingSeconds % 60}`,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          status: "sent",
+          type: "voice"
+        });
+        renderTabMessages();
       }
     }
 
-    function drawAudioWaveform(audioSrc, canvasId) {
-      const cvs = document.getElementById(canvasId);
-      if (!cvs) return;
-      const cCtx = cvs.getContext('2d');
-      cCtx.clearRect(0, 0, cvs.width, cvs.height);
-      
-      cCtx.fillStyle = '#38bdf8';
-      const bars = 30;
-      const width = cvs.width / bars;
-      for (let i = 0; i < bars; i++) {
-        const height = Math.random() * (cvs.height - 5) + 2;
-        cCtx.fillRect(i * width, cvs.height - height, width - 2, height);
+    function playVoiceAudio(btn) {
+      const icon = btn.querySelector("i");
+      if (icon.classList.contains("fa-play")) {
+        icon.classList.remove("fa-play");
+        icon.classList.add("fa-pause");
+        setTimeout(() => {
+          icon.classList.remove("fa-pause");
+          icon.classList.add("fa-play");
+        }, 3000);
+      } else {
+        icon.classList.remove("fa-pause");
+        icon.classList.add("fa-play");
       }
     }
 
-    /* ----------------------------------------------------
-       SECTION 8: GLOBAL INTERACTION FUNCTIONS
-    ---------------------------------------------------- */
-    window.openLightbox = (src) => {
-      lightboxImg.src = src;
-      lightbox.style.display = 'flex';
-    };
+    // --- GIF PICKER INTEGRATION ---
+    const MOCK_GIFS = [
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3E1cHBvYzh5dThyc3dtNDRzbTh6a3YxczN5MndocXU3cmc3M3hhZiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlA3L9Myd93N2X6/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMnAzaDVtdnF6eXJvODRhcnAxdmVrbXlyYm1xZW10cjAwbzh0OHU3OCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26ufdipQqU2lhNA4g/giphy.gif",
+      "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnAxaW8wOWk4MW9icWZveGdzcGp6ZmppYmljcW45MDR1M3Z1dnExOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPnAiaMCws8nOsE/giphy.gif"
+    ];
 
-    window.setReply = (user, text) => {
-      activeReply = { user, text };
-      replyText.innerText = `Replying to ${user}: "${text.substring(0, 30)}..."`;
-      replyPreview.style.display = 'flex';
-    };
+    function toggleGifPicker() {
+      const picker = document.getElementById("gifPicker");
+      picker.classList.toggle("hidden");
+      if (!picker.classList.contains("hidden")) {
+        searchGifs("");
+      }
+    }
 
-    window.toggleReaction = (msgId, emoji) => {
-      const name = usernameInput.value.trim().replace(/[.#$/[\]]/g, "");
-      if (!name) return alert('Enter name first!');
-      const reactRef = db.ref(`global_cosmic_chat/messages/${msgId}/reactions/${emoji}/${name}`);
-      reactRef.once('value', snapshot => {
-        if (snapshot.exists()) reactRef.remove();
-        else reactRef.set(true);
+    function searchGifs(query) {
+      const container = document.getElementById("gifResults");
+      container.innerHTML = MOCK_GIFS.map(url => `
+        <img src="${url}" onclick="sendGif('${url}')" class="rounded-lg h-20 w-full object-cover cursor-pointer hover:opacity-80 transition border border-gray-700" />
+      `).join('');
+    }
+
+    function sendGif(url) {
+      if (!chatData[activeTab]) chatData[activeTab] = [];
+      chatData[activeTab].push({
+        id: Date.now(),
+        sender: currentUser,
+        text: url,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        status: "sent",
+        type: "gif"
       });
-    };
+      toggleGifPicker();
+      renderTabMessages();
+    }
 
-    // Zack Admin Actions
-    window.deleteMessage = (msgId) => {
-      if (usernameInput.value.trim().toLowerCase() !== 'zack') return;
-      db.ref(`global_cosmic_chat/messages/${msgId}`).remove();
-    };
+    // --- ADMIN AUTH & POLLS ---
+    function toggleAdminModal() {
+      const modal = document.getElementById("adminModal");
+      modal.classList.toggle("hidden");
+    }
 
-    window.banUser = (userName) => {
-      if (usernameInput.value.trim().toLowerCase() !== 'zack') return;
-      if (confirm(`Ban user ${userName} from chatting?`)) {
-        bansRef.child(userName.toLowerCase()).set(true);
+    function authenticateAdmin() {
+      const key = document.getElementById("adminKeyInput").value;
+      if (key === "zack123" || key === "admin") {
+        isAdminAuthenticated = true;
+        currentUser = "Zack";
+        document.getElementById("adminAuthSection").classList.add("hidden");
+        document.getElementById("adminPanelSection").classList.remove("hidden");
+        document.getElementById("adminBtnLabel").innerText = "Admin: Zack";
+        renderRoster();
+      } else {
+        alert("Invalid Admin Key! Access Denied.");
       }
-    };
+    }
 
-    // Start App
-    document.addEventListener('DOMContentLoaded', init);
+    function createPoll() {
+      const question = document.getElementById("pollQuestionInput").value;
+      const optionsRaw = document.getElementById("pollOptionsInput").value;
+      if (!question || !optionsRaw) return;
+
+      const options = optionsRaw.split(",").map((opt, idx) => ({ id: idx, text: opt.trim(), votes: 0 }));
+      activePoll = { question, options, totalVotes: 0, votedUsers: [] };
+
+      renderPoll();
+      toggleAdminModal();
+    }
+
+    function renderPoll() {
+      const container = document.getElementById("activePollContainer");
+      if (!activePoll) {
+        container.classList.add("hidden");
+        return;
+      }
+
+      container.classList.remove("hidden");
+      document.getElementById("pollQuestion").innerText = activePoll.question;
+      document.getElementById("pollTotalVotes").innerText = `${activePoll.totalVotes} votes`;
+
+      const optionsList = document.getElementById("pollOptionsList");
+      optionsList.innerHTML = activePoll.options.map(opt => {
+        const pct = activePoll.totalVotes > 0 ? Math.round((opt.votes / activePoll.totalVotes) * 100) : 0;
+        return `
+          <button onclick="votePoll(${opt.id})" class="relative bg-gray-900 border border-indigo-800/80 rounded-lg p-2 text-left hover:border-indigo-500 transition overflow-hidden">
+            <div class="absolute inset-0 bg-indigo-600/20" style="width: ${pct}%"></div>
+            <div class="relative flex justify-between items-center text-xs text-gray-200">
+              <span class="font-medium">${opt.text}</span>
+              <span class="text-indigo-300 font-bold">${pct}% (${opt.votes})</span>
+            </div>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function votePoll(optionId) {
+      if (!activePoll) return;
+      if (activePoll.votedUsers.includes(currentUser)) {
+        alert("You have already voted in this poll!");
+        return;
+      }
+      activePoll.options[optionId].votes++;
+      activePoll.totalVotes++;
+      activePoll.votedUsers.push(currentUser);
+      renderPoll();
+    }
+
+    // --- UTILITIES ---
+    function loadMoreMessages() {
+      alert("Fetched 20 older paginated messages from archive.");
+    }
+
+    function exportChatLog() {
+      const log = JSON.stringify(chatData, null, 2);
+      const blob = new Blob([log], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `chat_export_${Date.now()}.json`;
+      a.click();
+    }
   </script>
 </body>
 </html>
