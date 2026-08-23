@@ -3,135 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Messenger Pro</title>
+  <title>Video Call</title>
   <style>
-    /* ============================================================
-       VARIABLES — Feature 82: Bubble Styles
-       ============================================================ */
-    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    :root{--font:system-ui,-apple-system,sans-serif;--bg:#0a0a12;--surface:#1a1a2e;--card:rgba(255,255,255,.04);--border:rgba(255,255,255,.06);--blue:#0084ff;--blue2:#0070e0;--green:#31a24c;--yellow:#fbbf24;--text:#fff;--muted:rgba(255,255,255,.5);--dim:rgba(255,255,255,.15);--bubble-radius:18px;--bubble-radius-own:4px 18px 18px 4px;--bubble-radius-other:18px 4px 4px 18px;--bubble-padding:8px 14px;--bubble-font:.9rem;--radius:16px;--full:9999px;--safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--t:.2s cubic-bezier(.4,0,.2,1)}
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--font:system-ui,-apple-system,sans-serif;--bg:#0a0a12;--surface:#1a1a2e;--card:rgba(255,255,255,.04);--border:rgba(255,255,255,.06);--blue:#0084ff;--green:#31a24c;--text:#fff;--muted:rgba(255,255,255,.5);--dim:rgba(255,255,255,.15);--radius:16px;--full:9999px}
+    body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;display:flex;justify-content:center;align-items:center;padding:8px;overflow:hidden}
 
-    /* Bubble Style Variants */
-    .bubble--rounded{--bubble-radius:18px;--bubble-radius-own:4px 18px 18px 4px;--bubble-radius-other:18px 4px 4px 18px}
-    .bubble--square{--bubble-radius:4px;--bubble-radius-own:4px;--bubble-radius-other:4px}
-    .bubble--pill{--bubble-radius:9999px;--bubble-radius-own:4px 9999px 9999px 4px;--bubble-radius-other:9999px 4px 4px 9999px}
-    .bubble--compact{--bubble-padding:4px 10px;--bubble-font:.8rem}
-    .bubble--spacious{--bubble-padding:12px 18px;--bubble-font:1rem}
-
-    html,body{height:100%;width:100%;overflow:hidden;position:fixed;top:0;left:0;background:var(--bg)}
-    body{color:var(--text);font-family:var(--font);display:flex;justify-content:center;align-items:center;padding:0;touch-action:manipulation}
-
-    .app{width:100%;max-width:480px;height:100%;max-height:932px;background:var(--surface);display:flex;flex-direction:column;overflow:hidden;position:relative;padding-top:var(--safe-top);padding-bottom:var(--safe-bottom)}
+    .app{width:100%;max-width:480px;height:100%;max-height:932px;background:var(--surface);border-radius:var(--radius);display:flex;flex-direction:column;overflow:hidden;position:relative}
 
     /* ===== HEADER ===== */
-    .header{padding:10px 14px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;min-height:56px;border-bottom:1px solid var(--border);background:var(--surface);flex-wrap:wrap;gap:4px}
+    .header{padding:12px 16px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;border-bottom:1px solid var(--border)}
     .brand{display:flex;align-items:center;gap:8px}
-    .brand .logo{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff;flex-shrink:0}
+    .brand .logo{width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:#fff}
     .brand .title{font-size:1rem;font-weight:700;color:var(--text)}
-    .brand .title small{font-weight:400;font-size:.6rem;color:var(--muted);margin-left:4px}
-
-    .right{display:flex;align-items:center;gap:6px;flex-wrap:wrap;flex:1;justify-content:flex-end}
+    .right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
     .badge{display:flex;align-items:center;gap:4px;font-size:.6rem;color:var(--muted)}
-    .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block;flex-shrink:0}
+    .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block}
     .badge .dot.off{background:#e94560;animation:blink .8s infinite}
     .badge .count{color:var(--text);font-weight:600}
 
-    /* ===== FEATURE 54: LAST SEEN ===== */
-    .lastseen{font-size:.55rem;color:var(--muted);padding:2px 8px;background:var(--card);border-radius:var(--full);white-space:nowrap}
-
-    /* ===== AUTH ===== */
-    .auth{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
-    .auth input{padding:4px 10px;border:1px solid var(--border);border-radius:var(--full);background:var(--card);color:var(--text);font-family:var(--font);font-size:.7rem;width:70px;transition:var(--t);min-height:28px;flex:1;min-width:50px;max-width:100px}
+    .auth{display:flex;gap:4px;align-items:center}
+    .auth input{padding:4px 10px;border:1px solid var(--border);border-radius:var(--full);background:var(--card);color:var(--text);font-family:var(--font);font-size:.7rem;width:70px;min-height:28px;flex:1;min-width:50px}
     .auth input:focus{outline:none;border-color:var(--blue)}
     .auth input::placeholder{color:var(--dim)}
-    .auth input:disabled{opacity:.4;cursor:not-allowed}
-    .btn{padding:4px 12px;border:none;border-radius:var(--full);background:var(--blue);color:#fff;font-family:var(--font);font-size:.65rem;font-weight:600;cursor:pointer;transition:var(--t);min-height:28px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;flex-shrink:0;touch-action:manipulation}
-    .btn:active:not(:disabled){transform:scale(.95)}
-    .btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+    .auth input:disabled{opacity:.4}
+    .btn{padding:4px 12px;border:none;border-radius:var(--full);background:var(--blue);color:#fff;font-family:var(--font);font-size:.65rem;font-weight:600;cursor:pointer;min-height:28px;white-space:nowrap;flex-shrink:0;transition:.2s}
+    .btn:active{transform:scale(.95)}
+    .btn:disabled{opacity:.4;cursor:not-allowed}
     .btn--danger{background:#e94560}
-    .btn--join{background:var(--blue)}
+    .btn--call{background:var(--green);animation:pulseCall 2s infinite}
+    .btn--call.active{background:#e94560;animation:blink .8s infinite}
 
-    /* ===== FEATURE 57: ACTIVITY STATUS ===== */
-    .status-bar{display:flex;align-items:center;gap:6px;padding:2px 10px;background:var(--card);border-radius:var(--full);font-size:.55rem;color:var(--muted)}
-    .status-bar select{background:var(--card);color:var(--text);border:1px solid var(--border);border-radius:var(--full);padding:2px 6px;font-size:.5rem;font-family:var(--font);cursor:pointer}
-    .status-bar select:focus{outline:none;border-color:var(--blue)}
+    @keyframes pulseCall{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
 
     /* ===== MESSAGES ===== */
-    .msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:3px;min-height:0;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scroll-behavior:smooth;background:var(--bg)}
+    .msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:3px;background:var(--bg)}
     .msgs::-webkit-scrollbar{width:3px}
-    .msgs::-webkit-scrollbar-track{background:transparent}
     .msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:var(--full)}
-
     .status-msg{text-align:center;font-size:.7rem;color:var(--muted);padding:20px 12px}
-
-    /* ===== MESSENGER BUBBLES — Feature 82 ===== */
-    .msg{max-width:82%;padding:var(--bubble-padding);border-radius:var(--bubble-radius);word-wrap:break-word;animation:slide .25s ease;line-height:1.5;font-size:var(--bubble-font);position:relative;margin-bottom:2px}
-    @keyframes slide{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
-    .msg.own{align-self:flex-end;background:var(--blue);color:#fff;border-radius:var(--bubble-radius-own)}
-    .msg.other{align-self:flex-start;background:var(--card);color:var(--text);border-radius:var(--bubble-radius-other)}
-    .msg .sender{font-size:.55rem;font-weight:600;opacity:.6;margin-bottom:1px;display:flex;align-items:center;gap:4px;flex-wrap:wrap}
-    .msg.own .sender{opacity:.7;color:rgba(255,255,255,.7)}
+    .msg{max-width:82%;padding:6px 12px;border-radius:16px;word-wrap:break-word;animation:slide .25s ease;line-height:1.5;font-size:.85rem;margin-bottom:2px}
+    .msg.own{align-self:flex-end;background:var(--blue);color:#fff;border-bottom-right-radius:4px}
+    .msg.other{align-self:flex-start;background:var(--card);color:var(--text);border-bottom-left-radius:4px}
+    .msg .sender{font-size:.55rem;font-weight:600;opacity:.6;margin-bottom:1px}
     .msg .time{font-size:.5rem;opacity:.4;margin-left:4px}
-    .msg .text{word-break:break-word;line-height:1.5}
+    .msg .text{word-break:break-word}
 
-    /* ===== FEATURE 55: USER ID ===== */
-    .msg .userid{font-size:.4rem;opacity:.3;margin-left:4px;font-family:monospace}
-
-    /* ===== TYPING ===== */
-    .typing{display:none;align-items:center;gap:5px;padding:5px 12px;background:var(--card);border-radius:var(--full);font-size:.65rem;color:var(--muted);margin:3px 0;align-self:flex-start;max-width:70px}
+    .typing{display:none;align-items:center;gap:4px;padding:4px 12px;background:var(--card);border-radius:var(--full);font-size:.6rem;color:var(--muted);margin:3px 0;align-self:flex-start}
     .typing.active{display:flex}
-    .typing .dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:bounce 1.2s ease-in-out infinite}
+    .typing .dot{width:5px;height:5px;border-radius:50%;background:var(--blue);animation:bounce 1.2s infinite}
     .typing .dot:nth-child(2){animation-delay:.2s}
     .typing .dot:nth-child(3){animation-delay:.4s}
     @keyframes bounce{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
+    @keyframes slide{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
 
     /* ===== INPUT ===== */
-    .input-area{padding:6px 12px 12px;border-top:1px solid var(--border);flex-shrink:0;padding-bottom:calc(12px + var(--safe-bottom));background:var(--surface)}
+    .input-area{padding:6px 12px 12px;border-top:1px solid var(--border);flex-shrink:0;background:var(--surface)}
     .row{display:flex;gap:6px;align-items:center}
-    .row input{flex:1;padding:8px 14px;border:1px solid var(--border);border-radius:var(--full);background:var(--card);color:var(--text);font-family:var(--font);font-size:.85rem;min-width:40px;transition:var(--t);min-height:36px}
+    .row input{flex:1;padding:8px 14px;border:1px solid var(--border);border-radius:var(--full);background:var(--card);color:var(--text);font-family:var(--font);font-size:.85rem;min-height:36px}
     .row input:focus{outline:none;border-color:var(--blue)}
     .row input::placeholder{color:var(--dim)}
-    .row input:disabled{opacity:.3;cursor:not-allowed}
+    .row input:disabled{opacity:.3}
     .row .btn{font-size:.75rem;padding:8px 16px;min-height:36px;flex-shrink:0}
-    .row .btn--send{background:var(--blue)}
 
-    /* ===== FEATURE 80: VIDEO CALL ===== */
-    .call-btn{background:var(--green);padding:4px 10px;font-size:.5rem;border:none;border-radius:var(--full);color:#fff;cursor:pointer;transition:var(--t)}
-    .call-btn:hover{transform:scale(1.05)}
-    .call-btn:disabled{opacity:.4;cursor:not-allowed}
+    /* ===== VIDEO CALL OVERLAY ===== */
+    .call-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:20px}
+    .call-overlay.active{display:flex;animation:fadeIn .3s}
+    @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
 
-    .call-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:100;flex-direction:column;align-items:center;justify-content:center;gap:20px}
-    .call-overlay.active{display:flex}
-    .call-overlay video{width:90%;max-width:400px;max-height:60vh;background:#1a1a2e;border-radius:16px;border:2px solid var(--blue)}
-    .call-overlay .call-actions{display:flex;gap:20px}
-    .call-overlay .call-actions button{width:60px;height:60px;border-radius:50%;border:none;font-size:1.5rem;cursor:pointer;transition:var(--t)}
-    .call-overlay .call-actions .end-call{background:#e94560;color:#fff}
-    .call-overlay .call-actions .end-call:hover{transform:scale(1.1)}
-    .call-overlay .call-actions .mute-call{background:var(--card);color:var(--text)}
-    .call-overlay .call-actions .mute-call:hover{transform:scale(1.1)}
-    .call-overlay .call-status{font-size:.8rem;color:var(--muted)}
+    .call-container{width:100%;max-width:600px;display:grid;grid-template-columns:1fr;gap:12px;position:relative}
+    .call-container video{width:100%;border-radius:var(--radius);background:#0a0a12;border:2px solid var(--border);max-height:50vh;object-fit:cover}
+    .call-container .remote-video{grid-row:1}
+    .call-container .local-video{position:absolute;bottom:12px;right:12px;width:120px;height:160px;border-radius:var(--radius);border:2px solid var(--blue);object-fit:cover;background:#0a0a12;z-index:5}
 
-    /* ===== FEATURE 76: CHAT STATS ===== */
-    .stats{display:flex;gap:8px;font-size:.5rem;color:var(--muted);padding:2px 8px;background:var(--card);border-radius:var(--full);white-space:nowrap}
-    .stats span{display:flex;align-items:center;gap:3px}
+    .call-info{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .call-info .status{font-size:.8rem;color:var(--muted)}
+    .call-info .timer{font-size:1.2rem;font-weight:600;color:var(--text);font-variant-numeric:tabular-nums}
+
+    .call-actions{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+    .call-actions button{width:56px;height:56px;border-radius:50%;border:none;font-size:1.4rem;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center}
+    .call-actions button:hover{transform:scale(1.1)}
+    .call-actions .end{background:#e94560;color:#fff;width:64px;height:64px;font-size:1.6rem}
+    .call-actions .mute{background:var(--card);color:var(--text)}
+    .call-actions .mute.muted{background:var(--blue);color:#fff}
+    .call-actions .camera{background:var(--card);color:var(--text)}
+    .call-actions .camera.off{background:var(--blue);color:#fff}
 
     /* ===== RESPONSIVE ===== */
     @media(max-width:380px){
-      .header{padding:6px 10px;min-height:44px}
+      .header{padding:8px 10px}
       .brand .logo{width:26px;height:26px;font-size:.8rem}
       .brand .title{font-size:.8rem}
-      .auth input{font-size:.6rem;padding:3px 6px;min-height:24px;width:55px;max-width:70px}
+      .auth input{font-size:.6rem;padding:3px 6px;min-height:24px;width:55px}
       .btn{font-size:.55rem;padding:3px 8px;min-height:24px}
       .msgs{padding:6px 8px}
-      .msg{max-width:92%;padding:5px 10px;font-size:.75rem}
-      .input-area{padding:4px 8px 8px}
+      .msg{max-width:92%;padding:4px 8px;font-size:.75rem}
       .row input{font-size:.7rem;padding:6px 10px;min-height:30px}
       .row .btn{font-size:.65rem;padding:6px 10px;min-height:30px}
-      .stats{font-size:.4rem;padding:2px 6px}
-      .status-bar{font-size:.45rem;padding:2px 6px}
+      .call-container .local-video{width:80px;height:110px}
+      .call-actions button{width:44px;height:44px;font-size:1rem}
+      .call-actions .end{width:50px;height:50px;font-size:1.2rem}
     }
+
     @media(max-height:500px) and (orientation:landscape){
-      .app{max-height:95vh}
+      .app{max-height:95vh;border-radius:var(--radius)}
       .header{padding:4px 10px;min-height:36px}
       .brand .logo{width:22px;height:22px;font-size:.6rem}
       .brand .title{font-size:.65rem}
@@ -140,23 +114,31 @@
       .input-area{padding:3px 8px 6px}
       .row input{min-height:24px;padding:4px 10px;font-size:.6rem}
       .row .btn{min-height:24px;padding:4px 10px;font-size:.55rem}
-      .stats{font-size:.4rem;padding:2px 4px}
-      .status-bar{font-size:.4rem;padding:2px 4px}
+      .call-container .local-video{width:60px;height:80px}
+      .call-actions button{width:36px;height:36px;font-size:.8rem}
+      .call-actions .end{width:42px;height:42px;font-size:1rem}
     }
+
     @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important}}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
   </style>
 </head>
 <body>
 
-  <!-- ===== VIDEO CALL OVERLAY (Feature 80) ===== -->
+  <!-- ===== VIDEO CALL OVERLAY ===== -->
   <div class="call-overlay" id="callOverlay">
-    <video id="localVideo" autoplay muted playsinline></video>
-    <video id="remoteVideo" autoplay playsinline></video>
-    <div class="call-status" id="callStatus">Connecting...</div>
+    <div class="call-container">
+      <video class="remote-video" id="remoteVideo" autoplay playsinline></video>
+      <video class="local-video" id="localVideo" autoplay muted playsinline></video>
+    </div>
+    <div class="call-info">
+      <div class="status" id="callStatus">Connecting...</div>
+      <div class="timer" id="callTimer">00:00</div>
+    </div>
     <div class="call-actions">
-      <button class="mute-call" id="muteBtn" title="Mute">🔇</button>
-      <button class="end-call" id="endCallBtn" title="End call">📞</button>
+      <button class="mute" id="muteBtn" title="Mute">🔇</button>
+      <button class="camera" id="cameraBtn" title="Camera">📷</button>
+      <button class="end" id="endCallBtn" title="End call">📞</button>
     </div>
   </div>
 
@@ -165,43 +147,17 @@
 
     <header class="header">
       <div class="brand">
-        <div class="logo">M</div>
-        <h1 class="title">
-          Messenger
-          <small id="userDisplay"></small>
-        </h1>
+        <div class="logo">📹</div>
+        <h1 class="title">Video Chat</h1>
       </div>
       <div class="right">
-        <!-- Feature 54: Last Seen -->
-        <span class="lastseen" id="lastSeen">● Online</span>
-
-        <!-- Feature 57: Activity Status -->
-        <div class="status-bar">
-          <span>●</span>
-          <select id="statusSelect">
-            <option value="online">Online</option>
-            <option value="busy">Busy</option>
-            <option value="away">Away</option>
-            <option value="offline">Offline</option>
-          </select>
-        </div>
-
-        <!-- Feature 76: Chat Stats -->
-        <div class="stats" id="stats">
-          <span>💬 <span id="msgCount">0</span></span>
-          <span>👤 <span id="userCount">0</span></span>
-        </div>
-
-        <!-- Feature 80: Video Call -->
-        <button class="call-btn" id="callBtn">📹 Call</button>
-
         <div class="badge">
           <span class="dot" id="dot"></span>
           <span class="count" id="count">0</span>
         </div>
         <div class="auth">
           <input type="text" id="name" placeholder="Name" maxlength="20" inputmode="text" autocomplete="off" />
-          <button class="btn btn--join" id="join">Join</button>
+          <button class="btn" id="join">Join</button>
           <button class="btn btn--danger" id="leave" style="display:none">✕</button>
         </div>
       </div>
@@ -215,25 +171,20 @@
       </div>
     </div>
 
-    <!-- Feature 82: Bubble Style Selector -->
     <div style="padding:4px 12px;display:flex;gap:4px;flex-wrap:wrap;background:var(--surface);border-top:1px solid var(--border)">
-      <button class="btn" style="font-size:.45rem;padding:2px 8px;min-height:20px;background:var(--card);color:var(--text)" data-style="rounded">Rounded</button>
-      <button class="btn" style="font-size:.45rem;padding:2px 8px;min-height:20px;background:var(--card);color:var(--text)" data-style="square">Square</button>
-      <button class="btn" style="font-size:.45rem;padding:2px 8px;min-height:20px;background:var(--card);color:var(--text)" data-style="pill">Pill</button>
-      <button class="btn" style="font-size:.45rem;padding:2px 8px;min-height:20px;background:var(--card);color:var(--text)" data-style="compact">Compact</button>
-      <button class="btn" style="font-size:.45rem;padding:2px 8px;min-height:20px;background:var(--card);color:var(--text)" data-style="spacious">Spacious</button>
+      <button class="btn btn--call" id="callBtn" style="flex:1;min-height:32px;font-size:.7rem">📹 Start Call</button>
     </div>
 
     <footer class="input-area">
       <div class="row">
         <input type="text" id="input" placeholder="Type a message..." disabled inputmode="text" autocomplete="off" />
-        <button class="btn btn--send" id="send" disabled>Send</button>
+        <button class="btn" id="send" disabled>Send</button>
       </div>
     </footer>
   </div>
 
   <!-- ============================================================
-  FIREBASE
+  FIREBASE SDK
   ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
@@ -246,9 +197,7 @@
   <script>
     /**
      * ============================================================
-     * MESSENGER PRO — 6 Features
-     * 54: Last Seen | 55: User ID | 57: Activity Status
-     * 76: Chat Stats | 80: Video Calls | 82: Bubble Styles
+     * VIDEO CHAT — Full WebRTC Implementation
      * ============================================================
      */
 
@@ -287,17 +236,14 @@
       leave: $('leave'),
       count: $('count'),
       dot: $('dot'),
-      lastSeen: $('lastSeen'),
-      userDisplay: $('userDisplay'),
-      statusSelect: $('statusSelect'),
-      msgCount: $('msgCount'),
-      userCount: $('userCount'),
       callBtn: $('callBtn'),
       callOverlay: $('callOverlay'),
       localVideo: $('localVideo'),
       remoteVideo: $('remoteVideo'),
       callStatus: $('callStatus'),
+      callTimer: $('callTimer'),
       muteBtn: $('muteBtn'),
+      cameraBtn: $('cameraBtn'),
       endCallBtn: $('endCallBtn'),
     };
     const typingEl = $('typing');
@@ -309,12 +255,15 @@
     let user = null,
       listeners = [],
       connected = !1,
-      notifCount = 0,
-      typingTimeout = null,
       start = Date.now();
     let localStream = null,
-      peerConnection = null,
-      callActive = !1;
+      remoteStream = null,
+      peerConnection = null;
+    let callActive = !1,
+      callTimerInterval = null,
+      callSeconds = 0;
+    let muted = !1,
+      cameraOff = !1;
 
     // ============================================================
     // 4. HELPERS
@@ -337,17 +286,6 @@
       try { return new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) } catch (e) { return '' }
     }
 
-    // Feature 54: Last Seen
-    function updateLastSeen(ts) {
-      if (!ts) { D.lastSeen.textContent = '● Online'; return }
-      const now = Date.now();
-      const diff = Math.floor((now - ts) / 1000);
-      if (diff < 60) D.lastSeen.textContent = '● Online';
-      else if (diff < 3600) D.lastSeen.textContent = '● ' + Math.floor(diff / 60) + 'm ago';
-      else if (diff < 86400) D.lastSeen.textContent = '● ' + Math.floor(diff / 3600) + 'h ago';
-      else D.lastSeen.textContent = '● ' + Math.floor(diff / 86400) + 'd ago';
-    }
-
     function setOnline(on) {
       connected = on;
       D.dot.className = 'dot' + (on ? '' : ' off');
@@ -356,94 +294,341 @@
         setStatus('✦ Connected ✦');
         setTimeout(() => { const e = D.msgs.querySelector('.status-msg'); if (e && e.textContent === '✦ Connected ✦')
             clearStatus() }, 600);
-        if (user) { updateLastSeen(Date.now());
-          updateStats() }
       } else setStatus('✦ Reconnecting...');
     }
 
-    // Feature 76: Chat Stats
-    function updateStats() {
-      if (!db) return;
-      db.ref('messages').once('value', s => {
-        const count = s.exists() ? s.numChildren() : 0;
-        D.msgCount.textContent = count;
-      });
-      db.ref('users').once('value', s => {
-        D.userCount.textContent = s.exists() ? s.numChildren() : 0;
-      });
-    }
-
-    // Feature 55: User ID
-    function getUserId() { return user ? user.uid.slice(0, 8) : '' }
-
     // ============================================================
-    // 5. CONFETTI
+    // 5. WEBRTC — VIDEO CALL FUNCTIONS
     // ============================================================
 
-    function createConfetti() {
-      const c = ['#0084ff', '#31a24c', '#e94560', '#fbbf24', '#7c3aed'];
-      for (let i = 0; i < 15; i++) {
-        const e = document.createElement('div');
-        e.style.cssText =
-          `position:fixed;width:${Math.random()*4+3}px;height:${Math.random()*4+3}px;background:${c[Math.floor(Math.random()*c.length)]};left:${Math.random()*100}%;top:-10px;border-radius:${Math.random()>.5?'50%':'2px'};pointer-events:none;z-index:100;animation:fall ${Math.random()*2+2}s linear ${Math.random()*2}s forwards;opacity:0`;
-        document.body.appendChild(e);
-        setTimeout(() => e.remove(), 4000);
+    const CALL_CONFIG = {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+      ]
+    };
+
+    async function startCall() {
+      if (!user) return alert('Sign in first!');
+      if (callActive) return endCall();
+
+      try {
+        // Get local media
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: true
+        });
+
+        D.localVideo.srcObject = localStream;
+
+        // Create peer connection
+        peerConnection = new RTCPeerConnection(CALL_CONFIG);
+
+        // Add local tracks
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
+
+        // Handle remote stream
+        peerConnection.ontrack = (event) => {
+          remoteStream = event.streams[0];
+          D.remoteVideo.srcObject = remoteStream;
+        };
+
+        // Handle ICE candidates
+        peerConnection.onicecandidate = (event) => {
+          if (event.candidate) {
+            db.ref('calls/' + user.uid + '/candidate').set({
+              candidate: event.candidate,
+              from: user.uid
+            });
+          }
+        };
+
+        // Create offer
+        const offer = await peerConnection.createOffer();
+        await peerConnection.setLocalDescription(offer);
+
+        // Send offer to Firebase
+        await db.ref('calls/' + user.uid + '/offer').set({
+          sdp: offer,
+          from: user.uid,
+          name: user.name
+        });
+
+        // Listen for answer
+        const answerRef = db.ref('calls/' + user.uid + '/answer');
+        answerRef.on('value', async (snapshot) => {
+          const data = snapshot.val();
+          if (data && data.sdp && peerConnection && !peerConnection.currentRemoteDescription) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            D.callStatus.textContent = 'Connected';
+            startCallTimer();
+            callActive = true;
+            D.callBtn.textContent = '📹 End Call';
+            D.callBtn.classList.add('active');
+          }
+        });
+
+        // Listen for ICE candidates from other peer
+        const candidateRef = db.ref('calls/' + user.uid + '/candidate');
+        candidateRef.on('child_added', async (snapshot) => {
+          const data = snapshot.val();
+          if (data && data.from !== user.uid && peerConnection) {
+            try {
+              await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            } catch (e) { /* ignore */ }
+          }
+        });
+
+        // Listen for call end
+        const endRef = db.ref('calls/' + user.uid + '/end');
+        endRef.on('value', (snapshot) => {
+          if (snapshot.val() === true) {
+            endCall();
+          }
+        });
+
+        D.callOverlay.classList.add('active');
+        D.callStatus.textContent = 'Calling...';
+        D.callBtn.textContent = '📹 End Call';
+        D.callBtn.classList.add('active');
+
+        // Cleanup on disconnect
+        db.ref('calls/' + user.uid + '/status').set('calling');
+
+        console.log('📹 Call started');
+
+      } catch (e) {
+        console.error('Call error:', e);
+        alert('Could not start call. Please allow camera and microphone access.');
+        endCall();
       }
     }
 
-    if (!document.querySelector('#confetti-style')) {
-      const s = document.createElement('style');
-      s.id = 'confetti-style';
-      s.textContent =
-        '@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}';
-      document.head.appendChild(s);
+    async function answerCall(offerData, callerId) {
+      if (callActive) return;
+      if (!offerData) return;
+
+      try {
+        // Get local media
+        localStream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+          audio: true
+        });
+
+        D.localVideo.srcObject = localStream;
+
+        // Create peer connection
+        peerConnection = new RTCPeerConnection(CALL_CONFIG);
+
+        // Add local tracks
+        localStream.getTracks().forEach(track => {
+          peerConnection.addTrack(track, localStream);
+        });
+
+        // Handle remote stream
+        peerConnection.ontrack = (event) => {
+          remoteStream = event.streams[0];
+          D.remoteVideo.srcObject = remoteStream;
+        };
+
+        // Handle ICE candidates
+        peerConnection.onicecandidate = (event) => {
+          if (event.candidate) {
+            db.ref('calls/' + callerId + '/candidate').set({
+              candidate: event.candidate,
+              from: user.uid
+            });
+          }
+        };
+
+        // Set remote description
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(offerData.sdp));
+
+        // Create answer
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+
+        // Send answer
+        await db.ref('calls/' + callerId + '/answer').set({
+          sdp: answer,
+          from: user.uid
+        });
+
+        // Listen for ICE candidates
+        const candidateRef = db.ref('calls/' + callerId + '/candidate');
+        candidateRef.on('child_added', async (snapshot) => {
+          const data = snapshot.val();
+          if (data && data.from !== user.uid && peerConnection) {
+            try {
+              await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            } catch (e) { /* ignore */ }
+          }
+        });
+
+        // Listen for call end
+        const endRef = db.ref('calls/' + callerId + '/end');
+        endRef.on('value', (snapshot) => {
+          if (snapshot.val() === true) {
+            endCall();
+          }
+        });
+
+        D.callOverlay.classList.add('active');
+        D.callStatus.textContent = 'Connected';
+        startCallTimer();
+        callActive = true;
+        D.callBtn.textContent = '📹 End Call';
+        D.callBtn.classList.add('active');
+
+        // Cleanup
+        db.ref('calls/' + user.uid + '/status').set('connected');
+
+        console.log('📹 Call answered');
+
+      } catch (e) {
+        console.error('Answer error:', e);
+        alert('Could not answer call.');
+        endCall();
+      }
+    }
+
+    function endCall() {
+      // Stop timer
+      if (callTimerInterval) {
+        clearInterval(callTimerInterval);
+        callTimerInterval = null;
+        callSeconds = 0;
+        D.callTimer.textContent = '00:00';
+      }
+
+      // Close peer connection
+      if (peerConnection) {
+        peerConnection.close();
+        peerConnection = null;
+      }
+
+      // Stop local stream
+      if (localStream) {
+        localStream.getTracks().forEach(t => t.stop());
+        localStream = null;
+      }
+
+      // Clear remote stream
+      remoteStream = null;
+      D.localVideo.srcObject = null;
+      D.remoteVideo.srcObject = null;
+
+      // Cleanup Firebase
+      if (user) {
+        try {
+          db.ref('calls/' + user.uid).remove();
+        } catch (e) { /* ignore */ }
+        try {
+          db.ref('calls/answer').remove();
+        } catch (e) { /* ignore */ }
+      }
+
+      callActive = false;
+      D.callOverlay.classList.remove('active');
+      D.callBtn.textContent = '📹 Start Call';
+      D.callBtn.classList.remove('active');
+      D.callStatus.textContent = 'Call ended';
+
+      setTimeout(() => { D.callStatus.textContent = '' }, 2000);
+
+      muted = false;
+      cameraOff = false;
+      D.muteBtn.textContent = '🔇';
+      D.muteBtn.classList.remove('muted');
+      D.cameraBtn.textContent = '📷';
+      D.cameraBtn.classList.remove('off');
+
+      console.log('📹 Call ended');
+    }
+
+    function startCallTimer() {
+      callSeconds = 0;
+      if (callTimerInterval) clearInterval(callTimerInterval);
+      callTimerInterval = setInterval(() => {
+        callSeconds++;
+        const m = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+        const s = String(callSeconds % 60).padStart(2, '0');
+        D.callTimer.textContent = m + ':' + s;
+      }, 1000);
+    }
+
+    function toggleMute() {
+      if (!localStream) return;
+      muted = !muted;
+      localStream.getAudioTracks().forEach(t => t.enabled = !muted);
+      D.muteBtn.textContent = muted ? '🔊' : '🔇';
+      D.muteBtn.classList.toggle('muted', muted);
+    }
+
+    function toggleCamera() {
+      if (!localStream) return;
+      cameraOff = !cameraOff;
+      localStream.getVideoTracks().forEach(t => t.enabled = !cameraOff);
+      D.cameraBtn.textContent = cameraOff ? '📷❌' : '📷';
+      D.cameraBtn.classList.toggle('off', cameraOff);
     }
 
     // ============================================================
-    // 6. NOTIFICATION
+    // 6. LISTEN FOR INCOMING CALLS
     // ============================================================
 
-    function showNotification() {
-      notifCount = Math.min(notifCount + 1, 99);
-      // bell class removed, using stats instead
+    function listenForCalls() {
+      if (!db) return;
+
+      const callRef = db.ref('calls');
+      callRef.on('child_added', (snapshot) => {
+        const data = snapshot.val();
+        const callerId = snapshot.key;
+
+        // Ignore own calls
+        if (callerId === user?.uid) return;
+        if (!data.offer) return;
+        if (data.answer) return; // Already answered
+
+        // Show incoming call notification
+        D.callStatus.textContent = '📞 Incoming call from ' + (data.name || 'Unknown');
+
+        // Auto-answer after 1s (for simplicity)
+        setTimeout(() => {
+          if (!callActive && user) {
+            answerCall(data.offer, callerId);
+          }
+        }, 1000);
+      });
     }
 
     // ============================================================
-    // 7. TYPING
-    // ============================================================
-
-    function showTyping() {
-      typingEl.classList.add('active');
-      clearTimeout(typingTimeout);
-      typingTimeout = setTimeout(() => typingEl.classList.remove('active'), 2000);
-    }
-
-    // ============================================================
-    // 8. SEND
+    // 7. SEND
     // ============================================================
 
     function sendMessage(t) {
-      if (!user) return alert('✦ Sign in!');
+      if (!user) return alert('Sign in!');
       if (!t || !t.trim()) return;
-      if (!connected) return alert('✦ Waiting...');
-      if (!db) return alert('✦ Connection error. Refresh.');
+      if (!connected) return alert('Waiting...');
+      if (!db) return alert('Connection error.');
 
       try {
         db.ref('messages').push({
           name: user.name,
           uid: user.uid,
           text: t.trim(),
-          timestamp: firebase.database.ServerValue.TIMESTAMP,
-          status: 'online' // Feature 57
-        }).catch(() => alert('✦ Failed'));
-      } catch (e) { alert('✦ Failed') }
+          timestamp: firebase.database.ServerValue.TIMESTAMP
+        }).catch(() => alert('Failed'));
+      } catch (e) { alert('Failed') }
 
       D.input.value = '';
       D.input.focus();
     }
 
     // ============================================================
-    // 9. RENDER
+    // 8. RENDER
     // ============================================================
 
     function render(data) {
@@ -452,13 +637,9 @@
       const el = document.createElement('div');
       el.className = 'msg ' + (own ? 'own' : 'other');
       el.dataset.key = data._key || '';
-      const uid = data.uid ? data.uid.slice(0, 8) : '';
-
       el.innerHTML =
         '<div class="sender">' + (data.name || 'Anon') +
-        '<span class="time">' + formatTime(data.timestamp) + '</span>' +
-        '<span class="userid">#' + uid + '</span>' + // Feature 55
-        '</div>' +
+        '<span class="time">' + formatTime(data.timestamp) + '</span></div>' +
         '<div class="text">' + (data.text || '') + '</div>';
 
       const st = D.msgs.querySelector('.status-msg');
@@ -466,17 +647,10 @@
 
       D.msgs.appendChild(el);
       scrollBottom();
-
-      if (!own && user) {
-        showNotification();
-        showTyping();
-        if (Math.random() > .85) createConfetti();
-      }
-      updateStats(); // Feature 76
     }
 
     // ============================================================
-    // 10. SUBSCRIBE
+    // 9. SUBSCRIBE
     // ============================================================
 
     function subscribe() {
@@ -492,11 +666,7 @@
           else if (!on) setOnline(!1);
           if (on && user) {
             const r = db.ref('users').child(user.uid);
-            r.set({
-              name: user.name,
-              lastSeen: firebase.database.ServerValue.TIMESTAMP,
-              status: D.statusSelect.value // Feature 57
-            });
+            r.set({ name: user.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
             r.onDisconnect().remove();
           }
         });
@@ -505,16 +675,7 @@
         const u = db.ref('users');
         u.on('value', s => {
           if (connected) {
-            const count = s.exists() ? s.numChildren() : 0;
-            D.count.textContent = count;
-            D.userCount.textContent = count;
-            // Update last seen for current user
-            if (s.exists() && user) {
-              const data = s.val();
-              if (data[user.uid] && data[user.uid].lastSeen) {
-                updateLastSeen(data[user.uid].lastSeen);
-              }
-            }
+            D.count.textContent = s.exists() ? s.numChildren() : '0';
           }
         });
         listeners.push(u);
@@ -535,8 +696,10 @@
                   '✦ No messages yet ✦') clearStatus() }, 1500);
             }
           }
-          updateStats(); // Feature 76
         });
+
+        // Listen for incoming calls
+        listenForCalls();
 
         console.log('✅ Subscribed');
       } catch (e) { console.error('Subscribe error:', e);
@@ -544,79 +707,11 @@
     }
 
     // ============================================================
-    // 11. FEATURE 80: VIDEO CALL
-    // ============================================================
-
-    async function startCall() {
-      if (!user) return alert('Sign in first!');
-      if (callActive) return;
-
-      try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        D.localVideo.srcObject = localStream;
-        D.callOverlay.classList.add('active');
-        D.callStatus.textContent = 'Connecting...';
-        callActive = true;
-
-        // Simulate connection (demo)
-        setTimeout(() => {
-          D.callStatus.textContent = 'Connected';
-          // Show remote video (simulated)
-          D.remoteVideo.srcObject = localStream;
-        }, 1500);
-
-      } catch (e) {
-        alert('Camera/Microphone access denied.');
-        endCall();
-      }
-    }
-
-    function endCall() {
-      callActive = false;
-      D.callOverlay.classList.remove('active');
-      if (localStream) {
-        localStream.getTracks().forEach(t => t.stop());
-        localStream = null;
-      }
-      D.localVideo.srcObject = null;
-      D.remoteVideo.srcObject = null;
-      D.callStatus.textContent = 'Call ended';
-      setTimeout(() => { D.callStatus.textContent = '' }, 2000);
-    }
-
-    let muted = !1;
-
-    function toggleMute() {
-      if (!localStream) return;
-      muted = !muted;
-      localStream.getAudioTracks().forEach(t => t.enabled = !muted);
-      D.muteBtn.textContent = muted ? '🔊' : '🔇';
-    }
-
-    // ============================================================
-    // 12. FEATURE 82: BUBBLE STYLES
-    // ============================================================
-
-    function setBubbleStyle(style) {
-      const app = document.querySelector('.app');
-      // Remove all bubble classes
-      app.classList.remove('bubble--rounded', 'bubble--square', 'bubble--pill', 'bubble--compact', 'bubble--spacious');
-      if (style !== 'rounded') {
-        app.classList.add('bubble--' + style);
-      }
-      // Update active button
-      document.querySelectorAll('[data-style]').forEach(b => {
-        b.style.background = b.dataset.style === style ? 'var(--blue)' : 'var(--card)';
-        b.style.color = b.dataset.style === style ? '#fff' : 'var(--text)';
-      });
-    }
-
-    // ============================================================
-    // 13. AUTH
+    // 10. AUTH
     // ============================================================
 
     function login() {
-      if (!db) return alert('✦ Connection error. Refresh.');
+      if (!db) return alert('Connection error.');
       const n = D.name.value.trim() || 'User';
       user = { name: n.slice(0, 20), uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6) };
       D.name.disabled = !0;
@@ -625,28 +720,23 @@
       D.input.disabled = !1;
       D.send.disabled = !1;
       D.input.placeholder = 'Message as ' + n + '...';
-      D.userDisplay.textContent = '#' + getUserId(); // Feature 55
       clearStatus();
       setStatus('✦ ' + n + ' joined ✦');
-      createConfetti();
+      D.callBtn.disabled = !1;
       subscribe();
       if (connected) {
         const r = db.ref('users').child(user.uid);
-        r.set({
-          name: user.name,
-          lastSeen: firebase.database.ServerValue.TIMESTAMP,
-          status: D.statusSelect.value // Feature 57
-        });
+        r.set({ name: user.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
         r.onDisconnect().remove();
       }
       D.count.textContent = '1';
       setTimeout(() => { const e = D.msgs.querySelector('.status-msg'); if (e && e.textContent === '✦ ' + n +
           ' joined ✦') clearStatus() }, 1200);
-      updateStats(); // Feature 76
     }
 
     function logout() {
       try { if (user && db) db.ref('users').child(user.uid).remove() } catch (e) {}
+      if (callActive) endCall();
       listeners.forEach(r => { try { r.off() } catch (e) {} });
       listeners = [];
       user = null;
@@ -657,19 +747,18 @@
       D.send.disabled = !0;
       D.input.placeholder = 'Type a message...';
       D.input.value = '';
-      D.userDisplay.textContent = '';
       D.msgs.innerHTML = '';
       setStatus('✦ Left chat ✦');
       D.count.textContent = '0';
       connected = !1;
       D.dot.className = 'dot off';
-      notifCount = 0;
-      if (callActive) endCall();
-      updateStats();
+      D.callBtn.disabled = !0;
+      D.callBtn.textContent = '📹 Start Call';
+      D.callBtn.classList.remove('active');
     }
 
     // ============================================================
-    // 14. EVENTS
+    // 11. EVENTS
     // ============================================================
 
     D.join.onclick = login;
@@ -679,25 +768,18 @@
     D.input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
         sendMessage(D.input.value) } };
 
-    // Feature 57: Status change
-    D.statusSelect.onchange = () => {
-      if (user && connected) {
-        const r = db.ref('users').child(user.uid);
-        r.update({ status: D.statusSelect.value });
+    // Video Call Events
+    D.callBtn.onclick = () => {
+      if (callActive) {
+        endCall();
+      } else {
+        startCall();
       }
     };
 
-    // Feature 80: Video Call
-    D.callBtn.onclick = startCall;
     D.endCallBtn.onclick = endCall;
     D.muteBtn.onclick = toggleMute;
-
-    // Feature 82: Bubble Styles
-    document.querySelectorAll('[data-style]').forEach(btn => {
-      btn.onclick = () => setBubbleStyle(btn.dataset.style);
-    });
-    // Default: rounded
-    setBubbleStyle('rounded');
+    D.cameraBtn.onclick = toggleCamera;
 
     // Touch feedback
     document.querySelectorAll('.btn').forEach(b => {
@@ -709,16 +791,16 @@
           block: 'center' }) }, 300) });
 
     // ============================================================
-    // 15. BOOT
+    // 12. BOOT
     // ============================================================
 
     function startApp() {
       start = Date.now();
       setStatus('✦ Connecting...');
+      D.callBtn.disabled = !0;
       subscribe();
       setTimeout(() => { if (!connected) setOnline(!0) }, 2000);
-      console.log('💬 Messenger Pro — 6 Features');
-      console.log('📋 54:Last Seen | 55:User ID | 57:Status | 76:Stats | 80:Calls | 82:Bubbles');
+      console.log('📹 Video Chat — Full WebRTC');
     }
 
     initFirebase();
