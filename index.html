@@ -2,342 +2,865 @@
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Text Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Neon Nexus</title>
   <style>
+    /* ============================================================
+       NEON DESIGN SYSTEM — Hi-Tech Premium
+       ============================================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --font: 'Inter', -apple-system, system-ui, sans-serif;
+      --bg: #0a0a12;
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --glass: rgba(255, 255, 255, 0.04);
+      --glass-border: rgba(255, 255, 255, 0.06);
+      --neon-pink: #ff2d75;
+      --neon-blue: #00d4ff;
+      --neon-purple: #7c3aed;
+      --neon-cyan: #22d3ee;
+      --neon-green: #34d399;
+      --neon-yellow: #fbbf24;
+      --neon-orange: #fb923c;
+      --text: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.4);
+      --text-dim: rgba(255, 255, 255, 0.15);
+      --radius: 20px;
+      --radius-sm: 12px;
+      --radius-full: 9999px;
+      --glow-pink: 0 0 40px rgba(255, 45, 117, 0.15);
+      --glow-blue: 0 0 40px rgba(0, 212, 255, 0.15);
+      --glow-purple: 0 0 40px rgba(124, 58, 237, 0.15);
+      --safe-top: env(safe-area-inset-top, 0px);
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html,
+    body {
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: var(--bg);
     }
 
     body {
-      background: #0f0e17;
-      color: #fffffe;
-      height: 100vh;
+      color: var(--text);
+      font-family: var(--font);
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 8px;
-      overflow: hidden;
+      touch-action: manipulation;
+      background: radial-gradient(ellipse at 50% 0%, #0f0a2a 0%, #0a0a12 70%);
     }
 
-    .app {
-      max-width: 700px;
+    /* ============================================================
+       ANIMATED NEON BACKGROUND
+       ============================================================ */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 95vh;
-      max-height: 800px;
-      background: #1a1a2e;
-      border-radius: 24px;
+      height: 100%;
+      background-image:
+        linear-gradient(rgba(124, 58, 237, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 58, 237, 0.04) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .bg-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      animation: orbFloat 20s ease-in-out infinite alternate;
+    }
+
+    .bg-orb--pink {
+      width: 400px;
+      height: 400px;
+      background: rgba(255, 45, 117, 0.08);
+      top: -10%;
+      left: -10%;
+      animation-delay: 0s;
+    }
+
+    .bg-orb--blue {
+      width: 350px;
+      height: 350px;
+      background: rgba(0, 212, 255, 0.06);
+      bottom: -10%;
+      right: -10%;
+      animation-delay: -7s;
+    }
+
+    .bg-orb--purple {
+      width: 300px;
+      height: 300px;
+      background: rgba(124, 58, 237, 0.07);
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation-delay: -14s;
+    }
+
+    @keyframes orbFloat {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+      66% {
+        transform: translate(-20px, 20px) scale(0.9);
+      }
+      100% {
+        transform: translate(10px, -10px) scale(1.05);
+      }
+    }
+
+    /* ============================================================
+       APP — Glass neon
+       ============================================================ */
+    .app {
+      width: 100%;
+      max-width: 480px;
+      height: 100%;
+      max-height: 932px;
+      background: var(--glass);
+      backdrop-filter: blur(60px);
+      -webkit-backdrop-filter: blur(60px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+      box-shadow: var(--glow-purple), 0 8px 32px rgba(0, 0, 0, 0.6);
+      position: relative;
+      z-index: 1;
+      padding-top: var(--safe-top);
+      padding-bottom: var(--safe-bottom);
     }
 
+    .app::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius);
+      padding: 1px;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple), var(--neon-blue), var(--neon-pink));
+      background-size: 300% 300%;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      animation: borderFlow 6s ease-in-out infinite;
+    }
+
+    @keyframes borderFlow {
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* ============================================================
+       HEADER — Neon glow
+       ============================================================ */
     .header {
-      padding: 12px 20px;
-      background: #16213e;
-      border-bottom: 2px solid #e94560;
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 8px;
+      flex-shrink: 0;
+      min-height: 56px;
+      border-bottom: 1px solid var(--glass-border);
+      position: relative;
+    }
+
+    .header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-pink), var(--neon-blue), transparent);
+      opacity: 0.3;
+      animation: linePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes linePulse {
+      0%,
+      100% {
+        opacity: 0.2;
+        transform: scaleX(1);
+      }
+      50% {
+        opacity: 0.6;
+        transform: scaleX(1.1);
+      }
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
       flex-shrink: 0;
     }
 
-    .header h1 {
+    .header-brand .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 1.2rem;
-      font-weight: 700;
+      box-shadow: 0 0 40px rgba(255, 45, 117, 0.3);
+      flex-shrink: 0;
+      animation: logoGlow 3s ease-in-out infinite;
     }
 
-    .header h1 span {
-      color: #e94560;
+    @keyframes logoGlow {
+      0%,
+      100% {
+        box-shadow: 0 0 40px rgba(255, 45, 117, 0.3);
+      }
+      50% {
+        box-shadow: 0 0 60px rgba(124, 58, 237, 0.5);
+      }
+    }
+
+    .header-brand .title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, 0.7) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-brand .title .highlight {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1 1 auto;
+      justify-content: flex-end;
+      min-width: 0;
     }
 
-    .online {
-      font-size: 0.75rem;
-      opacity: 0.6;
+    /* ============================================================
+       STATUS — Neon pulse
+       ============================================================ */
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       padding: 4px 12px;
-      background: #0f0e17;
-      border-radius: 20px;
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      font-size: 0.55rem;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      min-height: 30px;
+      color: var(--text-muted);
+      backdrop-filter: blur(10px);
     }
 
+    .status-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      display: inline-block;
+      flex-shrink: 0;
+      box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+      animation: dotPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes dotPulse {
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(52, 211, 153, 0.4);
+      }
+      50% {
+        box-shadow: 0 0 40px rgba(52, 211, 153, 0.8);
+      }
+    }
+
+    .status-badge .dot.off {
+      background: var(--neon-pink);
+      box-shadow: 0 0 20px rgba(255, 45, 117, 0.4);
+      animation: blink 0.8s infinite;
+    }
+
+    .status-badge .count {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* ============================================================
+       AUTH — Neon inputs
+       ============================================================ */
     .auth {
       display: flex;
       gap: 6px;
       align-items: center;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
     }
 
-    .auth input {
-      padding: 4px 10px;
+    .auth-input {
+      padding: 6px 12px;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      background: var(--glass);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.6rem;
+      font-weight: 400;
+      width: 80px;
+      transition: var(--transition);
+      min-height: 30px;
+      flex: 1 1 auto;
+      min-width: 50px;
+      max-width: 100px;
+      backdrop-filter: blur(10px);
+    }
+
+    .auth-input:focus {
+      outline: none;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.1);
+      width: 90px;
+    }
+
+    .auth-input::placeholder {
+      color: var(--text-dim);
+      font-weight: 300;
+    }
+
+    .auth-input:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ============================================================
+       BUTTONS — Neon glow
+       ============================================================ */
+    .btn {
+      padding: 6px 14px;
       border: none;
-      border-radius: 20px;
-      background: #0f0e17;
-      color: #fffffe;
-      font-size: 0.85rem;
-      width: 100px;
-      transition: 0.2s;
-    }
-
-    .auth input:focus {
-      outline: 2px solid #e94560;
-      width: 130px;
-    }
-
-    .auth button {
-      padding: 4px 14px;
-      border: none;
-      border-radius: 20px;
-      background: #e94560;
-      color: #fffffe;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.55rem;
       font-weight: 600;
       cursor: pointer;
-      font-size: 0.8rem;
-      transition: 0.2s;
+      transition: var(--transition);
+      min-height: 30px;
+      min-width: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       white-space: nowrap;
+      flex-shrink: 0;
+      touch-action: manipulation;
+      user-select: none;
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.15);
+      position: relative;
+      overflow: hidden;
     }
 
-    .auth button:hover {
-      transform: scale(1.05);
-      background: #ff6b81;
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent);
+      opacity: 0;
+      transition: var(--transition);
     }
 
-    .auth button.out {
-      background: #2d2d44;
+    .btn:hover:not(:disabled)::before {
+      opacity: 1;
     }
 
-    .auth button.out:hover {
-      background: #3d3d5c;
+    .btn:active:not(:disabled) {
+      transform: scale(0.95);
+      box-shadow: 0 0 50px rgba(255, 45, 117, 0.3);
     }
 
+    .btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    .btn--danger {
+      background: linear-gradient(135deg, var(--neon-pink), #e11d48);
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.15);
+    }
+
+    .btn--join {
+      background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+      box-shadow: 0 0 30px rgba(124, 58, 237, 0.2);
+    }
+
+    .btn--join:hover:not(:disabled) {
+      box-shadow: 0 0 50px rgba(124, 58, 237, 0.4);
+    }
+
+    /* ============================================================
+       MESSAGES — Neon scroll
+       ============================================================ */
     .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 12px 16px;
+      padding: 12px 14px;
       display: flex;
       flex-direction: column;
       gap: 4px;
-      background: #12122a;
+      min-height: 0;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
       scroll-behavior: smooth;
     }
 
     .messages::-webkit-scrollbar {
-      width: 4px;
+      width: 3px;
+    }
+
+    .messages::-webkit-scrollbar-track {
+      background: transparent;
     }
 
     .messages::-webkit-scrollbar-thumb {
-      background: #e94560;
-      border-radius: 10px;
+      background: linear-gradient(180deg, var(--neon-pink), var(--neon-blue));
+      border-radius: var(--radius-full);
     }
 
-    .status {
+    .status-msg {
       text-align: center;
-      font-size: 0.8rem;
-      opacity: 0.4;
-      padding: 12px;
-      font-style: italic;
+      font-size: 0.6rem;
+      font-weight: 400;
+      color: var(--text-muted);
+      padding: 24px 12px;
+      letter-spacing: 0.5px;
     }
 
+    /* ============================================================
+       MESSAGE BUBBLES — Neon glow
+       ============================================================ */
     .msg {
-      padding: 6px 14px;
-      border-radius: 16px;
-      max-width: 82%;
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      max-width: 88%;
       word-wrap: break-word;
-      animation: fadeIn 0.2s ease;
-      line-height: 1.4;
+      animation: slideGlow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      line-height: 1.5;
+      font-size: 0.75rem;
+      font-weight: 400;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    @keyframes slideGlow {
+      0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .msg.own {
       align-self: flex-end;
-      background: #e94560;
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+      color: #fff;
       border-bottom-right-radius: 4px;
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.15);
     }
 
     .msg.other {
       align-self: flex-start;
-      background: #2d2d44;
+      background: var(--glass);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      color: var(--text);
       border-bottom-left-radius: 4px;
     }
 
     .msg .sender {
-      font-size: 0.6rem;
-      font-weight: 700;
+      font-size: 0.5rem;
+      font-weight: 600;
       text-transform: uppercase;
+      letter-spacing: 0.8px;
       opacity: 0.6;
-      letter-spacing: 0.5px;
       margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .msg.own .sender {
+      opacity: 0.8;
+      color: rgba(255, 255, 255, 0.8);
     }
 
     .msg .time {
-      font-size: 0.5rem;
+      font-size: 0.4rem;
+      font-weight: 400;
       opacity: 0.4;
-      margin-left: 6px;
+      margin-left: 4px;
     }
 
     .msg .text {
-      font-size: 0.9rem;
       word-break: break-word;
+      line-height: 1.6;
     }
 
+    /* ============================================================
+       INPUT — Neon glow
+       ============================================================ */
     .input-area {
-      padding: 8px 12px 12px;
-      background: #16213e;
-      border-top: 1px solid #2d2d44;
+      padding: 8px 14px 14px;
+      border-top: 1px solid var(--glass-border);
       flex-shrink: 0;
+      padding-bottom: calc(14px + var(--safe-bottom));
+      background: var(--glass);
+      backdrop-filter: blur(20px);
+      position: relative;
+    }
+
+    .input-area::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: 10%;
+      width: 80%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-pink), transparent);
+      opacity: 0.3;
+      animation: linePulse 4s ease-in-out infinite;
     }
 
     .row {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       align-items: center;
     }
 
     .row input {
       flex: 1;
-      padding: 8px 14px;
-      border: none;
-      border-radius: 20px;
-      background: #0f0e17;
-      color: #fffffe;
-      font-size: 0.9rem;
-      min-width: 50px;
-      transition: 0.2s;
+      padding: 10px 16px;
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-full);
+      background: var(--glass);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.7rem;
+      font-weight: 400;
+      min-width: 40px;
+      transition: var(--transition);
+      min-height: 40px;
+      backdrop-filter: blur(10px);
     }
 
     .row input:focus {
-      outline: 2px solid #e94560;
+      outline: none;
+      border-color: var(--neon-blue);
+      box-shadow: 0 0 40px rgba(0, 212, 255, 0.05);
+    }
+
+    .row input::placeholder {
+      color: var(--text-dim);
+      font-weight: 300;
     }
 
     .row input:disabled {
-      opacity: 0.4;
+      opacity: 0.3;
       cursor: not-allowed;
     }
 
-    .row button {
-      padding: 8px 18px;
-      border: none;
-      border-radius: 20px;
-      background: #e94560;
-      color: #fffffe;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: 0.2s;
-      white-space: nowrap;
+    .row .btn {
+      font-size: 0.65rem;
+      padding: 10px 20px;
+      min-height: 40px;
+      flex-shrink: 0;
     }
 
-    .row button:hover:not(:disabled) {
-      transform: scale(1.05);
-      background: #ff6b81;
+    .row .btn--send {
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan));
+      box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
     }
 
-    .row button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
+    .row .btn--send:hover:not(:disabled) {
+      box-shadow: 0 0 50px rgba(0, 212, 255, 0.4);
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(6px);
-      }
-      to {
+    /* ============================================================
+       ANIMATIONS
+       ============================================================ */
+    @keyframes blink {
+      0%,
+      100% {
         opacity: 1;
-        transform: translateY(0);
+      }
+      50% {
+        opacity: 0.2;
       }
     }
 
-    @media (max-width: 600px) {
-      .app {
-        height: 100vh;
-        max-height: 100vh;
-        border-radius: 0;
-      }
-
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 380px) {
       .header {
-        padding: 8px 12px;
+        padding: 8px 10px;
+        min-height: 48px;
       }
-
-      .header h1 {
-        font-size: 1rem;
+      .header-brand .logo {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
       }
-
-      .auth input {
-        width: 70px;
-        font-size: 0.75rem;
+      .header-brand .title {
+        font-size: 0.85rem;
       }
-
-      .auth input:focus {
-        width: 90px;
+      .auth-input {
+        font-size: 0.5rem;
+        padding: 4px 8px;
+        min-height: 26px;
+        width: 55px;
+        max-width: 70px;
       }
-
-      .messages {
-        padding: 8px;
+      .auth-input:focus {
+        width: 65px;
       }
-
-      .msg {
-        max-width: 92%;
+      .btn {
+        font-size: 0.45rem;
         padding: 4px 10px;
-        font-size: 0.85rem;
+        min-height: 26px;
+        min-width: 30px;
       }
-
+      .status-badge {
+        font-size: 0.45rem;
+        padding: 3px 8px;
+        min-height: 26px;
+      }
+      .status-badge .dot {
+        width: 6px;
+        height: 6px;
+      }
+      .messages {
+        padding: 8px 10px;
+        gap: 3px;
+      }
+      .msg {
+        padding: 5px 10px;
+        max-width: 95%;
+        font-size: 0.65rem;
+      }
+      .msg .sender {
+        font-size: 0.4rem;
+      }
+      .msg .text {
+        font-size: 0.65rem;
+      }
+      .input-area {
+        padding: 6px 10px 10px;
+      }
       .row input {
-        font-size: 0.85rem;
-        padding: 6px 10px;
+        font-size: 0.6rem;
+        padding: 8px 12px;
+        min-height: 34px;
       }
+      .row .btn {
+        font-size: 0.55rem;
+        padding: 8px 12px;
+        min-height: 34px;
+      }
+    }
 
-      .row button {
+    @media (max-height: 500px) and (orientation: landscape) {
+      .app {
+        max-height: 95vh;
+        border-radius: var(--radius-sm);
+      }
+      .header {
         padding: 6px 12px;
-        font-size: 0.75rem;
+        min-height: 40px;
+      }
+      .header-brand .logo {
+        width: 24px;
+        height: 24px;
+        font-size: 0.7rem;
+      }
+      .header-brand .title {
+        font-size: 0.7rem;
+      }
+      .messages {
+        padding: 6px 10px;
+        gap: 2px;
+      }
+      .msg {
+        padding: 4px 10px;
+        max-width: 90%;
+        font-size: 0.6rem;
+      }
+      .msg .sender {
+        font-size: 0.35rem;
+        margin-bottom: 1px;
+      }
+      .msg .text {
+        font-size: 0.6rem;
+        line-height: 1.3;
+      }
+      .input-area {
+        padding: 4px 10px 8px;
+      }
+      .row input {
+        min-height: 28px;
+        padding: 6px 12px;
+        font-size: 0.6rem;
+      }
+      .row .btn {
+        min-height: 28px;
+        padding: 6px 12px;
+        font-size: 0.55rem;
+      }
+      .auth-input {
+        min-height: 24px;
+        font-size: 0.5rem;
+        padding: 3px 8px;
+      }
+      .btn {
+        min-height: 24px;
+        font-size: 0.45rem;
+        padding: 3px 10px;
+      }
+      .status-badge {
+        font-size: 0.45rem;
+        padding: 2px 8px;
+        min-height: 24px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- ===== NEON BACKGROUND ===== -->
+  <div class="bg-grid"></div>
+  <div class="bg-orb bg-orb--pink"></div>
+  <div class="bg-orb bg-orb--blue"></div>
+  <div class="bg-orb bg-orb--purple"></div>
+
+  <!-- ============================================================
+  APP
+  ============================================================ -->
   <div class="app">
-    <div class="header">
-      <h1>💬 <span>Text</span> Chat</h1>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+      <div class="header-brand">
+        <div class="logo">✦</div>
+        <h1 class="title"><span class="highlight">Neon</span> Nexus</h1>
+      </div>
       <div class="header-right">
-        <span class="online" id="online">👤 0</span>
+        <div class="status-badge">
+          <span class="dot" id="statusDot"></span>
+          <span class="count" id="onlineCount">0</span>
+        </div>
         <div class="auth">
-          <input type="text" id="name" placeholder="Name..." maxlength="20" />
-          <button id="join">Join</button>
-          <button id="leave" class="out" style="display:none">Leave</button>
+          <input type="text" class="auth-input" id="nameInput" placeholder="Name" maxlength="20" inputmode="text" autocomplete="off" />
+          <button class="btn btn--join" id="joinBtn">Join</button>
+          <button class="btn btn--danger" id="leaveBtn" style="display:none">✕</button>
         </div>
       </div>
+    </header>
+
+    <!-- ===== MESSAGES ===== -->
+    <div class="messages" id="messagesContainer">
+      <div class="status-msg">✦ Connecting...</div>
     </div>
 
-    <div class="messages" id="msgs">
-      <div class="status">👋 Sign in to chat</div>
-    </div>
-
-    <div class="input-area">
+    <!-- ===== INPUT ===== -->
+    <footer class="input-area">
       <div class="row">
-        <input type="text" id="input" placeholder="Type a message..." disabled />
-        <button id="send" disabled>Send</button>
+        <input type="text" id="messageInput" placeholder="Type message..." disabled inputmode="text" autocomplete="off" />
+        <button class="btn btn--send" id="sendBtn" disabled>Send</button>
       </div>
-    </div>
+    </footer>
   </div>
 
+  <!-- ============================================================
+  FIREBASE SDK
+  ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
+  <!-- ============================================================
+  APP SCRIPT
+  ============================================================ -->
   <script>
+    /**
+     * ============================================================
+     * NEON NEXUS — Hi-Tech Chat
+     * ============================================================
+     */
+
     // ============================================================
-    // FIREBASE
+    // 1. FIREBASE
     // ============================================================
 
     firebase.initializeApp({
@@ -346,117 +869,140 @@
     const db = firebase.database();
 
     // ============================================================
-    // DOM
+    // 2. DOM
     // ============================================================
 
-    const msgs = document.getElementById('msgs');
-    const input = document.getElementById('input');
-    const send = document.getElementById('send');
-    const name = document.getElementById('name');
-    const join = document.getElementById('join');
-    const leave = document.getElementById('leave');
-    const online = document.getElementById('online');
+    const DOM = {
+      messages: document.getElementById('messagesContainer'),
+      messageInput: document.getElementById('messageInput'),
+      sendBtn: document.getElementById('sendBtn'),
+      nameInput: document.getElementById('nameInput'),
+      joinBtn: document.getElementById('joinBtn'),
+      leaveBtn: document.getElementById('leaveBtn'),
+      onlineCount: document.getElementById('onlineCount'),
+      statusDot: document.getElementById('statusDot'),
+    };
 
     // ============================================================
-    // STATE
+    // 3. STATE
     // ============================================================
 
     let user = null;
     let listeners = [];
+    let connected = false;
+    let statusTimeout = null;
 
     // ============================================================
-    // HELPERS
+    // 4. HELPERS
     // ============================================================
 
     const status = (text) => {
-      let el = msgs.querySelector('.status');
+      let el = DOM.messages.querySelector('.status-msg');
       if (!el) {
         el = document.createElement('div');
-        el.className = 'status';
-        msgs.appendChild(el);
+        el.className = 'status-msg';
+        DOM.messages.appendChild(el);
       }
       el.textContent = text;
     };
 
-    const scroll = () => setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+    const clearStatus = () => {
+      const el = DOM.messages.querySelector('.status-msg');
+      if (el) el.remove();
+    };
 
-    const time = (ts) => ts ? new Date(ts).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+    const scroll = () => {
+      requestAnimationFrame(() => {
+        DOM.messages.scrollTop = DOM.messages.scrollHeight;
+      });
+    };
+
+    const time = (ts) => {
+      if (!ts) return '';
+      const d = new Date(ts);
+      return d.toLocaleTimeString('en-GB', {
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    };
+
+    const setOnline = (on) => {
+      connected = on;
+      DOM.statusDot.className = `dot ${on ? '' : 'off'}`;
+      if (statusTimeout) clearTimeout(statusTimeout);
+      if (on) {
+        status('✦ Connected');
+        statusTimeout = setTimeout(() => {
+          const el = DOM.messages.querySelector('.status-msg');
+          if (el && el.textContent === '✦ Connected') clearStatus();
+          statusTimeout = null;
+        }, 1000);
+      } else {
+        status('✦ Reconnecting...');
+      }
+    };
 
     // ============================================================
-    // SEND
+    // 5. SEND
     // ============================================================
 
-    const sendMsg = (text) => {
-      if (!user) return alert('Sign in first!');
+    const sendMessage = (text) => {
+      if (!user) { alert('✦ Sign in first!'); return; }
       if (!text || !text.trim()) return;
+      if (!connected) { alert('✦ Waiting for connection...'); return; }
 
       db.ref('messages').push({
         name: user.name,
         uid: user.uid,
         text: text.trim(),
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      }).catch(() => alert('Failed to send.'));
+        timestamp: firebase.database.ServerValue.TIMESTAMP,
+      }).catch(() => alert('✦ Failed to send.'));
 
-      input.value = '';
-      input.focus();
+      DOM.messageInput.value = '';
+      DOM.messageInput.focus();
     };
 
     // ============================================================
-    // RENDER
+    // 6. RENDER
     // ============================================================
 
-    const render = (data) => {
+    const renderMessage = (data) => {
       const isOwn = user && data.uid === user.uid;
       const el = document.createElement('div');
       el.className = `msg ${isOwn ? 'own' : 'other'}`;
       el.dataset.key = data._key;
 
       el.innerHTML = `
-        <div class="sender">${data.name || 'Anonymous'}<span class="time">${time(data.timestamp)}</span></div>
+        <div class="sender">
+          ${data.name || 'Anonymous'}
+          <span class="time">${time(data.timestamp)}</span>
+        </div>
         <div class="text">${data.text || ''}</div>
       `;
 
-      const st = msgs.querySelector('.status');
-      if (st) st.remove();
+      const st = DOM.messages.querySelector('.status-msg');
+      if (st && (st.textContent === '✦ Connected' || st.textContent === '✦ Reconnecting...')) {
+        clearStatus();
+      }
 
-      msgs.appendChild(el);
+      DOM.messages.appendChild(el);
       scroll();
     };
 
     // ============================================================
-    // SUBSCRIBE
+    // 7. SUBSCRIBE
     // ============================================================
 
     const subscribe = () => {
       listeners.forEach(ref => ref.off());
       listeners = [];
 
-      const query = db.ref('messages').orderByKey().limitToLast(100);
-
-      query.on('child_added', (snapshot) => {
-        const data = snapshot.val();
-        data._key = snapshot.key;
-        render(data);
-      });
-
-      query.on('child_removed', (snapshot) => {
-        const el = msgs.querySelector(`[data-key="${snapshot.key}"]`);
-        if (el) el.remove();
-      });
-
-      listeners.push(query);
-
-      query.once('value', (snapshot) => {
-        if (!snapshot.exists()) status('💬 No messages yet. Say hello!');
-      });
-
-      // Presence
       const presence = db.ref('.info/connected');
-      const users = db.ref('users');
-
       presence.on('value', (snapshot) => {
-        if (snapshot.val() && user) {
-          const ref = users.child(user.uid);
+        const on = snapshot.val() === true;
+        setOnline(on);
+        if (on && user) {
+          const ref = db.ref('users').child(user.uid);
           ref.set({
             name: user.name,
             lastSeen: firebase.database.ServerValue.TIMESTAMP
@@ -464,85 +1010,154 @@
           ref.onDisconnect().remove();
         }
       });
+      listeners.push(presence);
 
-      users.on('value', (snapshot) => {
-        online.textContent = snapshot.exists() ? `👤 ${snapshot.numChildren()}` : '👤 0';
+      const usersRef = db.ref('users');
+      usersRef.on('value', (snapshot) => {
+        if (connected) {
+          DOM.onlineCount.textContent = snapshot.exists() ? snapshot.numChildren() : '0';
+        }
+      });
+      listeners.push(usersRef);
+
+      const query = db.ref('messages').orderByKey().limitToLast(100);
+
+      query.on('child_added', (snapshot) => {
+        if (connected) {
+          const data = snapshot.val();
+          data._key = snapshot.key;
+          renderMessage(data);
+        }
       });
 
-      listeners.push(presence);
+      query.on('child_removed', (snapshot) => {
+        const el = DOM.messages.querySelector(`[data-key="${snapshot.key}"]`);
+        if (el) el.remove();
+      });
+
+      listeners.push(query);
+
+      query.once('value', (snapshot) => {
+        if (!snapshot.exists()) {
+          const st = DOM.messages.querySelector('.status-msg');
+          if (!st || st.textContent === '✦ Reconnecting...' || st.textContent === '✦ Connected') {
+            status('✦ No messages yet');
+          }
+        }
+      });
     };
 
     // ============================================================
-    // AUTH
+    // 8. AUTH
     // ============================================================
 
     const login = () => {
-      const n = name.value.trim() || 'Guest';
+      const raw = DOM.nameInput.value.trim() || 'User';
+      const name = raw.slice(0, 20);
+
       user = {
-        name: n,
+        name: name,
         uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
       };
 
-      name.disabled = true;
-      join.style.display = 'none';
-      leave.style.display = 'inline-block';
-      input.disabled = false;
-      send.disabled = false;
-      input.placeholder = `Message as ${n}...`;
+      DOM.nameInput.disabled = true;
+      DOM.joinBtn.style.display = 'none';
+      DOM.leaveBtn.style.display = 'inline-block';
+      DOM.messageInput.disabled = false;
+      DOM.sendBtn.disabled = false;
+      DOM.messageInput.placeholder = `✦ ${name}...`;
 
-      status(`✅ Signed in as ${n}`);
-      msgs.innerHTML = '';
+      clearStatus();
+      status(`✦ ${name} joined`);
+
       subscribe();
+
+      if (connected) {
+        const ref = db.ref('users').child(user.uid);
+        ref.set({
+          name: user.name,
+          lastSeen: firebase.database.ServerValue.TIMESTAMP
+        });
+        ref.onDisconnect().remove();
+      }
+
+      DOM.onlineCount.textContent = '1';
+
+      setTimeout(() => {
+        const el = DOM.messages.querySelector('.status-msg');
+        if (el && el.textContent === `✦ ${name} joined`) clearStatus();
+      }, 1500);
     };
 
     const logout = () => {
       if (user) db.ref('users').child(user.uid).remove();
-
       listeners.forEach(ref => ref.off());
       listeners = [];
       user = null;
 
-      name.disabled = false;
-      join.style.display = 'inline-block';
-      leave.style.display = 'none';
-      input.disabled = true;
-      send.disabled = true;
-      input.placeholder = 'Sign in to chat...';
-      input.value = '';
+      DOM.nameInput.disabled = false;
+      DOM.joinBtn.style.display = 'inline-block';
+      DOM.leaveBtn.style.display = 'none';
+      DOM.messageInput.disabled = true;
+      DOM.sendBtn.disabled = true;
+      DOM.messageInput.placeholder = '✦ Type...';
+      DOM.messageInput.value = '';
 
-      msgs.innerHTML = '';
-      status('👋 You left the chat. Sign in to rejoin.');
-      online.textContent = '👤 0';
+      DOM.messages.innerHTML = '';
+      status('✦ Left chat');
+      DOM.onlineCount.textContent = '0';
+      setOnline(connected);
     };
 
     // ============================================================
-    // EVENTS
+    // 9. EVENTS
     // ============================================================
 
-    join.addEventListener('click', login);
-    leave.addEventListener('click', logout);
+    DOM.joinBtn.addEventListener('click', login);
+    DOM.leaveBtn.addEventListener('click', logout);
 
-    name.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') login();
+    DOM.nameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault();
+        login(); }
     });
 
-    send.addEventListener('click', () => sendMsg(input.value));
+    DOM.sendBtn.addEventListener('click', () => {
+      sendMessage(DOM.messageInput.value);
+    });
 
-    input.addEventListener('keydown', (e) => {
+    DOM.messageInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault();
-        sendMsg(input.value);
+        sendMessage(DOM.messageInput.value);
       }
     });
 
+    // Touch feedback
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('touchstart', function() {
+        this.style.transform = 'scale(0.95)';
+      }, { passive: true });
+      btn.addEventListener('touchend', function() {
+        this.style.transform = '';
+      }, { passive: true });
+    });
+
+    // Keyboard scroll
+    DOM.messageInput.addEventListener('focus', () => {
+      setTimeout(() => {
+        DOM.messageInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 300);
+    });
+
     // ============================================================
-    // INIT
+    // 10. INIT
     // ============================================================
 
-    status('🌐 Connecting...');
+    setOnline(false);
     subscribe();
 
-    console.log('💬 Text Chat ready');
+    console.log('✦ NEON NEXUS — HI-TECH CHAT ✦');
+    console.log('📡 Database:', firebase.app().options.databaseURL);
   </script>
 
 </body>
