@@ -55,13 +55,13 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f
 <div class="flower" style="top:60%;right:2%;animation-delay:-20s">☀️</div>
 
 <div class="container">
-<div class="badge" id="badge">📜 Click to Fetch</div>
+<div class="badge" id="badge">📜 Loading...</div>
 <h1>99 Proverbs</h1>
 <div class="sub">Fresh wisdom from free APIs</div>
 <div class="icon" id="icon">📜</div>
 
 <div class="proverb-box">
-<div class="proverb-text" id="proverb"><span class="loading">⏳ Click a button to fetch proverb</span></div>
+<div class="proverb-text" id="proverb"><span class="loading">⏳ Loading wisdom...</span></div>
 </div>
 <div class="counter" id="counter">—</div>
 
@@ -80,12 +80,84 @@ h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f
 
 <script>
 // ============================================================
-// WORKING APIS — FIXED
+// PROVERBS — FIXED (Works offline + online)
 // ============================================================
 
 var current=null;
 var history=[];
 var totalFetched=0;
+
+// ===== BUILT-IN PROVERBS (Always works) =====
+var fallbackProverbs=[
+{proverb:"A journey of a thousand miles begins with a single step.",origin:"Chinese"},
+{proverb:"Patience is bitter, but its fruit is sweet.",origin:"Aristotle"},
+{proverb:"The only true wisdom is in knowing you know nothing.",origin:"Socrates"},
+{proverb:"Fall seven times, stand up eight.",origin:"Japanese"},
+{proverb:"A friend in need is a friend indeed.",origin:"Latin"},
+{proverb:"Where there is love, there is life.",origin:"Indian"},
+{proverb:"Happiness is not something ready made. It comes from your own actions.",origin:"Dalai Lama"},
+{proverb:"The darkest hour has only sixty minutes.",origin:"African"},
+{proverb:"Wisdom is the reward you get for a lifetime of listening.",origin:"Will Rogers"},
+{proverb:"If you want to go fast, go alone. If you want to go far, go together.",origin:"African"},
+{proverb:"The best time to plant a tree was 20 years ago. The second best time is now.",origin:"Chinese"},
+{proverb:"Little strokes fell great oaks.",origin:"Benjamin Franklin"},
+{proverb:"Trust, but verify.",origin:"Russian"},
+{proverb:"A smooth sea never made a skilled sailor.",origin:"Franklin D. Roosevelt"},
+{proverb:"The unexamined life is not worth living.",origin:"Socrates"},
+{proverb:"Necessity is the mother of invention.",origin:"English"},
+{proverb:"Better to remain silent and be thought a fool than to speak and remove all doubt.",origin:"Abraham Lincoln"},
+{proverb:"The only thing we have to fear is fear itself.",origin:"Franklin D. Roosevelt"},
+{proverb:"All that glitters is not gold.",origin:"Shakespeare"},
+{proverb:"Absence makes the heart grow fonder.",origin:"English"},
+{proverb:"Actions speak louder than words.",origin:"English"},
+{proverb:"Beauty is in the eye of the beholder.",origin:"English"},
+{proverb:"Every cloud has a silver lining.",origin:"John Milton"},
+{proverb:"Good things come to those who wait.",origin:"English"},
+{proverb:"Knowledge is power.",origin:"Francis Bacon"},
+{proverb:"Love is blind.",origin:"Shakespeare"},
+{proverb:"No pain, no gain.",origin:"English"},
+{proverb:"Rome wasn't built in a day.",origin:"English"},
+{proverb:"The pen is mightier than the sword.",origin:"Edward Bulwer-Lytton"},
+{proverb:"Time is money.",origin:"Benjamin Franklin"},
+{proverb:"Two heads are better than one.",origin:"English"},
+{proverb:"What goes around comes around.",origin:"English"},
+{proverb:"You reap what you sow.",origin:"Galatians"},
+{proverb:"A chain is only as strong as its weakest link.",origin:"English"},
+{proverb:"A penny saved is a penny earned.",origin:"Benjamin Franklin"},
+{proverb:"A watched pot never boils.",origin:"English"},
+{proverb:"Cleanliness is next to godliness.",origin:"English"},
+{proverb:"Discretion is the better part of valor.",origin:"Shakespeare"},
+{proverb:"Early to bed and early to rise makes a man healthy, wealthy, and wise.",origin:"Benjamin Franklin"},
+{proverb:"Fools rush in where angels fear to tread.",origin:"Alexander Pope"},
+{proverb:"Genius is one percent inspiration and ninety-nine percent perspiration.",origin:"Thomas Edison"},
+{proverb:"Great minds think alike.",origin:"English"},
+{proverb:"If you can't stand the heat, get out of the kitchen.",origin:"Harry S. Truman"},
+{proverb:"It takes two to tango.",origin:"English"},
+{proverb:"Keep your friends close and your enemies closer.",origin:"Sun Tzu"},
+{proverb:"Let sleeping dogs lie.",origin:"English"},
+{proverb:"Make hay while the sun shines.",origin:"English"},
+{proverb:"Old habits die hard.",origin:"English"},
+{proverb:"One good turn deserves another.",origin:"English"},
+{proverb:"Power tends to corrupt, and absolute power corrupts absolutely.",origin:"Lord Acton"},
+{proverb:"Still waters run deep.",origin:"English"},
+{proverb:"The best things in life are free.",origin:"English"},
+{proverb:"The squeaky wheel gets the grease.",origin:"English"},
+{proverb:"There is no 'I' in team.",origin:"English"},
+{proverb:"Time heals all wounds.",origin:"English"},
+{proverb:"To err is human, to forgive divine.",origin:"Alexander Pope"},
+{proverb:"Waste not, want not.",origin:"English"},
+{proverb:"Where there's smoke, there's fire.",origin:"English"},
+{proverb:"A stitch in time saves nine.",origin:"English"},
+{proverb:"Beggars can't be choosers.",origin:"English"},
+{proverb:"Blood is thicker than water.",origin:"English"},
+{proverb:"In the land of the blind, the one-eyed man is king.",origin:"Erasmus"},
+{proverb:"Life is just one damned thing after another.",origin:"Elbert Hubbard"},
+{proverb:"No man is an island.",origin:"John Donne"},
+{proverb:"Something is better than nothing.",origin:"English"},
+{proverb:"The truth is rarely pure and never simple.",origin:"Oscar Wilde"},
+{proverb:"To know thyself is the beginning of wisdom.",origin:"Socrates"},
+{proverb:"When in Rome, do as the Romans do.",origin:"English"}
+];
 
 function showLoading(msg){
 msg=msg||'⏳ Fetching wisdom...';
@@ -109,104 +181,53 @@ document.getElementById('icon').textContent=icon;
 current=data;
 }
 
-// ===== WORKING APIS =====
+// ===== FETCH FROM API =====
 function fetchFromAPI(){
 showLoading();
 
-// Try multiple working APIs
 var apis=[
 
-// 1. Quotable.io (most reliable)
 function(){
 return fetch('https://api.quotable.io/random')
-.then(function(r){
-if(!r.ok)throw new Error('Quotable failed');
-return r.json();
-})
-.then(function(d){
-return{proverb:d.content,origin:d.author||'Unknown',source:'Quotable'};
-});
+.then(function(r){if(!r.ok)throw new Error('Quotable failed');return r.json();})
+.then(function(d){return{proverb:d.content,origin:d.author||'Unknown',source:'Quotable'};});
 },
 
-// 2. Advice Slip (always works)
 function(){
 return fetch('https://api.adviceslip.com/advice')
-.then(function(r){
-if(!r.ok)throw new Error('Advice failed');
-return r.json();
-})
-.then(function(d){
-var a=d.slip||{};
-return{proverb:a.advice||'Advice',origin:'Wisdom',source:'Advice Slip'};
-});
+.then(function(r){if(!r.ok)throw new Error('Advice failed');return r.json();})
+.then(function(d){var a=d.slip||{};return{proverb:a.advice||'Advice',origin:'Wisdom',source:'Advice Slip'};});
 },
 
-// 3. Zen Quotes
 function(){
 return fetch('https://zenquotes.io/api/random')
-.then(function(r){
-if(!r.ok)throw new Error('Zen failed');
-return r.json();
-})
-.then(function(d){
-var q=d[0]||{};
-return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'};
-});
-},
-
-// 4. API Ninjas (with key)
-function(){
-return fetch('https://api.api-ninjas.com/v1/quotes?limit=1',{
-headers:{'X-Api-Key':'3qT+WckTS2W3+O1G+f4NCA==iAj03j3T1fR4V7Wh'}
-})
-.then(function(r){
-if(!r.ok)throw new Error('Ninjas failed');
-return r.json();
-})
-.then(function(d){
-var q=d[0]||{};
-return{proverb:q.quote||'Wisdom',origin:q.author||'Unknown',source:'Ninjas'};
-});
+.then(function(r){if(!r.ok)throw new Error('Zen failed');return r.json();})
+.then(function(d){var q=d[0]||{};return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'};});
 }
 ];
 
-// Try each API until one works
 return apis.reduce(function(promise,fn){
-return promise.catch(function(){
-return fn();
-});
+return promise.catch(function(){return fn();});
 }, Promise.reject())
-.catch(function(err){
-console.warn('All APIs failed:',err);
-// Return fallback
-var fallbacks=[
-'Wisdom is knowing when to speak and when to listen.',
-'The journey of a thousand miles begins with a single step.',
-'Patience is the companion of wisdom.',
-'Knowledge speaks, but wisdom listens.',
-'The only true wisdom is in knowing you know nothing.',
-'Wisdom is the reward you get for a lifetime of listening.',
-'A fool thinks himself wise, but a wise man knows himself to be a fool.',
-'It is better to remain silent and be thought a fool than to speak and remove all doubt.',
-'Turn your wounds into wisdom.',
-'The wise man learns from the mistakes of others.',
-'Life is really simple, but we insist on making it complicated.',
-'Simplicity is the ultimate sophistication.'
-];
-var f=fallbacks[Math.floor(Math.random()*fallbacks.length)];
-return{proverb:f,origin:'Ancient Wisdom',source:'Fallback'};
+.catch(function(){
+// Use built-in proverbs
+var p=fallbackProverbs[Math.floor(Math.random()*fallbackProverbs.length)];
+return{proverb:p.proverb,origin:p.origin,source:'Built-in'};
 });
 }
 
+// ===== FETCH FUNCTIONS =====
 function fetchFresh(){
 fetchFromAPI().then(function(data){
 totalFetched++;
 display(data);
 history.push(data);
 }).catch(function(){
-document.getElementById('proverb').innerHTML='<span class="loading">❌ Try again</span>';
-document.getElementById('badge').textContent='📜 Error';
-document.getElementById('icon').textContent='❌';
+// Ultimate fallback
+var p=fallbackProverbs[Math.floor(Math.random()*fallbackProverbs.length)];
+totalFetched++;
+display({proverb:p.proverb,origin:p.origin,source:'Built-in'});
+history.push({proverb:p.proverb,origin:p.origin,source:'Built-in'});
 });
 }
 
@@ -218,9 +239,7 @@ if(history.length>1){
 var prev=history[history.length-2];
 display(prev);
 history.pop();
-document.getElementById('counter').textContent='📖 #'+totalFetched+' · '+prev.source;
 }else{
-showLoading('⏳ No history. Fetching fresh...');
 fetchFresh();
 }
 }
@@ -267,11 +286,11 @@ drawTrail();
 var breathe=0;setInterval(function(){breathe=(breathe+1)%100;var s=1+Math.sin(breathe/20)*.008;document.querySelector('.container').style.transform='scale('+s+')'},100);
 
 // ============================================================
-// INIT — Auto fetch
+// INIT
 // ============================================================
 
 fetchFresh();
-console.log('📜 Proverbs — Fixed fetching');
+console.log('📜 Proverbs — Fixed (works offline)');
 </script>
 </body>
 </html>
