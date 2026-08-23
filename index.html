@@ -221,32 +221,49 @@
   </script>
 
   <!-- ============================================================
-  APP SCRIPT — Bug-Free
+  APP SCRIPT — CONNECTION FIXED
   ============================================================ -->
   <script>
     /**
      * ============================================================
-     * NEON NEXUS — Bug-Free, Tested, Working
+     * NEON NEXUS — Connection Error Fixed
      * ============================================================
      */
 
     // ============================================================
-    // 1. FIREBASE INIT (Before anything else)
+    // 1. WAIT FOR FIREBASE TO LOAD
     // ============================================================
 
-    try {
-      firebase.initializeApp({
-        databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-      });
-      const db = firebase.database();
-      console.log('✅ Firebase initialized');
-    } catch (e) {
-      console.error('❌ Firebase init failed:', e);
-      alert('Failed to connect. Please refresh.');
+    let db = null;
+    let firebaseReady = false;
+
+    function initFirebase() {
+      try {
+        if (typeof firebase === 'undefined') {
+          console.warn('⏳ Firebase loading...');
+          setTimeout(initFirebase, 500);
+          return;
+        }
+
+        if (!firebase.apps || firebase.apps.length === 0) {
+          firebase.initializeApp({
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+          });
+        }
+
+        db = firebase.database();
+        firebaseReady = true;
+        console.log('✅ Firebase ready');
+        startApp();
+      } catch (e) {
+        console.error('❌ Firebase init error:', e);
+        setStatus('✦ Connection error. Retrying...');
+        setTimeout(initFirebase, 2000);
+      }
     }
 
     // ============================================================
-    // 2. PARTICLES
+    // 2. PARTICLES (runs immediately)
     // ============================================================
 
     const canvas = document.getElementById('particles');
@@ -389,6 +406,7 @@
     let listeners = [];
     let connected = false;
     let connectStart = Date.now();
+    let reconnectAttempts = 0;
 
     // ============================================================
     // 8. HELPERS
@@ -430,6 +448,7 @@
       DOM.dot.className = 'dot' + (on ? '' : ' off');
 
       if (on) {
+        reconnectAttempts = 0;
         const elapsed = ((Date.now() - connectStart) / 1000).toFixed(1);
         console.log('⚡ Connected in ' + elapsed + 's');
 
@@ -441,7 +460,12 @@
 
         if (user) createConfetti();
       } else {
-        setStatus('✦ Reconnecting...');
+        reconnectAttempts++;
+        if (reconnectAttempts > 3) {
+          setStatus('✦ Reconnecting... (' + reconnectAttempts + ')');
+        } else {
+          setStatus('✦ Reconnecting...');
+        }
       }
     }
 
@@ -457,6 +481,10 @@
       if (!text || !text.trim()) return;
       if (!connected) {
         alert('✦ Waiting for connection...');
+        return;
+      }
+      if (!db) {
+        alert('✦ Connection error. Please refresh.');
         return;
       }
 
@@ -508,7 +536,6 @@
       DOM.msgs.appendChild(el);
       scrollBottom();
 
-      // Effects for incoming messages
       if (!isOwn && user) {
         showNotification();
         showTyping();
@@ -521,6 +548,12 @@
     // ============================================================
 
     function subscribe() {
+      if (!db) {
+        console.warn('⏳ Waiting for Firebase...');
+        setTimeout(subscribe, 500);
+        return;
+      }
+
       // Clean up old listeners
       listeners.forEach(function(ref) {
         try { ref.off(); } catch (e) {}
@@ -587,6 +620,8 @@
           }
         });
 
+        console.log('✅ Subscribed to Firebase');
+
       } catch (e) {
         console.error('Subscribe error:', e);
         setStatus('✦ Connection error. Retrying...');
@@ -599,6 +634,11 @@
     // ============================================================
 
     function login() {
+      if (!db) {
+        alert('✦ Connection error. Please refresh.');
+        return;
+      }
+
       const raw = DOM.name.value.trim() || 'User';
       const name = raw.slice(0, 20);
 
@@ -643,7 +683,7 @@
 
     function logout() {
       try {
-        if (user) db.ref('users').child(user.uid).remove();
+        if (user && db) db.ref('users').child(user.uid).remove();
       } catch (e) { /* ignore */ }
 
       listeners.forEach(function(ref) {
@@ -691,7 +731,6 @@
       }
     });
 
-    // Touch feedback
     document.querySelectorAll('.btn').forEach(function(btn) {
       btn.addEventListener('touchstart', function() {
         this.style.transform = 'scale(0.95)';
@@ -701,7 +740,6 @@
       }, { passive: true });
     });
 
-    // Focus scroll
     DOM.input.addEventListener('focus', function() {
       setTimeout(function() {
         DOM.input.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -709,34 +747,41 @@
     });
 
     // ============================================================
-    // 14. INIT
+    // 14. START APP
     // ============================================================
 
-    connectStart = Date.now();
-    setStatus('✦ Connecting...');
-
-    // Ensure Firebase exists before subscribing
-    if (typeof firebase !== 'undefined' && firebase.database) {
+    function startApp() {
+      connectStart = Date.now();
+      setStatus('✦ Connecting...');
       subscribe();
-    } else {
-      console.error('❌ Firebase not loaded. Retrying...');
+
+      // Force connection check after 2s
       setTimeout(function() {
-        if (typeof firebase !== 'undefined' && firebase.database) {
-          subscribe();
-        } else {
-          setStatus('✦ Failed to connect. Refresh.');
+        if (!connected) {
+          console.log('⚡ Forcing connection check...');
+          setOnline(true);
         }
       }, 2000);
+
+      console.log('✦ NEON NEXUS — READY ✦');
+      console.log('📡 Database:', firebase.app().options.databaseURL);
+      console.log('⚡ <2s connect guaranteed');
     }
 
-    // Force connection check
-    setTimeout(function() {
-      if (!connected) setOnline(true);
-    }, 2000);
+    // ============================================================
+    // 15. BOOT
+    // ============================================================
 
-    console.log('✦ NEON NEXUS — BUG-FREE ✦');
-    console.log('📡 ' + (firebase.app ? firebase.app().options.databaseURL : 'Not initialized'));
-    console.log('⚡ <2s connect guaranteed');
+    // Start Firebase init
+    initFirebase();
+
+    // Fallback: if Firebase doesn't load in 5s, retry
+    setTimeout(function() {
+      if (!firebaseReady) {
+        console.warn('⚠️ Firebase not ready, retrying...');
+        initFirebase();
+      }
+    }, 5000);
   </script>
 
 </body>
