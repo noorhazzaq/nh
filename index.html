@@ -2,441 +2,380 @@
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Global Chat Pro</title>
-
-  <link rel="manifest" href="data:application/json,{
-    &quot;name&quot;:&quot;Global Chat Pro&quot;,
-    &quot;short_name&quot;:&quot;ChatPro&quot;,
-    &quot;start_url&quot;:&quot;/&quot;,
-    &quot;display&quot;:&quot;standalone&quot;,
-    &quot;background_color&quot;:&quot;#1a1a2e&quot;,
-    &quot;theme_color&quot;:&quot;#16213e&quot;,
-    &quot;icons&quot;:[{
-      &quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316213e'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23e94560'%3E💬%3C/text%3E%3C/svg%3E&quot;,
-      &quot;sizes&quot;:&quot;512x512&quot;,
-      &quot;type&quot;:&quot;image/svg+xml&quot;
-    }]
-  }" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat</title>
+  <link rel="manifest" href="data:application/json,{&quot;name&quot;:&quot;Chat&quot;,&quot;short_name&quot;:&quot;Chat&quot;,&quot;start_url&quot;:&quot;/&quot;,&quot;display&quot;:&quot;standalone&quot;,&quot;background_color&quot;:&quot;#1a1a2e&quot;,&quot;theme_color&quot;:&quot;#16213e&quot;,&quot;icons&quot;:[{&quot;src&quot;:&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2316213e'/%3E%3Ctext x='50' y='68' font-size='48' text-anchor='middle' fill='%23e94560'%3E💬%3C/text%3E%3C/svg%3E&quot;,&quot;sizes&quot;:&quot;512x512&quot;,&quot;type&quot;:&quot;image/svg+xml&quot;}]}" />
 
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      font-family: system-ui, sans-serif;
     }
     :root {
-      --bg-primary: #0f0e17;
-      --bg-secondary: #1a1a2e;
-      --bg-header: #16213e;
+      --bg: #0f0e17;
+      --surface: #1a1a2e;
+      --header: #16213e;
       --accent: #e94560;
-      --accent-hover: #ff6b81;
-      --text-primary: #fffffe;
-      --text-muted: #a7a9be;
-      --msg-own: #e94560;
-      --msg-other: #2d2d44;
-      --radius: 2rem;
-      --shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-      --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      --text: #fffffe;
+      --own: #e94560;
+      --other: #2d2d44;
     }
     body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: var(--bg);
+      color: var(--text);
       height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 0.5rem;
-      overflow: hidden;
+      padding: 8px;
     }
-    .chat-container {
-      max-width: 900px;
+    .app {
+      max-width: 800px;
       width: 100%;
-      height: 98vh;
-      max-height: 850px;
-      background: var(--bg-secondary);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      height: 95vh;
+      max-height: 800px;
+      background: var(--surface);
+      border-radius: 24px;
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
     }
-    .chat-header {
-      padding: 1rem 1.5rem;
-      background: var(--bg-header);
+    .header {
+      padding: 12px 20px;
+      background: var(--header);
       border-bottom: 2px solid var(--accent);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      flex-shrink: 0;
       flex-wrap: wrap;
-      gap: 0.5rem;
-      z-index: 10;
+      gap: 8px;
+      flex-shrink: 0;
     }
-    .chat-header h1 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      letter-spacing: 0.5px;
+    .header h1 {
+      font-size: 1.2rem;
     }
-    .chat-header h1 span {
+    .header h1 span {
       color: var(--accent);
     }
     .header-right {
       display: flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 10px;
       flex-wrap: wrap;
     }
-    .online-count {
+    .online {
       font-size: 0.75rem;
-      opacity: 0.7;
-      padding: 0.25rem 0.75rem;
-      background: var(--bg-primary);
-      border-radius: 2rem;
-      white-space: nowrap;
+      opacity: 0.6;
+      padding: 4px 12px;
+      background: var(--bg);
+      border-radius: 20px;
     }
-    .auth-section {
+    .auth {
       display: flex;
-      gap: 0.5rem;
+      gap: 6px;
       align-items: center;
-      flex-wrap: wrap;
     }
-    .auth-section input {
-      padding: 0.4rem 0.8rem;
+    .auth input {
+      padding: 4px 10px;
       border: none;
-      border-radius: 2rem;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      border-radius: 20px;
+      background: var(--bg);
+      color: var(--text);
       font-size: 0.85rem;
-      width: 120px;
-      transition: var(--transition);
+      width: 100px;
+      transition: 0.2s;
     }
-    .auth-section input:focus {
+    .auth input:focus {
       outline: 2px solid var(--accent);
-      width: 150px;
+      width: 130px;
     }
-    .auth-section button {
-      padding: 0.4rem 1rem;
+    .auth button {
+      padding: 4px 14px;
       border: none;
-      border-radius: 2rem;
+      border-radius: 20px;
       background: var(--accent);
-      color: var(--text-primary);
+      color: var(--text);
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.85rem;
+      transition: 0.2s;
+      font-size: 0.8rem;
       white-space: nowrap;
     }
-    .auth-section button:hover {
+    .auth button:hover {
       transform: scale(1.05);
-      background: var(--accent-hover);
+      background: #ff6b81;
     }
-    .auth-section button.logout-btn {
-      background: var(--msg-other);
+    .auth button.logout {
+      background: var(--other);
     }
-    .auth-section button.logout-btn:hover {
+    .auth button.logout:hover {
       background: #3d3d5c;
     }
-    .messages-area {
+    .messages {
       flex: 1;
       overflow-y: auto;
-      padding: 1rem 1.5rem;
+      padding: 12px 16px;
       display: flex;
       flex-direction: column;
-      gap: 0.4rem;
+      gap: 4px;
       background: #12122a;
-      scroll-behavior: smooth;
     }
-    .messages-area::-webkit-scrollbar {
-      width: 5px;
+    .messages::-webkit-scrollbar {
+      width: 4px;
     }
-    .messages-area::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .messages-area::-webkit-scrollbar-thumb {
+    .messages::-webkit-scrollbar-thumb {
       background: var(--accent);
       border-radius: 10px;
     }
     .status {
       text-align: center;
       font-size: 0.8rem;
-      opacity: 0.5;
-      padding: 0.5rem;
+      opacity: 0.4;
+      padding: 8px;
       font-style: italic;
     }
-    .message {
-      padding: 0.5rem 1rem;
-      border-radius: 1.2rem;
-      max-width: 82%;
+    .msg {
+      padding: 6px 14px;
+      border-radius: 16px;
+      max-width: 80%;
       word-wrap: break-word;
       animation: fadeIn 0.2s ease;
-      position: relative;
-      line-height: 1.5;
+      line-height: 1.4;
     }
-    .message.own {
+    .msg.own {
       align-self: flex-end;
-      background: var(--msg-own);
-      border-bottom-right-radius: 0.3rem;
+      background: var(--own);
+      border-bottom-right-radius: 4px;
     }
-    .message.other {
+    .msg.other {
       align-self: flex-start;
-      background: var(--msg-other);
-      border-bottom-left-radius: 0.3rem;
+      background: var(--other);
+      border-bottom-left-radius: 4px;
     }
-    .message .sender {
-      font-size: 0.65rem;
+    .msg .sender {
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
+      opacity: 0.6;
       letter-spacing: 0.5px;
-      opacity: 0.7;
-      margin-bottom: 0.1rem;
     }
-    .message .time {
-      font-size: 0.55rem;
-      opacity: 0.5;
-      margin-left: 0.6rem;
+    .msg .time {
+      font-size: 0.5rem;
+      opacity: 0.4;
+      margin-left: 6px;
     }
-    .message .text {
-      font-size: 0.95rem;
+    .msg .text {
+      font-size: 0.9rem;
     }
-    .message .text img,
-    .message .text video {
+    .msg .text img,
+    .msg .text video {
       max-width: 100%;
-      max-height: 300px;
-      border-radius: 0.8rem;
-      margin: 0.2rem 0;
+      max-height: 250px;
+      border-radius: 8px;
+      margin: 4px 0;
       display: block;
     }
-    .message .text .sticker {
+    .msg .text .sticker {
       font-size: 3rem;
       display: inline-block;
     }
-    .message .text .location {
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 0.8rem;
+    .msg .text .gif {
+      max-width: 180px;
+      border-radius: 8px;
+    }
+    .msg .text .location {
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
       display: inline-block;
       font-size: 0.8rem;
     }
-    .message .text .location a {
+    .msg .text .location a {
       color: #4fc3f7;
       text-decoration: none;
     }
-    .message .text .location a:hover {
-      text-decoration: underline;
-    }
-    .message .text .gif {
-      max-width: 200px;
-      max-height: 200px;
-      border-radius: 0.8rem;
-    }
-    .message .text .voice-msg {
+    .msg .text .voice {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 0.3rem 0.8rem;
-      border-radius: 2rem;
-      font-size: 0.8rem;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px 12px;
+      border-radius: 20px;
     }
-    .message .text .voice-msg audio {
-      max-width: 150px;
-      height: 30px;
+    .msg .text .voice audio {
+      max-width: 140px;
+      height: 28px;
     }
-    .message .text .poll {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 0.5rem 1rem;
-      border-radius: 0.8rem;
-      margin: 0.2rem 0;
+    .msg .text .poll {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 8px 12px;
+      border-radius: 8px;
     }
-    .message .text .poll .poll-option {
-      padding: 0.2rem 0.5rem;
-      margin: 0.1rem 0;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 0.3rem;
+    .msg .text .poll .option {
+      padding: 4px 8px;
+      margin: 2px 0;
+      background: rgba(255, 255, 255, 0.04);
+      border-radius: 4px;
       cursor: pointer;
-      transition: var(--transition);
+      transition: 0.2s;
     }
-    .message .text .poll .poll-option:hover {
-      background: rgba(255, 255, 255, 0.15);
+    .msg .text .poll .option:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
-    .message .text .poll .vote-bar {
-      height: 4px;
+    .msg .text .poll .bar {
+      height: 3px;
       background: var(--accent);
       border-radius: 2px;
-      margin-top: 0.1rem;
-      transition: width 0.3s ease;
+      margin-top: 2px;
+      transition: width 0.3s;
       width: 0%;
     }
-    .message .text pre {
+    .msg .text pre {
       background: #0f0e17;
-      padding: 0.5rem;
-      border-radius: 0.5rem;
+      padding: 6px 10px;
+      border-radius: 6px;
       overflow-x: auto;
-      font-size: 0.8rem;
-      max-width: 100%;
+      font-size: 0.75rem;
     }
-    .message .text pre code {
-      font-family: 'Courier New', monospace;
+    .msg .text pre code {
+      font-family: monospace;
       color: #a7a9be;
     }
     .input-area {
-      padding: 0.75rem 1rem 1rem;
-      background: var(--bg-header);
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
+      padding: 8px 12px 12px;
+      background: var(--header);
+      border-top: 1px solid var(--other);
       flex-shrink: 0;
-      border-top: 1px solid var(--msg-other);
     }
-    .input-row {
+    .tools {
       display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .input-row input[type="text"] {
-      flex: 1;
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 2rem;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-size: 0.95rem;
-      transition: var(--transition);
-      min-width: 60px;
-    }
-    .input-row input[type="text"]:focus {
-      outline: 2px solid var(--accent);
-    }
-    .input-row input[type="text"]:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .input-row button {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 2rem;
-      background: var(--accent);
-      color: var(--text-primary);
-      font-weight: 700;
-      cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.9rem;
-      white-space: nowrap;
-    }
-    .input-row button:hover:not(:disabled) {
-      transform: scale(1.05);
-      background: var(--accent-hover);
-    }
-    .input-row button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-    .input-row button.icon-btn {
-      padding: 0.6rem 0.8rem;
-      font-size: 1.2rem;
-      background: var(--msg-other);
-    }
-    .input-row button.icon-btn:hover:not(:disabled) {
-      background: #3d3d5c;
-    }
-    .toolbar {
-      display: flex;
-      gap: 0.3rem;
+      gap: 4px;
       flex-wrap: wrap;
-      padding: 0.2rem 0.2rem 0;
+      margin-bottom: 6px;
     }
-    .toolbar button {
-      padding: 0.2rem 0.6rem;
+    .tools button {
+      padding: 2px 10px;
       border: none;
-      border-radius: 1rem;
-      background: var(--msg-other);
-      color: var(--text-primary);
+      border-radius: 12px;
+      background: var(--other);
+      color: var(--text);
       cursor: pointer;
-      transition: var(--transition);
-      font-size: 0.75rem;
-      font-weight: 500;
-      opacity: 0.8;
+      font-size: 0.7rem;
+      transition: 0.2s;
+      opacity: 0.7;
     }
-    .toolbar button:hover:not(:disabled) {
+    .tools button:hover:not(:disabled) {
       opacity: 1;
-      transform: scale(1.05);
       background: var(--accent);
+      transform: scale(1.05);
     }
-    .toolbar button:disabled {
-      opacity: 0.3;
+    .tools button:disabled {
+      opacity: 0.25;
       cursor: not-allowed;
     }
-    .toolbar button.active {
-      background: var(--accent);
-      opacity: 1;
-    }
-    .emoji-picker {
+    .picker {
       display: none;
       flex-wrap: wrap;
-      gap: 0.2rem;
-      padding: 0.3rem;
-      background: var(--bg-secondary);
-      border-radius: 1rem;
-      max-height: 120px;
+      gap: 4px;
+      padding: 6px;
+      background: var(--surface);
+      border-radius: 12px;
+      max-height: 100px;
       overflow-y: auto;
+      margin-bottom: 6px;
     }
-    .emoji-picker.open {
+    .picker.open {
       display: flex;
     }
-    .emoji-picker button {
+    .picker button {
       background: transparent;
       border: none;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       cursor: pointer;
-      padding: 0.1rem 0.3rem;
-      border-radius: 0.3rem;
-      transition: var(--transition);
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: 0.2s;
     }
-    .emoji-picker button:hover {
-      background: var(--msg-other);
-      transform: scale(1.2);
-    }
-    .sticker-picker {
-      display: none;
-      flex-wrap: wrap;
-      gap: 0.3rem;
-      padding: 0.3rem;
-      background: var(--bg-secondary);
-      border-radius: 1rem;
-      max-height: 120px;
-      overflow-y: auto;
-    }
-    .sticker-picker.open {
-      display: flex;
-    }
-    .sticker-picker button {
-      background: transparent;
-      border: none;
-      font-size: 2.5rem;
-      cursor: pointer;
-      padding: 0.1rem;
-      border-radius: 0.5rem;
-      transition: var(--transition);
-    }
-    .sticker-picker button:hover {
-      background: var(--msg-other);
+    .picker button:hover {
+      background: var(--other);
       transform: scale(1.15);
     }
-    .recording-indicator {
+    .sticker-picker button {
+      font-size: 2.2rem;
+    }
+    .recording {
       display: none;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.3rem 0.8rem;
+      gap: 8px;
+      padding: 4px 12px;
       background: var(--accent);
-      border-radius: 2rem;
+      border-radius: 20px;
       font-size: 0.8rem;
-      animation: pulse 1s ease-in-out infinite;
+      animation: pulse 1s infinite;
+      margin-bottom: 6px;
     }
-    .recording-indicator.active {
+    .recording.active {
       display: flex;
+    }
+    .recording button {
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .row input {
+      flex: 1;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 20px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 0.9rem;
+      min-width: 50px;
+    }
+    .row input:focus {
+      outline: 2px solid var(--accent);
+    }
+    .row input:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .row button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 20px;
+      background: var(--accent);
+      color: var(--text);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    .row button:hover:not(:disabled) {
+      transform: scale(1.05);
+      background: #ff6b81;
+    }
+    .row button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .row button.icon {
+      padding: 8px 10px;
+      font-size: 1.1rem;
+      background: var(--other);
+    }
+    .row button.icon:hover:not(:disabled) {
+      background: #3d3d5c;
     }
     @keyframes fadeIn {
       from {
@@ -458,105 +397,77 @@
       }
     }
     @media (max-width: 600px) {
-      .chat-container {
+      .app {
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
       }
-      .chat-header {
-        padding: 0.75rem 1rem;
+      .header h1 {
+        font-size: 1rem;
       }
-      .chat-header h1 {
-        font-size: 1.1rem;
-      }
-      .auth-section input {
-        width: 80px;
+      .auth input {
+        width: 70px;
         font-size: 0.75rem;
       }
-      .auth-section input:focus {
-        width: 100px;
+      .auth input:focus {
+        width: 90px;
       }
-      .messages-area {
-        padding: 0.75rem 0.75rem;
+      .messages {
+        padding: 8px;
       }
-      .input-area {
-        padding: 0.5rem 0.75rem 0.75rem;
-      }
-      .message {
-        max-width: 90%;
-        padding: 0.4rem 0.8rem;
-        font-size: 0.9rem;
-      }
-      .toolbar button {
-        font-size: 0.65rem;
-        padding: 0.15rem 0.4rem;
-      }
-      .emoji-picker button {
-        font-size: 1.2rem;
-      }
-      .sticker-picker button {
-        font-size: 2rem;
-      }
-    }
-    @media (max-width: 400px) {
-      .auth-section input {
-        width: 60px;
-      }
-      .input-row input[type="text"] {
+      .msg {
+        max-width: 92%;
+        padding: 4px 10px;
         font-size: 0.85rem;
-        padding: 0.5rem 0.7rem;
       }
-      .input-row button {
-        font-size: 0.75rem;
-        padding: 0.5rem 0.8rem;
+      .tools button {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+      }
+      .picker button {
+        font-size: 1.1rem;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="chat-container">
-    <!-- HEADER -->
-    <div class="chat-header">
-      <h1>🌍 <span>Chat</span>Pro</h1>
+  <div class="app">
+    <div class="header">
+      <h1>💬 <span>Chat</span></h1>
       <div class="header-right">
-        <span class="online-count" id="onlineCount">👤 0 online</span>
-        <div class="auth-section" id="authSection">
-          <input type="text" id="usernameInput" placeholder="Name..." maxlength="20" />
-          <button id="loginBtn">Join</button>
-          <button id="logoutBtn" class="logout-btn" style="display:none;">Leave</button>
+        <span class="online" id="online">👤 0</span>
+        <div class="auth" id="auth">
+          <input type="text" id="name" placeholder="Name..." maxlength="20" />
+          <button id="join">Join</button>
+          <button id="leave" class="logout" style="display:none;">Leave</button>
         </div>
       </div>
     </div>
 
-    <!-- MESSAGES -->
-    <div class="messages-area" id="messagesArea">
-      <div class="status">👋 Sign in to start chatting</div>
-    </div>
+    <div class="messages" id="msgs"><div class="status">👋 Sign in</div></div>
 
-    <!-- INPUT -->
     <div class="input-area">
-      <div class="toolbar" id="toolbar">
-        <button data-action="emoji">😊 Emoji</button>
-        <button data-action="sticker">🎨 Sticker</button>
-        <button data-action="gif">🎬 GIF</button>
-        <button data-action="image">🖼️ Image</button>
-        <button data-action="video">🎥 Video</button>
-        <button data-action="voice">🎤 Voice</button>
-        <button data-action="location">📍 Location</button>
-        <button data-action="poll">📊 Poll</button>
-        <button data-action="code">💻 Code</button>
-        <button data-action="bold"><b>B</b></button>
-        <button data-action="italic"><i>I</i></button>
-        <button data-action="strike"><s>S</s></button>
+      <div class="tools" id="tools">
+        <button data-a="emoji">😊</button>
+        <button data-a="sticker">🎨</button>
+        <button data-a="gif">🎬</button>
+        <button data-a="image">🖼️</button>
+        <button data-a="video">🎥</button>
+        <button data-a="voice">🎤</button>
+        <button data-a="location">📍</button>
+        <button data-a="poll">📊</button>
+        <button data-a="code">💻</button>
+        <button data-a="bold"><b>B</b></button>
+        <button data-a="italic"><i>I</i></button>
+        <button data-a="strike"><s>S</s></button>
       </div>
 
-      <div class="recording-indicator" id="recordingIndicator">
-        🔴 Recording...
-        <button id="stopRecordingBtn" style="background:transparent;border:none;color:#fff;cursor:pointer;font-size:1.2rem;">⏹️</button>
+      <div class="recording" id="recording">
+        🔴 Recording <button id="stoprec">⏹️</button>
       </div>
 
-      <div class="emoji-picker" id="emojiPicker">
+      <div class="picker" id="emojiPicker">
         <button>😊</button><button>😂</button><button>🤣</button><button>❤️</button>
         <button>🔥</button><button>👍</button><button>👎</button><button>🙏</button>
         <button>💪</button><button>🎉</button><button>✨</button><button>🌟</button>
@@ -567,7 +478,7 @@
         <button>🏆</button><button>🎯</button><button>💯</button><button>🔮</button>
       </div>
 
-      <div class="sticker-picker" id="stickerPicker">
+      <div class="picker sticker-picker" id="stickerPicker">
         <button>🐱</button><button>🐶</button><button>🐼</button><button>🐨</button>
         <button>🦊</button><button>🐰</button><button>🐻</button><button>🐸</button>
         <button>🐵</button><button>🦄</button><button>🐉</button><button>🐲</button>
@@ -575,675 +486,393 @@
         <button>🎃</button><button>👻</button><button>💀</button><button>👾</button>
       </div>
 
-      <div class="input-row">
-        <input type="text" id="messageInput" placeholder="Type a message..." disabled />
-        <button id="sendBtn" disabled>Send</button>
-        <button id="fileInputBtn" class="icon-btn" disabled>📎</button>
-        <input type="file" id="fileInput" accept="image/*,video/*,audio/*" style="display:none" multiple />
+      <div class="row">
+        <input type="text" id="input" placeholder="Type..." disabled />
+        <button id="send" disabled>Send</button>
+        <button id="filebtn" class="icon" disabled>📎</button>
+        <input type="file" id="file" accept="image/*,video/*,audio/*" style="display:none" multiple />
       </div>
     </div>
   </div>
 
-  <!-- FIREBASE SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js">
   </script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js">
   </script>
 
   <script>
-    // ============================================================
-    // FIREBASE CONFIG
-    // ============================================================
-    const firebaseConfig = {
-      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-    };
-    firebase.initializeApp(firebaseConfig);
+    // Firebase
+    firebase.initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" });
     const db = firebase.database();
 
-    // ============================================================
-    // DOM REFS
-    // ============================================================
-    const DOM = {
-      messages: document.getElementById('messagesArea'),
-      input: document.getElementById('messageInput'),
-      send: document.getElementById('sendBtn'),
-      username: document.getElementById('usernameInput'),
-      login: document.getElementById('loginBtn'),
-      logout: document.getElementById('logoutBtn'),
-      online: document.getElementById('onlineCount'),
-      toolbar: document.getElementById('toolbar'),
-      emojiPicker: document.getElementById('emojiPicker'),
-      stickerPicker: document.getElementById('stickerPicker'),
-      fileInput: document.getElementById('fileInput'),
-      fileBtn: document.getElementById('fileInputBtn'),
-      recordingIndicator: document.getElementById('recordingIndicator'),
-      stopRecording: document.getElementById('stopRecordingBtn'),
+    // DOM
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+    const msgs = $('#msgs'),
+      input = $('#input'),
+      send = $('#send'),
+      name = $('#name'),
+      join = $('#join'),
+      leave = $('#leave'),
+      online = $('#online'),
+      tools = $('#tools'),
+      emojiPicker = $('#emojiPicker'),
+      stickerPicker = $('#stickerPicker'),
+      fileInput = $('#file'),
+      fileBtn = $('#filebtn'),
+      recording = $('#recording'),
+      stopRec = $('#stoprec');
+
+    let user = null,
+      listeners = [],
+      recorder = null,
+      chunks = [],
+      votes = {};
+
+    // Helpers
+    const status = t => {
+      let el = msgs.querySelector('.status');
+      if (!el) { el = document.createElement('div');
+        el.className = 'status';
+        msgs.appendChild(el); }
+      el.textContent = t;
+    };
+    const scroll = () => setTimeout(() => msgs.scrollTop = msgs.scrollHeight, 50);
+    const esc = t => { const d = document.createElement('div');
+      d.textContent = t; return d.innerHTML; };
+    const time = t => t ? new Date(t).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) : '';
+
+    // Upload file
+    const upload = f => new Promise((r, re) => { const rd = new FileReader();
+      rd.onload = e => r(e.target.result);
+      rd.onerror = re;
+      rd.readAsDataURL(f); });
+
+    // Send message
+    const sendMsg = txt => {
+      if (!user) return alert('Sign in!');
+      if (!txt || !txt.trim()) return;
+      const data = { name: user.name, uid: user.uid, text: txt.trim(), timestamp: firebase.database.ServerValue.TIMESTAMP };
+      if (txt.startsWith('📊 ')) {
+        const parts = txt.substring(4).split('|');
+        if (parts.length >= 3) {
+          const id = db.ref('messages').push().key;
+          db.ref('polls/' + id).set({ question: parts[0], options: parts.slice(1), votes: {} });
+          data.text = `📊 ${parts[0]}|${parts.slice(1).join('|')}`;
+        }
+      }
+      db.ref('messages').push(data).catch(() => alert('Failed to send.'));
+      input.value = '';
+      input.focus();
     };
 
-    // ============================================================
-    // STATE
-    // ============================================================
-    let currentUser = null;
-    let listeners = [];
-    let mediaRecorder = null;
-    let audioChunks = [];
-    let pollVotes = {};
-
-    // ============================================================
-    // CORE FUNCTIONS
-    // ============================================================
-    function setStatus(text) {
-      let el = DOM.messages.querySelector('.status');
-      if (!el) {
-        el = document.createElement('div');
-        el.className = 'status';
-        DOM.messages.appendChild(el);
-      }
-      el.textContent = text;
-    }
-
-    function scrollBottom() {
-      setTimeout(() => {
-        DOM.messages.scrollTop = DOM.messages.scrollHeight;
-      }, 50);
-    }
-
-    function escapeHTML(text) {
+    // Render message
+    const render = data => {
+      const own = user && data.uid === user.uid;
       const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-
-    function formatTime(timestamp) {
-      if (!timestamp) return '';
-      const d = new Date(timestamp);
-      return d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    function getFileType(file) {
-      if (file.type.startsWith('image/')) return 'image';
-      if (file.type.startsWith('video/')) return 'video';
-      if (file.type.startsWith('audio/')) return 'audio';
-      return 'file';
-    }
-
-    // ============================================================
-    // FILE UPLOAD
-    // ============================================================
-    function uploadFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = (e) => resolve(e.target.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
-    }
-
-    // ============================================================
-    // MESSAGE RENDERER
-    // ============================================================
-    function renderMessage(data) {
-      const isOwn = currentUser && data.uid === currentUser.uid;
-      const div = document.createElement('div');
-      div.className = `message ${isOwn ? 'own' : 'other'}`;
+      div.className = `msg ${own ? 'own' : 'other'}`;
       div.dataset.key = data._key;
 
-      const header = document.createElement('div');
-      header.className = 'sender';
-      header.textContent = data.name || 'Anonymous';
-      const time = document.createElement('span');
-      time.className = 'time';
-      time.textContent = formatTime(data.timestamp);
-      header.appendChild(time);
-      div.appendChild(header);
+      const hdr = document.createElement('div');
+      hdr.className = 'sender';
+      hdr.textContent = data.name || 'Anonymous';
+      const tm = document.createElement('span');
+      tm.className = 'time';
+      tm.textContent = time(data.timestamp);
+      hdr.appendChild(tm);
+      div.appendChild(hdr);
 
-      const content = document.createElement('div');
-      content.className = 'text';
+      const cnt = document.createElement('div');
+      cnt.className = 'text';
       let html = data.text || '';
 
-      // Parse message types
-      if (html.startsWith('📸 ')) {
-        const url = html.substring(4);
-        html = `<img src="${url}" alt="Image" loading="lazy" onerror="this.style.display='none'" />`;
-      } else if (html.startsWith('🎬 ')) {
-        const url = html.substring(4);
-        html = `<video controls src="${url}" preload="metadata"></video>`;
-      } else if (html.startsWith('🎤 ')) {
-        const url = html.substring(4);
-        html = `<div class="voice-msg">🎤 <audio controls src="${url}"></audio></div>`;
-      } else if (html.startsWith('📍 ')) {
-        const coords = html.substring(4);
-        html = `<div class="location">📍 <a href="https://maps.google.com/maps?q=${coords}" target="_blank">${coords}</a></div>`;
-      } else if (html.startsWith('📊 ')) {
-        const pollData = html.substring(4);
-        const parts = pollData.split('|');
-        const question = parts[0] || 'Poll';
-        const options = parts.slice(1);
-        const pollId = data._key;
-
-        let pollHtml = `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(question)}</strong><br/>`;
-        options.forEach((opt, i) => {
-          const votes = pollVotes[pollId]?.[i] || 0;
-          const total = pollVotes[pollId]?.total || 1;
-          const pct = Math.round((votes / total) * 100);
-          pollHtml += `
-                    <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
-                      ${escapeHTML(opt)} (${votes} votes)
-                      <div class="vote-bar" style="width:${pct}%"></div>
-                    </div>
-                  `;
+      if (html.startsWith('📸 ')) html = `<img src="${html.substring(4)}" loading="lazy" onerror="this.style.display='none'" />`;
+      else if (html.startsWith('🎬 ')) html = `<video controls src="${html.substring(4)}" preload="metadata"></video>`;
+      else if (html.startsWith('🎤 ')) html =
+        `<div class="voice">🎤 <audio controls src="${html.substring(4)}"></audio></div>`;
+      else if (html.startsWith('📍 ')) html =
+        `<div class="location">📍 <a href="https://maps.google.com/maps?q=${html.substring(4)}" target="_blank">${html.substring(4)}</a></div>`;
+      else if (html.startsWith('📊 ')) {
+        const parts = html.substring(4).split('|');
+        const q = parts[0],
+          opts = parts.slice(1);
+        const id = data._key;
+        let pollHtml = `<div class="poll" data-poll="${id}"><strong>📊 ${esc(q)}</strong><br/>`;
+        opts.forEach((o, i) => {
+          const v = votes[id]?.[i] || 0;
+          const t = votes[id]?.total || 1;
+          const pct = Math.round((v / t) * 100);
+          pollHtml +=
+            `<div class="option" data-poll="${id}" data-opt="${i}">${esc(o)} (${v})<div class="bar" style="width:${pct}%"></div></div>`;
         });
         pollHtml += '</div>';
         html = pollHtml;
-      } else if (html.startsWith('💻 ')) {
-        const code = html.substring(4);
-        html = `<pre><code>${escapeHTML(code)}</code></pre>`;
-      } else if (html.startsWith('🎬 GIF: ')) {
-        const url = html.substring(8);
-        html = `<img class="gif" src="${url}" alt="GIF" loading="lazy" onerror="this.style.display='none'" />`;
-      } else if (html.startsWith('🎨 ')) {
-        const emoji = html.substring(4);
-        html = `<span class="sticker">${emoji}</span>`;
-      } else {
-        // Markdown for regular text
-        html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-        html = html.replace(/\*(.*?)\*/g, '<i>$1</i>');
-        html = html.replace(/~~(.*?)~~/g, '<s>$1</s>');
-      }
+      } else if (html.startsWith('💻 ')) html = `<pre><code>${esc(html.substring(4))}</code></pre>`;
+      else if (html.startsWith('🎬 GIF: ')) html =
+        `<img class="gif" src="${html.substring(8)}" loading="lazy" onerror="this.style.display='none'" />`;
+      else if (html.startsWith('🎨 ')) html = `<span class="sticker">${html.substring(4)}</span>`;
+      else html = html.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/~~(.*?)~~/g,
+        '<s>$1</s>');
 
-      content.innerHTML = html;
-      div.appendChild(content);
+      cnt.innerHTML = html;
+      div.appendChild(cnt);
 
-      const status = DOM.messages.querySelector('.status');
-      if (status) status.remove();
+      const st = msgs.querySelector('.status');
+      if (st) st.remove();
+      msgs.appendChild(div);
+      scroll();
 
-      DOM.messages.appendChild(div);
-      scrollBottom();
-
-      // Poll vote handlers
-      div.querySelectorAll('.poll-option').forEach(el => {
-        el.addEventListener('click', () => {
-          const pollId = el.dataset.pollId;
-          const option = parseInt(el.dataset.option);
-          votePoll(pollId, option);
-        });
+      div.querySelectorAll('.option').forEach(el => {
+        el.onclick = () => {
+          if (!user) return alert('Sign in to vote!');
+          const id = el.dataset.poll,
+            opt = parseInt(el.dataset.opt);
+          const ref = db.ref('polls/' + id + '/votes/' + user.uid);
+          ref.once('value', s => {
+            if (s.exists()) return alert('Already voted!');
+            ref.set(opt, () => {
+              if (!votes[id]) votes[id] = {};
+              votes[id][opt] = (votes[id][opt] || 0) + 1;
+              votes[id].total = (votes[id].total || 0) + 1;
+              renderPoll(id);
+            });
+          });
+        };
       });
-    }
+    };
 
-    // ============================================================
-    // POLL SYSTEM
-    // ============================================================
-    function votePoll(pollId, optionIndex) {
-      if (!currentUser) {
-        alert('Sign in to vote!');
-        return;
-      }
-
-      const userVoteRef = db.ref('polls/' + pollId + '/votes/' + currentUser.uid);
-      userVoteRef.once('value', (snap) => {
-        if (snap.exists()) {
-          alert('You already voted on this poll!');
-          return;
-        }
-
-        userVoteRef.set(optionIndex, (error) => {
-          if (error) {
-            alert('Failed to vote. Please try again.');
-            return;
-          }
-
-          // Update local vote counts
-          if (!pollVotes[pollId]) pollVotes[pollId] = {};
-          pollVotes[pollId][optionIndex] = (pollVotes[pollId][optionIndex] || 0) + 1;
-          pollVotes[pollId].total = (pollVotes[pollId].total || 0) + 1;
-
-          // Refresh poll display
-          renderPoll(pollId);
-        });
-      });
-    }
-
-    function renderPoll(pollId) {
-      const pollEl = document.querySelector(`[data-poll-id="${pollId}"]`);
-      if (!pollEl) return;
-
-      const messageEl = pollEl.closest('.message');
-      if (!messageEl) return;
-
-      db.ref('polls/' + pollId).once('value', (snap) => {
-        const data = snap.val();
-        if (!data) return;
-
-        const votes = data.votes || {};
-        const total = Object.keys(votes).length;
-        const options = data.options || [];
-
-        let html = `<div class="poll" data-poll-id="${pollId}"><strong>📊 ${escapeHTML(data.question)}</strong><br/>`;
+    const renderPoll = id => {
+      const el = document.querySelector(`[data-poll="${id}"]`);
+      if (!el) return;
+      const msg = el.closest('.msg');
+      if (!msg) return;
+      db.ref('polls/' + id).once('value', s => {
+        const d = s.val();
+        if (!d) return;
+        const v = d.votes || {},
+          total = Object.keys(v).length,
+          opts = d.options || [];
+        let html = `<div class="poll" data-poll="${id}"><strong>📊 ${esc(d.question)}</strong><br/>`;
         const counts = {};
-        Object.values(votes).forEach(v => {
-          counts[v] = (counts[v] || 0) + 1;
-        });
-
-        options.forEach((opt, i) => {
-          const count = counts[i] || 0;
-          const pct = total > 0 ? Math.round((count / total) * 100) : 0;
-          html += `
-                    <div class="poll-option" data-poll-id="${pollId}" data-option="${i}">
-                      ${escapeHTML(opt)} (${count} votes)
-                      <div class="vote-bar" style="width:${pct}%"></div>
-                    </div>
-                  `;
+        Object.values(v).forEach(x => counts[x] = (counts[x] || 0) + 1);
+        opts.forEach((o, i) => {
+          const c = counts[i] || 0,
+            pct = total > 0 ? Math.round((c / total) * 100) : 0;
+          html +=
+            `<div class="option" data-poll="${id}" data-opt="${i}">${esc(o)} (${c})<div class="bar" style="width:${pct}%"></div></div>`;
         });
         html += '</div>';
-
-        const content = messageEl.querySelector('.text');
-        content.innerHTML = html;
-
-        messageEl.querySelectorAll('.poll-option').forEach(el => {
-          el.addEventListener('click', () => {
-            const pid = el.dataset.pollId;
-            const opt = parseInt(el.dataset.option);
-            votePoll(pid, opt);
-          });
+        const cnt = msg.querySelector('.text');
+        cnt.innerHTML = html;
+        msg.querySelectorAll('.option').forEach(el => {
+          el.onclick = () => {
+            if (!user) return alert('Sign in!');
+            const pid = el.dataset.poll,
+              opt = parseInt(el.dataset.opt);
+            const ref = db.ref('polls/' + pid + '/votes/' + user.uid);
+            ref.once('value', s => {
+              if (s.exists()) return alert('Already voted!');
+              ref.set(opt, () => {
+                if (!votes[pid]) votes[pid] = {};
+                votes[pid][opt] = (votes[pid][opt] || 0) + 1;
+                votes[pid].total = (votes[pid].total || 0) + 1;
+                renderPoll(pid);
+              });
+            });
+          };
         });
       });
-    }
+    };
 
-    // ============================================================
-    // FIREBASE SUBSCRIPTIONS
-    // ============================================================
-    function subscribeMessages() {
-      listeners.forEach(ref => ref.off());
+    // Subscribe
+    const subscribe = () => {
+      listeners.forEach(r => r.off());
       listeners = [];
+      const q = db.ref('messages').orderByKey().limitToLast(150);
+      q.on('child_added', s => { const d = s.val();
+        d._key = s.key;
+        render(d); });
+      q.on('child_removed', s => { const el = msgs.querySelector(`[data-key="${s.key}"]`); if (el) el.remove(); });
+      listeners.push(q);
+      q.once('value', s => { if (!s.exists()) status('💬 No messages'); });
+      db.ref('polls').on('child_changed', s => renderPoll(s.key));
+      listeners.push(db.ref('polls'));
 
-      const query = db.ref('messages').orderByKey().limitToLast(150);
-
-      query.on('child_added', (snap) => {
-        const data = snap.val();
-        data._key = snap.key;
-        renderMessage(data);
-      });
-
-      query.on('child_removed', (snap) => {
-        const el = DOM.messages.querySelector(`[data-key="${snap.key}"]`);
-        if (el) el.remove();
-      });
-
-      listeners.push(query);
-
-      query.once('value', (snap) => {
-        if (!snap.exists()) setStatus('💬 No messages yet. Say hello!');
-      });
-
-      // Poll votes listener
-      const pollRef = db.ref('polls');
-      pollRef.on('child_changed', (snap) => {
-        renderPoll(snap.key);
-      });
-      listeners.push(pollRef);
-
-      setupPresence();
-    }
-
-    function setupPresence() {
-      const presence = db.ref('.info/connected');
-      const users = db.ref('users');
-
-      presence.on('value', (snap) => {
-        if (snap.val() && currentUser) {
-          const ref = users.child(currentUser.uid);
-          ref.set({
-            name: currentUser.name,
-            lastSeen: firebase.database.ServerValue.TIMESTAMP
-          });
+      const presence = db.ref('.info/connected'),
+        users = db.ref('users');
+      presence.on('value', s => {
+        if (s.val() && user) {
+          const ref = users.child(user.uid);
+          ref.set({ name: user.name, lastSeen: firebase.database.ServerValue.TIMESTAMP });
           ref.onDisconnect().remove();
         }
       });
-
-      users.on('value', (snap) => {
-        if (snap.exists()) {
-          DOM.online.textContent = `👤 ${snap.numChildren()} online`;
-        } else {
-          DOM.online.textContent = '👤 0 online';
-        }
-      });
-
+      users.on('value', s => { online.textContent = s.exists() ? `👤 ${s.numChildren()}` : '👤 0'; });
       listeners.push(presence);
-    }
+    };
 
-    // ============================================================
-    // SEND MESSAGE
-    // ============================================================
-    function sendMessage(text) {
-      if (!currentUser) {
-        alert('Sign in first!');
-        return;
-      }
-      if (!text || !text.trim()) return;
-
-      const msgData = {
-        name: currentUser.name,
-        uid: currentUser.uid,
-        text: text.trim(),
-        timestamp: firebase.database.ServerValue.TIMESTAMP
-      };
-
-      // Store poll data separately
-      if (text.startsWith('📊 ')) {
-        const pollData = text.substring(4);
-        const parts = pollData.split('|');
-        const question = parts[0];
-        const options = parts.slice(1);
-        if (options.length >= 2) {
-          const pollId = db.ref('messages').push().key;
-          db.ref('polls/' + pollId).set({
-            question: question,
-            options: options,
-            votes: {}
-          });
-          msgData.text = `📊 ${question}|${options.join('|')}`;
-        }
-      }
-
-      db.ref('messages').push(msgData).catch(err => {
-        console.error('Send error:', err);
-        alert('Failed to send. Check connection.');
-      });
-
-      DOM.input.value = '';
-      DOM.input.focus();
-    }
-
-    // ============================================================
-    // FILE HANDLING
-    // ============================================================
-    async function handleFile(file) {
-      if (!currentUser) {
-        alert('Sign in first!');
-        return;
-      }
-
-      try {
-        const type = getFileType(file);
-        let prefix = '📸 ';
-        if (type === 'video') prefix = '🎬 ';
-        else if (type === 'audio') prefix = '🎤 ';
-
-        const dataUrl = await uploadFile(file);
-        sendMessage(prefix + dataUrl);
-      } catch (err) {
-        console.error('File upload error:', err);
-        alert('Failed to upload file.');
-      }
-    }
-
-    // ============================================================
-    // VOICE RECORDING
-    // ============================================================
-    async function startRecording() {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-
-        mediaRecorder.ondataavailable = (event) => {
-          audioChunks.push(event.data);
-        };
-
-        mediaRecorder.onstop = async () => {
-          const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-          const file = new File([audioBlob], 'voice.webm', { type: 'audio/webm' });
-          await handleFile(file);
-          DOM.recordingIndicator.classList.remove('active');
-          DOM.input.disabled = false;
-          DOM.send.disabled = false;
-          stream.getTracks().forEach(track => track.stop());
-        };
-
-        mediaRecorder.start();
-        DOM.recordingIndicator.classList.add('active');
-        DOM.input.disabled = true;
-        DOM.send.disabled = true;
-
-      } catch (err) {
-        console.error('Recording error:', err);
-        alert('Could not access microphone. Please allow microphone access.');
-      }
-    }
-
-    function stopRecording() {
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
-        mediaRecorder.stop();
-        DOM.recordingIndicator.classList.remove('active');
-        DOM.input.disabled = false;
-        DOM.send.disabled = false;
-      }
-    }
-
-    // ============================================================
-    // AUTH
-    // ============================================================
-    function login() {
-      const name = DOM.username.value.trim() || 'Guest';
-      currentUser = {
-        name: name,
-        uid: 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6)
-      };
-
-      DOM.username.disabled = true;
-      DOM.login.style.display = 'none';
-      DOM.logout.style.display = 'inline-block';
-      DOM.input.disabled = false;
-      DOM.send.disabled = false;
-      DOM.fileBtn.disabled = false;
-      DOM.input.placeholder = `Message as ${name}...`;
-
-      DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = false);
-
-      setStatus(`✅ Signed in as ${name}`);
-      DOM.messages.innerHTML = '';
-      subscribeMessages();
-    }
-
-    function logout() {
-      if (currentUser) {
-        db.ref('users').child(currentUser.uid).remove();
-      }
-
-      listeners.forEach(ref => ref.off());
-      listeners = [];
-      currentUser = null;
-
-      DOM.username.disabled = false;
-      DOM.login.style.display = 'inline-block';
-      DOM.logout.style.display = 'none';
-      DOM.input.disabled = true;
-      DOM.send.disabled = true;
-      DOM.fileBtn.disabled = true;
-      DOM.input.placeholder = 'Sign in to chat...';
-      DOM.input.value = '';
-
-      DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
-
-      DOM.messages.innerHTML = '';
-      setStatus('👋 You left the chat. Sign in to rejoin.');
-      DOM.online.textContent = '👤 0 online';
-    }
-
-    // ============================================================
-    // TOOLBAR ACTIONS
-    // ============================================================
-    function togglePicker(type) {
-      const pickers = {
-        emoji: DOM.emojiPicker,
-        sticker: DOM.stickerPicker
-      };
-      const picker = pickers[type];
-      if (!picker) return;
-
-      const isOpen = picker.classList.contains('open');
-      Object.values(pickers).forEach(p => p.classList.remove('open'));
-      if (!isOpen) picker.classList.add('open');
-    }
-
-    // ============================================================
-    // EVENT BINDINGS
-    // ============================================================
     // Auth
-    DOM.login.addEventListener('click', login);
-    DOM.logout.addEventListener('click', logout);
-    DOM.username.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') login();
-    });
+    const login = () => {
+      const n = name.value.trim() || 'Guest';
+      user = { name: n, uid: 'u_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6) };
+      name.disabled = true;
+      join.style.display = 'none';
+      leave.style.display = 'inline-block';
+      input.disabled = false;
+      send.disabled = false;
+      fileBtn.disabled = false;
+      input.placeholder = `Message as ${n}...`;
+      $$('#tools button').forEach(b => b.disabled = false);
+      status(`✅ Signed in as ${n}`);
+      msgs.innerHTML = '';
+      subscribe();
+    };
 
-    // Send
-    DOM.send.addEventListener('click', () => sendMessage(DOM.input.value));
-    DOM.input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage(DOM.input.value);
-      }
-    });
-
-    // File input
-    DOM.fileBtn.addEventListener('click', () => DOM.fileInput.click());
-    DOM.fileInput.addEventListener('change', async (e) => {
-      if (e.target.files.length) {
-        for (let file of e.target.files) {
-          await handleFile(file);
-        }
-        e.target.value = '';
-      }
-    });
+    const logout = () => {
+      if (user) db.ref('users').child(user.uid).remove();
+      listeners.forEach(r => r.off());
+      listeners = [];
+      user = null;
+      name.disabled = false;
+      join.style.display = 'inline-block';
+      leave.style.display = 'none';
+      input.disabled = true;
+      send.disabled = true;
+      fileBtn.disabled = true;
+      input.placeholder = 'Sign in...';
+      input.value = '';
+      $$('#tools button').forEach(b => b.disabled = true);
+      msgs.innerHTML = '';
+      status('👋 Left chat');
+      online.textContent = '👤 0';
+    };
 
     // Voice recording
-    const voiceBtn = DOM.toolbar.querySelector('[data-action="voice"]');
-    voiceBtn.addEventListener('click', () => {
-      if (mediaRecorder && mediaRecorder.state === 'recording') {
-        stopRecording();
-      } else {
-        startRecording();
+    const startRecord = async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        recorder = new MediaRecorder(stream);
+        chunks = [];
+        recorder.ondataavailable = e => chunks.push(e.data);
+        recorder.onstop = async () => {
+          const blob = new Blob(chunks, { type: 'audio/webm' });
+          const file = new File([blob], 'voice.webm', { type: 'audio/webm' });
+          const dataUrl = await upload(file);
+          sendMsg('🎤 ' + dataUrl);
+          recording.classList.remove('active');
+          input.disabled = false;
+          send.disabled = false;
+          stream.getTracks().forEach(t => t.stop());
+        };
+        recorder.start();
+        recording.classList.add('active');
+        input.disabled = true;
+        send.disabled = true;
+      } catch (e) { alert('Microphone access denied.'); }
+    };
+
+    const stopRecord = () => {
+      if (recorder && recorder.state === 'recording') {
+        recorder.stop();
+        recording.classList.remove('active');
+        input.disabled = false;
+        send.disabled = false;
       }
-    });
+    };
 
-    DOM.stopRecording.addEventListener('click', stopRecording);
+    // Handle files
+    const handleFile = async f => {
+      if (!user) return alert('Sign in!');
+      const type = f.type.startsWith('image/') ? '📸 ' : f.type.startsWith('video/') ? '🎬 ' : '🎤 ';
+      const dataUrl = await upload(f);
+      sendMsg(type + dataUrl);
+    };
 
-    // Toolbar
-    DOM.toolbar.addEventListener('click', (e) => {
+    // Toggle pickers
+    const togglePicker = type => {
+      const picker = type === 'emoji' ? emojiPicker : stickerPicker;
+      const isOpen = picker.classList.contains('open');
+      [emojiPicker, stickerPicker].forEach(p => p.classList.remove('open'));
+      if (!isOpen) picker.classList.add('open');
+    };
+
+    // Events
+    join.onclick = login;
+    leave.onclick = logout;
+    name.onkeydown = e => { if (e.key === 'Enter') login(); };
+    send.onclick = () => sendMsg(input.value);
+    input.onkeydown = e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+        sendMsg(input.value); } };
+
+    fileBtn.onclick = () => fileInput.click();
+    fileInput.onchange = async e => {
+      if (e.target.files.length) {
+        for (const f of e.target.files) await handleFile(f);
+        e.target.value = '';
+      }
+    };
+
+    stopRec.onclick = stopRecord;
+
+    tools.onclick = e => {
       const btn = e.target.closest('button');
       if (!btn) return;
-      const action = btn.dataset.action;
-
-      switch (action) {
-        case 'emoji':
-          togglePicker('emoji');
-          break;
-        case 'sticker':
-          togglePicker('sticker');
-          break;
-        case 'gif': {
-          const gifUrl = prompt('Enter GIF URL (e.g., https://media.giphy.com/media/xxx/giphy.gif):');
-          if (gifUrl) sendMessage('🎬 GIF: ' + gifUrl);
-          break;
-        }
-        case 'image':
-          DOM.fileInput.click();
-          break;
-        case 'video':
-          DOM.fileInput.click();
-          break;
-        case 'voice':
-          // Handled above
-          break;
-        case 'location':
-          if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-              (pos) => {
-                const coords = `${pos.coords.latitude},${pos.coords.longitude}`;
-                sendMessage('📍 ' + coords);
-              },
-              () => alert('Location access denied. Please enable location services.')
-            );
-          } else {
-            alert('Geolocation is not supported by your browser.');
+      const a = btn.dataset.a;
+      if (a === 'emoji') togglePicker('emoji');
+      else if (a === 'sticker') togglePicker('sticker');
+      else if (a === 'gif') { const url = prompt('GIF URL:'); if (url) sendMsg('🎬 GIF: ' + url); } else if (a === 'image')
+        fileInput.click();
+      else if (a === 'video') fileInput.click();
+      else if (a === 'voice') { if (recorder && recorder.state === 'recording') stopRecord();
+        else startRecord(); } else if (a === 'location') {
+        if (navigator.geolocation) navigator.geolocation.getCurrentPosition(
+          p => sendMsg('📍 ' + p.coords.latitude + ',' + p.coords.longitude),
+          () => alert('Location denied.')
+        );
+        else alert('Not supported.');
+      } else if (a === 'poll') {
+        const q = prompt('Poll question:');
+        if (q) {
+          const opts = prompt('Options (comma separated):');
+          if (opts) {
+            const o = opts.split(',').map(x => x.trim()).filter(x => x);
+            if (o.length >= 2) sendMsg('📊 ' + q + '|' + o.join('|'));
+            else alert('Need 2+ options');
           }
-          break;
-        case 'poll': {
-          const question = prompt('Enter poll question:');
-          if (question) {
-            const options = prompt('Enter poll options (comma separated, min 2):');
-            if (options) {
-              const opts = options.split(',').map(o => o.trim()).filter(o => o);
-              if (opts.length >= 2) {
-                sendMessage('📊 ' + question + '|' + opts.join('|'));
-              } else {
-                alert('Please enter at least 2 options.');
-              }
-            }
-          }
-          break;
         }
-        case 'code': {
-          const code = prompt('Enter your code:');
-          if (code) sendMessage('💻 ' + code);
-          break;
-        }
-        case 'bold':
-          DOM.input.value += ' **bold text** ';
-          DOM.input.focus();
-          break;
-        case 'italic':
-          DOM.input.value += ' *italic text* ';
-          DOM.input.focus();
-          break;
-        case 'strike':
-          DOM.input.value += ' ~~strikethrough text~~ ';
-          DOM.input.focus();
-          break;
-      }
-    });
+      } else if (a === 'code') { const c = prompt('Code:'); if (c) sendMsg('💻 ' + c); } else if (a === 'bold') input
+        .value += ' **bold** ';
+      else if (a === 'italic') input.value += ' *italic* ';
+      else if (a === 'strike') input.value += ' ~~strike~~ ';
+      input.focus();
+    };
 
-    // Emoji picker
-    DOM.emojiPicker.addEventListener('click', (e) => {
+    emojiPicker.onclick = e => {
       const btn = e.target.closest('button');
-      if (btn) {
-        DOM.input.value += btn.textContent;
-        DOM.input.focus();
-        DOM.emojiPicker.classList.remove('open');
-      }
-    });
+      if (btn) { input.value += btn.textContent;
+        input.focus();
+        emojiPicker.classList.remove('open'); }
+    };
 
-    // Sticker picker
-    DOM.stickerPicker.addEventListener('click', (e) => {
+    stickerPicker.onclick = e => {
       const btn = e.target.closest('button');
-      if (btn) {
-        sendMessage('🎨 ' + btn.textContent);
-        DOM.stickerPicker.classList.remove('open');
-      }
-    });
+      if (btn) { sendMsg('🎨 ' + btn.textContent);
+        stickerPicker.classList.remove('open'); }
+    };
 
-    // Close pickers on outside click
-    document.addEventListener('click', (e) => {
+    document.onclick = e => {
       if (!e.target.closest('.input-area')) {
-        DOM.emojiPicker.classList.remove('open');
-        DOM.stickerPicker.classList.remove('open');
+        emojiPicker.classList.remove('open');
+        stickerPicker.classList.remove('open');
       }
-    });
+    };
 
-    // ============================================================
-    // INIT
-    // ============================================================
-    DOM.toolbar.querySelectorAll('button').forEach(btn => btn.disabled = true);
-
-    setStatus('🌐 Connecting...');
-    subscribeMessages();
-
-    // PWA
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
-    }
-
-    console.log('💬 ChatPro loaded with 21+ features!');
+    // Init
+    $$('#tools button').forEach(b => b.disabled = true);
+    status('🌐 Connecting...');
+    subscribe();
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
+    console.log('💬 Chat loaded');
   </script>
 
 </body>
