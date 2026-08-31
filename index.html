@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK — Chat Multimedia">
+    <meta name="description" content="ZACK — Chat">
     <title>ZACK — Chat</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
@@ -13,18 +13,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
         :root {
-            --c-red: #ff0033;
-            --c-cyan: #00f0ff;
-            --c-bg: #000000;
-            --c-white: #ffffff;
-            --c-muted: #777777;
-            --c-success: #00ff88;
-            --c-danger: #ff0033;
+            --red: #ff0033;
+            --cyan: #00f0ff;
+            --bg: #000000;
+            --white: #ffffff;
+            --muted: #777777;
+            --success: #00ff88;
+            --border: rgba(255,0,51,0.2);
             --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
             --grad-btn: linear-gradient(135deg, #ff0033, #00f0ff);
-            --glow-cyan: 0 0 12px rgba(0,240,255,0.4);
-            --border-red: rgba(255,0,51,0.2);
-            --r-sm: 10px;
             --r-md: 14px;
             --r-full: 25px;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -35,9 +32,9 @@
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background: var(--c-bg);
+            background: var(--bg);
             font-family: 'Rajdhani', sans-serif;
-            color: var(--c-white);
+            color: var(--white);
             height: 100dvh;
             overflow: hidden;
             touch-action: manipulation;
@@ -46,19 +43,18 @@
 
         ::-webkit-scrollbar { width: 0; height: 0; }
 
-        /* ============ HEADER ============ */
+        /* Header */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: calc(10px + var(--safe-top)) 15px 10px;
             background: rgba(0,0,0,0.9);
-            border-bottom: 1px solid var(--border-red);
-            backdrop-filter: blur(15px);
+            border-bottom: 1px solid var(--border);
         }
-        .header-row { display: flex; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 20px; font-weight: 900; letter-spacing: 4px;
+            text-align: center;
             background: var(--grad-text);
             background-size: 300% 300%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -67,47 +63,55 @@
         }
         @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        /* ============ MAIN ============ */
+        /* Main */
         .main {
             position: relative; z-index: 2;
-            padding: calc(60px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
+            padding: calc(55px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
             max-width: 600px; margin: 0 auto;
             height: 100dvh;
             display: flex;
             flex-direction: column;
         }
 
-        /* ============ CHAT BOX ============ */
+        /* Chat */
         .chat-box {
             display: flex; flex-direction: column;
             flex: 1;
-            border: 1px solid var(--border-red); border-radius: var(--r-md);
+            border: 1px solid var(--border); border-radius: var(--r-md);
             background: rgba(255,0,51,0.04); overflow: hidden;
             min-height: 0;
         }
 
         .chat-head {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px; border-bottom: 1px solid var(--border-red);
+            padding: 10px 12px; border-bottom: 1px solid var(--border);
             flex-shrink: 0;
         }
-        .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--c-cyan); }
-        .chat-head .online { font-size: 8px; }
+        .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--cyan); }
+        .chat-head .online { font-size: 8px; transition: color 0.3s; }
+
+        .rec-bar {
+            display: none; text-align: center; padding: 4px;
+            background: rgba(255,0,51,0.08); border-bottom: 1px solid var(--red);
+            font-size: 9px; color: var(--red); font-family: 'Orbitron', sans-serif;
+            flex-shrink: 0;
+        }
+        .rec-bar.active { display: block; }
 
         .chat-log {
             flex: 1; overflow-y: auto; padding: 10px;
             min-height: 0;
         }
 
-        .date-separator {
+        .date-sep {
             text-align: center; font-size: 8px; color: #444;
             margin: 10px 0; font-family: 'Orbitron', sans-serif;
         }
 
         .msg { margin-bottom: 10px; }
         .msg.own { text-align: right; }
-        .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--c-cyan); margin-bottom: 3px; }
-        .msg.own .msg-name { color: var(--c-success); }
+        .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--cyan); margin-bottom: 3px; }
+        .msg.own .msg-name { color: var(--success); }
 
         .msg-text {
             display: inline-block; font-size: 12px; color: #ccc;
@@ -118,113 +122,92 @@
 
         .msg-audio {
             display: inline-flex; align-items: center; gap: 8px;
-            background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
+            background: rgba(255,0,51,0.08); border: 1px solid var(--red);
             border-radius: 20px; padding: 7px 12px;
         }
-        .msg-audio .audio-icon { font-size: 14px; color: var(--c-cyan); }
-        .msg-audio .audio-duration { font-size: 8px; color: #ccc; }
+        .msg-audio span { font-size: 14px; color: var(--cyan); }
+        .msg-audio small { font-size: 8px; color: #ccc; }
 
         .msg-image {
-            max-width: 140px; border-radius: 8px; border: 1px solid var(--c-cyan);
-            display: block;
+            max-width: 140px; border-radius: 8px; border: 1px solid var(--cyan);
+            display: block; pointer-events: none;
         }
         .msg.own .msg-image { margin-left: auto; }
 
-        .msg-delete-btn {
+        .msg-del {
             background: none; border: none; color: #444; font-size: 10px;
             padding: 2px; margin-left: 5px;
         }
-        .msg-delete-btn:active { color: var(--c-danger); }
+        .msg-del:active { color: var(--red); }
 
-        /* ============ INPUT AREA ============ */
+        .msg-del.confirm {
+            color: var(--red);
+            animation: pulse 0.5s infinite;
+        }
+        @keyframes pulse { 50% { opacity: 0.6; } }
+
+        /* Input */
         .chat-input-area {
-            padding: 8px 10px; border-top: 1px solid var(--border-red);
+            padding: 8px 10px; border-top: 1px solid var(--border);
             display: flex; gap: 5px; align-items: center;
             flex-shrink: 0;
         }
 
         .chat-input {
             flex: 1; padding: 10px 13px;
-            background: rgba(0,0,0,0.6); border: 1px solid var(--border-red);
-            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border);
+            color: var(--white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
             border-radius: var(--r-full); outline: none; min-width: 0;
         }
-        .chat-input:focus { border-color: var(--c-cyan); }
-
+        .chat-input:focus { border-color: var(--cyan); }
         .name-input { flex: 0 0 70px; }
 
         .send-btn {
-            padding: 10px 14px; background: var(--grad-btn); color: var(--c-white);
+            padding: 10px 14px; background: var(--grad-btn); color: var(--white);
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
             border: none; border-radius: var(--r-full); font-weight: 700;
-            opacity: 0.4; transition: opacity 0.2s;
+            opacity: 0.3; transition: opacity 0.2s;
         }
-        .send-btn.active { opacity: 1; }
+        .send-btn:not(:disabled) { opacity: 1; }
 
         .attach-btn {
             width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
-            color: var(--c-cyan); font-size: 13px;
+            background: rgba(255,0,51,0.06); border: 1px solid var(--border);
+            color: var(--cyan); font-size: 13px;
             display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
-        .attach-btn.recording {
-            background: var(--c-danger); color: var(--c-white);
-            animation: pulse 0.5s infinite;
-        }
-        @keyframes pulse { 50% { opacity: 0.6; } }
+        .attach-btn.recording { background: var(--red); color: var(--white); animation: pulse 0.5s infinite; }
 
-        /* ============ TOAST ============ */
+        /* Toast */
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
             display: flex; flex-direction: column; gap: 6px; max-width: 260px;
-            max-height: 50dvh; overflow-y: auto;
         }
         .toast {
             padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
             animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 3s forwards;
         }
-        .toast-success { background: rgba(0,255,136,0.12); border-color: var(--c-success); color: var(--c-success); }
-        .toast-error { background: rgba(255,0,51,0.12); border-color: var(--c-danger); color: var(--c-danger); }
-        .toast-info { background: rgba(0,240,255,0.12); border-color: var(--c-cyan); color: var(--c-cyan); }
+        .toast-success { background: rgba(0,255,136,0.12); border-color: var(--success); color: var(--success); }
+        .toast-error { background: rgba(255,0,51,0.12); border-color: var(--red); color: var(--red); }
+        .toast-info { background: rgba(0,240,255,0.12); border-color: var(--cyan); color: var(--cyan); }
         @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
         @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
 
-        /* ============ LIGHTBOX ============ */
+        /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; z-index: 500;
             background: rgba(0,0,0,0.95); display: none;
             justify-content: center; align-items: center;
         }
         .lightbox.active { display: flex; }
-        .lightbox img { max-width: 92%; max-height: 85%; border: 2px solid var(--c-cyan); border-radius: 10px; }
+        .lightbox img { max-width: 92%; max-height: 85%; border: 2px solid var(--cyan); border-radius: 10px; }
         .lightbox-close {
             position: absolute; top: 18px; right: 18px;
             width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(0,0,0,0.8); border: 2px solid var(--c-red);
-            color: var(--c-red); font-size: 20px;
+            background: rgba(0,0,0,0.8); border: 2px solid var(--red);
+            color: var(--red); font-size: 20px;
             display: flex; justify-content: center; align-items: center;
         }
-
-        /* ============ CONFIRM MODAL ============ */
-        .confirm-modal {
-            position: fixed; inset: 0; z-index: 600;
-            background: rgba(0,0,0,0.8); display: none;
-            justify-content: center; align-items: center;
-        }
-        .confirm-modal.active { display: flex; }
-        .confirm-box {
-            background: #111; border: 1px solid var(--border-red); border-radius: var(--r-md);
-            padding: 20px; max-width: 280px; text-align: center;
-        }
-        .confirm-box p { font-size: 13px; margin-bottom: 15px; }
-        .confirm-btns { display: flex; gap: 8px; }
-        .confirm-btn {
-            flex: 1; padding: 10px; border-radius: var(--r-full);
-            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
-            cursor: pointer;
-        }
-        .confirm-yes { background: var(--c-danger); color: var(--c-white); border: none; }
-        .confirm-no { background: none; border: 1px solid var(--c-cyan); color: var(--c-cyan); }
 
         #chatImageInput { display: none; }
     </style>
@@ -238,20 +221,8 @@
         <img id="lightboxImg" src="" alt="Gambar">
     </div>
 
-    <div class="confirm-modal" id="confirmModal">
-        <div class="confirm-box">
-            <p id="confirmText">Padam mesej ini?</p>
-            <div class="confirm-btns">
-                <button class="confirm-btn confirm-yes" id="confirmYes">YA</button>
-                <button class="confirm-btn confirm-no" id="confirmNo">TIDAK</button>
-            </div>
-        </div>
-    </div>
-
     <div class="header">
-        <div class="header-row">
-            <div class="logo">ZACK</div>
-        </div>
+        <div class="logo">ZACK</div>
     </div>
 
     <div class="main">
@@ -260,13 +231,14 @@
                 <h3>💬 CHAT</h3>
                 <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
+            <div class="rec-bar" id="recBar">🔴 MERAKAM... <span id="recCountdown"></span></div>
             <div class="chat-log" id="chatLog"></div>
             <div class="chat-input-area">
                 <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20">
                 <input type="text" id="chatInput" class="chat-input" placeholder="Tulis..." maxlength="500">
-                <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
-                <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
-                <button class="send-btn" id="sendBtn">HANTAR</button>
+                <button class="attach-btn" id="imgBtn">📷</button>
+                <button class="attach-btn" id="recordBtn">🎤</button>
+                <button class="send-btn" id="sendBtn" disabled>HANTAR</button>
             </div>
             <input type="file" id="chatImageInput" accept="image/*">
         </div>
@@ -283,7 +255,7 @@
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             maxImageSize: 2 * 1024 * 1024,
             maxAudioDuration: 30,
-            maxImageDimension: 800
+            maxImageDim: 800
         };
 
         /* ============ STATE ============ */
@@ -293,23 +265,24 @@
             recorder: null,
             audioChunks: [],
             recordTimer: null,
-            deleteKey: null
+            deleteTarget: null,
+            deleteTimer: null
         };
 
         /* ============ DOM ============ */
         const $ = id => document.getElementById(id);
-
         const DOM = {
             toastWrap: $('toastWrap'),
             lightbox: $('lightbox'),
             lightboxImg: $('lightboxImg'),
-            confirmModal: $('confirmModal'),
-            confirmText: $('confirmText'),
+            lightboxClose: $('lightboxClose'),
             chatLog: $('chatLog'),
             chatName: $('chatName'),
             chatInput: $('chatInput'),
             onlineStatus: $('onlineStatus'),
             recordBtn: $('recordBtn'),
+            recBar: $('recBar'),
+            recCountdown: $('recCountdown'),
             sendBtn: $('sendBtn'),
             imgBtn: $('imgBtn'),
             chatImageInput: $('chatImageInput')
@@ -320,7 +293,7 @@
 
         /* ============ HELPERS ============ */
         function toast(msg, type = 'info') {
-            while (DOM.toastWrap.children.length >= 5) DOM.toastWrap.firstChild.remove();
+            while (DOM.toastWrap.children.length >= 3) DOM.toastWrap.firstChild.remove();
             const el = document.createElement('div');
             el.className = `toast toast-${type}`;
             el.textContent = msg;
@@ -328,130 +301,98 @@
             setTimeout(() => el.remove(), 3300);
         }
 
-        function sanitizeText(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.textContent;
-        }
+        const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
 
-        function getTime() {
-            return new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
-        }
+        const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+        const getName = () => DOM.chatName.value.trim() || 'Anonymous';
 
-        function getName() {
-            return DOM.chatName.value.trim() || 'Anonymous';
-        }
-
-        function formatDuration(seconds) {
-            const m = Math.floor(seconds / 60);
-            const s = seconds % 60;
-            return `${m}:${s.toString().padStart(2, '0')}`;
-        }
-
-        function getDateSeparator(timestamp) {
+        function dateSep(ts) {
             const today = new Date().toDateString();
-            const yesterday = new Date(Date.now() - 86400000).toDateString();
-            const msgDate = new Date(timestamp).toDateString();
+            const yesterday = new Date(Date.now() - 864e5).toDateString();
+            const msgDate = new Date(ts).toDateString();
             if (msgDate === today) return 'HARI INI';
             if (msgDate === yesterday) return 'SEMALAM';
-            return new Date(timestamp).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' });
+            return new Date(ts).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' });
         }
 
-        function compressImage(file) {
-            return new Promise((resolve) => {
+        function compressImage(file, cb) {
+            const reader = new FileReader();
+            reader.onload = e => {
                 const img = new Image();
-                const reader = new FileReader();
-                reader.onload = e => {
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        let w = img.width;
-                        let h = img.height;
-                        if (w > CONFIG.maxImageDimension) {
-                            h = h * (CONFIG.maxImageDimension / w);
-                            w = CONFIG.maxImageDimension;
-                        }
-                        canvas.width = w;
-                        canvas.height = h;
-                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7));
-                    };
-                    img.src = e.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let w = img.width, h = img.height;
+                    if (w > CONFIG.maxImageDim) { h = h * (CONFIG.maxImageDim / w); w = CONFIG.maxImageDim; }
+                    canvas.width = w; canvas.height = h;
+                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    cb(canvas.toDataURL('image/jpeg', 0.7));
                 };
-                reader.readAsDataURL(file);
-            });
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
         }
 
         /* ============ CHAT ============ */
         db.ref('chat').limitToLast(50).on('value', snap => {
             const myName = getName();
-            const wasAtBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
+            const atBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
             DOM.chatLog.innerHTML = '';
-            const fragment = document.createDocumentFragment();
+            const frag = document.createDocumentFragment();
             let lastDate = '';
 
             if (snap.exists()) {
                 snap.forEach(child => {
-                    const data = child.val();
-                    const dateSep = getDateSeparator(data.timestamp || Date.now());
-                    if (dateSep !== lastDate) {
-                        lastDate = dateSep;
+                    const d = child.val();
+                    const ds = dateSep(d.timestamp || Date.now());
+                    if (ds !== lastDate) {
+                        lastDate = ds;
                         const sep = document.createElement('div');
-                        sep.className = 'date-separator';
-                        sep.textContent = `— ${dateSep} —`;
-                        fragment.appendChild(sep);
+                        sep.className = 'date-sep';
+                        sep.textContent = `— ${ds} —`;
+                        frag.appendChild(sep);
                     }
 
                     const div = document.createElement('div');
-                    div.className = 'msg' + (data.name === myName ? ' own' : '');
+                    div.className = 'msg' + (d.name === myName ? ' own' : '');
 
-                    const nameEl = document.createElement('div');
-                    nameEl.className = 'msg-name';
-                    nameEl.textContent = `${sanitizeText(data.name)} • ${sanitizeText(data.time || '')}`;
-                    div.appendChild(nameEl);
+                    const name = document.createElement('div');
+                    name.className = 'msg-name';
+                    name.textContent = `${safeText(d.name)} • ${safeText(d.time || '')}`;
+                    div.appendChild(name);
 
-                    if (data.type === 'text') {
-                        const textEl = document.createElement('div');
-                        textEl.className = 'msg-text';
-                        textEl.textContent = sanitizeText(data.text);
-                        div.appendChild(textEl);
-                    } else if (data.type === 'image') {
+                    if (d.type === 'text') {
+                        const t = document.createElement('div');
+                        t.className = 'msg-text';
+                        t.textContent = safeText(d.text);
+                        div.appendChild(t);
+                    } else if (d.type === 'image') {
                         const img = document.createElement('img');
                         img.className = 'msg-image';
-                        img.src = data.data;
-                        img.alt = 'Gambar';
-                        img.addEventListener('click', () => openLightbox(data.data));
+                        img.src = d.data;
                         div.appendChild(img);
-                    } else if (data.type === 'audio') {
-                        const audioEl = document.createElement('div');
-                        audioEl.className = 'msg-audio';
-                        const icon = document.createElement('span');
-                        icon.className = 'audio-icon';
-                        icon.textContent = '▶';
-                        const duration = document.createElement('span');
-                        duration.className = 'audio-duration';
-                        duration.textContent = formatDuration(data.duration || 0);
-                        audioEl.append(icon, duration);
-                        audioEl.addEventListener('click', () => {
-                            const audio = new Audio(data.data);
-                            audio.play().catch(() => toast('Tidak dapat main audio!', 'error'));
-                        });
-                        div.appendChild(audioEl);
+                    } else if (d.type === 'audio') {
+                        const a = document.createElement('div');
+                        a.className = 'msg-audio';
+                        a.innerHTML = '<span>▶</span><small></small>';
+                        a.querySelector('small').textContent = `${Math.floor((d.duration || 0) / 60)}:${((d.duration || 0) % 60).toString().padStart(2, '0')}`;
+                        a.addEventListener('click', () => new Audio(d.data).play().catch(() => toast('Tidak dapat main audio!', 'error')));
+                        div.appendChild(a);
                     }
 
-                    if (data.name === myName) {
-                        const delBtn = document.createElement('button');
-                        delBtn.className = 'msg-delete-btn';
-                        delBtn.textContent = '✕';
-                        delBtn.addEventListener('click', () => showConfirm(child.key));
-                        div.appendChild(delBtn);
+                    if (d.name === myName) {
+                        const del = document.createElement('button');
+                        del.className = 'msg-del';
+                        del.textContent = '✕';
+                        del.addEventListener('click', () => handleDelete(child.key, del));
+                        div.appendChild(del);
                     }
 
-                    fragment.appendChild(div);
+                    frag.appendChild(div);
                 });
             }
 
-            DOM.chatLog.appendChild(fragment);
-            if (wasAtBottom) DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
+            DOM.chatLog.appendChild(frag);
+            if (atBottom) DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
         });
 
         function send(type, data) {
@@ -461,38 +402,31 @@
             }).catch(() => toast('Gagal hantar!', 'error'));
         }
 
+        function updateSendBtn() {
+            DOM.sendBtn.disabled = !DOM.chatInput.value.trim();
+        }
+
         function sendText() {
             const text = DOM.chatInput.value.trim();
             if (!text) return;
             send('text', { text });
             DOM.chatInput.value = '';
             updateSendBtn();
-            DOM.chatInput.focus();
         }
 
-        async function sendImage(event) {
-            const file = event.target.files[0];
+        function sendImage(e) {
+            const file = e.target.files[0];
             if (!file) return;
             if (file.size > CONFIG.maxImageSize) { toast('Saiz terlalu besar!', 'error'); return; }
-            try {
-                const compressed = await compressImage(file);
-                send('image', { data: compressed });
+            compressImage(file, data => {
+                send('image', { data });
                 toast('Gambar dihantar!', 'success');
-            } catch(e) {
-                toast('Gagal proses gambar!', 'error');
-            }
-            event.target.value = '';
+            });
+            e.target.value = '';
         }
 
-        function toggleRecord() {
-            if (state.isRecording) {
-                stopRecord();
-            } else {
-                startRecord();
-            }
-        }
-
-        async function startRecord() {
+        async function toggleRecord() {
+            if (state.isRecording) { stopRecord(); return; }
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 state.recorder = new MediaRecorder(stream);
@@ -503,8 +437,7 @@
                     const blob = new Blob(state.audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.onload = ev => {
-                        const duration = Math.round((Date.now() - state.recordStart) / 1000);
-                        send('audio', { data: ev.target.result, duration });
+                        send('audio', { data: ev.target.result, duration: Math.round((Date.now() - state.recordStart) / 1000) });
                         toast('Audio dihantar!', 'success');
                     };
                     reader.readAsDataURL(blob);
@@ -514,53 +447,45 @@
                 state.isRecording = true;
                 state.recordStart = Date.now();
                 DOM.recordBtn.classList.add('recording');
-                DOM.recordBtn.textContent = '⏹';
+                DOM.recBar.classList.add('active');
                 state.recordTimer = setInterval(() => {
                     const elapsed = Math.round((Date.now() - state.recordStart) / 1000);
                     const remaining = CONFIG.maxAudioDuration - elapsed;
-                    if (remaining <= 0) {
-                        stopRecord();
-                    } else {
-                        DOM.recordBtn.textContent = remaining;
-                    }
+                    if (remaining <= 0) { stopRecord(); return; }
+                    DOM.recCountdown.textContent = `(${remaining}s)`;
                 }, 1000);
-            } catch(e) {
-                toast('Tidak dapat akses mikrofon!', 'error');
-            }
+            } catch(e) { toast('Tidak dapat akses mikrofon!', 'error'); }
         }
 
         function stopRecord() {
             state.isRecording = false;
             DOM.recordBtn.classList.remove('recording');
-            DOM.recordBtn.textContent = '🎤';
+            DOM.recBar.classList.remove('active');
+            DOM.recCountdown.textContent = '';
             clearInterval(state.recordTimer);
             if (state.recorder) state.recorder.stop();
         }
 
-        /* ============ CONFIRM DELETE ============ */
-        function showConfirm(key) {
-            state.deleteKey = key;
-            DOM.confirmModal.classList.add('active');
-        }
-
-        function hideConfirm() {
-            state.deleteKey = null;
-            DOM.confirmModal.classList.remove('active');
-        }
-
-        function confirmDelete() {
-            if (state.deleteKey) {
-                db.ref('chat/' + state.deleteKey).remove()
-                    .then(() => toast('Dipadam!', 'success'))
-                    .catch(() => toast('Gagal padam!', 'error'));
+        /* ============ DOUBLE-TAP DELETE ============ */
+        function handleDelete(key, btn) {
+            if (state.deleteTarget === key) {
+                clearTimeout(state.deleteTimer);
+                db.ref('chat/' + key).remove().then(() => toast('Dipadam!', 'success'));
+                state.deleteTarget = null;
+                return;
             }
-            hideConfirm();
+            state.deleteTarget = key;
+            btn.classList.add('confirm');
+            state.deleteTimer = setTimeout(() => {
+                btn.classList.remove('confirm');
+                state.deleteTarget = null;
+            }, 2000);
         }
 
         /* ============ ONLINE ============ */
         db.ref('.info/connected').on('value', snap => {
             DOM.onlineStatus.textContent = snap.val() ? '● ONLINE' : '● OFFLINE';
-            DOM.onlineStatus.style.color = snap.val() ? 'var(--c-success)' : '#555';
+            DOM.onlineStatus.style.color = snap.val() ? 'var(--success)' : '#555';
         });
 
         /* ============ LIGHTBOX ============ */
@@ -574,41 +499,22 @@
             document.body.style.overflow = 'auto';
         }
 
-        /* ============ SEND BUTTON ============ */
-        function updateSendBtn() {
-            DOM.sendBtn.classList.toggle('active', DOM.chatInput.value.trim().length > 0);
-        }
+        /* ============ NAME PERSIST ============ */
+        DOM.chatName.value = localStorage.getItem('zack_name') || '';
+        DOM.chatName.addEventListener('blur', () => localStorage.setItem('zack_name', getName()));
 
         /* ============ EVENTS ============ */
-        function initEvents() {
-            DOM.sendBtn.addEventListener('click', sendText);
-            DOM.chatInput.addEventListener('input', updateSendBtn);
-            DOM.chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendText(); });
-            DOM.imgBtn.addEventListener('click', () => DOM.chatImageInput.click());
-            DOM.chatImageInput.addEventListener('change', sendImage);
-            DOM.recordBtn.addEventListener('click', toggleRecord);
-            $('lightboxClose').addEventListener('click', closeLightbox);
-            DOM.lightbox.addEventListener('click', closeLightbox);
-            DOM.lightboxImg.addEventListener('click', e => e.stopPropagation());
-            $('confirmYes').addEventListener('click', confirmDelete);
-            $('confirmNo').addEventListener('click', hideConfirm);
-        }
-
-        /* ============ LOCALSTORAGE ============ */
-        function loadName() {
-            const saved = localStorage.getItem('zack_chat_name');
-            if (saved) DOM.chatName.value = saved;
-        }
-
-        function saveName() {
-            localStorage.setItem('zack_chat_name', getName());
-        }
-
-        DOM.chatName.addEventListener('change', saveName);
+        DOM.sendBtn.addEventListener('click', sendText);
+        DOM.chatInput.addEventListener('input', updateSendBtn);
+        DOM.chatInput.addEventListener('keyup', e => { if (e.key === 'Enter') sendText(); });
+        DOM.imgBtn.addEventListener('click', () => DOM.chatImageInput.click());
+        DOM.chatImageInput.addEventListener('change', sendImage);
+        DOM.recordBtn.addEventListener('click', toggleRecord);
+        DOM.lightboxClose.addEventListener('click', closeLightbox);
+        DOM.lightbox.addEventListener('click', closeLightbox);
+        DOM.lightboxImg.addEventListener('click', e => e.stopPropagation());
 
         /* ============ INIT ============ */
-        loadName();
-        initEvents();
         updateSendBtn();
     </script>
 
