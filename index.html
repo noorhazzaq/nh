@@ -46,16 +46,7 @@
 
         ::-webkit-scrollbar { width: 0; height: 0; }
 
-        .bg-grid {
-            position: fixed; inset: 0;
-            background-image:
-                linear-gradient(rgba(255,0,51,0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,0,51,0.02) 1px, transparent 1px);
-            background-size: 30px 30px;
-            z-index: 0; pointer-events: none;
-        }
-
-        /* Header */
+        /* ============ HEADER ============ */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: calc(10px + var(--safe-top)) 15px 10px;
@@ -76,7 +67,7 @@
         }
         @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        /* Main */
+        /* ============ MAIN ============ */
         .main {
             position: relative; z-index: 2;
             padding: calc(60px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
@@ -86,7 +77,7 @@
             flex-direction: column;
         }
 
-        /* Chat */
+        /* ============ CHAT BOX ============ */
         .chat-box {
             display: flex; flex-direction: column;
             flex: 1;
@@ -103,14 +94,6 @@
         .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--c-cyan); }
         .chat-head .online { font-size: 8px; }
 
-        .recording-bar {
-            display: none; text-align: center; padding: 4px;
-            background: rgba(255,0,51,0.08); border-bottom: 1px solid var(--c-danger);
-            font-size: 9px; color: var(--c-danger); font-family: 'Orbitron', sans-serif;
-            flex-shrink: 0;
-        }
-        .recording-bar.active { display: block; }
-
         .chat-log {
             flex: 1; overflow-y: auto; padding: 10px;
             min-height: 0;
@@ -125,6 +108,7 @@
         .msg.own { text-align: right; }
         .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--c-cyan); margin-bottom: 3px; }
         .msg.own .msg-name { color: var(--c-success); }
+
         .msg-text {
             display: inline-block; font-size: 12px; color: #ccc;
             background: rgba(0,0,0,0.4); padding: 8px 10px; border-radius: 10px;
@@ -135,23 +119,24 @@
         .msg-audio {
             display: inline-flex; align-items: center; gap: 8px;
             background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
-            border-radius: 20px; padding: 7px 12px; cursor: pointer;
+            border-radius: 20px; padding: 7px 12px;
         }
         .msg-audio .audio-icon { font-size: 14px; color: var(--c-cyan); }
         .msg-audio .audio-duration { font-size: 8px; color: #ccc; }
 
         .msg-image {
             max-width: 140px; border-radius: 8px; border: 1px solid var(--c-cyan);
-            cursor: pointer; display: block;
+            display: block;
         }
         .msg.own .msg-image { margin-left: auto; }
 
         .msg-delete-btn {
             background: none; border: none; color: #444; font-size: 10px;
-            cursor: pointer; padding: 2px; margin-left: 5px;
+            padding: 2px; margin-left: 5px;
         }
         .msg-delete-btn:active { color: var(--c-danger); }
 
+        /* ============ INPUT AREA ============ */
         .chat-input-area {
             padding: 8px 10px; border-top: 1px solid var(--border-red);
             display: flex; gap: 5px; align-items: center;
@@ -165,18 +150,21 @@
             border-radius: var(--r-full); outline: none; min-width: 0;
         }
         .chat-input:focus { border-color: var(--c-cyan); }
-        .name-input { max-width: 70px; }
+
+        .name-input { flex: 0 0 70px; }
 
         .send-btn {
             padding: 10px 14px; background: var(--grad-btn); color: var(--c-white);
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
-            border: none; border-radius: var(--r-full); font-weight: 700; cursor: pointer;
+            border: none; border-radius: var(--r-full); font-weight: 700;
+            opacity: 0.4; transition: opacity 0.2s;
         }
+        .send-btn.active { opacity: 1; }
 
         .attach-btn {
             width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
-            color: var(--c-cyan); font-size: 13px; cursor: pointer;
+            color: var(--c-cyan); font-size: 13px;
             display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
         .attach-btn.recording {
@@ -185,10 +173,11 @@
         }
         @keyframes pulse { 50% { opacity: 0.6; } }
 
-        /* Toast */
+        /* ============ TOAST ============ */
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
             display: flex; flex-direction: column; gap: 6px; max-width: 260px;
+            max-height: 50dvh; overflow-y: auto;
         }
         .toast {
             padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
@@ -200,7 +189,7 @@
         @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
         @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
 
-        /* Lightbox */
+        /* ============ LIGHTBOX ============ */
         .lightbox {
             position: fixed; inset: 0; z-index: 500;
             background: rgba(0,0,0,0.95); display: none;
@@ -212,21 +201,51 @@
             position: absolute; top: 18px; right: 18px;
             width: 40px; height: 40px; border-radius: 50%;
             background: rgba(0,0,0,0.8); border: 2px solid var(--c-red);
-            color: var(--c-red); font-size: 20px; cursor: pointer;
+            color: var(--c-red); font-size: 20px;
             display: flex; justify-content: center; align-items: center;
         }
+
+        /* ============ CONFIRM MODAL ============ */
+        .confirm-modal {
+            position: fixed; inset: 0; z-index: 600;
+            background: rgba(0,0,0,0.8); display: none;
+            justify-content: center; align-items: center;
+        }
+        .confirm-modal.active { display: flex; }
+        .confirm-box {
+            background: #111; border: 1px solid var(--border-red); border-radius: var(--r-md);
+            padding: 20px; max-width: 280px; text-align: center;
+        }
+        .confirm-box p { font-size: 13px; margin-bottom: 15px; }
+        .confirm-btns { display: flex; gap: 8px; }
+        .confirm-btn {
+            flex: 1; padding: 10px; border-radius: var(--r-full);
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
+            cursor: pointer;
+        }
+        .confirm-yes { background: var(--c-danger); color: var(--c-white); border: none; }
+        .confirm-no { background: none; border: 1px solid var(--c-cyan); color: var(--c-cyan); }
 
         #chatImageInput { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="bg-grid"></div>
     <div class="toast-wrap" id="toastWrap"></div>
 
-    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">✕</button>
-        <img id="lightboxImg" src="" alt="Gambar" onclick="event.stopPropagation()">
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">✕</button>
+        <img id="lightboxImg" src="" alt="Gambar">
+    </div>
+
+    <div class="confirm-modal" id="confirmModal">
+        <div class="confirm-box">
+            <p id="confirmText">Padam mesej ini?</p>
+            <div class="confirm-btns">
+                <button class="confirm-btn confirm-yes" id="confirmYes">YA</button>
+                <button class="confirm-btn confirm-no" id="confirmNo">TIDAK</button>
+            </div>
+        </div>
     </div>
 
     <div class="header">
@@ -241,11 +260,10 @@
                 <h3>💬 CHAT</h3>
                 <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
-            <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
             <div class="chat-log" id="chatLog"></div>
             <div class="chat-input-area">
-                <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Tulis...">
+                <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Tulis..." maxlength="500">
                 <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
                 <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
                 <button class="send-btn" id="sendBtn">HANTAR</button>
@@ -264,7 +282,8 @@
         const CONFIG = {
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             maxImageSize: 2 * 1024 * 1024,
-            maxAudioDuration: 30
+            maxAudioDuration: 30,
+            maxImageDimension: 800
         };
 
         /* ============ STATE ============ */
@@ -272,7 +291,9 @@
             isRecording: false,
             recordStart: 0,
             recorder: null,
-            audioChunks: []
+            audioChunks: [],
+            recordTimer: null,
+            deleteKey: null
         };
 
         /* ============ DOM ============ */
@@ -282,12 +303,16 @@
             toastWrap: $('toastWrap'),
             lightbox: $('lightbox'),
             lightboxImg: $('lightboxImg'),
+            confirmModal: $('confirmModal'),
+            confirmText: $('confirmText'),
             chatLog: $('chatLog'),
             chatName: $('chatName'),
             chatInput: $('chatInput'),
             onlineStatus: $('onlineStatus'),
             recordBtn: $('recordBtn'),
-            recBar: $('recBar')
+            sendBtn: $('sendBtn'),
+            imgBtn: $('imgBtn'),
+            chatImageInput: $('chatImageInput')
         };
 
         /* ============ FIREBASE ============ */
@@ -295,7 +320,7 @@
 
         /* ============ HELPERS ============ */
         function toast(msg, type = 'info') {
-            while (DOM.toastWrap.children.length >= 3) DOM.toastWrap.firstChild.remove();
+            while (DOM.toastWrap.children.length >= 5) DOM.toastWrap.firstChild.remove();
             const el = document.createElement('div');
             el.className = `toast toast-${type}`;
             el.textContent = msg;
@@ -317,6 +342,12 @@
             return DOM.chatName.value.trim() || 'Anonymous';
         }
 
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
         function getDateSeparator(timestamp) {
             const today = new Date().toDateString();
             const yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -324,6 +355,30 @@
             if (msgDate === today) return 'HARI INI';
             if (msgDate === yesterday) return 'SEMALAM';
             return new Date(timestamp).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' });
+        }
+
+        function compressImage(file) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                const reader = new FileReader();
+                reader.onload = e => {
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        let w = img.width;
+                        let h = img.height;
+                        if (w > CONFIG.maxImageDimension) {
+                            h = h * (CONFIG.maxImageDimension / w);
+                            w = CONFIG.maxImageDimension;
+                        }
+                        canvas.width = w;
+                        canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7));
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         /* ============ CHAT ============ */
@@ -369,7 +424,13 @@
                     } else if (data.type === 'audio') {
                         const audioEl = document.createElement('div');
                         audioEl.className = 'msg-audio';
-                        audioEl.innerHTML = `<span class="audio-icon">▶</span><span class="audio-duration">${data.duration || 0}s</span>`;
+                        const icon = document.createElement('span');
+                        icon.className = 'audio-icon';
+                        icon.textContent = '▶';
+                        const duration = document.createElement('span');
+                        duration.className = 'audio-duration';
+                        duration.textContent = formatDuration(data.duration || 0);
+                        audioEl.append(icon, duration);
                         audioEl.addEventListener('click', () => {
                             const audio = new Audio(data.data);
                             audio.play().catch(() => toast('Tidak dapat main audio!', 'error'));
@@ -381,9 +442,7 @@
                         const delBtn = document.createElement('button');
                         delBtn.className = 'msg-delete-btn';
                         delBtn.textContent = '✕';
-                        delBtn.addEventListener('click', () => {
-                            if (confirm('Padam mesej ini?')) db.ref('chat/' + child.key).remove();
-                        });
+                        delBtn.addEventListener('click', () => showConfirm(child.key));
                         div.appendChild(delBtn);
                     }
 
@@ -395,7 +454,7 @@
             if (wasAtBottom) DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
         });
 
-        function sendMessage(type, data) {
+        function send(type, data) {
             db.ref('chat').push({
                 type, name: getName(), timestamp: Date.now(),
                 ...data, time: getTime()
@@ -405,18 +464,32 @@
         function sendText() {
             const text = DOM.chatInput.value.trim();
             if (!text) return;
-            sendMessage('text', { text });
+            send('text', { text });
             DOM.chatInput.value = '';
+            updateSendBtn();
+            DOM.chatInput.focus();
         }
 
-        function sendImage(event) {
+        async function sendImage(event) {
             const file = event.target.files[0];
             if (!file) return;
             if (file.size > CONFIG.maxImageSize) { toast('Saiz terlalu besar!', 'error'); return; }
-            const reader = new FileReader();
-            reader.onload = ev => { sendMessage('image', { data: ev.target.result }); toast('Gambar dihantar!', 'success'); };
-            reader.readAsDataURL(file);
+            try {
+                const compressed = await compressImage(file);
+                send('image', { data: compressed });
+                toast('Gambar dihantar!', 'success');
+            } catch(e) {
+                toast('Gagal proses gambar!', 'error');
+            }
             event.target.value = '';
+        }
+
+        function toggleRecord() {
+            if (state.isRecording) {
+                stopRecord();
+            } else {
+                startRecord();
+            }
         }
 
         async function startRecord() {
@@ -430,25 +503,58 @@
                     const blob = new Blob(state.audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.onload = ev => {
-                        sendMessage('audio', { data: ev.target.result, duration: Math.round((Date.now() - state.recordStart) / 1000) });
+                        const duration = Math.round((Date.now() - state.recordStart) / 1000);
+                        send('audio', { data: ev.target.result, duration });
                         toast('Audio dihantar!', 'success');
                     };
                     reader.readAsDataURL(blob);
+                    clearInterval(state.recordTimer);
                 };
                 state.recorder.start();
                 state.isRecording = true;
                 state.recordStart = Date.now();
                 DOM.recordBtn.classList.add('recording');
-                DOM.recBar.classList.add('active');
-                setTimeout(() => { if (state.isRecording) stopRecord(); }, CONFIG.maxAudioDuration * 1000);
-            } catch(e) { toast('Tidak dapat akses mikrofon!', 'error'); }
+                DOM.recordBtn.textContent = '⏹';
+                state.recordTimer = setInterval(() => {
+                    const elapsed = Math.round((Date.now() - state.recordStart) / 1000);
+                    const remaining = CONFIG.maxAudioDuration - elapsed;
+                    if (remaining <= 0) {
+                        stopRecord();
+                    } else {
+                        DOM.recordBtn.textContent = remaining;
+                    }
+                }, 1000);
+            } catch(e) {
+                toast('Tidak dapat akses mikrofon!', 'error');
+            }
         }
 
         function stopRecord() {
             state.isRecording = false;
             DOM.recordBtn.classList.remove('recording');
-            DOM.recBar.classList.remove('active');
+            DOM.recordBtn.textContent = '🎤';
+            clearInterval(state.recordTimer);
             if (state.recorder) state.recorder.stop();
+        }
+
+        /* ============ CONFIRM DELETE ============ */
+        function showConfirm(key) {
+            state.deleteKey = key;
+            DOM.confirmModal.classList.add('active');
+        }
+
+        function hideConfirm() {
+            state.deleteKey = null;
+            DOM.confirmModal.classList.remove('active');
+        }
+
+        function confirmDelete() {
+            if (state.deleteKey) {
+                db.ref('chat/' + state.deleteKey).remove()
+                    .then(() => toast('Dipadam!', 'success'))
+                    .catch(() => toast('Gagal padam!', 'error'));
+            }
+            hideConfirm();
         }
 
         /* ============ ONLINE ============ */
@@ -458,26 +564,52 @@
         });
 
         /* ============ LIGHTBOX ============ */
-        function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.classList.add('active'); }
-        function closeLightbox() { DOM.lightbox.classList.remove('active'); }
+        function openLightbox(src) {
+            DOM.lightboxImg.src = src;
+            DOM.lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            DOM.lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        /* ============ SEND BUTTON ============ */
+        function updateSendBtn() {
+            DOM.sendBtn.classList.toggle('active', DOM.chatInput.value.trim().length > 0);
+        }
 
         /* ============ EVENTS ============ */
         function initEvents() {
-            $('sendBtn').addEventListener('click', sendText);
-            DOM.chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendText(); });
-            $('imgBtn').addEventListener('click', () => $('chatImageInput').click());
-            $('chatImageInput').addEventListener('change', sendImage);
-            DOM.recordBtn.addEventListener('click', () => state.isRecording ? stopRecord() : startRecord());
+            DOM.sendBtn.addEventListener('click', sendText);
+            DOM.chatInput.addEventListener('input', updateSendBtn);
+            DOM.chatInput.addEventListener('keydown', e => { if (e.key === 'Enter') sendText(); });
+            DOM.imgBtn.addEventListener('click', () => DOM.chatImageInput.click());
+            DOM.chatImageInput.addEventListener('change', sendImage);
+            DOM.recordBtn.addEventListener('click', toggleRecord);
+            $('lightboxClose').addEventListener('click', closeLightbox);
+            DOM.lightbox.addEventListener('click', closeLightbox);
+            DOM.lightboxImg.addEventListener('click', e => e.stopPropagation());
+            $('confirmYes').addEventListener('click', confirmDelete);
+            $('confirmNo').addEventListener('click', hideConfirm);
         }
 
-        /* ============ SERVICE WORKER ============ */
-        if ('serviceWorker' in navigator) {
-            const swCode = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});`;
-            navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'text/javascript' }))).catch(() => {});
+        /* ============ LOCALSTORAGE ============ */
+        function loadName() {
+            const saved = localStorage.getItem('zack_chat_name');
+            if (saved) DOM.chatName.value = saved;
         }
+
+        function saveName() {
+            localStorage.setItem('zack_chat_name', getName());
+        }
+
+        DOM.chatName.addEventListener('change', saveName);
 
         /* ============ INIT ============ */
+        loadName();
         initEvents();
+        updateSendBtn();
     </script>
 
 </body>
