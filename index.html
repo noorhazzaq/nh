@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Lives 5.0 — 99 Realisme Penuh">
-    <title>ZACK Lives 5.0</title>
+    <meta name="description" content="ZACK Lives 8.0 — Realisme Ultimate">
+    <title>ZACK Lives 8.0</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
@@ -195,6 +195,15 @@
             margin: 2px;
         }
 
+        .timeline-item {
+            border-left: 2px solid var(--cyan);
+            padding-left: 10px;
+            margin-bottom: 8px;
+            font-size: 10px;
+            color: var(--muted);
+        }
+        .timeline-item strong { color: var(--white); }
+
         .death-screen { text-align: center; padding: 25px 15px; }
         .death-icon { font-size: 55px; margin-bottom: 12px; }
         .death-screen h2 {
@@ -229,16 +238,16 @@
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="header">
-        <div class="logo">ZACK LIVES 5.0</div>
+        <div class="logo">ZACK LIVES 8.0</div>
     </div>
 
     <div class="main" id="mainContent">
 
         <div id="startScreen">
             <div class="card" style="text-align:center;">
-                <h3>🌍 99 REALISME KEHIDUPAN</h3>
+                <h3>🌍 REALISME ULTIMATE</h3>
                 <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;">
-                    Ekonomi, kesihatan, pendidikan, kerjaya, keluarga, undang-undang, jenayah, bencana, sejarah & banyak lagi — semua data sebenar.
+                    198 realisme: kesihatan lengkap, ekonomi penuh, undang-undang, keluarga, sosial, geopolitik & banyak lagi.
                 </p>
                 <button class="btn-primary" onclick="startLife()">👶 MULA KEHIDUPAN</button>
             </div>
@@ -255,6 +264,11 @@
             <div class="card">
                 <h3>👤 IDENTITI</h3>
                 <p style="font-size:11px;color:var(--muted);" id="identityText"></p>
+            </div>
+
+            <div class="card" id="timelineCard" style="display:none;">
+                <h3>📜 GARIS MASA</h3>
+                <div id="timelineList"></div>
             </div>
 
             <div class="card" id="achievementCard" style="display:none;">
@@ -274,6 +288,7 @@
                 <h2>KISAH TAMAT</h2>
                 <p style="color:var(--muted);margin-bottom:8px;font-size:11px;" id="deathSummary"></p>
                 <div id="achievementSummary"></div>
+                <div id="timelineSummary"></div>
                 <button class="btn-primary" onclick="restartLife()">🔄 KEHIDUPAN BARU</button>
             </div>
         </div>
@@ -295,52 +310,55 @@
             setTimeout(() => { el.classList.add('hide'); setTimeout(() => el.remove(), 400); }, 3000);
         }
 
-        /* ============ 99 REALISME DATA ============ */
-
         const COUNTRIES = [
-            { name: 'Afghanistan', icon: '🇦🇫', gdp: 500, life: 64, crime: 70, corruption: 80, unemployment: 15, inflation: 5, tax: 0, currency: 'AFN' },
-            { name: 'Australia', icon: '🇦🇺', gdp: 55000, life: 83, crime: 25, corruption: 15, unemployment: 4, inflation: 2, tax: 30, currency: 'AUD' },
-            { name: 'Brazil', icon: '🇧🇷', gdp: 7500, life: 75, crime: 65, corruption: 60, unemployment: 12, inflation: 4, tax: 15, currency: 'BRL' },
-            { name: 'Canada', icon: '🇨🇦', gdp: 46000, life: 82, crime: 20, corruption: 15, unemployment: 5, inflation: 2, tax: 30, currency: 'CAD' },
-            { name: 'China', icon: '🇨🇳', gdp: 10500, life: 77, crime: 20, corruption: 40, unemployment: 4, inflation: 2, tax: 20, currency: 'CNY' },
-            { name: 'Egypt', icon: '🇪🇬', gdp: 3000, life: 71, crime: 40, corruption: 60, unemployment: 8, inflation: 6, tax: 10, currency: 'EGP' },
-            { name: 'France', icon: '🇫🇷', gdp: 42000, life: 82, crime: 20, corruption: 15, unemployment: 8, inflation: 2, tax: 35, currency: 'EUR' },
-            { name: 'Germany', icon: '🇩🇪', gdp: 48000, life: 81, crime: 15, corruption: 10, unemployment: 3, inflation: 2, tax: 35, currency: 'EUR' },
-            { name: 'India', icon: '🇮🇳', gdp: 2100, life: 69, crime: 45, corruption: 50, unemployment: 8, inflation: 5, tax: 15, currency: 'INR' },
-            { name: 'Indonesia', icon: '🇮🇩', gdp: 4200, life: 71, crime: 35, corruption: 50, unemployment: 5, inflation: 3, tax: 15, currency: 'IDR' },
-            { name: 'Japan', icon: '🇯🇵', gdp: 40000, life: 84, crime: 10, corruption: 10, unemployment: 2, inflation: 1, tax: 30, currency: 'JPY' },
-            { name: 'Malaysia', icon: '🇲🇾', gdp: 11000, life: 75, crime: 30, corruption: 45, unemployment: 3, inflation: 2, tax: 15, currency: 'MYR' },
-            { name: 'Mexico', icon: '🇲🇽', gdp: 9800, life: 75, crime: 70, corruption: 60, unemployment: 4, inflation: 3, tax: 20, currency: 'MXN' },
-            { name: 'Nigeria', icon: '🇳🇬', gdp: 2200, life: 54, crime: 70, corruption: 70, unemployment: 15, inflation: 12, tax: 10, currency: 'NGN' },
-            { name: 'Russia', icon: '🇷🇺', gdp: 11000, life: 72, crime: 40, corruption: 50, unemployment: 5, inflation: 4, tax: 13, currency: 'RUB' },
-            { name: 'Singapore', icon: '🇸🇬', gdp: 65000, life: 83, crime: 5, corruption: 5, unemployment: 2, inflation: 1, tax: 15, currency: 'SGD' },
-            { name: 'Somalia', icon: '🇸🇴', gdp: 500, life: 57, crime: 85, corruption: 90, unemployment: 20, inflation: 10, tax: 0, currency: 'SOS' },
-            { name: 'South Korea', icon: '🇰🇷', gdp: 32000, life: 83, crime: 15, corruption: 25, unemployment: 3, inflation: 2, tax: 20, currency: 'KRW' },
-            { name: 'Switzerland', icon: '🇨🇭', gdp: 85000, life: 83, crime: 5, corruption: 5, unemployment: 3, inflation: 1, tax: 25, currency: 'CHF' },
-            { name: 'Thailand', icon: '🇹🇭', gdp: 7200, life: 77, crime: 25, corruption: 45, unemployment: 1, inflation: 2, tax: 15, currency: 'THB' },
-            { name: 'UAE', icon: '🇦🇪', gdp: 43000, life: 78, crime: 10, corruption: 20, unemployment: 3, inflation: 2, tax: 0, currency: 'AED' },
-            { name: 'UK', icon: '🇬🇧', gdp: 42000, life: 81, crime: 25, corruption: 15, unemployment: 4, inflation: 3, tax: 30, currency: 'GBP' },
-            { name: 'USA', icon: '🇺🇸', gdp: 65000, life: 78, crime: 40, corruption: 20, unemployment: 4, inflation: 3, tax: 25, currency: 'USD' },
-            { name: 'Venezuela', icon: '🇻🇪', gdp: 2500, life: 72, crime: 80, corruption: 85, unemployment: 20, inflation: 200, tax: 10, currency: 'VES' },
-            { name: 'Vietnam', icon: '🇻🇳', gdp: 2800, life: 75, crime: 20, corruption: 40, unemployment: 2, inflation: 3, tax: 15, currency: 'VND' }
+            { name: 'Afghanistan', icon: '🇦🇫', gdp: 500, life: 64, crime: 70, corruption: 80, unemployment: 15, inflation: 5, tax: 0, currency: 'AFN', climate: 'kering', geo: 'gunung', passport: 30, maleNames: ['Ahmad','Omar','Hassan'], femaleNames: ['Fatima','Aisha','Zainab'] },
+            { name: 'Australia', icon: '🇦🇺', gdp: 55000, life: 83, crime: 25, corruption: 15, unemployment: 4, inflation: 2, tax: 30, currency: 'AUD', climate: 'sederhana', geo: 'pantai', passport: 185, maleNames: ['Jack','Oliver','Noah'], femaleNames: ['Olivia','Emma','Sophie'] },
+            { name: 'Brazil', icon: '🇧🇷', gdp: 7500, life: 75, crime: 65, corruption: 60, unemployment: 12, inflation: 4, tax: 15, currency: 'BRL', climate: 'tropika', geo: 'hutan', passport: 165, maleNames: ['Carlos','Pedro','Lucas'], femaleNames: ['Ana','Maria','Julia'] },
+            { name: 'China', icon: '🇨🇳', gdp: 10500, life: 77, crime: 20, corruption: 40, unemployment: 4, inflation: 2, tax: 20, currency: 'CNY', climate: 'sederhana', geo: 'pelbagai', passport: 80, maleNames: ['Wei','Ming','Jun'], femaleNames: ['Mei','Ling','Xia'] },
+            { name: 'India', icon: '🇮🇳', gdp: 2100, life: 69, crime: 45, corruption: 50, unemployment: 8, inflation: 5, tax: 15, currency: 'INR', climate: 'tropika', geo: 'pelbagai', passport: 60, maleNames: ['Raj','Amit','Vikram'], femaleNames: ['Priya','Anita','Sonia'] },
+            { name: 'Japan', icon: '🇯🇵', gdp: 40000, life: 84, crime: 10, corruption: 10, unemployment: 2, inflation: 1, tax: 30, currency: 'JPY', climate: 'sederhana', geo: 'pulau', passport: 190, maleNames: ['Tanaka','Sato','Yamamoto'], femaleNames: ['Yuki','Sakura','Hana'] },
+            { name: 'Malaysia', icon: '🇲🇾', gdp: 11000, life: 75, crime: 30, corruption: 45, unemployment: 3, inflation: 2, tax: 15, currency: 'MYR', climate: 'tropika', geo: 'pantai', passport: 175, maleNames: ['Ahmad','Budi','Chong'], femaleNames: ['Siti','Dewi','Mei'] },
+            { name: 'Nigeria', icon: '🇳🇬', gdp: 2200, life: 54, crime: 70, corruption: 70, unemployment: 15, inflation: 12, tax: 10, currency: 'NGN', climate: 'tropika', geo: 'padang', passport: 45, maleNames: ['Chinedu','Emeka','Olu'], femaleNames: ['Amara','Ngozi','Ada'] },
+            { name: 'Singapore', icon: '🇸🇬', gdp: 65000, life: 83, crime: 5, corruption: 5, unemployment: 2, inflation: 1, tax: 15, currency: 'SGD', climate: 'tropika', geo: 'pulau', passport: 190, maleNames: ['Wei','Jun','Ken'], femaleNames: ['Mei','Ling','Su'] },
+            { name: 'Somalia', icon: '🇸🇴', gdp: 500, life: 57, crime: 85, corruption: 90, unemployment: 20, inflation: 10, tax: 0, currency: 'SOS', climate: 'kering', geo: 'padang', passport: 35, maleNames: ['Abdi','Mohamed','Hassan'], femaleNames: ['Amina','Fatima','Sahra'] },
+            { name: 'Switzerland', icon: '🇨🇭', gdp: 85000, life: 83, crime: 5, corruption: 5, unemployment: 3, inflation: 1, tax: 25, currency: 'CHF', climate: 'sejuk', geo: 'gunung', passport: 185, maleNames: ['Lars','Hans','Peter'], femaleNames: ['Helga','Anna','Maria'] },
+            { name: 'USA', icon: '🇺🇸', gdp: 65000, life: 78, crime: 40, corruption: 20, unemployment: 4, inflation: 3, tax: 25, currency: 'USD', climate: 'pelbagai', geo: 'pelbagai', passport: 185, maleNames: ['John','James','Michael'], femaleNames: ['Mary','Sarah','Emily'] },
+            { name: 'Venezuela', icon: '🇻🇪', gdp: 2500, life: 72, crime: 80, corruption: 85, unemployment: 20, inflation: 200, tax: 10, currency: 'VES', climate: 'tropika', geo: 'pantai', passport: 130, maleNames: ['Carlos','Jose','Luis'], femaleNames: ['Maria','Carmen','Ana'] },
+            { name: 'UK', icon: '🇬🇧', gdp: 42000, life: 81, crime: 25, corruption: 15, unemployment: 4, inflation: 3, tax: 30, currency: 'GBP', climate: 'sejuk', geo: 'pulau', passport: 185, maleNames: ['James','Oliver','Harry'], femaleNames: ['Emma','Sophie','Amelia'] },
+            { name: 'Vietnam', icon: '🇻🇳', gdp: 2800, life: 75, crime: 20, corruption: 40, unemployment: 2, inflation: 3, tax: 15, currency: 'VND', climate: 'tropika', geo: 'pantai', passport: 55, maleNames: ['Minh','Quan','Duc'], femaleNames: ['Lan','Hoa','Mai'] }
         ];
 
         const DISEASES = [
-            { name: 'Influenza', healthImpact: -10, cost: 50 },
-            { name: 'Denggi', healthImpact: -20, cost: 500 },
-            { name: 'Malaria', healthImpact: -25, cost: 300 },
-            { name: 'Tibi', healthImpact: -20, cost: 800 },
-            { name: 'Diabetes', healthImpact: -30, cost: 5000 },
-            { name: 'Hipertensi', healthImpact: -25, cost: 3000 },
-            { name: 'Kanser Paru-paru', healthImpact: -50, cost: 50000 },
-            { name: 'Strok', healthImpact: -55, cost: 30000 },
-            { name: 'Serangan Jantung', healthImpact: -60, cost: 40000 },
-            { name: 'HIV/AIDS', healthImpact: -50, cost: 20000 },
-            { name: 'COVID-19', healthImpact: -25, cost: 2000 },
-            { name: 'Kolera', healthImpact: -35, cost: 1000 },
-            { name: 'Ebola', healthImpact: -70, cost: 10000 },
-            { name: 'Rabies', healthImpact: -65, cost: 5000 },
-            { name: 'Leptospirosis', healthImpact: -22, cost: 800 }
+            { name: 'Influenza', impact: -10, cost: 50, climate: 'semua', minAge: 0 },
+            { name: 'Denggi', impact: -20, cost: 500, climate: 'tropika', minAge: 5 },
+            { name: 'Malaria', impact: -25, cost: 300, climate: 'tropika', minAge: 5 },
+            { name: 'Tibi', impact: -20, cost: 800, climate: 'semua', minAge: 10 },
+            { name: 'Diabetes', impact: -30, cost: 5000, climate: 'semua', minAge: 30 },
+            { name: 'Hipertensi', impact: -25, cost: 3000, climate: 'semua', minAge: 35 },
+            { name: 'Kanser Paru-paru', impact: -50, cost: 50000, climate: 'semua', minAge: 40 },
+            { name: 'Kanser Payudara', impact: -45, cost: 45000, climate: 'semua', minAge: 35 },
+            { name: 'Kanser Usus', impact: -48, cost: 48000, climate: 'semua', minAge: 40 },
+            { name: 'Kanser Otak', impact: -65, cost: 60000, climate: 'semua', minAge: 30 },
+            { name: 'Leukemia', impact: -60, cost: 55000, climate: 'semua', minAge: 0 },
+            { name: 'Alzheimer', impact: -50, cost: 30000, climate: 'semua', minAge: 60 },
+            { name: 'Parkinson', impact: -45, cost: 25000, climate: 'semua', minAge: 55 },
+            { name: 'Strok', impact: -55, cost: 30000, climate: 'semua', minAge: 50 },
+            { name: 'Serangan Jantung', impact: -60, cost: 40000, climate: 'semua', minAge: 45 },
+            { name: 'COVID-19', impact: -25, cost: 2000, climate: 'semua', minAge: 0 },
+            { name: 'Kolera', impact: -35, cost: 1000, climate: 'tropika', minAge: 0 },
+            { name: 'Ebola', impact: -70, cost: 10000, climate: 'tropika', minAge: 0 },
+            { name: 'Hipotermia', impact: -30, cost: 2000, climate: 'sejuk', minAge: 0 },
+            { name: 'Heat Stroke', impact: -25, cost: 1000, climate: 'kering', minAge: 10 },
+            { name: 'Leptospirosis', impact: -22, cost: 800, climate: 'tropika', minAge: 10 },
+            { name: 'HIV/AIDS', impact: -50, cost: 20000, climate: 'semua', minAge: 15 },
+            { name: 'Pneumonia', impact: -35, cost: 3000, climate: 'semua', minAge: 0 },
+            { name: 'Meningitis', impact: -45, cost: 8000, climate: 'semua', minAge: 0 },
+            { name: 'Obesiti', impact: -20, cost: 3000, climate: 'semua', minAge: 15 },
+            { name: 'Anoreksia', impact: -30, cost: 5000, climate: 'semua', minAge: 12 },
+            { name: 'Insomnia', impact: -15, cost: 1000, climate: 'semua', minAge: 15 },
+            { name: 'Skizofrenia', impact: -40, cost: 10000, climate: 'semua', minAge: 18 },
+            { name: 'Bipolar', impact: -35, cost: 8000, climate: 'semua', minAge: 15 },
+            { name: 'Autisme', impact: -10, cost: 5000, climate: 'semua', minAge: 0 }
         ];
 
         const CRIMES = [
@@ -353,22 +371,30 @@
             { name: 'Pembunuhan', punishment: 'Penjara seumur hidup', years: 30, fine: 0 },
             { name: 'Rogol', punishment: 'Penjara', years: 15, fine: 0 },
             { name: 'Jenayah siber', punishment: 'Penjara', years: 5, fine: 0 },
+            { name: 'Membakar', punishment: 'Penjara', years: 10, fine: 0 },
             { name: 'Pengubahan wang haram', punishment: 'Penjara', years: 15, fine: 0 },
-            { name: 'Vandalisme', punishment: 'Denda', years: 0, fine: 1000 },
-            { name: 'Membakar', punishment: 'Penjara', years: 10, fine: 0 }
+            { name: 'Pemerdagangan manusia', punishment: 'Penjara', years: 20, fine: 0 },
+            { name: 'Saman Sivil', punishment: 'Denda', years: 0, fine: 2000 },
+            { name: 'Hukuman Gantung', punishment: 'Hukuman mati', years: 0, fine: 0 },
+            { name: 'Denda Trafik', punishment: 'Denda', years: 0, fine: 300 }
         ];
 
         const DISASTERS = [
-            { name: 'Gempa bumi', impact: -40, cost: 5000 },
-            { name: 'Tsunami', impact: -50, cost: 10000 },
-            { name: 'Banjir besar', impact: -30, cost: 3000 },
-            { name: 'Tanah runtuh', impact: -35, cost: 4000 },
-            { name: 'Taufan', impact: -40, cost: 5000 },
-            { name: 'Kemarau panjang', impact: -25, cost: 2000 },
-            { name: 'Kebakaran hutan', impact: -30, cost: 3000 },
-            { name: 'Letusan gunung berapi', impact: -45, cost: 8000 },
-            { name: 'Tornado', impact: -50, cost: 10000 },
-            { name: 'Gelombang haba', impact: -25, cost: 1000 }
+            { name: 'Gempa bumi', impact: -40, cost: 5000, geo: 'gunung' },
+            { name: 'Tsunami', impact: -50, cost: 10000, geo: 'pantai' },
+            { name: 'Banjir besar', impact: -30, cost: 3000, geo: 'pantai' },
+            { name: 'Tanah runtuh', impact: -35, cost: 4000, geo: 'gunung' },
+            { name: 'Taufan', impact: -40, cost: 5000, geo: 'pantai' },
+            { name: 'Kemarau panjang', impact: -25, cost: 2000, geo: 'padang' },
+            { name: 'Kebakaran hutan', impact: -30, cost: 3000, geo: 'hutan' },
+            { name: 'Letusan gunung berapi', impact: -45, cost: 8000, geo: 'gunung' },
+            { name: 'Tornado', impact: -50, cost: 10000, geo: 'padang' },
+            { name: 'Gelombang haba', impact: -25, cost: 1000, geo: 'padang' },
+            { name: 'Salji lebat', impact: -20, cost: 1500, geo: 'gunung' },
+            { name: 'Ribut pasir', impact: -15, cost: 500, geo: 'padang' },
+            { name: 'Kebuluran', impact: -35, cost: 2000, geo: 'padang' },
+            { name: 'Wabak penyakit', impact: -30, cost: 3000, geo: 'semua' },
+            { name: 'Perang saudara', impact: -50, cost: 10000, geo: 'semua' }
         ];
 
         const JOBS = [
@@ -391,30 +417,24 @@
             { title: 'Pekerja kilang', salary: 1800, education: 'SPM' },
             { title: 'Pembina', salary: 2000, education: 'Tiada' },
             { title: 'Saintis', salary: 7000, education: 'PhD' },
-            { title: 'Doktor gigi', salary: 9000, education: 'PhD' }
+            { title: 'Doktor gigi', salary: 9000, education: 'PhD' },
+            { title: 'Influencer', salary: 5000, education: 'Tiada' },
+            { title: 'Youtuber', salary: 4500, education: 'Tiada' },
+            { title: 'Aktivis', salary: 2500, education: 'Sederhana' },
+            { title: 'Sukarelawan', salary: 500, education: 'Tiada' },
+            { title: 'Ahli Politik', salary: 6000, education: 'Sederhana' }
         ];
 
-        const EDUCATION_LEVELS = ['Tiada', 'Prasekolah', 'Rendah', 'Menengah', 'SPM', 'Diploma', 'Ijazah', 'Sarjana', 'PhD', 'Profesor'];
-
-        const RELIGIONS = ['Islam', 'Kristian', 'Hindu', 'Buddha', 'Yahudi', 'Sikh', 'Taoisme', 'Konfusianisme', 'Shinto', 'Tiada'];
-
+        const RELIGIONS = ['Islam', 'Kristian', 'Hindu', 'Buddha', 'Yahudi', 'Sikh', 'Tiada'];
         const LANGUAGES = ['Melayu', 'Inggeris', 'Mandarin', 'Tamil', 'Hindi', 'Arab', 'Jepun', 'Korea', 'Sepanyol', 'Perancis', 'Jerman', 'Portugis', 'Rusia', 'Thai', 'Vietnam'];
 
-        const HISTORICAL_EVENTS = [
-            { name: 'Revolusi Perindustrian', year: 1760 },
-            { name: 'Perang Dunia I', year: 1914 },
-            { name: 'Perang Dunia II', year: 1939 },
-            { name: 'Kemerdekaan Tanah Melayu', year: 1957 },
-            { name: 'Runtuhnya Tembok Berlin', year: 1989 },
-            { name: 'Serangan 9/11', year: 2001 },
-            { name: 'Tsunami Lautan Hindi', year: 2004 },
-            { name: 'Krisis Kewangan Global', year: 2008 },
-            { name: 'Pandemik COVID-19', year: 2019 },
-            { name: 'Manusia di Bulan', year: 1969 }
-        ];
-
         let life = null;
+        let timeline = [];
         let achievements = [];
+        let stocks = 0;
+        let crypto = 0;
+        let gold = 0;
+        let property = 0;
 
         function initStars() {
             const wrap = $('stars');
@@ -447,43 +467,48 @@
 
         function startLife() {
             const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+            const gender = Math.random() > 0.5 ? 'Lelaki' : 'Perempuan';
+            const names = gender === 'Lelaki' ? country.maleNames : country.femaleNames;
+            const name = names[Math.floor(Math.random() * names.length)];
             const religion = RELIGIONS[Math.floor(Math.random() * RELIGIONS.length)];
             const language = LANGUAGES[Math.floor(Math.random() * LANGUAGES.length)];
-            const gender = Math.random() > 0.5 ? 'Lelaki' : 'Perempuan';
+            const baseSalary = Math.floor(country.gdp / 10);
 
             life = {
-                name: 'Orang ' + Math.floor(Math.random() * 1000),
-                gender,
-                country: country.name,
-                icon: country.icon,
-                gdp: country.gdp,
-                lifeExpectancy: country.life,
-                crimeRate: country.crime,
-                corruption: country.corruption,
-                unemployment: country.unemployment,
-                inflation: country.inflation,
-                taxRate: country.tax,
-                currency: country.currency,
-                religion,
-                language,
+                name, gender,
+                country: country.name, icon: country.icon,
+                gdp: country.gdp, lifeExpectancy: country.life,
+                crimeRate: country.crime, corruption: country.corruption,
+                unemployment: country.unemployment, inflation: country.inflation,
+                taxRate: country.tax, currency: country.currency,
+                climate: country.climate, geo: country.geo,
+                passport: country.passport,
+                religion, language,
                 age: 0, health: 100, happiness: 70,
                 intelligence: 50, creativity: 30, reputation: 10,
                 mental: 80, fitness: 40, spiritual: 20,
-                money: Math.floor(country.gdp / 5),
-                debt: 0,
+                money: baseSalary, debt: 0,
                 education: 'Tiada', job: 'Tiada',
                 married: false, children: 0,
                 alive: true,
-                hasCriminalRecord: false,
-                inJail: false,
-                jailYears: 0,
-                hasDisease: false,
-                bankAccount: Math.floor(country.gdp / 10),
-                hasInsurance: false,
-                hasCar: false,
-                hasHouse: false
+                hasCriminalRecord: false, inJail: false, jailYears: 0,
+                bankAccount: baseSalary * 2,
+                hasInsurance: false, hasCar: false, hasHouse: false,
+                dynamicLifeExpectancy: country.life,
+                followers: 0, isInfluencer: false,
+                hasDivorced: false, adoptedChildren: 0,
+                hasSurgery: false, hasCancer: false,
+                hasLicense: false, hasVisa: false,
+                hasPassport: false, hasWill: false,
+                hasContract: false, hasPatent: false
             };
+            timeline = [];
             achievements = [];
+            stocks = 0;
+            crypto = 0;
+            gold = 0;
+            property = 0;
+            addTimeline(`👶 Lahir di ${country.icon} ${country.name}`);
 
             $('startScreen').style.display = 'none';
             $('lifeScreen').style.display = 'block';
@@ -491,7 +516,65 @@
 
             renderStats();
             generateActions();
-            toast(`Lahir di ${country.icon} ${country.name}! (GDP: $${country.gdp}, Kadar jenayah: ${country.crime}%)`, 'success');
+            toast(`Lahir sebagai ${name} di ${country.icon} ${country.name}!`, 'success');
+        }
+
+        function addTimeline(text) {
+            timeline.push({ age: life.age, text });
+            renderTimeline();
+        }
+
+        function renderTimeline() {
+            if (timeline.length < 2) return;
+            $('timelineCard').style.display = 'block';
+            const list = $('timelineList');
+            const frag = document.createDocumentFragment();
+            timeline.slice(-10).reverse().forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'timeline-item';
+                div.innerHTML = `<strong>Umur ${item.age}:</strong> ${item.text}`;
+                frag.appendChild(div);
+            });
+            list.innerHTML = '';
+            list.appendChild(frag);
+        }
+
+        function checkAchievements() {
+            const checks = [
+                { id: 'age50', label: '🎂 50 Tahun', cond: life.age >= 50 },
+                { id: 'age80', label: '🎂 80 Tahun', cond: life.age >= 80 },
+                { id: 'millionaire', label: '💎 Jutawan', cond: life.money >= 1000000 },
+                { id: 'married', label: '💍 Kahwin', cond: life.married },
+                { id: 'parent', label: '👶 Anak', cond: life.children + life.adoptedChildren > 0 },
+                { id: 'educated', label: '🎓 Universiti', cond: life.education === 'Ijazah' || life.education === 'PhD' },
+                { id: 'famous', label: '⭐ Terkenal', cond: life.reputation >= 80 },
+                { id: 'influencer', label: '📱 Influencer', cond: life.isInfluencer },
+                { id: 'house', label: '🏠 Rumah', cond: life.hasHouse },
+                { id: 'car', label: '🚗 Kereta', cond: life.hasCar },
+                { id: 'stocks', label: '📈 Pelabur', cond: stocks > 0 },
+                { id: 'crypto', label: '₿ Kripto', cond: crypto > 0 },
+                { id: 'gold', label: '🥇 Emas', cond: gold > 0 },
+                { id: 'property', label: '🏢 Hartanah', cond: property > 0 },
+                { id: 'license', label: '🚦 Lesen', cond: life.hasLicense },
+                { id: 'passport', label: '🛂 Pasport', cond: life.hasPassport },
+                { id: 'will', label: '📜 Wasiat', cond: life.hasWill },
+                { id: 'patent', label: '💡 Paten', cond: life.hasPatent },
+                { id: 'surgery', label: '🔪 Pembedahan', cond: life.hasSurgery },
+                { id: 'divorced', label: '💔 Cerai', cond: life.hasDivorced }
+            ];
+
+            checks.forEach(check => {
+                if (check.cond && !achievements.includes(check.id)) {
+                    achievements.push(check.id);
+                    toast('Pencapaian: ' + check.label + '! 🏆', 'success');
+                }
+            });
+
+            if (achievements.length > 0) {
+                $('achievementCard').style.display = 'block';
+                const labels = { age50: '🎂 50 Tahun', age80: '🎂 80 Tahun', millionaire: '💎 Jutawan', married: '💍 Kahwin', parent: '👶 Anak', educated: '🎓 Universiti', famous: '⭐ Terkenal', influencer: '📱 Influencer', house: '🏠 Rumah', car: '🚗 Kereta', stocks: '📈 Pelabur', crypto: '₿ Kripto', gold: '🥇 Emas', property: '🏢 Hartanah', license: '🚦 Lesen', passport: '🛂 Pasport', will: '📜 Wasiat', patent: '💡 Paten', surgery: '🔪 Pembedahan', divorced: '💔 Cerai' };
+                $('achievementList').innerHTML = achievements.map(id => `<span class="achievement-badge">${labels[id] || id}</span>`).join(' ');
+            }
         }
 
         function renderStats() {
@@ -499,29 +582,42 @@
             const stats = [
                 { label: 'UMUR', value: life.age },
                 { label: 'WANG (' + life.currency + ')', value: life.money.toLocaleString(), small: true },
-                { label: 'BANK (' + life.currency + ')', value: life.bankAccount.toLocaleString(), small: true },
-                { label: 'HUTANG (' + life.currency + ')', value: life.debt.toLocaleString(), small: true },
+                { label: 'BANK', value: life.bankAccount.toLocaleString(), small: true },
+                { label: 'HUTANG', value: life.debt.toLocaleString(), small: true },
+                { label: 'SAHAM', value: stocks, small: true },
+                { label: 'KRIPTO', value: crypto, small: true },
+                { label: 'EMAS', value: gold, small: true },
+                { label: 'HARTANAH', value: property, small: true },
                 { label: 'KESIHATAN', value: life.health, bar: life.health, color: life.health > 50 ? 'fill-green' : life.health > 25 ? 'fill-yellow' : 'fill-red' },
                 { label: 'KEBAHAGIAAN', value: life.happiness, bar: life.happiness, color: life.happiness > 50 ? 'fill-green' : life.happiness > 25 ? 'fill-yellow' : 'fill-red' },
                 { label: 'KECERDASAN', value: life.intelligence, bar: life.intelligence, color: 'fill-green' },
                 { label: 'MENTAL', value: life.mental, bar: life.mental, color: life.mental > 50 ? 'fill-green' : life.mental > 25 ? 'fill-yellow' : 'fill-red' },
+                { label: 'JANGKA HAYAT', value: life.dynamicLifeExpectancy, small: true },
                 { label: 'PENDIDIKAN', value: life.education, small: true },
                 { label: 'PEKERJAAN', value: life.job, small: true },
-                { label: 'STATUS', value: life.married ? 'Kahwin' : 'Bujang', small: true },
-                { label: 'ANAK', value: life.children },
-                { label: 'PENJARA', value: life.inJail ? 'Ya (' + life.jailYears + ' thn)' : 'Tidak', small: true },
-                { label: 'REKOD JENAYAH', value: life.hasCriminalRecord ? 'Ya' : 'Tiada', small: true }
+                { label: 'STATUS', value: life.married ? (life.hasDivorced ? 'Cerai' : 'Kahwin') : 'Bujang', small: true },
+                { label: 'ANAK', value: life.children + life.adoptedChildren },
+                { label: 'PENGIKUT', value: life.followers, small: true },
+                { label: 'PENJARA', value: life.inJail ? 'Ya' : 'Tidak', small: true },
+                { label: 'REKOD JENAYAH', value: life.hasCriminalRecord ? 'Ya' : 'Tiada', small: true },
+                { label: 'PASPORT', value: life.passport + ' negara', small: true }
             ];
 
-            grid.innerHTML = stats.map(s => `
-                <div class="stat-box">
+            const frag = document.createDocumentFragment();
+            stats.forEach(s => {
+                const box = document.createElement('div');
+                box.className = 'stat-box';
+                box.innerHTML = `
                     <div class="stat-label">${s.label}</div>
                     <div class="stat-value ${s.small ? 'small' : ''}">${s.value}</div>
                     ${s.bar !== undefined ? `<div class="stat-bar"><div class="stat-bar-fill ${s.color}" style="width:${s.bar}%"></div></div>` : ''}
-                </div>
-            `).join('');
+                `;
+                frag.appendChild(box);
+            });
+            grid.innerHTML = '';
+            grid.appendChild(frag);
 
-            $('identityText').textContent = `${life.icon} ${life.name} • ${life.gender} • ${life.country} • Umur ${life.age} • Agama: ${life.religion} • Bahasa: ${life.language} • Jangka hayat: ${life.lifeExpectancy} • Jenayah: ${life.crimeRate}% • Rasuah: ${life.corruption}% • Inflasi: ${life.inflation}% • Cukai: ${life.taxRate}%`;
+            $('identityText').textContent = `${life.icon} ${life.name} • ${life.gender} • ${life.country} • Umur ${life.age} • Agama: ${life.religion} • Bahasa: ${life.language} • Iklim: ${life.climate} • Geografi: ${life.geo} • Pasport: ${life.passport} negara • Jenayah: ${life.crimeRate}% • Rasuah: ${life.corruption}% • Inflasi: ${life.inflation}% • Cukai: ${life.taxRate}%`;
         }
 
         function generateActions() {
@@ -556,26 +652,34 @@
             } else if (age < 18) {
                 actions.push({ label: '📚 Sekolah menengah', intelligence: 15, education: 'Menengah' });
                 actions.push({ label: '🎓 Ambil SPM', intelligence: 10, education: 'SPM' });
-                actions.push({ label: '🤝 Sertai kelab', reputation: 5, happiness: 10 });
+                actions.push({ label: '🚦 Ambil lesen memandu', money: -500, hasLicense: true });
             } else if (age < 25) {
                 actions.push({ label: '🎓 Diploma', intelligence: 15, money: -3000, education: 'Diploma' });
                 actions.push({ label: '🎓 Universiti', intelligence: 20, money: -8000, education: 'Ijazah', debt: 8000 });
                 actions.push({ label: '💼 Cari kerja', money: 1500, job: JOBS[Math.floor(Math.random() * JOBS.length)].title });
                 actions.push({ label: '💑 Cari pasangan', happiness: 15 });
-                actions.push({ label: '🏦 Buka akaun bank', bankAccount: 100 });
+                actions.push({ label: '📈 Beli saham', money: -1000, stocks: 10, intelligence: 5 });
+                actions.push({ label: '₿ Beli kripto', money: -500, crypto: 5 });
+                actions.push({ label: '🥇 Beli emas', money: -2000, gold: 5 });
+                actions.push({ label: '🛂 Buat pasport', money: -200, hasPassport: true });
             } else if (age < 45) {
                 actions.push({ label: '💼 Bekerja', money: 2000, happiness: -5 });
                 actions.push({ label: '💍 Kahwin', happiness: 30, married: true });
                 actions.push({ label: '👶 Dapat anak', happiness: 20, children: 1 });
+                actions.push({ label: '👶 Anak angkat', happiness: 15, adoptedChildren: 1 });
+                actions.push({ label: '💔 Bercerai', happiness: -20, hasDivorced: true, married: false });
                 actions.push({ label: '🏠 Beli rumah', money: -15000, happiness: 20, debt: 15000, hasHouse: true });
+                actions.push({ label: '🏢 Beli hartanah sewa', money: -20000, property: 1, happiness: 15 });
                 actions.push({ label: '🚗 Beli kereta', money: -8000, happiness: 10, hasCar: true });
-                actions.push({ label: '📈 Labur saham', money: -2000, intelligence: 5 });
-                actions.push({ label: '🛡️ Beli insurans', money: -1000, hasInsurance: true });
+                actions.push({ label: '📱 Jadi influencer', happiness: 15, isInfluencer: true, followers: 10000 });
+                actions.push({ label: '💡 Daftar paten', money: -3000, hasPatent: true, intelligence: 10 });
             } else if (age < 65) {
                 actions.push({ label: '💼 Bekerja', money: 1800, happiness: -3 });
                 actions.push({ label: '👨‍👩‍👧 Masa keluarga', happiness: 20 });
                 actions.push({ label: '🧘 Meditasi', health: 10, mental: 10, spiritual: 5 });
                 actions.push({ label: '💊 Pemeriksaan kesihatan', health: 5, money: -200 });
+                actions.push({ label: '🔪 Pembedahan', health: 10, money: -5000, hasSurgery: true });
+                actions.push({ label: '📜 Tulis wasiat', hasWill: true });
             } else {
                 actions.push({ label: '🧘 Berehat', health: 10, happiness: 15 });
                 actions.push({ label: '👨‍👩‍👧 Masa bersama cucu', happiness: 20 });
@@ -589,7 +693,13 @@
             if (!life.alive) return;
             if (action.jail) {
                 life.jailYears--;
-                if (life.jailYears <= 0) { life.inJail = false; life.jailYears = 0; toast('Anda dibebaskan!', 'success'); }
+                addTimeline(`⛓️ Jalani hukuman (${life.jailYears} tahun lagi)`);
+                if (life.jailYears <= 0) {
+                    life.inJail = false;
+                    life.jailYears = 0;
+                    addTimeline('🕊️ Dibebaskan dari penjara');
+                    toast('Anda dibebaskan!', 'success');
+                }
                 renderStats();
                 generateActions();
                 return;
@@ -605,70 +715,99 @@
             if (action.spiritual) life.spiritual = clamp(life.spiritual + action.spiritual);
             if (action.money) life.money = Math.max(0, life.money + action.money);
             if (action.debt) life.debt = Math.max(0, life.debt + action.debt);
-            if (action.bankAccount) life.bankAccount = Math.max(0, life.bankAccount + action.bankAccount);
-            if (action.education) life.education = action.education;
-            if (action.job) life.job = action.job;
-            if (action.married) life.married = true;
-            if (action.children) life.children += action.children;
-            if (action.hasHouse) life.hasHouse = true;
-            if (action.hasCar) life.hasCar = true;
-            if (action.hasInsurance) life.hasInsurance = true;
+            if (action.education) { life.education = action.education; addTimeline(`🎓 Pendidikan: ${action.education}`); }
+            if (action.job) { life.job = action.job; addTimeline(`💼 Kerja: ${action.job}`); }
+            if (action.married) { life.married = true; addTimeline('💍 Berkahwin'); }
+            if (action.children) { life.children += 1; addTimeline('👶 Mendapat anak'); }
+            if (action.adoptedChildren) { life.adoptedChildren += 1; addTimeline('👶 Anak angkat'); }
+            if (action.hasHouse) { life.hasHouse = true; addTimeline('🏠 Membeli rumah'); }
+            if (action.hasCar) { life.hasCar = true; addTimeline('🚗 Membeli kereta'); }
+            if (action.hasDivorced) { life.hasDivorced = true; life.married = false; addTimeline('💔 Bercerai'); }
+            if (action.isInfluencer) { life.isInfluencer = true; life.followers += 10000; addTimeline('📱 Menjadi influencer'); }
+            if (action.hasSurgery) { life.hasSurgery = true; addTimeline('🔪 Pembedahan'); }
+            if (action.hasLicense) { life.hasLicense = true; addTimeline('🚦 Lesen memandu'); }
+            if (action.hasPassport) { life.hasPassport = true; addTimeline('🛂 Pasport dibuat'); }
+            if (action.hasWill) { life.hasWill = true; addTimeline('📜 Wasiat ditulis'); }
+            if (action.hasPatent) { life.hasPatent = true; addTimeline('💡 Paten didaftarkan'); }
+            if (action.stocks) stocks += action.stocks;
+            if (action.crypto) crypto += action.crypto;
+            if (action.gold) gold += action.gold;
+            if (action.property) property += action.property;
 
             // Inflasi
             life.money = Math.floor(life.money * (1 - life.inflation / 100));
 
             // Cukai
             if (life.money > 1000) {
-                const tax = Math.floor(life.money * life.taxRate / 100);
-                life.money -= tax;
+                life.money -= Math.floor(life.money * life.taxRate / 100);
             }
 
-            // Penyakit rawak
-            if (Math.random() < 0.06 && life.age > 10) {
-                const disease = DISEASES[Math.floor(Math.random() * DISEASES.length)];
-                showEvent({ text: `🏥 Anda menghidap ${disease.name}! Kesihatan ${disease.healthImpact}, Kos rawatan: ${disease.cost} ${life.currency}` });
-                life.health = clamp(life.health + disease.healthImpact);
-                if (life.hasInsurance) {
-                    life.money = Math.max(0, life.money - Math.floor(disease.cost / 2));
-                } else {
-                    life.money = Math.max(0, life.money - disease.cost);
+            // Jangka hayat dinamik
+            life.dynamicLifeExpectancy = Math.floor(life.lifeExpectancy + (life.health - 50) / 5 + (life.fitness - 50) / 10 + (life.mental - 50) / 10);
+
+            // Penyakit
+            if (Math.random() < 0.05 && life.age > 5) {
+                const eligible = DISEASES.filter(d => d.climate === 'semua' || d.climate === life.climate);
+                const disease = eligible[Math.floor(Math.random() * eligible.length)];
+                if (life.age >= disease.minAge) {
+                    showEvent(`🏥 ${disease.name}! Kesihatan ${disease.impact}`);
+                    life.health = clamp(life.health + disease.impact);
+                    life.money = Math.max(0, life.money - (life.hasInsurance ? Math.floor(disease.cost / 2) : disease.cost));
+                    addTimeline(`🏥 ${disease.name}`);
+                    if (disease.name.includes('Kanser')) life.hasCancer = true;
                 }
             }
 
-            // Bencana rawak
-            if (Math.random() < 0.04) {
-                const disaster = DISASTERS[Math.floor(Math.random() * DISASTERS.length)];
-                showEvent({ text: `🌋 ${disaster.name} melanda! Kesihatan ${disaster.impact}, Kos: ${disaster.cost} ${life.currency}` });
+            // Bencana
+            if (Math.random() < 0.03) {
+                const eligible = DISASTERS.filter(d => d.geo === life.geo || d.geo === 'semua');
+                const disaster = eligible[Math.floor(Math.random() * eligible.length)] || DISASTERS[0];
+                showEvent(`🌋 ${disaster.name}!`);
                 life.health = clamp(life.health + disaster.impact);
                 life.money = Math.max(0, life.money - disaster.cost);
+                addTimeline(`🌋 ${disaster.name}`);
             }
 
-            // Jenayah rawak
-            if (Math.random() < 0.03 && life.age > 15) {
+            // Jenayah
+            if (Math.random() < life.crimeRate / 1000 && life.age > 15) {
                 const crime = CRIMES[Math.floor(Math.random() * CRIMES.length)];
                 if (Math.random() > 0.5) {
-                    showEvent({ text: `🚨 Anda dituduh: ${crime.name}. Hukuman: ${crime.punishment} ${crime.years} tahun` });
+                    showEvent(`🚨 Dituduh: ${crime.name}. ${crime.punishment} ${crime.years} tahun`);
                     life.hasCriminalRecord = true;
                     life.inJail = true;
                     life.jailYears = crime.years;
                     life.reputation = clamp(life.reputation - 20);
                     life.money = Math.max(0, life.money - (crime.fine || 0));
+                    addTimeline(`🚨 Dipenjara: ${crime.name}`);
                 } else {
-                    showEvent({ text: `🛡️ Anda menjadi mangsa: ${crime.name}. Kerugian: ${crime.fine || 500} ${life.currency}` });
+                    showEvent(`🛡️ Mangsa: ${crime.name}`);
                     life.money = Math.max(0, life.money - (crime.fine || 500));
                     life.happiness = clamp(life.happiness - 10);
                 }
             }
 
-            // Peristiwa sejarah
-            if (Math.random() < 0.01) {
-                const he = HISTORICAL_EVENTS[Math.floor(Math.random() * HISTORICAL_EVENTS.length)];
-                showEvent({ text: `📜 Peristiwa: ${he.name} (${he.year})` });
+            // Skandal
+            if (life.isInfluencer && Math.random() < 0.04) {
+                showEvent('🎭 Skandal terbongkar!');
+                life.reputation = clamp(life.reputation - 30);
+                life.followers = Math.floor(life.followers / 2);
+                addTimeline('🎭 Skandal');
             }
 
+            // Buli
+            if (Math.random() < 0.02 && life.age < 18) {
+                showEvent('😢 Dibuli di sekolah');
+                life.mental = clamp(life.mental - 15);
+                life.happiness = clamp(life.happiness - 10);
+            }
+
+            checkAchievements();
+
+            // Kematian
+            if (Math.random() < 0.005 && life.age > 15) { die('kemalangan jalan raya'); return; }
             if (life.health <= 0) { die('penyakit'); return; }
-            if (life.mental <= 0) { die('kemurungan'); return; }
-            if (life.age >= life.lifeExpectancy + 10) { die('usia lanjut'); return; }
+            if (life.mental <= 0) { die('bunuh diri'); return; }
+            if (life.age >= life.dynamicLifeExpectancy + 10) { die('usia lanjut'); return; }
 
             renderStats();
             generateActions();
@@ -676,17 +815,20 @@
 
         function clamp(val) { return Math.max(0, Math.min(100, val)); }
 
-        function showEvent(event) {
+        function showEvent(text) {
             const container = $('eventContainer');
-            container.innerHTML = `<div class="event-box"><p>${event.text}</p></div>`;
+            container.innerHTML = `<div class="event-box"><p>${text}</p></div>`;
             setTimeout(() => container.innerHTML = '', 3000);
         }
 
         function die(reason) {
             life.alive = false;
+            addTimeline(`🕊️ Meninggal: ${reason}`);
             $('lifeScreen').style.display = 'none';
             $('deathScreen').style.display = 'block';
-            $('deathSummary').textContent = `${life.icon} ${life.name} dari ${life.country} meninggal pada umur ${life.age} tahun kerana ${reason}. Wang: ${life.currency} ${life.money.toLocaleString()} • Bank: ${life.currency} ${life.bankAccount.toLocaleString()} • Pendidikan: ${life.education} • Anak: ${life.children}${life.hasCriminalRecord ? ' • Rekod jenayah: Ya' : ''}${life.hasHouse ? ' • Rumah: Ya' : ''}${life.hasCar ? ' • Kereta: Ya' : ''}`;
+            $('deathSummary').textContent = `${life.icon} ${life.name} dari ${life.country} meninggal pada umur ${life.age} tahun kerana ${reason}. Wang: ${life.currency} ${life.money.toLocaleString()} • Bank: ${life.bankAccount.toLocaleString()} • Saham: ${stocks} • Kripto: ${crypto} • Emas: ${gold} • Hartanah: ${property} • Pendidikan: ${life.education} • Anak: ${life.children + life.adoptedChildren}${life.isInfluencer ? ` • Pengikut: ${life.followers}` : ''}`;
+            $('achievementSummary').innerHTML = achievements.length ? `<p style="color:var(--gold);font-size:11px;">🏆 ${achievements.length} pencapaian</p>` : '';
+            $('timelineSummary').innerHTML = timeline.length ? `<p style="color:var(--cyan);font-size:10px;">📜 ${timeline.length} peristiwa</p>` : '';
             toast('Kehidupan tamat...', 'error');
         }
 
