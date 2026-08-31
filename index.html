@@ -9,59 +9,28 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
-        /* ============ DESIGN TOKENS ============ */
         :root {
-            /* Colors */
             --c-red: #ff0033;
-            --c-red-dark: #8b0000;
             --c-cyan: #00f0ff;
             --c-bg: #000000;
             --c-white: #ffffff;
             --c-muted: #888888;
             --c-success: #00ff88;
             --c-danger: #ff0033;
-
-            /* Gradients */
-            --grad-main: linear-gradient(135deg, #ff0033, #cc0033, #00f0ff);
-            --grad-btn: linear-gradient(135deg, #ff0033, #00f0ff);
             --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
-
-            /* Glows */
-            --glow-red: 0 0 15px rgba(255,0,51,0.5), 0 0 40px rgba(255,0,51,0.3);
-            --glow-cyan: 0 0 15px rgba(0,240,255,0.5), 0 0 40px rgba(0,240,255,0.3);
-            --glow-strong: 0 0 25px rgba(255,0,51,0.8), 0 0 60px rgba(0,240,255,0.5);
-
-            /* Borders */
+            --grad-btn: linear-gradient(135deg, #ff0033, #00f0ff);
+            --glow-red: 0 0 15px rgba(255,0,51,0.5);
+            --glow-cyan: 0 0 15px rgba(0,240,255,0.5);
+            --glow-strong: 0 0 25px rgba(255,0,51,0.7), 0 0 50px rgba(0,240,255,0.4);
             --border-red: rgba(255,0,51,0.25);
-            --border-cyan: rgba(0,240,255,0.3);
-
-            /* Radius */
             --r-sm: 10px;
             --r-md: 14px;
             --r-full: 25px;
-
-            /* Transitions */
-            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --ease: cubic-bezier(0.4, 0, 0.2, 1);
             --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
-
-            /* Spacing */
-            --s-xs: 4px;
-            --s-sm: 8px;
-            --s-md: 12px;
-            --s-lg: 16px;
-            --s-xl: 20px;
-            --s-2xl: 32px;
         }
 
-        /* ============ RESET ============ */
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
 
         body {
@@ -72,106 +41,32 @@
             overflow-x: hidden;
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
-        /* ============ SCROLLBAR ============ */
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb {
-            background: var(--c-red);
-            border-radius: 2px;
-            box-shadow: 0 0 8px var(--c-red);
-        }
+        ::-webkit-scrollbar-thumb { background: var(--c-red); border-radius: 2px; }
 
-        /* ============ UTILITY CLASSES ============ */
-        .glass {
-            background: rgba(255, 0, 51, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        .border-glow {
-            border: 1px solid var(--border-red);
-            transition: border-color 0.3s var(--ease-smooth), box-shadow 0.3s var(--ease-smooth);
-        }
-
-        .border-glow:focus-within,
-        .border-glow:active {
-            border-color: var(--c-cyan);
-            box-shadow: var(--glow-cyan);
-        }
-
-        /* ============ BACKGROUND LAYERS ============ */
+        /* ============ BACKGROUND ============ */
         .bg-grid {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image:
                 linear-gradient(rgba(255,0,51,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255,0,51,0.03) 1px, transparent 1px);
             background-size: 30px 30px;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 0; pointer-events: none;
             animation: gridShift 15s linear infinite;
         }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 30px 30px; } }
 
-        @keyframes gridShift {
-            0% { background-position: 0 0; }
-            100% { background-position: 30px 30px; }
-        }
-
-        .bg-scan {
-            position: fixed;
-            inset: 0;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(0,0,0,0.06) 0 1px,
-                transparent 1px 3px
-            );
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        .bg-aurora {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-            background:
-                radial-gradient(circle at 30% 20%, rgba(255,0,51,0.08), transparent 40%),
-                radial-gradient(circle at 70% 80%, rgba(0,240,255,0.08), transparent 40%);
-            animation: auroraShift 8s ease-in-out infinite;
-        }
-
-        @keyframes auroraShift {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
-        }
-
-        .bg-particles {
-            position: fixed;
-            inset: 0;
-            z-index: 1;
-            pointer-events: none;
-        }
+        .bg-particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
 
         .particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
+            position: absolute; width: 3px; height: 3px; border-radius: 50%;
             animation: floatUp linear infinite;
         }
-
-        .particle--red {
-            background: var(--c-red);
-            box-shadow: 0 0 8px var(--c-red);
-        }
-
-        .particle--cyan {
-            background: var(--c-cyan);
-            box-shadow: 0 0 8px var(--c-cyan);
-        }
+        .particle--red { background: var(--c-red); box-shadow: 0 0 8px var(--c-red); }
+        .particle--cyan { background: var(--c-cyan); box-shadow: 0 0 8px var(--c-cyan); }
 
         @keyframes floatUp {
             0% { transform: translateY(100vh); opacity: 0; }
@@ -182,999 +77,454 @@
 
         /* ============ HEADER ============ */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 12px 15px;
             background: rgba(0,0,0,0.92);
             border-bottom: 1px solid var(--border-red);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
         }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
-            font-weight: 900;
-            letter-spacing: 4px;
+            font-size: 20px; font-weight: 900; letter-spacing: 4px;
             background: var(--grad-text);
             background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
             cursor: pointer;
             animation: logoShift 4s ease infinite;
         }
+        @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        @keyframes logoShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        .header-actions {
-            display: flex;
-            gap: var(--s-xs);
-        }
+        .header-actions { display: flex; gap: 5px; }
 
         .icon-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
+            width: 38px; height: 38px; border-radius: 50%;
             background: rgba(255,0,51,0.08);
             border: 1px solid var(--border-red);
-            color: var(--c-cyan);
-            font-size: 15px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.2s var(--ease-smooth);
+            color: var(--c-cyan); font-size: 15px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.2s var(--ease);
         }
-
-        .icon-btn:active {
-            background: var(--c-red);
-            color: var(--c-white);
-            box-shadow: var(--glow-red);
-            transform: scale(0.9);
-        }
+        .icon-btn:active { background: var(--c-red); color: var(--c-white); box-shadow: var(--glow-red); transform: scale(0.9); }
 
         /* ============ SIDE MENU ============ */
         .menu-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 98;
-            background: rgba(0,0,0,0.7);
-            backdrop-filter: blur(3px);
+            position: fixed; inset: 0; z-index: 97;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
             display: none;
         }
-
         .menu-overlay.active { display: block; }
 
         .side-menu {
-            position: fixed;
-            top: 0;
-            right: -100%;
-            bottom: 0;
-            width: 78%;
-            z-index: 99;
+            position: fixed; top: 0; right: -100%; bottom: 0;
+            width: 78%; z-index: 98;
             background: rgba(0,0,0,0.97);
-            border-left: 1px solid var(--border-cyan);
+            border-left: 1px solid var(--border-red);
             padding: 70px 15px 20px;
-            transition: right 0.35s var(--ease-bounce);
+            transition: right 0.35s var(--ease-spring);
             overflow-y: auto;
         }
-
         .side-menu.active { right: 0; }
 
         .side-menu a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px;
-            color: #ccc;
-            text-decoration: none;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            letter-spacing: 2px;
+            display: flex; align-items: center; gap: 12px;
+            padding: 15px; color: #ccc; text-decoration: none;
+            font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 2px;
             border-bottom: 1px solid rgba(255,0,51,0.08);
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
+            border-radius: 10px; cursor: pointer;
         }
+        .side-menu a:active { color: var(--c-cyan); background: rgba(255,0,51,0.08); }
 
-        .side-menu a:active {
-            color: var(--c-cyan);
-            background: rgba(255,0,51,0.08);
-            padding-left: 20px;
-        }
-
-        /* ============ MAIN LAYOUT ============ */
+        /* ============ MAIN ============ */
         .main {
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
             padding: 62px 15px 80px;
-            max-width: 600px;
-            margin: 0 auto;
+            max-width: 600px; margin: 0 auto;
         }
 
-        /* ============ HERO ============ */
-        .hero {
-            text-align: center;
-            padding: 30px 0 20px;
-        }
+        .hero { text-align: center; padding: 25px 0 15px; }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 30px;
-            font-weight: 900;
-            letter-spacing: 8px;
+            font-size: 28px; font-weight: 900; letter-spacing: 8px;
             background: var(--grad-text);
             background-size: 300% 300%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
-            animation: gradientShift 4s ease infinite;
-            margin-bottom: 8px;
-        }
-
-        @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            animation: logoShift 4s ease infinite;
+            margin-bottom: 5px;
         }
 
         .hero .subtitle {
-            font-size: 11px;
-            letter-spacing: 5px;
-            color: var(--c-cyan);
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-        }
-
-        /* ============ INFO CARD ============ */
-        .info-card {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-full);
-            margin-bottom: 12px;
-            font-size: 10px;
-            color: var(--c-muted);
-        }
-
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--c-success);
-            box-shadow: 0 0 8px var(--c-success);
-            display: inline-block;
-            margin-right: 5px;
-            animation: dotPulse 2s infinite;
-        }
-
-        @keyframes dotPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* ============ CLOCK ============ */
-        .clock {
-            text-align: center;
-            padding: 10px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-md);
-            margin-bottom: 12px;
-        }
-
-        .clock-time {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--c-cyan);
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-        }
-
-        .clock-date {
-            font-size: 10px;
-            color: var(--c-muted);
-            letter-spacing: 2px;
+            font-size: 10px; letter-spacing: 5px;
+            color: var(--c-cyan); text-shadow: 0 0 12px rgba(0,240,255,0.6);
         }
 
         /* ============ TABS ============ */
-        .tabs {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
+        .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
 
         .tab-btn {
-            flex: 1;
-            padding: 10px;
+            flex: 1; padding: 10px;
             background: rgba(255,0,51,0.06);
-            border: 1px solid var(--border-red);
-            color: #ccc;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 1px;
-            border-radius: var(--r-full);
-            cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
-            text-align: center;
+            border: 1px solid var(--border-red); color: #ccc;
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
+            border-radius: var(--r-full); cursor: pointer;
+            transition: all 0.2s var(--ease); text-align: center;
         }
-
-        .tab-btn.active {
-            background: var(--c-red);
-            color: var(--c-white);
-            border-color: var(--c-red);
-            box-shadow: var(--glow-red);
-        }
-
-        .tab-btn:active { transform: scale(0.95); }
+        .tab-btn.active { background: var(--c-red); color: var(--c-white); border-color: var(--c-red); box-shadow: var(--glow-red); }
 
         .tab-content { display: none; }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeUp 0.3s var(--ease-smooth);
-        }
-
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .tab-content.active { display: block; animation: fadeUp 0.25s var(--ease); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
 
         /* ============ SEARCH ============ */
-        .search-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
+        .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
 
         .search-input {
-            flex: 1;
-            padding: 11px 16px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid var(--border-red);
-            color: var(--c-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 14px;
-            border-radius: var(--r-full);
-            outline: none;
-            transition: all 0.3s var(--ease-smooth);
+            flex: 1; padding: 11px 16px;
+            background: rgba(0,0,0,0.7); border: 1px solid var(--border-red);
+            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 14px;
+            border-radius: var(--r-full); outline: none;
+            transition: all 0.3s var(--ease);
         }
-
-        .search-input:focus {
-            border-color: var(--c-cyan);
-            box-shadow: var(--glow-cyan);
-        }
+        .search-input:focus { border-color: var(--c-cyan); box-shadow: var(--glow-cyan); }
 
         .search-btn {
-            padding: 11px 18px;
-            background: var(--grad-btn);
-            color: var(--c-white);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: var(--r-full);
-            font-weight: 700;
-            cursor: pointer;
+            padding: 11px 18px; background: var(--grad-btn); color: var(--c-white);
+            font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 1px;
+            border: none; border-radius: var(--r-full); font-weight: 700; cursor: pointer;
             box-shadow: var(--glow-strong);
-            transition: all 0.2s var(--ease-smooth);
         }
-
-        .search-btn:active { transform: scale(0.95); }
 
         /* ============ BLOG CARDS ============ */
-        .blog-list {
-            display: grid;
-            gap: 12px;
-        }
+        .blog-list { display: grid; gap: 12px; }
 
         .blog-card {
             border: 1px solid var(--border-red);
-            background: rgba(255, 0, 51, 0.05);
-            border-radius: var(--r-md);
-            overflow: hidden;
-            cursor: pointer;
+            background: rgba(255,0,51,0.05);
+            border-radius: var(--r-md); overflow: hidden; cursor: pointer;
             transition: all 0.25s var(--ease-spring);
-            backdrop-filter: blur(10px);
         }
-
-        .blog-card:active {
-            border-color: var(--c-cyan);
-            box-shadow: var(--glow-strong);
-            transform: scale(0.97);
-        }
+        .blog-card:active { border-color: var(--c-cyan); box-shadow: var(--glow-strong); transform: scale(0.97); }
 
         .card-img {
-            height: 130px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 130px; display: flex; justify-content: center; align-items: center;
             background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(255,0,51,0.05), rgba(0,240,255,0.08));
-            font-size: 42px;
-            color: var(--c-cyan);
-            text-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+            font-size: 42px; color: var(--c-cyan); text-shadow: 0 0 25px rgba(0,240,255,0.6);
             border-bottom: 1px solid var(--border-red);
         }
 
         .card-body { padding: 12px; }
 
         .card-tag {
-            display: inline-block;
-            padding: 3px 10px;
-            background: rgba(255,0,51,0.1);
-            border: 1px solid var(--c-red);
-            color: var(--c-red);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 7px;
-            letter-spacing: 2px;
-            border-radius: 10px;
-            margin-bottom: 8px;
+            display: inline-block; padding: 3px 10px;
+            background: rgba(255,0,51,0.1); border: 1px solid var(--c-red);
+            color: var(--c-red); font-family: 'Orbitron', sans-serif;
+            font-size: 7px; letter-spacing: 2px; border-radius: 10px; margin-bottom: 8px;
         }
 
         .card-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            letter-spacing: 1px;
-            color: var(--c-white);
-            margin-bottom: 5px;
+            font-family: 'Orbitron', sans-serif; font-size: 13px;
+            letter-spacing: 1px; color: var(--c-white); margin-bottom: 5px;
         }
 
         .card-excerpt {
-            font-size: 11px;
-            color: var(--c-muted);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            margin-bottom: 8px;
+            font-size: 11px; color: var(--c-muted); line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; margin-bottom: 8px;
         }
 
         .card-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 9px;
-            color: #555;
-            padding-top: 8px;
+            display: flex; justify-content: space-between;
+            font-size: 9px; color: #555; padding-top: 8px;
             border-top: 1px solid rgba(255,0,51,0.06);
         }
-
         .card-meta .author { color: var(--c-cyan); }
 
-        /* ============ EMPTY STATE ============ */
         .empty-state {
-            text-align: center;
-            padding: 40px 15px;
-            border: 2px dashed var(--border-red);
-            border-radius: var(--r-md);
-            color: #555;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            animation: borderPulse 2s infinite;
+            text-align: center; padding: 40px 15px;
+            border: 2px dashed var(--border-red); border-radius: var(--r-md);
+            color: #555; font-family: 'Orbitron', sans-serif;
+            font-size: 11px; letter-spacing: 2px;
         }
-
-        @keyframes borderPulse {
-            0%, 100% { border-color: var(--border-red); }
-            50% { border-color: var(--c-cyan); }
-        }
-
-        .empty-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-            animation: floatY 3s infinite;
-        }
-
-        @keyframes floatY {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-6px); }
-        }
+        .empty-icon { font-size: 40px; margin-bottom: 10px; }
 
         /* ============ ARTICLE ============ */
         .article-view { display: none; }
-
-        .article-view.active {
-            display: block;
-            animation: slideIn 0.3s var(--ease-smooth);
-        }
-
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(25px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+        .article-view.active { display: block; animation: fadeUp 0.25s var(--ease); }
 
         .back-btn {
-            display: inline-block;
-            padding: 9px 16px;
-            background: transparent;
-            border: 1px solid var(--c-cyan);
-            color: var(--c-cyan);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 2px;
-            border-radius: var(--r-full);
-            cursor: pointer;
-            margin-bottom: 12px;
-            transition: all 0.2s var(--ease-smooth);
+            display: inline-block; padding: 9px 16px;
+            background: transparent; border: 1px solid var(--c-cyan);
+            color: var(--c-cyan); font-family: 'Orbitron', sans-serif;
+            font-size: 9px; letter-spacing: 2px; border-radius: var(--r-full);
+            cursor: pointer; margin-bottom: 12px;
         }
-
-        .back-btn:active {
-            background: var(--c-cyan);
-            color: #000;
-            box-shadow: var(--glow-cyan);
-        }
+        .back-btn:active { background: var(--c-cyan); color: #000; }
 
         .article-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 17px;
-            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif; font-size: 17px;
             background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-align: center;
-            margin-bottom: 12px;
-            line-height: 1.3;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; text-align: center; margin-bottom: 12px; line-height: 1.3;
         }
 
         .article-img {
-            height: 150px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            height: 150px; display: flex; justify-content: center; align-items: center;
             background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(0,240,255,0.04));
-            font-size: 50px;
-            color: var(--c-cyan);
-            text-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-md);
-            margin-bottom: 12px;
+            font-size: 50px; color: var(--c-cyan); text-shadow: 0 0 25px rgba(0,240,255,0.6);
+            border: 1px solid var(--border-red); border-radius: var(--r-md); margin-bottom: 12px;
         }
 
         .article-body {
-            font-size: 13px;
-            line-height: 1.7;
-            color: #ccc;
-            padding: 14px;
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-md);
-            background: rgba(255, 0, 51, 0.05);
+            font-size: 13px; line-height: 1.7; color: #ccc;
+            padding: 14px; border: 1px solid var(--border-red);
+            border-radius: var(--r-md); background: rgba(255,0,51,0.05);
         }
 
         /* ============ CHAT ============ */
         .chat-box {
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-md);
-            padding: 12px;
-            background: rgba(255, 0, 51, 0.05);
+            border: 1px solid var(--border-red); border-radius: var(--r-md);
+            padding: 12px; background: rgba(255,0,51,0.05);
         }
 
-        .chat-head {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
+        .chat-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
         .chat-head h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: var(--c-cyan);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+            font-family: 'Orbitron', sans-serif; font-size: 11px;
+            letter-spacing: 2px; color: var(--c-cyan);
         }
-
-        .chat-head .online {
-            font-size: 8px;
-            color: var(--c-success);
-        }
+        .chat-head .online { font-size: 8px; color: var(--c-success); }
 
         .chat-log {
-            height: 320px;
+            height: calc(100vh - 320px);
+            min-height: 200px;
             overflow-y: auto;
-            border: 1px solid var(--border-red);
-            border-radius: var(--r-sm);
-            padding: 10px;
-            margin-bottom: 8px;
+            border: 1px solid var(--border-red); border-radius: var(--r-sm);
+            padding: 10px; margin-bottom: 8px;
         }
 
         .msg { margin-bottom: 10px; }
-
-        .msg-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 8px;
-            color: var(--c-cyan);
-            margin-bottom: 3px;
-        }
-
+        .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--c-cyan); margin-bottom: 3px; }
         .msg-text {
-            display: inline-block;
-            font-size: 11px;
-            color: #ccc;
-            background: rgba(0,0,0,0.4);
-            padding: 7px 10px;
-            border-radius: 10px;
+            display: inline-block; font-size: 11px; color: #ccc;
+            background: rgba(0,0,0,0.4); padding: 7px 10px; border-radius: 10px;
+            word-break: break-word; max-width: 100%;
         }
-
-        .msg.own .msg-name {
-            color: var(--c-success);
-            text-align: right;
-        }
-
-        .msg.own .msg-text {
-            background: rgba(0,255,136,0.08);
-        }
+        .msg.own .msg-name { color: var(--c-success); text-align: right; }
+        .msg.own .msg-text { background: rgba(0,255,136,0.08); }
 
         .msg-audio {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,0,51,0.1);
-            border: 1px solid var(--c-red);
-            border-radius: 20px;
-            padding: 7px 12px;
-            cursor: pointer;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,0,51,0.1); border: 1px solid var(--c-red);
+            border-radius: 20px; padding: 7px 12px; cursor: pointer;
             max-width: 220px;
         }
-
         .msg-audio .audio-icon { font-size: 16px; color: var(--c-cyan); }
-
-        .msg-audio .audio-bar {
-            flex: 1;
-            height: 3px;
-            background: rgba(0,240,255,0.2);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .msg-audio .audio-duration {
-            font-size: 8px;
-            color: #ccc;
-            font-family: 'Orbitron', sans-serif;
-        }
+        .msg-audio .audio-bar { flex: 1; height: 3px; background: rgba(0,240,255,0.2); border-radius: 2px; }
+        .msg-audio .audio-duration { font-size: 8px; color: #ccc; font-family: 'Orbitron', sans-serif; }
 
         .msg-image {
-            max-width: 150px;
-            border-radius: 8px;
-            border: 1px solid var(--c-cyan);
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+            max-width: 150px; border-radius: 8px;
+            border: 1px solid var(--c-cyan); cursor: pointer;
+            box-shadow: 0 0 15px rgba(0,240,255,0.4);
         }
 
-        .chat-input-row {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
+        .chat-input-row { display: flex; gap: 5px; align-items: center; }
 
         .chat-input-row input {
-            flex: 1;
-            padding: 10px 13px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-red);
-            color: var(--c-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 12px;
-            border-radius: var(--r-full);
-            outline: none;
-            transition: all 0.3s var(--ease-smooth);
+            flex: 1; padding: 10px 13px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border-red);
+            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 12px;
+            border-radius: var(--r-full); outline: none;
+            min-width: 0;
         }
-
-        .chat-input-row input:focus {
-            border-color: var(--c-cyan);
-            box-shadow: var(--glow-cyan);
-        }
+        .chat-input-row input:focus { border-color: var(--c-cyan); box-shadow: var(--glow-cyan); }
+        .chat-input-row .name-input { max-width: 80px; }
 
         .send-btn {
-            padding: 10px 15px;
-            background: var(--grad-btn);
-            color: var(--c-white);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 1px;
-            border: none;
-            border-radius: var(--r-full);
-            font-weight: 700;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s var(--ease-smooth);
+            padding: 10px 15px; background: var(--grad-btn); color: var(--c-white);
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
+            border: none; border-radius: var(--r-full); font-weight: 700;
+            cursor: pointer; white-space: nowrap;
         }
-
-        .send-btn:active { transform: scale(0.95); }
 
         .attach-btn {
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            background: rgba(255,0,51,0.08);
-            border: 1px solid var(--border-red);
-            color: var(--c-cyan);
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            transition: all 0.2s var(--ease-smooth);
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,0,51,0.08); border: 1px solid var(--border-red);
+            color: var(--c-cyan); font-size: 13px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
-
-        .attach-btn:active {
-            background: var(--c-red);
-            color: var(--c-white);
-            box-shadow: var(--glow-red);
-            transform: scale(0.9);
-        }
-
+        .attach-btn:active { background: var(--c-red); color: var(--c-white); }
         .attach-btn.recording {
-            background: var(--c-danger);
-            color: var(--c-white);
-            border-color: var(--c-danger);
-            box-shadow: 0 0 15px var(--c-danger);
+            background: var(--c-danger); color: var(--c-white);
+            border-color: var(--c-danger); box-shadow: 0 0 15px var(--c-danger);
             animation: pulse 0.5s infinite;
         }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
+        @keyframes pulse { 50% { opacity: 0.6; } }
 
         .recording-bar {
-            display: none;
-            text-align: center;
-            padding: 6px;
-            background: rgba(255,0,51,0.08);
-            border: 1px solid var(--c-danger);
-            border-radius: 8px;
-            font-size: 9px;
-            color: var(--c-danger);
-            letter-spacing: 2px;
-            font-family: 'Orbitron', sans-serif;
+            display: none; text-align: center; padding: 6px;
+            background: rgba(255,0,51,0.08); border: 1px solid var(--c-danger);
+            border-radius: 8px; font-size: 9px; color: var(--c-danger);
+            letter-spacing: 2px; font-family: 'Orbitron', sans-serif;
             margin-bottom: 5px;
         }
-
-        .recording-bar.active {
-            display: block;
-            animation: pulse 0.5s infinite;
-        }
+        .recording-bar.active { display: block; }
 
         /* ============ ADMIN ============ */
         .admin-panel { display: none; }
-
-        .admin-panel.active {
-            display: block;
-            animation: slideIn 0.3s var(--ease-smooth);
-        }
+        .admin-panel.active { display: block; animation: fadeUp 0.25s var(--ease); }
 
         .admin-login {
-            border: 1px solid var(--border-red);
-            padding: 20px;
-            background: rgba(255, 0, 51, 0.05);
-            border-radius: var(--r-md);
+            border: 1px solid var(--border-red); padding: 20px;
+            background: rgba(255,0,51,0.05); border-radius: var(--r-md);
             text-align: center;
-            box-shadow: var(--glow-red);
         }
-
         .admin-login h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif; font-size: 13px;
             margin-bottom: 12px;
             background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .admin-login input {
-            width: 100%;
-            padding: 11px 14px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid var(--border-red);
-            color: var(--c-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 13px;
-            border-radius: var(--r-full);
-            outline: none;
-            text-align: center;
-            letter-spacing: 3px;
-            margin-bottom: 10px;
+            width: 100%; padding: 11px 14px;
+            background: rgba(0,0,0,0.7); border: 1px solid var(--border-red);
+            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
+            border-radius: var(--r-full); outline: none; text-align: center;
+            letter-spacing: 3px; margin-bottom: 10px;
         }
 
         .admin-dash { display: none; }
         .admin-dash.active { display: block; }
-
         .admin-dash h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-align: center;
-            margin-bottom: 12px;
+            font-family: 'Orbitron', sans-serif; font-size: 14px;
+            text-align: center; margin-bottom: 12px;
             background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .admin-form {
-            border: 1px solid var(--border-red);
-            padding: 14px;
-            background: rgba(255, 0, 51, 0.05);
-            border-radius: var(--r-md);
+            border: 1px solid var(--border-red); padding: 14px;
+            background: rgba(255,0,51,0.05); border-radius: var(--r-md);
             margin-bottom: 12px;
         }
-
         .admin-form h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            letter-spacing: 2px;
-            color: var(--c-cyan);
-            margin-bottom: 10px;
+            font-family: 'Orbitron', sans-serif; font-size: 10px;
+            color: var(--c-cyan); margin-bottom: 10px;
         }
-
-        .admin-form input,
-        .admin-form textarea {
-            width: 100%;
-            padding: 10px 12px;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--border-red);
-            color: var(--c-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 12px;
-            border-radius: var(--r-sm);
-            outline: none;
-            margin-bottom: 8px;
-            transition: all 0.3s var(--ease-smooth);
+        .admin-form input, .admin-form textarea {
+            width: 100%; padding: 10px 12px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border-red);
+            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 12px;
+            border-radius: var(--r-sm); outline: none; margin-bottom: 8px;
         }
-
         .admin-form textarea { height: 90px; resize: vertical; }
-
-        .admin-form input:focus,
-        .admin-form textarea:focus {
-            border-color: var(--c-cyan);
-            box-shadow: var(--glow-cyan);
+        .admin-form input:focus, .admin-form textarea:focus {
+            border-color: var(--c-cyan); box-shadow: var(--glow-cyan);
         }
 
         .btn-row { display: flex; gap: 6px; }
 
         .btn-primary {
-            flex: 1;
-            padding: 11px 15px;
-            background: var(--grad-btn);
-            color: var(--c-white);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 2px;
-            border: none;
-            border-radius: var(--r-full);
-            font-weight: 700;
+            flex: 1; padding: 11px 15px;
+            background: var(--grad-btn); color: var(--c-white);
+            font-family: 'Orbitron', sans-serif; font-size: 9px;
+            border: none; border-radius: var(--r-full); font-weight: 700;
             cursor: pointer;
-            box-shadow: var(--glow-strong);
-            transition: all 0.2s var(--ease-smooth);
         }
-
-        .btn-primary:active { transform: scale(0.95); }
-
         .btn-danger {
-            padding: 9px 13px;
-            background: transparent;
-            border: 1px solid var(--c-danger);
-            color: var(--c-danger);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 8px;
-            letter-spacing: 1px;
-            border-radius: var(--r-full);
-            cursor: pointer;
-            transition: all 0.2s var(--ease-smooth);
-        }
-
-        .btn-danger:active {
-            background: var(--c-danger);
-            color: var(--c-white);
+            padding: 9px 13px; background: transparent;
+            border: 1px solid var(--c-danger); color: var(--c-danger);
+            font-family: 'Orbitron', sans-serif; font-size: 8px;
+            border-radius: var(--r-full); cursor: pointer;
         }
 
         .admin-post {
-            border: 1px solid var(--border-red);
-            padding: 11px;
-            border-radius: var(--r-sm);
-            background: rgba(255, 0, 51, 0.05);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
+            border: 1px solid var(--border-red); padding: 11px;
+            border-radius: var(--r-sm); background: rgba(255,0,51,0.05);
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 6px; margin-bottom: 6px;
         }
-
-        .admin-post h4 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 1px;
-            color: var(--c-white);
-        }
-
+        .admin-post h4 { font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--c-white); }
         .admin-post p { font-size: 8px; color: #555; }
         .admin-post-actions { display: flex; gap: 4px; flex-shrink: 0; }
 
         /* ============ TOAST ============ */
         .toast-wrap {
-            position: fixed;
-            top: 65px;
-            right: 12px;
-            z-index: 300;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            position: fixed; top: 65px; right: 12px; z-index: 300;
+            display: flex; flex-direction: column; gap: 6px;
+            max-width: 280px;
         }
-
         .toast {
-            padding: 10px 16px;
-            border-radius: 10px;
-            font-size: 11px;
-            border: 1px solid;
-            animation: toastIn 0.3s var(--ease-smooth), toastOut 0.3s var(--ease-smooth) 2.4s forwards;
+            padding: 10px 16px; border-radius: 10px; font-size: 11px;
+            border: 1px solid; animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 3s forwards;
             backdrop-filter: blur(10px);
         }
-
-        .toast-success {
-            background: rgba(0,255,136,0.12);
-            border-color: var(--c-success);
-            color: var(--c-success);
-        }
-
-        .toast-error {
-            background: rgba(255,0,51,0.12);
-            border-color: var(--c-danger);
-            color: var(--c-danger);
-        }
-
-        .toast-info {
-            background: rgba(0,240,255,0.12);
-            border-color: var(--c-cyan);
-            color: var(--c-cyan);
-        }
-
-        @keyframes toastIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes toastOut {
-            to { transform: translateX(100%); opacity: 0; }
-        }
+        .toast-success { background: rgba(0,255,136,0.12); border-color: var(--c-success); color: var(--c-success); }
+        .toast-error { background: rgba(255,0,51,0.12); border-color: var(--c-danger); color: var(--c-danger); }
+        .toast-info { background: rgba(0,240,255,0.12); border-color: var(--c-cyan); color: var(--c-cyan); }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
+        @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
 
         /* ============ PROGRESS ============ */
         .progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            width: 0%;
-            background: var(--grad-btn);
-            box-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
-            z-index: 200;
-            transition: width 0.2s var(--ease-smooth);
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: var(--grad-btn); box-shadow: 0 0 12px rgba(0,240,255,0.6);
+            z-index: 200; transition: width 0.2s var(--ease);
         }
 
-        /* ============ FLOATING BUTTONS ============ */
+        /* ============ FLOATING ============ */
         .back-top {
-            position: fixed;
-            bottom: 18px;
-            right: 14px;
-            z-index: 90;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.9);
-            border: 2px solid var(--c-cyan);
-            color: var(--c-cyan);
-            font-size: 16px;
-            cursor: pointer;
-            box-shadow: var(--glow-cyan);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s var(--ease-smooth);
+            position: fixed; bottom: 18px; right: 14px; z-index: 90;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(0,0,0,0.9); border: 2px solid var(--c-cyan);
+            color: var(--c-cyan); font-size: 16px; cursor: pointer;
+            display: none; justify-content: center; align-items: center;
         }
-
         .back-top.show { display: flex; }
 
-        .back-top:active {
-            background: var(--c-cyan);
-            color: #000;
-            transform: scale(0.9);
-        }
-
         .fab {
-            position: fixed;
-            bottom: 18px;
-            left: 14px;
-            z-index: 90;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--grad-btn);
-            border: none;
-            color: var(--c-white);
-            font-size: 18px;
-            cursor: pointer;
-            box-shadow: var(--glow-strong);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 900;
-            transition: all 0.3s var(--ease-spring);
+            position: fixed; bottom: 18px; left: 14px; z-index: 90;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--grad-btn); border: none; color: var(--c-white);
+            font-size: 18px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
         }
-
-        .fab:active { transform: scale(0.85) rotate(90deg); }
+        .fab:active { transform: scale(0.85); }
 
         /* ============ LIGHTBOX ============ */
         .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 500;
+            position: fixed; inset: 0; z-index: 500;
             background: rgba(0,0,0,0.95);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            display: none; justify-content: center; align-items: center;
         }
-
         .lightbox.active { display: flex; }
-
         .lightbox img {
-            max-width: 92%;
-            max-height: 85%;
-            border: 2px solid var(--c-cyan);
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(0, 240, 255, 0.6);
+            max-width: 92%; max-height: 85%;
+            border: 2px solid var(--c-cyan); border-radius: 10px;
         }
-
         .lightbox-close {
-            position: absolute;
-            top: 18px;
-            right: 18px;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.8);
-            border: 2px solid var(--c-red);
-            color: var(--c-red);
-            font-size: 20px;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: absolute; top: 18px; right: 18px;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.8); border: 2px solid var(--c-red);
+            color: var(--c-red); font-size: 20px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
         }
 
         /* ============ FOOTER ============ */
         .footer {
-            text-align: center;
-            padding: 18px 15px;
+            text-align: center; padding: 15px;
             border-top: 1px solid var(--border-red);
-            position: relative;
-            z-index: 2;
-            background: rgba(0,0,0,0.7);
+            position: relative; z-index: 2; background: rgba(0,0,0,0.7);
         }
-
-        .footer p {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 8px;
-            letter-spacing: 2px;
-            color: #555;
-        }
-
+        .footer p { font-family: 'Orbitron', sans-serif; font-size: 8px; color: #555; }
         .footer .glow {
             background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
@@ -1185,37 +535,33 @@
 
     <!-- BACKGROUND -->
     <div class="bg-grid"></div>
-    <div class="bg-scan"></div>
-    <div class="bg-aurora"></div>
     <div class="bg-particles" id="particles"></div>
 
-    <!-- PROGRESS BAR -->
+    <!-- PROGRESS -->
     <div class="progress" id="progress"></div>
 
-    <!-- TOAST CONTAINER -->
+    <!-- TOAST -->
     <div class="toast-wrap" id="toastWrap"></div>
 
     <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
-        <button class="lightbox-close">✕</button>
-        <img id="lightboxImg" src="" alt="Gambar">
+        <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">✕</button>
+        <img id="lightboxImg" src="" alt="Gambar" onclick="event.stopPropagation()">
     </div>
 
     <!-- HEADER -->
     <div class="header">
         <div class="logo" onclick="goHome()">ZACK</div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="switchTab('blog')">📝</button>
-            <button class="icon-btn" onclick="switchTab('chat')">💬</button>
-            <button class="icon-btn" onclick="openAdmin()">🔐</button>
-            <button class="icon-btn" onclick="toggleMenu()">☰</button>
+            <button class="icon-btn" onclick="switchTab('blog')" aria-label="Blog">📝</button>
+            <button class="icon-btn" onclick="switchTab('chat')" aria-label="Chat">💬</button>
+            <button class="icon-btn" onclick="openAdmin()" aria-label="Admin">🔐</button>
+            <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
         </div>
     </div>
 
-    <!-- MENU OVERLAY -->
+    <!-- MENU -->
     <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-
-    <!-- SIDE MENU -->
     <div class="side-menu" id="sideMenu">
         <a onclick="goHome()">🏠 UTAMA</a>
         <a onclick="switchTab('chat')">💬 CHAT</a>
@@ -1232,18 +578,6 @@
             <p class="subtitle">DIGITAL CHRONICLES</p>
         </div>
 
-        <!-- INFO -->
-        <div class="info-card">
-            <span><span class="status-dot"></span>ONLINE</span>
-            <span id="visitors">👁️ 0</span>
-        </div>
-
-        <!-- CLOCK -->
-        <div class="clock">
-            <div class="clock-time" id="clockTime">00:00:00</div>
-            <div class="clock-date" id="clockDate">---</div>
-        </div>
-
         <!-- TABS -->
         <div class="tabs" id="tabsBar">
             <button class="tab-btn active" onclick="switchTab('blog', this)">📝 BLOG</button>
@@ -1253,8 +587,8 @@
         <!-- BLOG TAB -->
         <div class="tab-content active" id="tab-blog">
             <div class="search-row">
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari artikel..." onkeyup="searchPosts(this.value)">
-                <button class="search-btn" onclick="searchPosts(document.getElementById('searchInput').value)">CARI</button>
+                <input type="text" id="searchInput" class="search-input" placeholder="Cari artikel...">
+                <button class="search-btn" id="searchBtn">CARI</button>
             </div>
             <div class="blog-list" id="blogList"></div>
         </div>
@@ -1269,17 +603,17 @@
                 <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
                 <div class="chat-log" id="chatLog"></div>
                 <div class="chat-input-row">
-                    <input type="text" id="chatName" placeholder="NAMA" style="max-width:65px;">
-                    <input type="text" id="chatInput" placeholder="Tulis mesej..." onkeypress="if(event.key==='Enter')sendText()">
-                    <button class="attach-btn" onclick="document.getElementById('chatImageInput').click()">📷</button>
-                    <button class="attach-btn" id="recordBtn" onclick="toggleRecord()">🎤</button>
-                    <button class="send-btn" onclick="sendText()">HANTAR</button>
+                    <input type="text" id="chatName" class="name-input" placeholder="NAMA">
+                    <input type="text" id="chatInput" placeholder="Tulis mesej...">
+                    <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
+                    <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
+                    <button class="send-btn" id="sendBtn">HANTAR</button>
                 </div>
-                <input type="file" id="chatImageInput" accept="image/*" onchange="sendImage(event)">
+                <input type="file" id="chatImageInput" accept="image/*">
             </div>
         </div>
 
-        <!-- ARTICLE VIEW -->
+        <!-- ARTICLE -->
         <div class="article-view" id="articleView">
             <button class="back-btn" onclick="goHome()">← KEMBALI</button>
             <div class="article-title" id="articleTitle"></div>
@@ -1287,12 +621,12 @@
             <div class="article-body" id="articleBody"></div>
         </div>
 
-        <!-- ADMIN PANEL -->
+        <!-- ADMIN -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-login" id="adminLogin">
                 <h2>🔐 LOGIN ADMIN</h2>
-                <input type="password" id="adminPass" placeholder="KATA LALUAN" onkeypress="if(event.key==='Enter')doLogin()">
-                <button class="btn-primary" onclick="doLogin()">LOGIN</button>
+                <input type="password" id="adminPass" placeholder="KATA LALUAN">
+                <button class="btn-primary" id="loginBtn">LOGIN</button>
             </div>
             <div class="admin-dash" id="adminDash">
                 <h2>📝 PENGURUSAN ARTIKEL</h2>
@@ -1306,12 +640,12 @@
                     <textarea id="postExcerpt" placeholder="RINGKASAN"></textarea>
                     <textarea id="postContent" placeholder="KANDUNGAN (HTML)"></textarea>
                     <div class="btn-row">
-                        <button class="btn-primary" onclick="savePost()">💾 SIMPAN</button>
-                        <button class="btn-danger" onclick="resetForm()">BATAL</button>
+                        <button class="btn-primary" id="savePostBtn">💾 SIMPAN</button>
+                        <button class="btn-danger" id="resetFormBtn">BATAL</button>
                     </div>
                 </div>
                 <div id="adminList"></div>
-                <button class="btn-danger" onclick="doLogout()" style="margin-top:8px;">🚪 LOGOUT</button>
+                <button class="btn-danger" id="logoutBtn" style="margin-top:8px;">🚪 LOGOUT</button>
             </div>
         </div>
 
@@ -1322,11 +656,11 @@
         <p>© 2026 <span class="glow">ZACK</span> — DIGITAL CHRONICLES</p>
     </div>
 
-    <!-- FLOATING BUTTONS -->
-    <button class="back-top" id="backTop" onclick="scrollTop()">↑</button>
-    <button class="fab" onclick="burst(); toast('Letupan Partikel! ✨', 'success')">✦</button>
+    <!-- FLOATING -->
+    <button class="back-top" id="backTop" aria-label="Naik atas">↑</button>
+    <button class="fab" id="fabBtn" aria-label="Letupan partikel">✦</button>
 
-    <!-- FIREBASE SDK -->
+    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
@@ -1345,85 +679,116 @@
         const state = {
             isAdmin: false,
             posts: [],
+            postsMap: new Map(),
             isRecording: false,
             recordStart: 0,
-            audioCtx: null,
             recorder: null,
             audioChunks: []
         };
 
-        /* ============ DOM CACHE ============ */
-        const DOM = {};
-        function cacheDOM() {
-            ['progress', 'toastWrap', 'lightbox', 'lightboxImg', 'sideMenu', 'menuOverlay',
-             'heroArea', 'tabsBar', 'tab-blog', 'tab-chat', 'articleView', 'adminPanel',
-             'adminLogin', 'adminDash', 'blogList', 'chatLog', 'chatName', 'chatInput',
-             'adminPass', 'adminList', 'visitors', 'clockTime', 'clockDate', 'backTop',
-             'recordBtn', 'recBar', 'searchInput', 'postId', 'postTitle', 'postCategory',
-             'postIcon', 'postAuthor', 'postExcerpt', 'postContent', 'formTitle',
-             'articleTitle', 'articleImg', 'articleBody'
-            ].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) DOM[id] = el;
-            });
-        }
+        /* ============ DOM ============ */
+        const $ = id => document.getElementById(id);
+
+        const DOM = {
+            progress: $('progress'),
+            toastWrap: $('toastWrap'),
+            lightbox: $('lightbox'),
+            lightboxImg: $('lightboxImg'),
+            sideMenu: $('sideMenu'),
+            menuOverlay: $('menuOverlay'),
+            heroArea: $('heroArea'),
+            tabsBar: $('tabsBar'),
+            tabBlog: $('tab-blog'),
+            tabChat: $('tab-chat'),
+            articleView: $('articleView'),
+            adminPanel: $('adminPanel'),
+            adminLogin: $('adminLogin'),
+            adminDash: $('adminDash'),
+            blogList: $('blogList'),
+            chatLog: $('chatLog'),
+            chatName: $('chatName'),
+            chatInput: $('chatInput'),
+            adminPass: $('adminPass'),
+            adminList: $('adminList'),
+            backTop: $('backTop'),
+            recordBtn: $('recordBtn'),
+            recBar: $('recBar'),
+            searchInput: $('searchInput'),
+            postId: $('postId'),
+            postTitle: $('postTitle'),
+            postCategory: $('postCategory'),
+            postIcon: $('postIcon'),
+            postAuthor: $('postAuthor'),
+            postExcerpt: $('postExcerpt'),
+            postContent: $('postContent'),
+            formTitle: $('formTitle'),
+            articleTitle: $('articleTitle'),
+            articleImg: $('articleImg'),
+            articleBody: $('articleBody')
+        };
 
         /* ============ FIREBASE ============ */
         const db = firebase.initializeApp({ databaseURL: CONFIG.databaseURL }).database();
 
         /* ============ HELPERS ============ */
-        const toast = (msg, type = 'info') => {
+        function toast(msg, type = 'info') {
+            while (DOM.toastWrap.children.length >= 3) {
+                DOM.toastWrap.firstChild.remove();
+            }
             const el = document.createElement('div');
             el.className = `toast toast-${type}`;
             el.textContent = msg;
             DOM.toastWrap.appendChild(el);
-            setTimeout(() => el.remove(), 2700);
-        };
+            setTimeout(() => el.remove(), 3300);
+        }
 
-        const sound = (type) => {
-            try {
-                if (!state.audioCtx) state.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const osc = state.audioCtx.createOscillator();
-                const gain = state.audioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(state.audioCtx.destination);
-                const t = state.audioCtx.currentTime;
-                const freqs = { click: [800, 400], success: [600, 1200], error: [200, 100] };
-                const [start, end] = freqs[type] || [600, 800];
-                osc.frequency.setValueAtTime(start, t);
-                osc.frequency.exponentialRampToValueAtTime(end, t + 0.15);
-                gain.gain.setValueAtTime(0.25, t);
-                gain.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
-                if (type === 'error') osc.type = 'sawtooth';
-                osc.start(t);
-                osc.stop(t + 0.2);
-            } catch (e) { /* Audio unavailable */ }
-        };
+        function getTime() {
+            return new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
+        }
 
-        const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
-        const getName = () => DOM.chatName.value.trim() || 'Anonymous';
+        function getName() {
+            return DOM.chatName.value.trim() || 'Anonymous';
+        }
+
+        /* ============ DEBOUNCE ============ */
+        function debounce(fn, delay = 300) {
+            let timer;
+            return (...args) => {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn(...args), delay);
+            };
+        }
+
+        /* ============ SANITIZE ============ */
+        function sanitizeText(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.textContent;
+        }
 
         /* ============ PARTICLES ============ */
         function initParticles() {
-            const wrap = document.getElementById('particles');
+            const wrap = $('particles');
+            const fragment = document.createDocumentFragment();
             const colors = ['particle--red', 'particle--cyan'];
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 15; i++) {
                 const p = document.createElement('div');
                 p.className = `particle ${colors[i % 2]}`;
                 p.style.left = Math.random() * 100 + '%';
                 p.style.animationDuration = (Math.random() * 4 + 3) + 's';
                 p.style.animationDelay = Math.random() * 4 + 's';
                 p.style.width = p.style.height = (Math.random() * 3 + 2) + 'px';
-                wrap.appendChild(p);
+                fragment.appendChild(p);
             }
+            wrap.appendChild(fragment);
         }
 
         function burst() {
-            sound('success');
             const wrap = document.createElement('div');
             wrap.style.cssText = 'position:fixed;left:50%;top:50%;z-index:999;pointer-events:none;';
             document.body.appendChild(wrap);
-            const colors = ['#ff0033', '#00f0ff', '#ff4455', '#00ff88', '#ffffff'];
+            const colors = ['#ff0033', '#00f0ff', '#ff4455', '#00ff88', '#fff'];
+            const fragment = document.createDocumentFragment();
             for (let i = 0; i < 20; i++) {
                 const p = document.createElement('div');
                 const color = colors[i % colors.length];
@@ -1432,58 +797,30 @@
                 const dist = Math.random() * 80 + 40;
                 p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
                 p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-                wrap.appendChild(p);
+                fragment.appendChild(p);
             }
+            wrap.appendChild(fragment);
             setTimeout(() => wrap.remove(), 1000);
-        }
-
-        function miniBurst(x, y) {
-            const wrap = document.createElement('div');
-            wrap.style.cssText = `position:fixed;left:${x}px;top:${y}px;z-index:999;pointer-events:none;`;
-            document.body.appendChild(wrap);
-            const colors = ['#ff0033', '#00f0ff'];
-            for (let i = 0; i < 8; i++) {
-                const p = document.createElement('div');
-                const color = colors[i % 2];
-                p.style.cssText = `position:absolute;width:5px;height:5px;border-radius:50%;background:${color};box-shadow:0 0 8px ${color};animation:burstFly 0.8s ease-out forwards;`;
-                const angle = (Math.PI * 2 * i) / 8;
-                const dist = Math.random() * 25 + 10;
-                p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
-                p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-                wrap.appendChild(p);
-            }
-            setTimeout(() => wrap.remove(), 800);
-        }
-
-        /* ============ CLOCK ============ */
-        function updateClock() {
-            const now = new Date();
-            DOM.clockTime.textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
-            DOM.clockDate.textContent = now.toLocaleDateString('ms-MY', {
-                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
-            });
         }
 
         /* ============ SCROLL ============ */
         function handleScroll() {
             const doc = document.documentElement;
-            const scrollPercent = (window.scrollY / (doc.scrollHeight - innerHeight)) * 100;
-            DOM.progress.style.width = scrollPercent + '%';
+            const percent = (window.scrollY / (doc.scrollHeight - innerHeight)) * 100;
+            DOM.progress.style.width = percent + '%';
             DOM.backTop.classList.toggle('show', window.scrollY > 200);
         }
 
-        const scrollTop = () => {
-            sound('click');
+        function scrollTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
+        }
 
         /* ============ TABS ============ */
         function switchTab(name, btn) {
-            sound('click');
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const tabEl = document.getElementById('tab-' + name);
-            if (tabEl) tabEl.classList.add('active');
+            const tab = $(`tab-${name}`);
+            if (tab) tab.classList.add('active');
             if (btn) btn.classList.add('active');
             DOM.articleView.classList.remove('active');
             DOM.adminPanel.classList.remove('active');
@@ -1492,13 +829,12 @@
         }
 
         function goHome() {
-            sound('click');
             DOM.articleView.classList.remove('active');
             DOM.adminPanel.classList.remove('active');
             DOM.tabsBar.style.display = 'flex';
             DOM.heroArea.style.display = 'block';
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            DOM['tab-blog'].classList.add('active');
+            DOM.tabBlog.classList.add('active');
             document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -1506,44 +842,80 @@
         /* ============ BLOG ============ */
         db.ref('posts').on('value', snap => {
             state.posts = [];
-            if (snap.exists()) snap.forEach(child => state.posts.push({ id: child.key, ...child.val() }));
+            state.postsMap.clear();
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    const post = { id: child.key, ...child.val() };
+                    state.posts.push(post);
+                    state.postsMap.set(child.key, post);
+                });
+            }
             renderBlog(state.posts);
             renderAdminList();
         });
 
-        function renderBlog(list) {
-            if (!list.length) {
-                DOM.blogList.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div>TIADA ARTIKEL</div>`;
-                return;
-            }
-            DOM.blogList.innerHTML = list.map(p => `
-                <div class="blog-card" onclick="openArticle('${p.id}')">
-                    <div class="card-img">${p.icon || '📄'}</div>
-                    <div class="card-body">
-                        <span class="card-tag">${p.category || 'UMUM'}</span>
-                        <div class="card-title">${p.title}</div>
-                        <div class="card-excerpt">${p.excerpt || ''}</div>
-                        <div class="card-meta">
-                            <span class="author">${p.author || 'Tanpa Nama'}</span>
-                            <span>${p.date || ''}</span>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+        function createBlogCard(post) {
+            const card = document.createElement('div');
+            card.className = 'blog-card';
+            card.addEventListener('click', () => openArticle(post.id));
+
+            const img = document.createElement('div');
+            img.className = 'card-img';
+            img.textContent = post.icon || '📄';
+
+            const body = document.createElement('div');
+            body.className = 'card-body';
+
+            const tag = document.createElement('span');
+            tag.className = 'card-tag';
+            tag.textContent = sanitizeText(post.category || 'UMUM');
+
+            const title = document.createElement('div');
+            title.className = 'card-title';
+            title.textContent = sanitizeText(post.title);
+
+            const excerpt = document.createElement('div');
+            excerpt.className = 'card-excerpt';
+            excerpt.textContent = sanitizeText(post.excerpt || '');
+
+            const meta = document.createElement('div');
+            meta.className = 'card-meta';
+            const author = document.createElement('span');
+            author.className = 'author';
+            author.textContent = sanitizeText(post.author || 'Tanpa Nama');
+            const date = document.createElement('span');
+            date.textContent = sanitizeText(post.date || '');
+            meta.append(author, date);
+
+            body.append(tag, title, excerpt, meta);
+            card.append(img, body);
+            return card;
         }
 
-        function searchPosts(query) {
-            sound('click');
+        function renderBlog(list) {
+            DOM.blogList.innerHTML = '';
+            if (!list.length) {
+                const empty = document.createElement('div');
+                empty.className = 'empty-state';
+                empty.innerHTML = '<div class="empty-icon">📝</div>TIADA ARTIKEL';
+                DOM.blogList.appendChild(empty);
+                return;
+            }
+            const fragment = document.createDocumentFragment();
+            list.forEach(post => fragment.appendChild(createBlogCard(post)));
+            DOM.blogList.appendChild(fragment);
+        }
+
+        const debouncedSearch = debounce(query => {
             const q = query.toLowerCase();
             const filtered = state.posts.filter(p =>
                 (p.title + ' ' + p.excerpt + ' ' + p.category).toLowerCase().includes(q)
             );
             renderBlog(filtered);
-        }
+        });
 
         function openArticle(id) {
-            sound('click');
-            const post = state.posts.find(p => p.id === id);
+            const post = state.postsMap.get(id);
             if (!post) return;
             DOM.articleView.classList.add('active');
             DOM.tabsBar.style.display = 'none';
@@ -1558,45 +930,67 @@
         /* ============ CHAT ============ */
         db.ref('chat').limitToLast(50).on('value', snap => {
             const myName = getName();
+            const wasAtBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
             DOM.chatLog.innerHTML = '';
+            const fragment = document.createDocumentFragment();
+
             if (snap.exists()) {
                 snap.forEach(child => {
                     const data = child.val();
                     const div = document.createElement('div');
                     div.className = 'msg' + (data.name === myName ? ' own' : '');
+
                     const nameEl = document.createElement('div');
                     nameEl.className = 'msg-name';
-                    nameEl.textContent = `${data.name} • ${data.time || ''}`;
+                    nameEl.textContent = `${sanitizeText(data.name)} • ${sanitizeText(data.time || '')}`;
                     div.appendChild(nameEl);
+
                     if (data.type === 'text') {
                         const textEl = document.createElement('div');
                         textEl.className = 'msg-text';
-                        textEl.textContent = data.text;
+                        textEl.textContent = sanitizeText(data.text);
                         div.appendChild(textEl);
                     } else if (data.type === 'image') {
                         const img = document.createElement('img');
                         img.className = 'msg-image';
                         img.src = data.data;
-                        img.onclick = () => openLightbox(data.data);
+                        img.alt = 'Gambar';
+                        img.addEventListener('click', () => openLightbox(data.data));
                         div.appendChild(img);
                     } else if (data.type === 'audio') {
                         const audioEl = document.createElement('div');
                         audioEl.className = 'msg-audio';
-                        audioEl.onclick = () => new Audio(data.data).play();
                         audioEl.innerHTML = `<span class="audio-icon">▶</span><div class="audio-bar"></div><span class="audio-duration">${data.duration || 0}s</span>`;
+                        audioEl.addEventListener('click', () => {
+                            const audio = new Audio(data.data);
+                            audio.play().catch(() => toast('Tidak dapat main audio!', 'error'));
+                        });
                         div.appendChild(audioEl);
                     }
-                    DOM.chatLog.appendChild(div);
+
+                    fragment.appendChild(div);
                 });
             }
-            DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
+
+            DOM.chatLog.appendChild(fragment);
+            if (wasAtBottom) {
+                DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
+            }
         });
+
+        function sendMessage(type, data) {
+            db.ref('chat').push({
+                type,
+                name: getName(),
+                ...data,
+                time: getTime()
+            }).catch(err => toast('Gagal hantar!', 'error'));
+        }
 
         function sendText() {
             const text = DOM.chatInput.value.trim();
             if (!text) return;
-            sound('success');
-            db.ref('chat').push({ type: 'text', name: getName(), text, time: getTime() });
+            sendMessage('text', { text });
             DOM.chatInput.value = '';
         }
 
@@ -1609,8 +1003,7 @@
             }
             const reader = new FileReader();
             reader.onload = ev => {
-                sound('success');
-                db.ref('chat').push({ type: 'image', name: getName(), data: ev.target.result, time: getTime() });
+                sendMessage('image', { data: ev.target.result });
                 toast('Gambar dihantar! 📷', 'success');
             };
             reader.readAsDataURL(file);
@@ -1619,10 +1012,7 @@
 
         async function toggleRecord() {
             if (state.isRecording) {
-                state.isRecording = false;
-                DOM.recordBtn.classList.remove('recording');
-                DOM.recBar.classList.remove('active');
-                state.recorder.stop();
+                stopRecording();
                 return;
             }
             try {
@@ -1636,8 +1026,7 @@
                     const reader = new FileReader();
                     reader.onload = ev => {
                         const duration = Math.round((Date.now() - state.recordStart) / 1000);
-                        sound('success');
-                        db.ref('chat').push({ type: 'audio', name: getName(), data: ev.target.result, duration, time: getTime() });
+                        sendMessage('audio', { data: ev.target.result, duration });
                         toast('Audio dihantar! 🎤', 'success');
                     };
                     reader.readAsDataURL(blob);
@@ -1647,25 +1036,31 @@
                 state.recordStart = Date.now();
                 DOM.recordBtn.classList.add('recording');
                 DOM.recBar.classList.add('active');
-                sound('click');
-                setTimeout(() => { if (state.isRecording) toggleRecord(); }, CONFIG.maxAudioDuration * 1000);
+                setTimeout(() => { if (state.isRecording) stopRecording(); }, CONFIG.maxAudioDuration * 1000);
             } catch (e) {
-                sound('error');
                 toast('Tidak dapat akses mikrofon!', 'error');
             }
         }
 
+        function stopRecording() {
+            state.isRecording = false;
+            DOM.recordBtn.classList.remove('recording');
+            DOM.recBar.classList.remove('active');
+            if (state.recorder) state.recorder.stop();
+        }
+
         /* ============ LIGHTBOX ============ */
-        const openLightbox = src => {
+        function openLightbox(src) {
             DOM.lightboxImg.src = src;
             DOM.lightbox.classList.add('active');
-        };
+        }
 
-        const closeLightbox = () => DOM.lightbox.classList.remove('active');
+        function closeLightbox() {
+            DOM.lightbox.classList.remove('active');
+        }
 
         /* ============ ADMIN ============ */
         function openAdmin() {
-            sound('click');
             DOM.tabsBar.style.display = 'none';
             DOM.heroArea.style.display = 'none';
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -1677,14 +1072,12 @@
 
         function doLogin() {
             if (DOM.adminPass.value === CONFIG.adminPassword) {
-                sound('success');
                 state.isAdmin = true;
                 DOM.adminLogin.style.display = 'none';
                 DOM.adminDash.classList.add('active');
                 DOM.adminPass.value = '';
                 toast('Login berjaya! ✅', 'success');
             } else {
-                sound('error');
                 toast('Kata laluan salah! ❌', 'error');
             }
         }
@@ -1697,26 +1090,41 @@
         }
 
         function renderAdminList() {
+            DOM.adminList.innerHTML = '';
             if (!state.posts.length) {
                 DOM.adminList.innerHTML = '<p style="color:#555;text-align:center;padding:10px;">Tiada artikel.</p>';
                 return;
             }
-            DOM.adminList.innerHTML = state.posts.map(p => `
-                <div class="admin-post">
-                    <div>
-                        <h4>${p.title}</h4>
-                        <p>${p.category || 'UMUM'}</p>
-                    </div>
-                    <div class="admin-post-actions">
-                        <button class="btn-primary" onclick="editPost('${p.id}')" style="padding:5px 10px;">EDIT</button>
-                        <button class="btn-danger" onclick="deletePost('${p.id}')" style="padding:5px 8px;">PADAM</button>
-                    </div>
-                </div>
-            `).join('');
+            const fragment = document.createDocumentFragment();
+            state.posts.forEach(post => {
+                const item = document.createElement('div');
+                item.className = 'admin-post';
+                const info = document.createElement('div');
+                const h4 = document.createElement('h4');
+                h4.textContent = sanitizeText(post.title);
+                const p = document.createElement('p');
+                p.textContent = sanitizeText(post.category || 'UMUM');
+                info.append(h4, p);
+                const actions = document.createElement('div');
+                actions.className = 'admin-post-actions';
+                const editBtn = document.createElement('button');
+                editBtn.className = 'btn-primary';
+                editBtn.textContent = 'EDIT';
+                editBtn.style.padding = '5px 10px';
+                editBtn.addEventListener('click', () => editPost(post.id));
+                const delBtn = document.createElement('button');
+                delBtn.className = 'btn-danger';
+                delBtn.textContent = 'PADAM';
+                delBtn.style.padding = '5px 8px';
+                delBtn.addEventListener('click', () => deletePost(post.id));
+                actions.append(editBtn, delBtn);
+                item.append(info, actions);
+                fragment.appendChild(item);
+            });
+            DOM.adminList.appendChild(fragment);
         }
 
         function savePost() {
-            sound('success');
             const id = DOM.postId.value;
             const data = {
                 title: DOM.postTitle.value.trim(),
@@ -1732,11 +1140,12 @@
                 return;
             }
             const ref = id ? db.ref('posts/' + id).update(data) : db.ref('posts').push(data);
-            ref.then(() => { toast('Disimpan! ✅', 'success'); resetForm(); });
+            ref.then(() => { toast('Disimpan! ✅', 'success'); resetForm(); })
+               .catch(() => toast('Gagal simpan!', 'error'));
         }
 
         function editPost(id) {
-            const post = state.posts.find(p => p.id === id);
+            const post = state.postsMap.get(id);
             if (!post) return;
             DOM.postId.value = post.id;
             DOM.postTitle.value = post.title || '';
@@ -1746,50 +1155,47 @@
             DOM.postExcerpt.value = post.excerpt || '';
             DOM.postContent.value = post.content || '';
             DOM.formTitle.textContent = '✏️ EDIT ARTIKEL';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function deletePost(id) {
-            sound('error');
             if (confirm('Padam artikel ini?')) {
-                db.ref('posts/' + id).remove().then(() => toast('Dipadam! ✅', 'success'));
+                db.ref('posts/' + id).remove()
+                    .then(() => toast('Dipadam! ✅', 'success'))
+                    .catch(() => toast('Gagal padam!', 'error'));
             }
         }
 
         function resetForm() {
             ['postId', 'postTitle', 'postCategory', 'postIcon', 'postAuthor', 'postExcerpt', 'postContent']
-                .forEach(id => { if (DOM[id]) DOM[id].value = ''; });
+                .forEach(id => DOM[id].value = '');
             DOM.formTitle.textContent = '➕ TAMBAH ARTIKEL';
         }
 
         /* ============ MENU ============ */
         function toggleMenu() {
-            sound('click');
             DOM.sideMenu.classList.toggle('active');
             DOM.menuOverlay.classList.toggle('active');
         }
 
         /* ============ EVENT LISTENERS ============ */
-        document.addEventListener('click', e => {
-            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                miniBurst(e.clientX, e.clientY);
-            }
-        });
-
-        window.addEventListener('scroll', handleScroll);
-        document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
-
-        /* ============ VISITOR COUNTER ============ */
-        db.ref('visitors').transaction(current => (current || 0) + 1);
-        db.ref('visitors').on('value', snap => {
-            DOM.visitors.textContent = '👁️ ' + (snap.val() || 0);
-        });
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        DOM.searchInput.addEventListener('input', e => debouncedSearch(e.target.value));
+        $('searchBtn').addEventListener('click', () => debouncedSearch(DOM.searchInput.value));
+        $('sendBtn').addEventListener('click', sendText);
+        DOM.chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendText(); });
+        $('imgBtn').addEventListener('click', () => $('chatImageInput').click());
+        $('chatImageInput').addEventListener('change', sendImage);
+        DOM.recordBtn.addEventListener('click', toggleRecord);
+        $('loginBtn').addEventListener('click', doLogin);
+        DOM.adminPass.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+        $('savePostBtn').addEventListener('click', savePost);
+        $('resetFormBtn').addEventListener('click', resetForm);
+        $('logoutBtn').addEventListener('click', doLogout);
+        $('backTop').addEventListener('click', scrollTop);
+        $('fabBtn').addEventListener('click', () => { burst(); toast('Letupan Partikel! ✨', 'success'); });
 
         /* ============ INIT ============ */
-        cacheDOM();
         initParticles();
-        updateClock();
-        setInterval(updateClock, 1000);
         handleScroll();
     </script>
 
