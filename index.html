@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Lives X — Multiplayer">
+    <meta name="description" content="ZACK Lives X — Pilihan Berlapis">
     <title>ZACK Lives X</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives X","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
     <style>
@@ -32,7 +32,7 @@
         .grid-stat{display:grid;grid-template-columns:1fr 1fr;gap:6px}
         .kotak{background:rgba(0,0,0,.5);border:1px solid var(--br);border-radius:10px;padding:10px 6px;text-align:center}
         .label{font-size:7px;color:var(--m);font-family:'Orbitron',sans-serif}
-        .nilai{font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;margin-top:3px}
+        .nilai{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;margin-top:3px}
         .bar{height:4px;background:rgba(0,0,0,.5);border-radius:2px;overflow:hidden;margin-top:4px}
         .isi{height:100%}
         .fh{background:var(--s)}.fk{background:var(--g)}.fm{background:var(--r)}
@@ -40,6 +40,12 @@
         .butang:disabled{opacity:.3}
         .butang-k{width:100%;padding:7px 10px;background:rgba(255,0,51,.06);border:1px solid var(--br);color:var(--c);font-family:'Orbitron',sans-serif;font-size:7px;border-radius:15px;cursor:pointer;margin-bottom:3px;text-align:left}
         .butang-k:disabled{opacity:.3}
+        .butang-modal{width:100%;padding:10px;background:rgba(0,0,0,.8);border:1px solid var(--g);color:var(--g);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;border-radius:15px;cursor:pointer;margin-bottom:4px;text-align:left}
+        .modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.9);display:none;justify-content:center;align-items:center;padding:20px}
+        .modal.aktif{display:flex}
+        .modal-kandungan{width:100%;max-width:400px;max-height:80dvh;overflow-y:auto;border:1px solid var(--br);border-radius:16px;background:var(--b);padding:15px}
+        .modal-kandungan h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--c);margin-bottom:10px;letter-spacing:2px}
+        .modal-tutup{width:100%;padding:10px;background:transparent;border:1px solid var(--r);color:var(--r);font-family:'Orbitron',sans-serif;font-size:8px;border-radius:25px;cursor:pointer;margin-top:10px}
         .pil{border:1px solid var(--g);border-radius:10px;background:rgba(255,215,0,.08);padding:8px;margin-bottom:6px}
         .pil-t{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--g);margin-bottom:4px}
         .pil-d{font-size:9px;margin-bottom:6px}
@@ -53,7 +59,6 @@
         .pemain-bank{color:var(--s)}
         .pemain-mati{opacity:.4;border-color:var(--r)}
         .pemain-mati .pemain-nama{color:var(--r);text-decoration:line-through}
-        .pemain-mati .pemain-bank{color:var(--m)}
     </style>
 </head>
 <body>
@@ -61,13 +66,7 @@
     <div class="header"><div class="logo">ZACK LIVES X</div><span id="umur" class="badge">UMUR 30</span></div>
     <div class="main">
         <div class="halaman aktif" id="hal-login">
-            <div class="kad">
-                <h3>🔐 LOGIN</h3>
-                <input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA" maxlength="20">
-                <input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20">
-                <button class="butang" id="btnLogin">MASUK</button>
-                <button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR BARU</button>
-            </div>
+            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR BARU</button></div>
         </div>
         <div class="halaman" id="hal-status">
             <div class="kad">
@@ -93,6 +92,13 @@
         <button class="tab" onclick="tukar('pemain',this)"><span class="ikon">👥</span>PEMAIN</button>
         <button class="tab" onclick="tukar('log',this)"><span class="ikon">📜</span>ALIRAN</button>
     </div>
+    <div class="modal" id="modal">
+        <div class="modal-kandungan">
+            <h3 id="modalTajuk">🎯 PILIHAN</h3>
+            <div id="modalIsi"></div>
+            <button class="modal-tutup" onclick="tutupModal()">✕ TUTUP</button>
+        </div>
+    </div>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <script>
@@ -100,25 +106,50 @@
     const $=id=>document.getElementById(id),M=Math;
     const db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     let pengguna=null,s=null;
-    const A=[
-        {i:'a1',k:'🏥 Kesihatan',n:'Senaman',c:0,e:s=>{s.kesihatan=M.min(100,s.kesihatan+10);return{teks:'Kesihatan meningkat',aras:'tindakan'}}},
-        {i:'a2',k:'🏥 Kesihatan',n:'Rawatan',c:300,e:s=>{if(s.bank<300)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+20);return{teks:'Dirawat',aras:'tindakan'}}},
-        {i:'a3',k:'🧠 Mental',n:'Meditasi',c:0,e:s=>{s.mental=M.min(100,s.mental+10);return{teks:'Mental tenang',aras:'tindakan'}}},
-        {i:'a4',k:'💰 Kerja',n:'Bekerja',c:0,e:s=>{s.bank+=s.gaji;return{teks:'Gaji diterima',aras:'tindakan'}}},
-        {i:'a5',k:'💰 Kewangan',n:'Simpan $200',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.simpanan+=200;return{teks:'Simpanan +$200',aras:'tindakan'}}},
-        {i:'a6',k:'👤 Sosial',n:'Cari Pasangan',c:0,e:s=>{s.berkahwin=1;return{teks:'Berkahwin!',aras:'tindakan'}}},
-        {i:'a7',k:'💸 Bank',n:'Transfer Wang',c:0,e:s=>{bukaTransfer();return{teks:'Sila pilih penerima',aras:'sistem'}}}
-    ];
+    const KUMPULAN={
+        '🏥 Kesihatan':[
+            {i:'a1',n:'Senaman',c:0,e:s=>{s.kesihatan=M.min(100,s.kesihatan+10);s.stamina=M.min(100,s.stamina+10);return{teks:'Kesihatan +10%, Stamina +10%',aras:'tindakan'}}},
+            {i:'a2',n:'Rawatan',c:300,e:s=>{if(s.bank<300)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+20);return{teks:'Dirawat, kesihatan +20%',aras:'tindakan'}}},
+            {i:'a3',n:'Vaksinasi',c:50,e:s=>{if(s.bank<50)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=50;s.imun=M.min(100,s.imun+15);return{teks:'Imuniti +15%',aras:'tindakan'}}}
+        ],
+        '🧠 Mental':[
+            {i:'a4',n:'Meditasi',c:0,e:s=>{s.mental=M.min(100,s.mental+10);return{teks:'Mental +10%',aras:'tindakan'}}},
+            {i:'a5',n:'Psikoterapi',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.mental=M.min(100,s.mental+20);return{teks:'Mental +20%',aras:'tindakan'}}}
+        ],
+        '💰 Kerja':[
+            {i:'a6',n:'Bekerja',c:0,e:s=>{s.bank+=s.gaji;s.stamina=M.max(0,s.stamina-5);return{teks:`Gaji $${s.gaji} diterima, stamina -5%`,aras:'tindakan'}}}
+        ],
+        '💰 Kewangan':[
+            {i:'a7',n:'Simpan $200',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.simpanan+=200;return{teks:'Simpanan +$200',aras:'tindakan'}}},
+            {i:'a8',n:'Labur $500',c:500,e:s=>{if(s.bank<500)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=500;const u=M.random()>.5?800:-300;s.bank+=M.max(0,u);return{teks:u>0?'Untung +$800':'Rugi -$300',aras:u>0?'tindakan':'bahaya'}}}
+        ],
+        '👤 Sosial':[
+            {i:'a9',n:'Cari Pasangan',c:0,e:s=>{s.berkahwin=1;s.kebahagiaan=M.min(100,s.kebahagiaan+20);return{teks:'Berkahwin! +20% kebahagiaan',aras:'tindakan'}}},
+            {i:'a10',n:'Masa Keluarga',c:0,e:s=>{s.kebahagiaan=M.min(100,s.kebahagiaan+10);return{teks:'Kebahagiaan +10%',aras:'tindakan'}}}
+        ],
+        '💸 Bank':[
+            {i:'a11',n:'Transfer Wang',c:0,e:s=>{bukaTransfer();return{teks:'Sila pilih penerima',aras:'sistem'}}}
+        ]
+    };
     const C=[
         {n:'Peluang Kerja',d:'Tawaran gaji lebih tinggi.',o:[{l:'Terima',v:()=>1,r:s=>{s.gaji+=500;return{teks:'Gaji +$500',aras:'tindakan'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
-        {n:'Masalah Kesihatan',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'Kesihatan merosot',aras:'bahaya'}}}]}
+        {n:'Masalah Kesihatan',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'Kesihatan -20%',aras:'bahaya'}}}]}
     ];
     function tukar(nama,btn){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+nama).classList.add('aktif');if(btn)btn.classList.add('aktif');if(nama==='pemain')muatPemain()}
     function simpanProfil(){if(!pengguna)return;db.ref('profil/'+pengguna).update(s).catch(()=>{})}
     function muatProfil(nama){db.ref('profil/'+nama).once('value').then(snap=>{if(snap.exists()){s=snap.val();s.ch=null}else{s={umur:30,hidup:1,kesihatan:80,mental:80,imun:70,stamina:60,jangka:75,kebahagiaan:70,reputasi:50,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,ch:null};db.ref('profil/'+nama).set(s).catch(()=>{})}papar([])})}
     function muatPemain(){db.ref('profil').on('value',snap=>{const list=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();list.push({nama:child.key,bank:d.bank||0,hidup:d.hidup!==0})})}list.sort((a,b)=>(b.hidup?b.bank:0)-(a.hidup?a.bank:0));$('senaraiPemain').innerHTML=list.map(p=>`<div class="pemain ${!p.hidup?'pemain-mati':''}"><span class="pemain-nama">${p.nama}${p.nama===pengguna?' (Anda)':''}${!p.hidup?' 💀':''}</span><span class="pemain-bank">${p.hidup?'$'+p.bank.toFixed(0):'Meninggal'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px;">Tiada pemain.</p>'})}
+    function bukaModal(kumpulan){
+        $('modalTajuk').textContent=kumpulan;
+        const actions=KUMPULAN[kumpulan];
+        $('modalIsi').innerHTML=actions.map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}');tutupModal()">${a.n} ${a.c>0?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('');
+        $('modal').classList.add('aktif');
+    }
+    function tutupModal(){$('modal').classList.remove('aktif')}
     function bukaTransfer(){
-        $('tindakan').innerHTML+=`<div class="kad" style="margin-top:6px"><h3>💸 TRANSFER</h3><input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button></div>`;
+        $('modalTajuk').textContent='💸 TRANSFER';
+        $('modalIsi').innerHTML=`<input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button>`;
+        $('modal').classList.add('aktif');
         $('btnTransfer').addEventListener('click',()=>{
             const penerima=$('penerima').value.trim(),jumlah=parseInt($('jumlah').value);
             if(!penerima||!jumlah||jumlah<=0||penerima===pengguna)return;
@@ -129,16 +160,18 @@
                 data.bank=(data.bank||0)+jumlah;s.bank-=jumlah;
                 db.ref('profil/'+penerima).update({bank:data.bank}).catch(()=>{});
                 simpanProfil();
+                tutupModal();
                 papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:`$${jumlah} dihantar kepada ${penerima}`,aras:'tindakan'}]);
-                $('penerima').value='';$('jumlah').value='';
             })
         })
     }
     function langkah(){
         if(!s.hidup||s.ch)return[];
         const L=[];s.umur++;
-        s.kesihatan=M.max(0,s.kesihatan-(M.random()*5));s.mental=M.max(0,s.mental-(M.random()*3));s.jangka--;
+        s.kesihatan=M.max(0,s.kesihatan-(M.random()*5));s.mental=M.max(0,s.mental-(M.random()*3));s.stamina=M.max(0,s.stamina-(M.random()*4));s.jangka--;
         s.bank=M.max(0,s.bank-M.floor(500+s.umur*.5));
+        if(s.kesihatan<30&&M.random()<.3){s.kesihatan=M.max(0,s.kesihatan-10);L.push({id:0,nama:'KRITIKAL',kategori:'Kesihatan',teks:'Kesihatan kritikal! -10%',aras:'bahaya'})}
+        if(s.mental<30&&M.random()<.3){s.mental=M.max(0,s.mental-10);L.push({id:0,nama:'KRITIKAL',kategori:'Mental',teks:'Mental kritikal! -10%',aras:'bahaya'})}
         if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];
         if(s.kesihatan<=0||s.umur>=s.jangka){s.hidup=0;L.push({id:0,nama:'PENAMATAN',kategori:'Sistem',teks:`Umur ${s.umur}`,aras:'kematian'})}
         simpanProfil();return L;
@@ -146,14 +179,13 @@
     function papar(L=[]){
         if(!s)return;
         $('umur').textContent=`UMUR ${s.umur}`;$('status').textContent=s.hidup?'HIDUP':'MENINGGAL';$('status').className=`badge ${s.hidup?'':'mati'}`;$('langkah').disabled=!s.hidup||!!s.ch;
-        const st=[{l:'KESIHATAN',v:s.kesihatan.toFixed(0)+'%',b:s.kesihatan,c:s.kesihatan>50?'fh':s.kesihatan>25?'fk':'fm'},{l:'MENTAL',v:s.mental.toFixed(0)+'%',b:s.mental,c:'fh'},{l:'JANGKA HAYAT',v:s.jangka+' thn'},{l:'BANK',v:'$'+s.bank.toFixed(0)},{l:'SIMPANAN',v:'$'+s.simpanan.toFixed(0)},{l:'STATUS',v:s.berkahwin?'Kahwin':'Bujang'}];
+        const st=[{l:'KESIHATAN',v:s.kesihatan.toFixed(0)+'%',b:s.kesihatan,c:s.kesihatan>50?'fh':s.kesihatan>25?'fk':'fm'},{l:'MENTAL',v:s.mental.toFixed(0)+'%',b:s.mental,c:s.mental>50?'fh':'fm'},{l:'STAMINA',v:s.stamina.toFixed(0)+'%',b:s.stamina,c:s.stamina>50?'fh':'fm'},{l:'JANGKA HAYAT',v:s.jangka+' thn'},{l:'BANK',v:'$'+s.bank.toFixed(0)},{l:'SIMPANAN',v:'$'+s.simpanan.toFixed(0)},{l:'STATUS',v:s.berkahwin?'Kahwin':'Bujang'}];
         $('sg').innerHTML=st.map(x=>`<div class="kotak"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');
         $('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';
-        const kumpulan={};A.forEach(a=>{if(!kumpulan[a.k])kumpulan[a.k]=[];kumpulan[a.k].push(a)});
-        $('tindakan').innerHTML=Object.entries(kumpulan).map(([k,list])=>`<div class="kumpulan-t">${k}</div>${list.map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}')">${a.n} ${a.c>0?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('')}`).join('');
+        $('tindakan').innerHTML=Object.keys(KUMPULAN).map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');
         if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>Umur ${s.umur}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}
     }
-    window.ea=id=>{const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.bank<a.c)return;const r=a.e(s);if(a.i!=='a7')papar([{id:0,nama:a.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpanProfil()};
+    window.ea=id=>{let found=null;Object.values(KUMPULAN).forEach(list=>{const a=list.find(x=>x.i===id);if(a)found=a});if(!found||!s.hidup||s.bank<found.c)return;const r=found.e(s);if(found.i!=='a11')papar([{id:0,nama:found.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpanProfil()};
     window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Pilihan',teks:r.teks,aras:r.aras}]);simpanProfil()};
     $('btnDaftar').addEventListener('click',()=>{
         const nama=$('nama').value.trim(),kata=$('kata').value.trim();
