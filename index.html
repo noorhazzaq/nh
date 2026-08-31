@@ -2,8 +2,8 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRON LEGACY - Mobile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRON UPLOAD - Digital Image Vault</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
 
@@ -197,23 +197,23 @@
 
         /* ===== HERO ===== */
         .hero {
-            min-height: calc(100vh - 65px);
+            min-height: 50vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 20px;
+            padding: 30px 20px;
         }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
             font-size: 28px;
             font-weight: 900;
-            letter-spacing: 6px;
+            letter-spacing: 5px;
             color: #ffffff;
             text-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             animation: pulseGlow 3s ease-in-out infinite;
         }
 
@@ -227,25 +227,97 @@
             font-weight: 300;
             letter-spacing: 4px;
             color: var(--accent);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-shadow: 0 0 15px var(--accent);
         }
 
-        .hero .tagline {
-            font-size: 14px;
-            font-weight: 300;
-            color: #999999;
-            line-height: 1.7;
-            margin-bottom: 35px;
-            max-width: 90%;
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 40px 20px;
+            position: relative;
+            border-top: 1px solid var(--border-glow);
         }
 
-        .cta-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffffff;
+            text-shadow: 0 0 15px var(--accent);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+            margin: 12px auto 0;
+            box-shadow: 0 0 15px var(--accent);
+        }
+
+        /* ===== UPLOAD AREA ===== */
+        .upload-area {
+            border: 2px dashed var(--border-glow);
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--glass);
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area:active {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+        }
+
+        .upload-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            text-shadow: 0 0 20px var(--accent);
+        }
+
+        .upload-area p {
+            font-size: 14px;
+            color: #cccccc;
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .upload-area input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 300px;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        /* ===== PREVIEW ===== */
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .preview-container.active {
+            display: block;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            object-fit: contain;
+            margin-bottom: 15px;
         }
 
         .btn {
@@ -257,7 +329,10 @@
             transition: all 0.3s;
             border: 1px solid var(--accent);
             text-align: center;
-            display: block;
+            display: inline-block;
+            cursor: pointer;
+            border-radius: 0;
+            -webkit-appearance: none;
         }
 
         .btn-primary {
@@ -282,370 +357,165 @@
             transform: scale(0.95);
         }
 
-        /* ===== SECTIONS ===== */
-        section {
-            padding: 50px 20px;
-            position: relative;
-            border-top: 1px solid var(--border-glow);
-        }
-
-        .section-title {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            letter-spacing: 5px;
-            text-align: center;
-            margin-bottom: 40px;
-            color: #ffffff;
-            text-shadow: 0 0 15px var(--accent);
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 2px;
-            background: var(--accent);
-            margin: 12px auto 0;
-            box-shadow: 0 0 15px var(--accent);
-        }
-
-        /* ===== DASHBOARD ===== */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            border: 1px solid var(--border-glow);
-            padding: 20px 10px;
-            text-align: center;
-            background: var(--glass);
-        }
-
-        .stat-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            color: var(--accent);
-            text-shadow: 0 0 15px var(--accent);
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: #999999;
-        }
-
-        .system-bar {
-            margin-bottom: 15px;
-        }
-
-        .system-bar label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            letter-spacing: 1px;
-            color: #cccccc;
-            margin-bottom: 6px;
-        }
-
-        .bar-bg {
-            width: 100%;
-            height: 8px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-glow);
-            overflow: hidden;
-        }
-
-        .bar-fill {
-            height: 100%;
-            background: var(--accent);
-            box-shadow: 0 0 15px var(--accent);
-            animation: barPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes barPulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        /* ===== CALCULATOR ===== */
-        .calculator-box {
-            border: 1px solid var(--border-glow);
-            padding: 25px 20px;
-            background: var(--glass);
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.1);
-        }
-
-        .calculator-box input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.7);
-            border: 1px solid var(--border-glow);
-            color: #ffffff;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            text-align: center;
-            margin-bottom: 15px;
-            outline: none;
-            letter-spacing: 2px;
-            border-radius: 0;
-            -webkit-appearance: none;
-        }
-
-        .calculator-box input:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-        }
-
-        .calc-result {
-            text-align: center;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
-            color: var(--accent);
-            text-shadow: 0 0 15px var(--accent);
-            margin-top: 15px;
+        /* ===== LOADING ===== */
+        .loading {
             display: none;
-        }
-
-        /* ===== FEATURES ===== */
-        .features-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .feature-card {
-            border: 1px solid var(--border-glow);
-            padding: 25px 20px;
             text-align: center;
-            background: var(--glass);
-            cursor: pointer;
-            transition: all 0.3s;
+            margin-top: 20px;
         }
 
-        .feature-card:active {
-            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
-            border-color: var(--accent);
-            transform: scale(0.98);
+        .loading.active {
+            display: block;
         }
 
-        .feature-icon {
-            font-size: 35px;
-            margin-bottom: 15px;
-            color: var(--accent);
-            text-shadow: 0 0 15px var(--accent);
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border-glow);
+            border-top: 3px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
         }
 
-        .feature-card h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-            color: #ffffff;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .feature-card p {
-            font-size: 13px;
-            font-weight: 300;
-            color: #aaaaaa;
-            line-height: 1.6;
-        }
-
-        /* ===== CONTACT ===== */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-glow);
-            color: #ffffff;
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 15px;
-            outline: none;
-            border-radius: 0;
-            -webkit-appearance: none;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
-        }
-
-        .form-group textarea {
-            height: 120px;
-            resize: vertical;
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #666666;
-            letter-spacing: 1px;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 15px;
-            background: var(--accent);
-            color: #000000;
+        .loading p {
             font-family: 'Orbitron', sans-serif;
             font-size: 12px;
             letter-spacing: 2px;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 0 20px var(--accent);
-            transition: all 0.3s;
-            border-radius: 0;
-            -webkit-appearance: none;
+            color: var(--accent);
         }
 
-        .submit-btn:active {
-            background: #ffffff;
+        /* ===== STATUS MESSAGE ===== */
+        .status-message {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            border: 1px solid var(--accent);
+        }
+
+        .status-message.success {
+            display: block;
+            background: rgba(0, 255, 0, 0.1);
+            color: #00ff00;
+            border-color: #00ff00;
+            box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+        }
+
+        .status-message.error {
+            display: block;
+            background: rgba(255, 0, 0, 0.1);
+            color: #ff0033;
+            border-color: #ff0033;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+
+        /* ===== GALLERY ===== */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .gallery-item {
+            position: relative;
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+            border: 1px solid var(--border-glow);
+            background: var(--glass);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .gallery-item:active {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+            border-color: var(--accent);
             transform: scale(0.95);
         }
 
-        /* ===== SETTINGS BUTTON ===== */
-        .settings-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 20px;
-            z-index: 90;
-            width: 55px;
-            height: 55px;
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-delete {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 30px;
+            height: 30px;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid var(--accent);
-            color: var(--accent);
-            font-size: 24px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid #ff0033;
+            color: #ff0033;
+            font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 0 25px var(--accent);
-            animation: gearSpin 4s linear infinite;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        @keyframes gearSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .gallery-empty {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666666;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            border: 1px dashed var(--border-glow);
         }
 
-        /* ===== SETTINGS MODAL ===== */
-        .settings-modal {
+        /* ===== LIGHTBOX ===== */
+        .lightbox {
             position: fixed;
-            bottom: -100%;
+            top: 0;
             left: 0;
             width: 100%;
-            background: rgba(0, 0, 0, 0.98);
-            z-index: 95;
-            border-top: 2px solid var(--accent);
-            box-shadow: 0 -10px 40px rgba(0, 240, 255, 0.3);
-            transition: bottom 0.4s ease;
-            padding: 25px 20px;
-            border-radius: 20px 20px 0 0;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 200;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
 
-        .settings-modal.active {
-            bottom: 0;
-        }
-
-        .settings-modal h4 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 13px;
-            letter-spacing: 2px;
-            color: var(--accent);
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .setting-item {
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #cccccc;
-        }
-
-        .setting-item label {
-            display: block;
-            margin-bottom: 8px;
-            letter-spacing: 1px;
-        }
-
-        .color-options {
+        .lightbox.active {
             display: flex;
-            gap: 15px;
         }
 
-        .color-option {
-            width: 35px;
-            height: 35px;
+        .lightbox img {
+            max-width: 90%;
+            max-height: 70%;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 40px var(--accent);
+            object-fit: contain;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-
-        .color-option:active {
-            border-color: #ffffff;
-            transform: scale(0.9);
-        }
-
-        .toggle-btn {
-            padding: 8px 15px;
-            background: transparent;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 10px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border-radius: 0;
-            -webkit-appearance: none;
-        }
-
-        .toggle-btn:active {
-            background: var(--accent);
-            color: #000000;
-        }
-
-        .close-settings {
-            width: 100%;
-            padding: 12px;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 11px;
-            letter-spacing: 2px;
-            cursor: pointer;
-            margin-top: 10px;
-            border-radius: 0;
-            -webkit-appearance: none;
-        }
-
-        /* ===== BACK TO TOP ===== */
-        .back-to-top {
-            position: fixed;
-            bottom: 25px;
-            left: 20px;
-            z-index: 90;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.8);
             border: 2px solid var(--accent);
             color: var(--accent);
-            font-size: 20px;
+            font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 0 25px var(--accent);
-            display: none;
+            box-shadow: 0 0 20px var(--accent);
+            display: flex;
             justify-content: center;
             align-items: center;
         }
@@ -671,17 +541,37 @@
             color: var(--accent);
             text-shadow: 0 0 10px var(--accent);
         }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            z-index: 90;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 25px var(--accent);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 
     <!-- BACKGROUND EFFECTS -->
-    <div class="grid-bg" id="gridBg"></div>
-    <div class="scanline" id="scanline"></div>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
 
     <!-- HEADER -->
     <header>
-        <a href="#" class="logo">TRON</a>
+        <a href="#" class="logo">TRON UPLOAD</a>
         <div class="hamburger" id="hamburger" onclick="toggleMenu()">
             <span></span>
             <span></span>
@@ -694,164 +584,102 @@
 
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#home" onclick="closeMenu()">UTAMA</a>
-        <a href="#dashboard" onclick="closeMenu()">DASHBOARD</a>
-        <a href="#calculator" onclick="closeMenu()">KALKULATOR</a>
-        <a href="#features" onclick="closeMenu()">KEISTIMEWAAN</a>
-        <a href="#contact" onclick="closeMenu()">HUBUNGI</a>
-        <a href="#" onclick="openSettings(); closeMenu();">TETAPAN</a>
+        <a href="#upload" onclick="closeMenu()">MUAT NAIK</a>
+        <a href="#gallery" onclick="closeMenu()">GALERI</a>
+        <a href="#about" onclick="closeMenu()">TENTANG</a>
     </div>
-
-    <!-- SETTINGS BUTTON -->
-    <div class="settings-btn" onclick="openSettings()">⚙</div>
-
-    <!-- SETTINGS MODAL -->
-    <div class="settings-modal" id="settingsModal">
-        <h4>TETAPAN SISTEM</h4>
-        <div class="setting-item">
-            <label>WARNA TEMA</label>
-            <div class="color-options">
-                <span class="color-option" style="background: #00f0ff; box-shadow: 0 0 15px #00f0ff;" onclick="changeTheme('#00f0ff')"></span>
-                <span class="color-option" style="background: #ff6b00; box-shadow: 0 0 15px #ff6b00;" onclick="changeTheme('#ff6b00')"></span>
-                <span class="color-option" style="background: #8a2be2; box-shadow: 0 0 15px #8a2be2;" onclick="changeTheme('#8a2be2')"></span>
-                <span class="color-option" style="background: #ff0033; box-shadow: 0 0 15px #ff0033;" onclick="changeTheme('#ff0033')"></span>
-            </div>
-        </div>
-        <div class="setting-item">
-            <label>GRID BACKGROUND</label>
-            <button class="toggle-btn" onclick="toggleGrid()">HIDUP/MATI</button>
-        </div>
-        <div class="setting-item">
-            <label>SCANLINE</label>
-            <button class="toggle-btn" onclick="toggleScanline()">HIDUP/MATI</button>
-        </div>
-        <button class="close-settings" onclick="closeSettings()">TUTUP TETAPAN</button>
-    </div>
-
-    <!-- BACK TO TOP -->
-    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</div>
 
     <!-- MAIN CONTENT -->
     <main>
 
         <!-- HERO -->
         <section class="hero" id="home" style="border-top: none;">
-            <h1>TRON LEGACY</h1>
-            <p class="subtitle">THE DIGITAL REALM MOBILE</p>
-            <p class="tagline">Melangkaui sempadan realiti. Dunia digital yang dibina daripada kod tulen dan cahaya.</p>
-            <div class="cta-buttons">
-                <a href="#dashboard" class="btn btn-primary">MULA SEKARANG</a>
-                <a href="#features" class="btn btn-outline">TEROKAI</a>
+            <h1>TRON UPLOAD</h1>
+            <p class="subtitle">DIGITAL IMAGE VAULT</p>
+            <p style="color: #999999; font-size: 14px; max-width: 90%; line-height: 1.7;">
+                Simpan dan urus gambar anda dalam grid digital yang selamat.
+            </p>
+        </section>
+
+        <!-- UPLOAD SECTION -->
+        <section id="upload">
+            <h2 class="section-title">MUAT NAIK GAMBAR</h2>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📸</div>
+                <p>KETIK UNTUK PILIH GAMBAR</p>
+                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect(event)">
+            </div>
+
+            <!-- PREVIEW -->
+            <div class="preview-container" id="previewContainer">
+                <img id="previewImage" class="preview-image" src="" alt="Pratonton">
+                <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+                    <button class="btn btn-primary" onclick="uploadImage()">MUAT NAIK</button>
+                    <button class="btn btn-outline" onclick="cancelPreview()">BATAL</button>
+                </div>
+            </div>
+
+            <!-- LOADING -->
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>MEMUAT NAIK KE GRID...</p>
+            </div>
+
+            <!-- STATUS -->
+            <div class="status-message" id="statusMessage"></div>
+        </section>
+
+        <!-- GALLERY SECTION -->
+        <section id="gallery">
+            <h2 class="section-title">GALERI DIGITAL</h2>
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Images will be loaded here -->
             </div>
         </section>
 
-        <!-- DASHBOARD -->
-        <section id="dashboard">
-            <h2 class="section-title">PAPAN PEMUKA</h2>
-            <div class="dashboard-grid">
-                <div class="stat-card">
-                    <div class="stat-number">12,847</div>
-                    <div class="stat-label">PENGGUNA</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">99.9%</div>
-                    <div class="stat-label">STABIL</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">8,420</div>
-                    <div class="stat-label">TENAGA (MW)</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number">1,024</div>
-                    <div class="stat-label">SERVER</div>
-                </div>
+        <!-- ABOUT SECTION -->
+        <section id="about">
+            <h2 class="section-title">TENTANG SISTEM</h2>
+            <div style="text-align: center; color: #cccccc; line-height: 1.8; font-size: 14px;">
+                <p><span style="color: var(--accent);">TRON UPLOAD</span> ialah sistem penyimpanan gambar digital yang menggunakan pangkalan data Firebase.</p>
+                <p>Setiap gambar yang dimuat naik disimpan dalam grid digital yang selamat dan boleh diakses dari mana sahaja.</p>
+                <p style="margin-top: 20px; color: #666666; font-size: 12px;">STATUS: <span style="color: #00ff00;">ONLINE</span></p>
             </div>
-            <div class="system-bar">
-                <label><span>PEMPROSESAN</span><span>78%</span></label>
-                <div class="bar-bg"><div class="bar-fill" style="width: 78%;"></div></div>
-            </div>
-            <div class="system-bar">
-                <label><span>KUASA GRID</span><span>92%</span></label>
-                <div class="bar-bg"><div class="bar-fill" style="width: 92%;"></div></div>
-            </div>
-            <div class="system-bar">
-                <label><span>KESELAMATAN</span><span>99%</span></label>
-                <div class="bar-bg"><div class="bar-fill" style="width: 99%;"></div></div>
-            </div>
-        </section>
-
-        <!-- CALCULATOR -->
-        <section id="calculator">
-            <h2 class="section-title">KALKULATOR</h2>
-            <div class="calculator-box">
-                <input type="number" id="energyInput" placeholder="MASUKKAN NILAI (MW)" min="0" inputmode="numeric">
-                <button class="btn btn-primary" style="width: 100%; border: none; cursor: pointer;" onclick="calculateEnergy()">KIRA TENAGA</button>
-                <div class="calc-result" id="calcResult"></div>
-            </div>
-        </section>
-
-        <!-- FEATURES -->
-        <section id="features">
-            <h2 class="section-title">KEISTIMEWAAN</h2>
-            <div class="features-grid">
-                <div class="feature-card" onclick="showFeatureAlert('KELAJUAN CAHAYA')">
-                    <div class="feature-icon">⚡</div>
-                    <h3>KELAJUAN CAHAYA</h3>
-                    <p>Pemprosesan ultra pantas tanpa gangguan.</p>
-                </div>
-                <div class="feature-card" onclick="showFeatureAlert('GRID DIGITAL')">
-                    <div class="feature-icon">🔷</div>
-                    <h3>GRID DIGITAL</h3>
-                    <p>Infrastruktur digital yang kukuh dan selamat.</p>
-                </div>
-                <div class="feature-card" onclick="showFeatureAlert('KESELAMATAN MAKSIMUM')">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>KESELAMATAN</h3>
-                    <p>Perlindungan berlapis untuk data anda.</p>
-                </div>
-                <div class="feature-card" onclick="showFeatureAlert('HUBUNGAN GLOBAL')">
-                    <div class="feature-icon">🌐</div>
-                    <h3>HUBUNGAN GLOBAL</h3>
-                    <p>Akses dari mana sahaja di dunia.</p>
-                </div>
-                <div class="feature-card" onclick="showFeatureAlert('AI PINTAR')">
-                    <div class="feature-icon">🤖</div>
-                    <h3>AI PINTAR</h3>
-                    <p>Kecerdasan buatan yang menyesuaikan diri.</p>
-                </div>
-                <div class="feature-card" onclick="showFeatureAlert('DATA TANPA HAD')">
-                    <div class="feature-icon">📡</div>
-                    <h3>DATA TANPA HAD</h3>
-                    <p>Aliran data tanpa sekatan.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- CONTACT -->
-        <section id="contact">
-            <h2 class="section-title">HUBUNGI</h2>
-            <form onsubmit="submitForm(event)">
-                <div class="form-group">
-                    <input type="text" placeholder="NAMA PENUH" id="contactName" required>
-                </div>
-                <div class="form-group">
-                    <input type="email" placeholder="E-MEL" id="contactEmail" required>
-                </div>
-                <div class="form-group">
-                    <textarea placeholder="MESEJ ANDA" id="contactMessage" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">HANTAR MESEJ</button>
-            </form>
         </section>
 
     </main>
 
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+        <img id="lightboxImg" src="" alt="Lightbox">
+    </div>
+
+    <!-- BACK TO TOP -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</div>
+
     <!-- FOOTER -->
     <footer>
-        <p>© 2026 <span class="footer-glow">TRON LEGACY</span> — MOBILE VERSION</p>
+        <p>© 2026 <span class="footer-glow">TRON UPLOAD</span> — DIGITAL IMAGE VAULT</p>
     </footer>
 
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+
     <script>
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ===== VARIABLES =====
+        let selectedFile = null;
+        let previewUrl = null;
+
         // ===== MOBILE MENU =====
         function toggleMenu() {
             document.getElementById('mobileMenu').classList.toggle('active');
@@ -865,70 +693,157 @@
             document.getElementById('hamburger').classList.remove('active');
         }
 
-        // ===== SETTINGS =====
-        function openSettings() {
-            document.getElementById('settingsModal').classList.add('active');
+        // ===== FILE SELECT =====
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                previewUrl = URL.createObjectURL(file);
+                document.getElementById('previewImage').src = previewUrl;
+                document.getElementById('previewContainer').classList.add('active');
+                document.getElementById('uploadArea').style.display = 'none';
+            }
         }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.remove('active');
+        // ===== CANCEL PREVIEW =====
+        function cancelPreview() {
+            selectedFile = null;
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+                previewUrl = null;
+            }
+            document.getElementById('previewContainer').classList.remove('active');
+            document.getElementById('uploadArea').style.display = 'block';
+            document.getElementById('fileInput').value = '';
         }
 
-        // ===== CHANGE THEME =====
-        function changeTheme(color) {
-            document.documentElement.style.setProperty('--accent', color);
-            document.documentElement.style.setProperty('--neon-blue', color);
-            document.documentElement.style.setProperty('--border-glow', color + '4D');
-        }
-
-        // ===== TOGGLE GRID =====
-        function toggleGrid() {
-            const grid = document.getElementById('gridBg');
-            grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // ===== TOGGLE SCANLINE =====
-        function toggleScanline() {
-            const scanline = document.getElementById('scanline');
-            scanline.style.display = scanline.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // ===== CALCULATOR =====
-        function calculateEnergy() {
-            const input = document.getElementById('energyInput').value;
-            const result = document.getElementById('calcResult');
-
-            if (input === '' || input < 0) {
-                result.style.display = 'block';
-                result.textContent = '⚠ MASUKKAN NILAI SAH';
+        // ===== UPLOAD IMAGE =====
+        function uploadImage() {
+            if (!selectedFile) {
+                showStatus('SILA PILIH GAMBAR DAHULU', 'error');
                 return;
             }
 
-            const mw = parseFloat(input);
-            const homes = Math.round(mw * 1000);
-            const cost = (mw * 0.45).toFixed(2);
-
-            result.style.display = 'block';
-            result.innerHTML = `${mw} MW = ${homes.toLocaleString('ms-MY')} RUMAH<br>KOS: RM${cost} JUTA`;
-        }
-
-        // ===== FEATURE ALERT =====
-        function showFeatureAlert(feature) {
-            alert('✅ ' + feature + ' TELAH DIAKTIFKAN');
-        }
-
-        // ===== SUBMIT FORM =====
-        function submitForm(event) {
-            event.preventDefault();
-            const name = document.getElementById('contactName').value;
-            const email = document.getElementById('contactEmail').value;
-
-            if (name && email) {
-                alert('✅ MESEJ ANDA TELAH DIHANTAR KE GRID\n\nNAMA: ' + name + '\nE-MEL: ' + email);
-                document.getElementById('contactName').value = '';
-                document.getElementById('contactEmail').value = '';
-                document.getElementById('contactMessage').value = '';
+            // Check file size (max 2MB for base64)
+            if (selectedFile.size > 2 * 1024 * 1024) {
+                showStatus('SAIZ GAMBAR TERLALU BESAR (MAX 2MB)', 'error');
+                return;
             }
+
+            document.getElementById('loading').classList.add('active');
+            document.getElementById('previewContainer').classList.remove('active');
+            document.getElementById('uploadArea').style.display = 'block';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Image = e.target.result;
+                const imageId = Date.now().toString();
+
+                const imageData = {
+                    id: imageId,
+                    data: base64Image,
+                    fileName: selectedFile.name,
+                    fileSize: selectedFile.size,
+                    uploadedAt: new Date().toISOString()
+                };
+
+                database.ref('images/' + imageId).set(imageData)
+                    .then(() => {
+                        document.getElementById('loading').classList.remove('active');
+                        showStatus('✅ GAMBAR BERJAYA DIMUAT NAIK KE GRID', 'success');
+                        selectedFile = null;
+                        previewUrl = null;
+                        document.getElementById('fileInput').value = '';
+                        loadGallery();
+                    })
+                    .catch((error) => {
+                        document.getElementById('loading').classList.remove('active');
+                        showStatus('❌ GAGAL MUAT NAIK: ' + error.message, 'error');
+                    });
+            };
+            reader.readAsDataURL(selectedFile);
+        }
+
+        // ===== SHOW STATUS =====
+        function showStatus(message, type) {
+            const statusElement = document.getElementById('statusMessage');
+            statusElement.textContent = message;
+            statusElement.className = 'status-message ' + type;
+            
+            setTimeout(() => {
+                statusElement.className = 'status-message';
+            }, 5000);
+        }
+
+        // ===== LOAD GALLERY =====
+        function loadGallery() {
+            const galleryGrid = document.getElementById('galleryGrid');
+            
+            database.ref('images').once('value')
+                .then((snapshot) => {
+                    galleryGrid.innerHTML = '';
+                    
+                    if (!snapshot.exists()) {
+                        galleryGrid.innerHTML = '<div class="gallery-empty">TIADA GAMBAR DALAM GRID</div>';
+                        return;
+                    }
+
+                    const images = [];
+                    snapshot.forEach((childSnapshot) => {
+                        images.push({
+                            id: childSnapshot.key,
+                            ...childSnapshot.val()
+                        });
+                    });
+
+                    // Sort by newest first
+                    images.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+                    if (images.length === 0) {
+                        galleryGrid.innerHTML = '<div class="gallery-empty">TIADA GAMBAR DALAM GRID</div>';
+                        return;
+                    }
+
+                    images.forEach((image) => {
+                        const galleryItem = document.createElement('div');
+                        galleryItem.className = 'gallery-item';
+                        galleryItem.innerHTML = `
+                            <img src="${image.data}" alt="${image.fileName}" onclick="openLightbox('${image.data}')">
+                            <button class="gallery-delete" onclick="deleteImage('${image.id}')" title="Padam">✕</button>
+                        `;
+                        galleryGrid.appendChild(galleryItem);
+                    });
+                })
+                .catch((error) => {
+                    galleryGrid.innerHTML = '<div class="gallery-empty">GAGAL MEMUAT GALERI</div>';
+                    console.error('Error loading gallery:', error);
+                });
+        }
+
+        // ===== DELETE IMAGE =====
+        function deleteImage(imageId) {
+            if (confirm('ADAKAH ANDA PASTI INGIN MEMADAM GAMBAR INI?')) {
+                database.ref('images/' + imageId).remove()
+                    .then(() => {
+                        showStatus('✅ GAMBAR BERJAYA DIPADAM', 'success');
+                        loadGallery();
+                    })
+                    .catch((error) => {
+                        showStatus('❌ GAGAL PADAM: ' + error.message, 'error');
+                    });
+            }
+        }
+
+        // ===== LIGHTBOX =====
+        function openLightbox(imageSrc) {
+            document.getElementById('lightboxImg').src = imageSrc;
+            document.getElementById('lightbox').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.style.overflow = 'auto';
         }
 
         // ===== BACK TO TOP =====
@@ -945,19 +860,13 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // ===== LOAD GALLERY ON START =====
+        loadGallery();
+
         // ===== PREVENT ZOOM ON DOUBLE TAP =====
         document.addEventListener('dblclick', function(e) {
             e.preventDefault();
         }, { passive: false });
-
-        // ===== HIDE SETTINGS ON SCROLL =====
-        window.addEventListener('scroll', function() {
-            if (document.getElementById('settingsModal').classList.contains('active')) {
-                if (window.scrollY > 100) {
-                    closeSettings();
-                }
-            }
-        });
     </script>
 
 </body>
