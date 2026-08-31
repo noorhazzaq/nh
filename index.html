@@ -43,14 +43,12 @@
 
         ::-webkit-scrollbar { width: 0; height: 0; }
 
-        /* Header */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: calc(10px + var(--safe-top)) 15px 10px;
             background: rgba(0,0,0,0.9);
             border-bottom: 1px solid var(--border);
         }
-
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 20px; font-weight: 900; letter-spacing: 4px;
@@ -63,7 +61,6 @@
         }
         @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        /* Main */
         .main {
             position: relative; z-index: 2;
             padding: calc(55px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
@@ -73,7 +70,6 @@
             flex-direction: column;
         }
 
-        /* Chat */
         .chat-box {
             display: flex; flex-direction: column;
             flex: 1;
@@ -99,7 +95,7 @@
         .rec-bar.active { display: block; }
 
         .chat-log {
-            flex: 1; overflow-y: auto; padding: 10px;
+            flex: 1; overflow-y: auto; padding: 10px 10px 25px;
             min-height: 0;
         }
 
@@ -130,7 +126,7 @@
 
         .msg-image {
             max-width: 140px; border-radius: 8px; border: 1px solid var(--cyan);
-            display: block; pointer-events: none;
+            display: block; pointer-events: auto;
         }
         .msg.own .msg-image { margin-left: auto; }
 
@@ -140,13 +136,6 @@
         }
         .msg-del:active { color: var(--red); }
 
-        .msg-del.confirm {
-            color: var(--red);
-            animation: pulse 0.5s infinite;
-        }
-        @keyframes pulse { 50% { opacity: 0.6; } }
-
-        /* Input */
         .chat-input-area {
             padding: 8px 10px; border-top: 1px solid var(--border);
             display: flex; gap: 5px; align-items: center;
@@ -168,7 +157,8 @@
             border: none; border-radius: var(--r-full); font-weight: 700;
             opacity: 0.3; transition: opacity 0.2s;
         }
-        .send-btn:not(:disabled) { opacity: 1; }
+        .send-btn:not(:disabled) { opacity: 1; cursor: pointer; }
+        .send-btn:disabled { cursor: not-allowed; }
 
         .attach-btn {
             width: 34px; height: 34px; border-radius: 50%;
@@ -177,36 +167,32 @@
             display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
         .attach-btn.recording { background: var(--red); color: var(--white); animation: pulse 0.5s infinite; }
+        @keyframes pulse { 50% { opacity: 0.6; } }
 
-        /* Toast */
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
             display: flex; flex-direction: column; gap: 6px; max-width: 260px;
         }
         .toast {
             padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
-            animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 3s forwards;
+            transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+            opacity: 1;
         }
+        .toast.hide { transform: translateX(120%); opacity: 0; }
         .toast-success { background: rgba(0,255,136,0.12); border-color: var(--success); color: var(--success); }
         .toast-error { background: rgba(255,0,51,0.12); border-color: var(--red); color: var(--red); }
         .toast-info { background: rgba(0,240,255,0.12); border-color: var(--cyan); color: var(--cyan); }
-        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
-        @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
 
-        /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; z-index: 500;
             background: rgba(0,0,0,0.95); display: none;
             justify-content: center; align-items: center;
         }
         .lightbox.active { display: flex; }
-        .lightbox img { max-width: 92%; max-height: 85%; border: 2px solid var(--cyan); border-radius: 10px; }
-        .lightbox-close {
-            position: absolute; top: 18px; right: 18px;
-            width: 40px; height: 40px; border-radius: 50%;
-            background: rgba(0,0,0,0.8); border: 2px solid var(--red);
-            color: var(--red); font-size: 20px;
-            display: flex; justify-content: center; align-items: center;
+        .lightbox img {
+            max-width: 92%; max-height: 85%;
+            border: 2px solid var(--cyan); border-radius: 10px;
+            pointer-events: none;
         }
 
         #chatImageInput { display: none; }
@@ -217,7 +203,6 @@
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="lightbox" id="lightbox">
-        <button class="lightbox-close" id="lightboxClose">✕</button>
         <img id="lightboxImg" src="" alt="Gambar">
     </div>
 
@@ -231,7 +216,7 @@
                 <h3>💬 CHAT</h3>
                 <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
-            <div class="rec-bar" id="recBar">🔴 MERAKAM... <span id="recCountdown"></span></div>
+            <div class="rec-bar" id="recBar">🔴 MERAKAM...</div>
             <div class="chat-log" id="chatLog"></div>
             <div class="chat-input-area">
                 <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20">
@@ -255,7 +240,7 @@
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             maxImageSize: 2 * 1024 * 1024,
             maxAudioDuration: 30,
-            maxImageDim: 800
+            maxImageDim: 1000
         };
 
         /* ============ STATE ============ */
@@ -275,14 +260,12 @@
             toastWrap: $('toastWrap'),
             lightbox: $('lightbox'),
             lightboxImg: $('lightboxImg'),
-            lightboxClose: $('lightboxClose'),
             chatLog: $('chatLog'),
             chatName: $('chatName'),
             chatInput: $('chatInput'),
             onlineStatus: $('onlineStatus'),
             recordBtn: $('recordBtn'),
             recBar: $('recBar'),
-            recCountdown: $('recCountdown'),
             sendBtn: $('sendBtn'),
             imgBtn: $('imgBtn'),
             chatImageInput: $('chatImageInput')
@@ -298,11 +281,13 @@
             el.className = `toast toast-${type}`;
             el.textContent = msg;
             DOM.toastWrap.appendChild(el);
-            setTimeout(() => el.remove(), 3300);
+            setTimeout(() => {
+                el.classList.add('hide');
+                setTimeout(() => el.remove(), 300);
+            }, 3000);
         }
 
         const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
-
         const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
         const getName = () => DOM.chatName.value.trim() || 'Anonymous';
 
@@ -320,9 +305,14 @@
             reader.onload = e => {
                 const img = new Image();
                 img.onload = () => {
+                    if (img.width <= CONFIG.maxImageDim) {
+                        cb(e.target.result);
+                        return;
+                    }
                     const canvas = document.createElement('canvas');
                     let w = img.width, h = img.height;
-                    if (w > CONFIG.maxImageDim) { h = h * (CONFIG.maxImageDim / w); w = CONFIG.maxImageDim; }
+                    h = h * (CONFIG.maxImageDim / w);
+                    w = CONFIG.maxImageDim;
                     canvas.width = w; canvas.height = h;
                     canvas.getContext('2d').drawImage(img, 0, 0, w, h);
                     cb(canvas.toDataURL('image/jpeg', 0.7));
@@ -333,7 +323,7 @@
         }
 
         /* ============ CHAT ============ */
-        db.ref('chat').limitToLast(50).on('value', snap => {
+        db.ref('chat').limitToLast(30).on('value', snap => {
             const myName = getName();
             const atBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
             DOM.chatLog.innerHTML = '';
@@ -357,7 +347,7 @@
 
                     const name = document.createElement('div');
                     name.className = 'msg-name';
-                    name.textContent = `${safeText(d.name)} • ${safeText(d.time || '')}`;
+                    name.textContent = `${safeText(d.name)} • ${d.time || ''}`;
                     div.appendChild(name);
 
                     if (d.type === 'text') {
@@ -369,12 +359,16 @@
                         const img = document.createElement('img');
                         img.className = 'msg-image';
                         img.src = d.data;
+                        img.addEventListener('click', () => openLightbox(d.data));
                         div.appendChild(img);
                     } else if (d.type === 'audio') {
                         const a = document.createElement('div');
                         a.className = 'msg-audio';
-                        a.innerHTML = '<span>▶</span><small></small>';
-                        a.querySelector('small').textContent = `${Math.floor((d.duration || 0) / 60)}:${((d.duration || 0) % 60).toString().padStart(2, '0')}`;
+                        const icon = document.createElement('span');
+                        icon.textContent = '▶';
+                        const dur = document.createElement('small');
+                        dur.textContent = `${Math.floor((d.duration || 0) / 60)}:${((d.duration || 0) % 60).toString().padStart(2, '0')}`;
+                        a.append(icon, dur);
                         a.addEventListener('click', () => new Audio(d.data).play().catch(() => toast('Tidak dapat main audio!', 'error')));
                         div.appendChild(a);
                     }
@@ -448,11 +442,12 @@
                 state.recordStart = Date.now();
                 DOM.recordBtn.classList.add('recording');
                 DOM.recBar.classList.add('active');
+                DOM.recBar.textContent = '🔴 MERAKAM... (30s)';
                 state.recordTimer = setInterval(() => {
                     const elapsed = Math.round((Date.now() - state.recordStart) / 1000);
                     const remaining = CONFIG.maxAudioDuration - elapsed;
                     if (remaining <= 0) { stopRecord(); return; }
-                    DOM.recCountdown.textContent = `(${remaining}s)`;
+                    DOM.recBar.textContent = `🔴 MERAKAM... (${remaining}s)`;
                 }, 1000);
             } catch(e) { toast('Tidak dapat akses mikrofon!', 'error'); }
         }
@@ -461,12 +456,12 @@
             state.isRecording = false;
             DOM.recordBtn.classList.remove('recording');
             DOM.recBar.classList.remove('active');
-            DOM.recCountdown.textContent = '';
+            DOM.recBar.textContent = '🔴 MERAKAM...';
             clearInterval(state.recordTimer);
             if (state.recorder) state.recorder.stop();
         }
 
-        /* ============ DOUBLE-TAP DELETE ============ */
+        /* ============ LONG-PRESS DELETE ============ */
         function handleDelete(key, btn) {
             if (state.deleteTarget === key) {
                 clearTimeout(state.deleteTimer);
@@ -475,9 +470,11 @@
                 return;
             }
             state.deleteTarget = key;
-            btn.classList.add('confirm');
+            btn.style.color = 'var(--red)';
+            btn.textContent = '✕?';
             state.deleteTimer = setTimeout(() => {
-                btn.classList.remove('confirm');
+                btn.style.color = '#444';
+                btn.textContent = '✕';
                 state.deleteTarget = null;
             }, 2000);
         }
@@ -501,18 +498,25 @@
 
         /* ============ NAME PERSIST ============ */
         DOM.chatName.value = localStorage.getItem('zack_name') || '';
-        DOM.chatName.addEventListener('blur', () => localStorage.setItem('zack_name', getName()));
+        let nameSaveTimer;
+        DOM.chatName.addEventListener('input', () => {
+            clearTimeout(nameSaveTimer);
+            nameSaveTimer = setTimeout(() => localStorage.setItem('zack_name', getName()), 500);
+        });
 
         /* ============ EVENTS ============ */
         DOM.sendBtn.addEventListener('click', sendText);
         DOM.chatInput.addEventListener('input', updateSendBtn);
-        DOM.chatInput.addEventListener('keyup', e => { if (e.key === 'Enter') sendText(); });
+        DOM.chatInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendText();
+            }
+        });
         DOM.imgBtn.addEventListener('click', () => DOM.chatImageInput.click());
         DOM.chatImageInput.addEventListener('change', sendImage);
         DOM.recordBtn.addEventListener('click', toggleRecord);
-        DOM.lightboxClose.addEventListener('click', closeLightbox);
         DOM.lightbox.addEventListener('click', closeLightbox);
-        DOM.lightboxImg.addEventListener('click', e => e.stopPropagation());
 
         /* ============ INIT ============ */
         updateSendBtn();
