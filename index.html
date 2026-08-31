@@ -2,88 +2,69 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK — Digital Chronicles. Blog & Chat Multimedia">
+    <meta name="description" content="ZACK — Digital Chronicles">
     <title>ZACK — Digital Chronicles</title>
+
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 192 192\'%3E%3Crect width=\'192\' height=\'192\' rx=\'40\' fill=\'%23ff0033\'/%3E%3Ctext x=\'96\' y=\'130\' font-size=\'110\' text-anchor=\'middle\' fill=\'%2300f0ff\' font-family=\'Arial\' font-weight=\'bold\'%3EZ%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"}]}'>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
 
         :root {
             --c-red: #ff0033;
             --c-cyan: #00f0ff;
             --c-bg: #000000;
             --c-white: #ffffff;
-            --c-muted: #888888;
+            --c-muted: #777777;
             --c-success: #00ff88;
             --c-danger: #ff0033;
             --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
             --grad-btn: linear-gradient(135deg, #ff0033, #00f0ff);
-            --glow-red: 0 0 15px rgba(255,0,51,0.5);
-            --glow-cyan: 0 0 15px rgba(0,240,255,0.5);
-            --glow-strong: 0 0 25px rgba(255,0,51,0.7), 0 0 50px rgba(0,240,255,0.4);
-            --border-red: rgba(255,0,51,0.25);
+            --glow-red: 0 0 12px rgba(255,0,51,0.4);
+            --glow-cyan: 0 0 12px rgba(0,240,255,0.4);
+            --border-red: rgba(255,0,51,0.2);
             --r-sm: 10px;
             --r-md: 14px;
             --r-full: 25px;
             --ease: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --safe-top: env(safe-area-inset-top, 0px);
+            --safe-bottom: env(safe-area-inset-bottom, 0px);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
 
         body {
             background: var(--c-bg);
             font-family: 'Rajdhani', sans-serif;
             color: var(--c-white);
-            min-height: 100vh;
+            min-height: 100dvh;
             overflow-x: hidden;
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
         }
 
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #000; }
-        ::-webkit-scrollbar-thumb { background: var(--c-red); border-radius: 2px; }
+        ::-webkit-scrollbar { width: 0; height: 0; }
 
-        /* ============ BACKGROUND ============ */
         .bg-grid {
             position: fixed; inset: 0;
             background-image:
-                linear-gradient(rgba(255,0,51,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255,0,51,0.03) 1px, transparent 1px);
+                linear-gradient(rgba(255,0,51,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,0,51,0.02) 1px, transparent 1px);
             background-size: 30px 30px;
             z-index: 0; pointer-events: none;
-            animation: gridShift 15s linear infinite;
-        }
-        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 30px 30px; } }
-
-        .bg-particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
-
-        .particle {
-            position: absolute; width: 3px; height: 3px; border-radius: 50%;
-            animation: floatUp linear infinite;
-        }
-        .particle--red { background: var(--c-red); box-shadow: 0 0 8px var(--c-red); }
-        .particle--cyan { background: var(--c-cyan); box-shadow: 0 0 8px var(--c-cyan); }
-
-        @keyframes floatUp {
-            0% { transform: translateY(100vh); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh); opacity: 0; }
         }
 
-        /* ============ HEADER ============ */
+        /* Header */
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 15px;
-            background: rgba(0,0,0,0.92);
+            padding: calc(10px + var(--safe-top)) 15px 10px;
+            background: rgba(0,0,0,0.9);
             border-bottom: 1px solid var(--border-red);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(15px);
         }
+        .header-row { display: flex; justify-content: center; align-items: center; max-width: 600px; margin: 0 auto; }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
@@ -97,145 +78,85 @@
         }
         @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        .header-actions { display: flex; gap: 5px; }
-
-        .icon-btn {
-            width: 38px; height: 38px; border-radius: 50%;
-            background: rgba(255,0,51,0.08);
-            border: 1px solid var(--border-red);
-            color: var(--c-cyan); font-size: 15px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.2s var(--ease);
+        /* Bottom Nav */
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+            padding: 8px 10px calc(8px + var(--safe-bottom));
+            background: rgba(0,0,0,0.95);
+            border-top: 1px solid var(--border-red);
         }
-        .icon-btn:active { background: var(--c-red); color: var(--c-white); box-shadow: var(--glow-red); transform: scale(0.9); }
+        .bottom-nav-row { display: flex; justify-content: space-around; max-width: 600px; margin: 0 auto; }
 
-        /* ============ SIDE MENU ============ */
-        .menu-overlay {
-            position: fixed; inset: 0; z-index: 97;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
-            display: none;
+        .nav-btn {
+            display: flex; flex-direction: column; align-items: center; gap: 2px;
+            padding: 8px 15px; border: none; background: none;
+            color: #666; font-family: 'Orbitron', sans-serif; font-size: 7px;
+            cursor: pointer; border-radius: 10px;
         }
-        .menu-overlay.active { display: block; }
+        .nav-btn .nav-icon { font-size: 18px; }
+        .nav-btn.active { color: var(--c-cyan); }
+        .nav-btn:active { transform: scale(0.9); }
 
-        .side-menu {
-            position: fixed; top: 0; right: -100%; bottom: 0;
-            width: 78%; z-index: 98;
-            background: rgba(0,0,0,0.97);
-            border-left: 1px solid var(--border-red);
-            padding: 70px 15px 20px;
-            transition: right 0.35s var(--ease-spring);
-            overflow-y: auto;
-        }
-        .side-menu.active { right: 0; }
-
-        .side-menu a {
-            display: flex; align-items: center; gap: 12px;
-            padding: 15px; color: #ccc; text-decoration: none;
-            font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 2px;
-            border-bottom: 1px solid rgba(255,0,51,0.08);
-            border-radius: 10px; cursor: pointer;
-        }
-        .side-menu a:active { color: var(--c-cyan); background: rgba(255,0,51,0.08); }
-
-        /* ============ MAIN ============ */
+        /* Main */
         .main {
             position: relative; z-index: 2;
-            padding: 62px 15px 80px;
+            padding: calc(60px + var(--safe-top)) 15px calc(80px + var(--safe-bottom));
             max-width: 600px; margin: 0 auto;
         }
+        .page { display: none; }
+        .page.active { display: block; animation: fadeUp 0.25s var(--ease); }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
 
-        .hero { text-align: center; padding: 25px 0 15px; }
-
+        .hero { text-align: center; padding: 15px 0; }
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 28px; font-weight: 900; letter-spacing: 8px;
+            font-size: 24px; font-weight: 900; letter-spacing: 8px;
             background: var(--grad-text);
             background-size: 300% 300%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: logoShift 4s ease infinite;
-            margin-bottom: 5px;
         }
+        .hero .subtitle { font-size: 9px; letter-spacing: 4px; color: var(--c-cyan); }
 
-        .hero .subtitle {
-            font-size: 10px; letter-spacing: 5px;
-            color: var(--c-cyan); text-shadow: 0 0 12px rgba(0,240,255,0.6);
-        }
-
-        /* ============ TABS ============ */
-        .tabs { display: flex; gap: 6px; margin-bottom: 12px; }
-
-        .tab-btn {
-            flex: 1; padding: 10px;
-            background: rgba(255,0,51,0.06);
-            border: 1px solid var(--border-red); color: #ccc;
-            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
-            border-radius: var(--r-full); cursor: pointer;
-            transition: all 0.2s var(--ease); text-align: center;
-        }
-        .tab-btn.active { background: var(--c-red); color: var(--c-white); border-color: var(--c-red); box-shadow: var(--glow-red); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeUp 0.25s var(--ease); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
-
-        /* ============ SEARCH ============ */
-        .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
-
+        /* Search */
+        .search-row { position: relative; margin-bottom: 12px; }
         .search-input {
-            flex: 1; padding: 11px 16px;
+            width: 100%; padding: 11px 16px;
             background: rgba(0,0,0,0.7); border: 1px solid var(--border-red);
             color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 14px;
             border-radius: var(--r-full); outline: none;
-            transition: all 0.3s var(--ease);
         }
         .search-input:focus { border-color: var(--c-cyan); box-shadow: var(--glow-cyan); }
 
-        .search-btn {
-            padding: 11px 18px; background: var(--grad-btn); color: var(--c-white);
-            font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 1px;
-            border: none; border-radius: var(--r-full); font-weight: 700; cursor: pointer;
-            box-shadow: var(--glow-strong);
-        }
-
-        /* ============ BLOG CARDS ============ */
+        /* Blog Cards */
         .blog-list { display: grid; gap: 12px; }
-
         .blog-card {
             border: 1px solid var(--border-red);
-            background: rgba(255,0,51,0.05);
+            background: rgba(255,0,51,0.04);
             border-radius: var(--r-md); overflow: hidden; cursor: pointer;
-            transition: all 0.25s var(--ease-spring);
         }
-        .blog-card:active { border-color: var(--c-cyan); box-shadow: var(--glow-strong); transform: scale(0.97); }
+        .blog-card:active { border-color: var(--c-cyan); transform: scale(0.98); }
 
         .card-img {
-            height: 130px; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, rgba(255,0,51,0.15), rgba(255,0,51,0.05), rgba(0,240,255,0.08));
-            font-size: 42px; color: var(--c-cyan); text-shadow: 0 0 25px rgba(0,240,255,0.6);
+            height: 120px; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(0,240,255,0.06));
+            font-size: 38px; color: var(--c-cyan);
             border-bottom: 1px solid var(--border-red);
         }
-
         .card-body { padding: 12px; }
-
         .card-tag {
             display: inline-block; padding: 3px 10px;
-            background: rgba(255,0,51,0.1); border: 1px solid var(--c-red);
+            background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
             color: var(--c-red); font-family: 'Orbitron', sans-serif;
-            font-size: 7px; letter-spacing: 2px; border-radius: 10px; margin-bottom: 8px;
+            font-size: 7px; border-radius: 10px; margin-bottom: 8px;
         }
-
-        .card-title {
-            font-family: 'Orbitron', sans-serif; font-size: 13px;
-            letter-spacing: 1px; color: var(--c-white); margin-bottom: 5px;
-        }
-
+        .card-title { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--c-white); margin-bottom: 5px; }
         .card-excerpt {
             font-size: 11px; color: var(--c-muted); line-height: 1.5;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; margin-bottom: 8px;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            margin-bottom: 8px;
         }
-
         .card-meta {
             display: flex; justify-content: space-between;
             font-size: 9px; color: #555; padding-top: 8px;
@@ -243,148 +164,155 @@
         }
         .card-meta .author { color: var(--c-cyan); }
 
+        .load-more-btn {
+            width: 100%; padding: 12px; margin-top: 12px;
+            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
+            color: var(--c-cyan); font-family: 'Orbitron', sans-serif;
+            font-size: 10px; letter-spacing: 2px; border-radius: var(--r-full); cursor: pointer;
+        }
         .empty-state {
             text-align: center; padding: 40px 15px;
             border: 2px dashed var(--border-red); border-radius: var(--r-md);
-            color: #555; font-family: 'Orbitron', sans-serif;
-            font-size: 11px; letter-spacing: 2px;
+            color: #555; font-family: 'Orbitron', sans-serif; font-size: 11px;
         }
         .empty-icon { font-size: 40px; margin-bottom: 10px; }
 
-        /* ============ ARTICLE ============ */
-        .article-view { display: none; }
-        .article-view.active { display: block; animation: fadeUp 0.25s var(--ease); }
-
-        .back-btn {
-            display: inline-block; padding: 9px 16px;
-            background: transparent; border: 1px solid var(--c-cyan);
-            color: var(--c-cyan); font-family: 'Orbitron', sans-serif;
-            font-size: 9px; letter-spacing: 2px; border-radius: var(--r-full);
-            cursor: pointer; margin-bottom: 12px;
+        /* Article */
+        .article-view {
+            position: fixed; inset: 0; z-index: 150;
+            background: var(--c-bg); overflow-y: auto; display: none;
+            animation: slideUp 0.3s var(--ease);
         }
-        .back-btn:active { background: var(--c-cyan); color: #000; }
+        .article-view.active { display: block; }
+        @keyframes slideUp { from { transform: translateY(30%); opacity: 0; } }
 
+        .article-header-bar {
+            position: sticky; top: 0; z-index: 10;
+            padding: calc(10px + var(--safe-top)) 15px 10px;
+            background: rgba(0,0,0,0.92);
+            border-bottom: 1px solid var(--border-red);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .back-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
+            color: var(--c-cyan); font-size: 14px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
+        .article-body-wrap { padding: 15px 15px calc(30px + var(--safe-bottom)); max-width: 600px; margin: 0 auto; }
         .article-title {
             font-family: 'Orbitron', sans-serif; font-size: 17px;
             background: var(--grad-text);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; text-align: center; margin-bottom: 12px; line-height: 1.3;
+            background-clip: text; text-align: center; margin-bottom: 8px;
         }
-
+        .article-meta { text-align: center; font-size: 10px; color: #555; margin-bottom: 12px; }
+        .article-meta .read-time { color: var(--c-cyan); }
         .article-img {
-            height: 150px; display: flex; justify-content: center; align-items: center;
+            height: 140px; display: flex; justify-content: center; align-items: center;
             background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(0,240,255,0.04));
-            font-size: 50px; color: var(--c-cyan); text-shadow: 0 0 25px rgba(0,240,255,0.6);
+            font-size: 45px; color: var(--c-cyan);
             border: 1px solid var(--border-red); border-radius: var(--r-md); margin-bottom: 12px;
         }
-
-        .article-body {
-            font-size: 13px; line-height: 1.7; color: #ccc;
-            padding: 14px; border: 1px solid var(--border-red);
-            border-radius: var(--r-md); background: rgba(255,0,51,0.05);
+        .article-content {
+            font-size: 14px; line-height: 1.8; color: #ccc;
+            padding: 15px; border: 1px solid var(--border-red);
+            border-radius: var(--r-md); background: rgba(255,0,51,0.04);
+        }
+        .article-content p { margin-bottom: 12px; }
+        .share-btn {
+            display: block; width: 100%; padding: 12px; margin-top: 12px;
+            background: var(--grad-btn); color: var(--c-white);
+            font-family: 'Orbitron', sans-serif; font-size: 10px;
+            border: none; border-radius: var(--r-full); cursor: pointer; font-weight: 700;
         }
 
-        /* ============ CHAT ============ */
+        /* Chat */
         .chat-box {
+            display: flex; flex-direction: column;
+            height: calc(100dvh - 190px - var(--safe-top) - var(--safe-bottom));
+            min-height: 280px;
             border: 1px solid var(--border-red); border-radius: var(--r-md);
-            padding: 12px; background: rgba(255,0,51,0.05);
+            background: rgba(255,0,51,0.04); overflow: hidden;
         }
-
-        .chat-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
-        .chat-head h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            letter-spacing: 2px; color: var(--c-cyan);
+        .chat-head {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px; border-bottom: 1px solid var(--border-red);
         }
-        .chat-head .online { font-size: 8px; color: var(--c-success); }
+        .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--c-cyan); }
+        .chat-head .online { font-size: 8px; }
 
-        .chat-log {
-            height: calc(100vh - 320px);
-            min-height: 200px;
-            overflow-y: auto;
-            border: 1px solid var(--border-red); border-radius: var(--r-sm);
-            padding: 10px; margin-bottom: 8px;
+        .chat-log { flex: 1; overflow-y: auto; padding: 10px; }
+        .date-separator {
+            text-align: center; font-size: 8px; color: #444;
+            margin: 10px 0; font-family: 'Orbitron', sans-serif;
         }
-
         .msg { margin-bottom: 10px; }
+        .msg.own { text-align: right; }
         .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--c-cyan); margin-bottom: 3px; }
+        .msg.own .msg-name { color: var(--c-success); }
         .msg-text {
-            display: inline-block; font-size: 11px; color: #ccc;
-            background: rgba(0,0,0,0.4); padding: 7px 10px; border-radius: 10px;
-            word-break: break-word; max-width: 100%;
+            display: inline-block; font-size: 12px; color: #ccc;
+            background: rgba(0,0,0,0.4); padding: 8px 10px; border-radius: 10px;
+            word-break: break-word; max-width: 100%; text-align: left;
         }
-        .msg.own .msg-name { color: var(--c-success); text-align: right; }
         .msg.own .msg-text { background: rgba(0,255,136,0.08); }
-
         .msg-audio {
-            display: flex; align-items: center; gap: 8px;
-            background: rgba(255,0,51,0.1); border: 1px solid var(--c-red);
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
             border-radius: 20px; padding: 7px 12px; cursor: pointer;
-            max-width: 220px;
         }
-        .msg-audio .audio-icon { font-size: 16px; color: var(--c-cyan); }
-        .msg-audio .audio-bar { flex: 1; height: 3px; background: rgba(0,240,255,0.2); border-radius: 2px; }
-        .msg-audio .audio-duration { font-size: 8px; color: #ccc; font-family: 'Orbitron', sans-serif; }
-
-        .msg-image {
-            max-width: 150px; border-radius: 8px;
-            border: 1px solid var(--c-cyan); cursor: pointer;
-            box-shadow: 0 0 15px rgba(0,240,255,0.4);
+        .msg-audio .audio-icon { font-size: 14px; color: var(--c-cyan); }
+        .msg-audio .audio-duration { font-size: 8px; color: #ccc; }
+        .msg-image { max-width: 140px; border-radius: 8px; border: 1px solid var(--c-cyan); cursor: pointer; display: block; }
+        .msg.own .msg-image { margin-left: auto; }
+        .msg-delete-btn {
+            background: none; border: none; color: #444; font-size: 10px;
+            cursor: pointer; padding: 2px; margin-left: 5px;
         }
 
-        .chat-input-row { display: flex; gap: 5px; align-items: center; }
-
-        .chat-input-row input {
+        .chat-input-area {
+            padding: 8px 10px; border-top: 1px solid var(--border-red);
+            display: flex; gap: 5px; align-items: center;
+        }
+        .chat-input {
             flex: 1; padding: 10px 13px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--border-red);
-            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 12px;
-            border-radius: var(--r-full); outline: none;
-            min-width: 0;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border-red);
+            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
+            border-radius: var(--r-full); outline: none; min-width: 0;
         }
-        .chat-input-row input:focus { border-color: var(--c-cyan); box-shadow: var(--glow-cyan); }
-        .chat-input-row .name-input { max-width: 80px; }
-
+        .name-input { max-width: 70px; }
         .send-btn {
-            padding: 10px 15px; background: var(--grad-btn); color: var(--c-white);
+            padding: 10px 14px; background: var(--grad-btn); color: var(--c-white);
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
-            border: none; border-radius: var(--r-full); font-weight: 700;
-            cursor: pointer; white-space: nowrap;
+            border: none; border-radius: var(--r-full); font-weight: 700; cursor: pointer;
         }
-
         .attach-btn {
             width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(255,0,51,0.08); border: 1px solid var(--border-red);
+            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
             color: var(--c-cyan); font-size: 13px; cursor: pointer;
             display: flex; justify-content: center; align-items: center; flex-shrink: 0;
         }
-        .attach-btn:active { background: var(--c-red); color: var(--c-white); }
         .attach-btn.recording {
             background: var(--c-danger); color: var(--c-white);
-            border-color: var(--c-danger); box-shadow: 0 0 15px var(--c-danger);
             animation: pulse 0.5s infinite;
         }
         @keyframes pulse { 50% { opacity: 0.6; } }
 
         .recording-bar {
-            display: none; text-align: center; padding: 6px;
-            background: rgba(255,0,51,0.08); border: 1px solid var(--c-danger);
-            border-radius: 8px; font-size: 9px; color: var(--c-danger);
-            letter-spacing: 2px; font-family: 'Orbitron', sans-serif;
-            margin-bottom: 5px;
+            display: none; text-align: center; padding: 4px;
+            background: rgba(255,0,51,0.08); border-bottom: 1px solid var(--c-danger);
+            font-size: 9px; color: var(--c-danger); font-family: 'Orbitron', sans-serif;
         }
         .recording-bar.active { display: block; }
 
-        /* ============ ADMIN ============ */
-        .admin-panel { display: none; }
-        .admin-panel.active { display: block; animation: fadeUp 0.25s var(--ease); }
-
+        /* Admin */
         .admin-login {
             border: 1px solid var(--border-red); padding: 20px;
-            background: rgba(255,0,51,0.05); border-radius: var(--r-md);
-            text-align: center;
+            background: rgba(255,0,51,0.04); border-radius: var(--r-md); text-align: center;
         }
         .admin-login h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 13px;
-            margin-bottom: 12px;
+            font-family: 'Orbitron', sans-serif; font-size: 13px; margin-bottom: 12px;
             background: var(--grad-text);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -396,26 +324,18 @@
             border-radius: var(--r-full); outline: none; text-align: center;
             letter-spacing: 3px; margin-bottom: 10px;
         }
-
-        .admin-dash { display: none; }
-        .admin-dash.active { display: block; }
         .admin-dash h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 14px;
-            text-align: center; margin-bottom: 12px;
+            font-family: 'Orbitron', sans-serif; font-size: 14px; text-align: center;
+            margin-bottom: 12px;
             background: var(--grad-text);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .admin-form {
             border: 1px solid var(--border-red); padding: 14px;
-            background: rgba(255,0,51,0.05); border-radius: var(--r-md);
-            margin-bottom: 12px;
+            background: rgba(255,0,51,0.04); border-radius: var(--r-md); margin-bottom: 12px;
         }
-        .admin-form h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 10px;
-            color: var(--c-cyan); margin-bottom: 10px;
-        }
+        .admin-form h3 { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--c-cyan); margin-bottom: 10px; }
         .admin-form input, .admin-form textarea {
             width: 100%; padding: 10px 12px;
             background: rgba(0,0,0,0.5); border: 1px solid var(--border-red);
@@ -423,46 +343,34 @@
             border-radius: var(--r-sm); outline: none; margin-bottom: 8px;
         }
         .admin-form textarea { height: 90px; resize: vertical; }
-        .admin-form input:focus, .admin-form textarea:focus {
-            border-color: var(--c-cyan); box-shadow: var(--glow-cyan);
-        }
-
         .btn-row { display: flex; gap: 6px; }
-
         .btn-primary {
-            flex: 1; padding: 11px 15px;
-            background: var(--grad-btn); color: var(--c-white);
-            font-family: 'Orbitron', sans-serif; font-size: 9px;
-            border: none; border-radius: var(--r-full); font-weight: 700;
-            cursor: pointer;
+            flex: 1; padding: 11px 15px; background: var(--grad-btn); color: var(--c-white);
+            font-family: 'Orbitron', sans-serif; font-size: 9px; border: none;
+            border-radius: var(--r-full); font-weight: 700; cursor: pointer;
         }
         .btn-danger {
             padding: 9px 13px; background: transparent;
             border: 1px solid var(--c-danger); color: var(--c-danger);
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            border-radius: var(--r-full); cursor: pointer;
+            font-family: 'Orbitron', sans-serif; font-size: 8px; border-radius: var(--r-full); cursor: pointer;
         }
-
         .admin-post {
-            border: 1px solid var(--border-red); padding: 11px;
-            border-radius: var(--r-sm); background: rgba(255,0,51,0.05);
-            display: flex; justify-content: space-between; align-items: center;
-            gap: 6px; margin-bottom: 6px;
+            border: 1px solid var(--border-red); padding: 11px; border-radius: var(--r-sm);
+            background: rgba(255,0,51,0.04); display: flex; justify-content: space-between;
+            align-items: center; gap: 6px; margin-bottom: 6px;
         }
         .admin-post h4 { font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--c-white); }
         .admin-post p { font-size: 8px; color: #555; }
-        .admin-post-actions { display: flex; gap: 4px; flex-shrink: 0; }
+        .admin-post-actions { display: flex; gap: 4px; }
 
-        /* ============ TOAST ============ */
+        /* Toast */
         .toast-wrap {
-            position: fixed; top: 65px; right: 12px; z-index: 300;
-            display: flex; flex-direction: column; gap: 6px;
-            max-width: 280px;
+            position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
+            display: flex; flex-direction: column; gap: 6px; max-width: 280px;
         }
         .toast {
-            padding: 10px 16px; border-radius: 10px; font-size: 11px;
-            border: 1px solid; animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 3s forwards;
-            backdrop-filter: blur(10px);
+            padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
+            animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 3s forwards;
         }
         .toast-success { background: rgba(0,255,136,0.12); border-color: var(--c-success); color: var(--c-success); }
         .toast-error { background: rgba(255,0,51,0.12); border-color: var(--c-danger); color: var(--c-danger); }
@@ -470,43 +378,20 @@
         @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
         @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
 
-        /* ============ PROGRESS ============ */
+        /* Progress */
         .progress {
-            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-            background: var(--grad-btn); box-shadow: 0 0 12px rgba(0,240,255,0.6);
-            z-index: 200; transition: width 0.2s var(--ease);
+            position: fixed; top: 0; left: 0; height: 2px; width: 0%;
+            background: var(--grad-btn); z-index: 200;
         }
 
-        /* ============ FLOATING ============ */
-        .back-top {
-            position: fixed; bottom: 18px; right: 14px; z-index: 90;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: rgba(0,0,0,0.9); border: 2px solid var(--c-cyan);
-            color: var(--c-cyan); font-size: 16px; cursor: pointer;
-            display: none; justify-content: center; align-items: center;
-        }
-        .back-top.show { display: flex; }
-
-        .fab {
-            position: fixed; bottom: 18px; left: 14px; z-index: 90;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--grad-btn); border: none; color: var(--c-white);
-            font-size: 18px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .fab:active { transform: scale(0.85); }
-
-        /* ============ LIGHTBOX ============ */
+        /* Lightbox */
         .lightbox {
             position: fixed; inset: 0; z-index: 500;
-            background: rgba(0,0,0,0.95);
-            display: none; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.95); display: none;
+            justify-content: center; align-items: center;
         }
         .lightbox.active { display: flex; }
-        .lightbox img {
-            max-width: 92%; max-height: 85%;
-            border: 2px solid var(--c-cyan); border-radius: 10px;
-        }
+        .lightbox img { max-width: 92%; max-height: 85%; border: 2px solid var(--c-cyan); border-radius: 10px; }
         .lightbox-close {
             position: absolute; top: 18px; right: 18px;
             width: 40px; height: 40px; border-radius: 50%;
@@ -515,120 +400,65 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* ============ FOOTER ============ */
-        .footer {
-            text-align: center; padding: 15px;
-            border-top: 1px solid var(--border-red);
-            position: relative; z-index: 2; background: rgba(0,0,0,0.7);
-        }
-        .footer p { font-family: 'Orbitron', sans-serif; font-size: 8px; color: #555; }
-        .footer .glow {
-            background: var(--grad-text);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
         #chatImageInput { display: none; }
     </style>
 </head>
 <body>
 
-    <!-- BACKGROUND -->
     <div class="bg-grid"></div>
-    <div class="bg-particles" id="particles"></div>
-
-    <!-- PROGRESS -->
     <div class="progress" id="progress"></div>
-
-    <!-- TOAST -->
     <div class="toast-wrap" id="toastWrap"></div>
 
-    <!-- LIGHTBOX -->
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <button class="lightbox-close" onclick="event.stopPropagation(); closeLightbox()">✕</button>
         <img id="lightboxImg" src="" alt="Gambar" onclick="event.stopPropagation()">
     </div>
 
-    <!-- HEADER -->
     <div class="header">
-        <div class="logo" onclick="goHome()">ZACK</div>
-        <div class="header-actions">
-            <button class="icon-btn" onclick="switchTab('blog')" aria-label="Blog">📝</button>
-            <button class="icon-btn" onclick="switchTab('chat')" aria-label="Chat">💬</button>
-            <button class="icon-btn" onclick="openAdmin()" aria-label="Admin">🔐</button>
-            <button class="icon-btn" onclick="toggleMenu()" aria-label="Menu">☰</button>
+        <div class="header-row">
+            <div class="logo" onclick="navigateTo('blog')">ZACK</div>
         </div>
     </div>
 
-    <!-- MENU -->
-    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-    <div class="side-menu" id="sideMenu">
-        <a onclick="goHome()">🏠 UTAMA</a>
-        <a onclick="switchTab('chat')">💬 CHAT</a>
-        <a onclick="openAdmin()">🔐 ADMIN</a>
-        <a onclick="burst()">✨ PARTIKEL</a>
-    </div>
-
-    <!-- MAIN -->
     <div class="main">
-
-        <!-- HERO -->
-        <div class="hero" id="heroArea">
-            <h1>ZACK</h1>
-            <p class="subtitle">DIGITAL CHRONICLES</p>
-        </div>
-
-        <!-- TABS -->
-        <div class="tabs" id="tabsBar">
-            <button class="tab-btn active" onclick="switchTab('blog', this)">📝 BLOG</button>
-            <button class="tab-btn" onclick="switchTab('chat', this)">💬 CHAT</button>
-        </div>
-
-        <!-- BLOG TAB -->
-        <div class="tab-content active" id="tab-blog">
+        <div class="page active" id="page-blog">
+            <div class="hero">
+                <h1>ZACK</h1>
+                <p class="subtitle">DIGITAL CHRONICLES</p>
+            </div>
             <div class="search-row">
                 <input type="text" id="searchInput" class="search-input" placeholder="Cari artikel...">
-                <button class="search-btn" id="searchBtn">CARI</button>
             </div>
             <div class="blog-list" id="blogList"></div>
+            <button class="load-more-btn" id="loadMoreBtn" style="display:none;">MUAT LAGI</button>
         </div>
 
-        <!-- CHAT TAB -->
-        <div class="tab-content" id="tab-chat">
+        <div class="page" id="page-chat">
             <div class="chat-box">
                 <div class="chat-head">
-                    <h3>💬 CHAT MULTIMEDIA</h3>
-                    <span class="online">● ONLINE</span>
+                    <h3>💬 CHAT</h3>
+                    <span class="online" id="onlineStatus">● OFFLINE</span>
                 </div>
                 <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
                 <div class="chat-log" id="chatLog"></div>
-                <div class="chat-input-row">
-                    <input type="text" id="chatName" class="name-input" placeholder="NAMA">
-                    <input type="text" id="chatInput" placeholder="Tulis mesej...">
-                    <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
-                    <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
+                <div class="chat-input-area">
+                    <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA">
+                    <input type="text" id="chatInput" class="chat-input" placeholder="Tulis...">
+                    <button class="attach-btn" id="imgBtn">📷</button>
+                    <button class="attach-btn" id="recordBtn">🎤</button>
                     <button class="send-btn" id="sendBtn">HANTAR</button>
                 </div>
                 <input type="file" id="chatImageInput" accept="image/*">
             </div>
         </div>
 
-        <!-- ARTICLE -->
-        <div class="article-view" id="articleView">
-            <button class="back-btn" onclick="goHome()">← KEMBALI</button>
-            <div class="article-title" id="articleTitle"></div>
-            <div class="article-img" id="articleImg"></div>
-            <div class="article-body" id="articleBody"></div>
-        </div>
-
-        <!-- ADMIN -->
-        <div class="admin-panel" id="adminPanel">
+        <div class="page" id="page-admin">
             <div class="admin-login" id="adminLogin">
                 <h2>🔐 LOGIN ADMIN</h2>
                 <input type="password" id="adminPass" placeholder="KATA LALUAN">
                 <button class="btn-primary" id="loginBtn">LOGIN</button>
             </div>
-            <div class="admin-dash" id="adminDash">
+            <div class="admin-dash" id="adminDash" style="display:none;">
                 <h2>📝 PENGURUSAN ARTIKEL</h2>
                 <div class="admin-form">
                     <h3 id="formTitle">➕ TAMBAH ARTIKEL</h3>
@@ -649,18 +479,31 @@
             </div>
         </div>
 
+        <div class="article-view" id="articleView">
+            <div class="article-header-bar">
+                <button class="back-btn" id="articleBackBtn">←</button>
+                <span style="font-family:'Orbitron',sans-serif;font-size:12px;color:var(--c-cyan);">ARTIKEL</span>
+            </div>
+            <div class="article-body-wrap">
+                <div class="article-title" id="articleTitle"></div>
+                <div class="article-meta">
+                    <span id="articleAuthor"></span> • <span id="articleDate"></span> • <span class="read-time" id="articleReadTime"></span>
+                </div>
+                <div class="article-img" id="articleImg"></div>
+                <div class="article-content" id="articleContent"></div>
+                <button class="share-btn" id="shareBtn">📤 KONGSI ARTIKEL</button>
+            </div>
+        </div>
     </div>
 
-    <!-- FOOTER -->
-    <div class="footer">
-        <p>© 2026 <span class="glow">ZACK</span> — DIGITAL CHRONICLES</p>
+    <div class="bottom-nav">
+        <div class="bottom-nav-row">
+            <button class="nav-btn active" onclick="navigateTo('blog', this)"><span class="nav-icon">📝</span>BLOG</button>
+            <button class="nav-btn" onclick="navigateTo('chat', this)"><span class="nav-icon">💬</span>CHAT</button>
+            <button class="nav-btn" onclick="navigateTo('admin', this)"><span class="nav-icon">🔐</span>ADMIN</button>
+        </div>
     </div>
 
-    <!-- FLOATING -->
-    <button class="back-top" id="backTop" aria-label="Naik atas">↑</button>
-    <button class="fab" id="fabBtn" aria-label="Letupan partikel">✦</button>
-
-    <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
@@ -672,7 +515,8 @@
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             adminPassword: 'admin123',
             maxImageSize: 2 * 1024 * 1024,
-            maxAudioDuration: 30
+            maxAudioDuration: 30,
+            postsPerPage: 10
         };
 
         /* ============ STATE ============ */
@@ -680,6 +524,7 @@
             isAdmin: false,
             posts: [],
             postsMap: new Map(),
+            visiblePosts: 0,
             isRecording: false,
             recordStart: 0,
             recorder: null,
@@ -694,23 +539,16 @@
             toastWrap: $('toastWrap'),
             lightbox: $('lightbox'),
             lightboxImg: $('lightboxImg'),
-            sideMenu: $('sideMenu'),
-            menuOverlay: $('menuOverlay'),
-            heroArea: $('heroArea'),
-            tabsBar: $('tabsBar'),
-            tabBlog: $('tab-blog'),
-            tabChat: $('tab-chat'),
-            articleView: $('articleView'),
-            adminPanel: $('adminPanel'),
-            adminLogin: $('adminLogin'),
-            adminDash: $('adminDash'),
             blogList: $('blogList'),
+            loadMoreBtn: $('loadMoreBtn'),
             chatLog: $('chatLog'),
             chatName: $('chatName'),
             chatInput: $('chatInput'),
+            onlineStatus: $('onlineStatus'),
             adminPass: $('adminPass'),
+            adminLogin: $('adminLogin'),
+            adminDash: $('adminDash'),
             adminList: $('adminList'),
-            backTop: $('backTop'),
             recordBtn: $('recordBtn'),
             recBar: $('recBar'),
             searchInput: $('searchInput'),
@@ -722,9 +560,14 @@
             postExcerpt: $('postExcerpt'),
             postContent: $('postContent'),
             formTitle: $('formTitle'),
+            articleView: $('articleView'),
             articleTitle: $('articleTitle'),
+            articleAuthor: $('articleAuthor'),
+            articleDate: $('articleDate'),
+            articleReadTime: $('articleReadTime'),
             articleImg: $('articleImg'),
-            articleBody: $('articleBody')
+            articleContent: $('articleContent'),
+            shareBtn: $('shareBtn')
         };
 
         /* ============ FIREBASE ============ */
@@ -732,14 +575,23 @@
 
         /* ============ HELPERS ============ */
         function toast(msg, type = 'info') {
-            while (DOM.toastWrap.children.length >= 3) {
-                DOM.toastWrap.firstChild.remove();
-            }
+            while (DOM.toastWrap.children.length >= 3) DOM.toastWrap.firstChild.remove();
             const el = document.createElement('div');
             el.className = `toast toast-${type}`;
             el.textContent = msg;
             DOM.toastWrap.appendChild(el);
             setTimeout(() => el.remove(), 3300);
+        }
+
+        function debounce(fn, delay = 300) {
+            let timer;
+            return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+        }
+
+        function sanitizeText(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.textContent;
         }
 
         function getTime() {
@@ -750,57 +602,34 @@
             return DOM.chatName.value.trim() || 'Anonymous';
         }
 
-        /* ============ DEBOUNCE ============ */
-        function debounce(fn, delay = 300) {
-            let timer;
-            return (...args) => {
-                clearTimeout(timer);
-                timer = setTimeout(() => fn(...args), delay);
-            };
-        }
-
-        /* ============ SANITIZE ============ */
-        function sanitizeText(str) {
+        function readTime(content) {
             const div = document.createElement('div');
-            div.textContent = str;
-            return div.textContent;
+            div.innerHTML = content;
+            const text = div.textContent || '';
+            const words = text.trim().split(/\s+/).length;
+            return Math.max(1, Math.ceil(words / 200)) + ' minit';
         }
 
-        /* ============ PARTICLES ============ */
-        function initParticles() {
-            const wrap = $('particles');
-            const fragment = document.createDocumentFragment();
-            const colors = ['particle--red', 'particle--cyan'];
-            for (let i = 0; i < 15; i++) {
-                const p = document.createElement('div');
-                p.className = `particle ${colors[i % 2]}`;
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (Math.random() * 4 + 3) + 's';
-                p.style.animationDelay = Math.random() * 4 + 's';
-                p.style.width = p.style.height = (Math.random() * 3 + 2) + 'px';
-                fragment.appendChild(p);
-            }
-            wrap.appendChild(fragment);
+        function getDateSeparator(timestamp) {
+            const today = new Date().toDateString();
+            const yesterday = new Date(Date.now() - 86400000).toDateString();
+            const msgDate = new Date(timestamp).toDateString();
+            if (msgDate === today) return 'HARI INI';
+            if (msgDate === yesterday) return 'SEMALAM';
+            return new Date(timestamp).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' });
         }
 
-        function burst() {
-            const wrap = document.createElement('div');
-            wrap.style.cssText = 'position:fixed;left:50%;top:50%;z-index:999;pointer-events:none;';
-            document.body.appendChild(wrap);
-            const colors = ['#ff0033', '#00f0ff', '#ff4455', '#00ff88', '#fff'];
-            const fragment = document.createDocumentFragment();
-            for (let i = 0; i < 20; i++) {
-                const p = document.createElement('div');
-                const color = colors[i % colors.length];
-                p.style.cssText = `position:absolute;width:6px;height:6px;border-radius:50%;background:${color};box-shadow:0 0 10px ${color};animation:burstFly 1s ease-out forwards;`;
-                const angle = (Math.PI * 2 * i) / 20;
-                const dist = Math.random() * 80 + 40;
-                p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
-                p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
-                fragment.appendChild(p);
+        /* ============ NAVIGATION ============ */
+        function navigateTo(name, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            $(`page-${name}`).classList.add('active');
+            if (btn) btn.classList.add('active');
+            if (name === 'admin' && !state.isAdmin) {
+                DOM.adminLogin.style.display = 'block';
+                DOM.adminDash.style.display = 'none';
             }
-            wrap.appendChild(fragment);
-            setTimeout(() => wrap.remove(), 1000);
+            window.scrollTo({ top: 0 });
         }
 
         /* ============ SCROLL ============ */
@@ -808,36 +637,8 @@
             const doc = document.documentElement;
             const percent = (window.scrollY / (doc.scrollHeight - innerHeight)) * 100;
             DOM.progress.style.width = percent + '%';
-            DOM.backTop.classList.toggle('show', window.scrollY > 200);
         }
-
-        function scrollTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        /* ============ TABS ============ */
-        function switchTab(name, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            const tab = $(`tab-${name}`);
-            if (tab) tab.classList.add('active');
-            if (btn) btn.classList.add('active');
-            DOM.articleView.classList.remove('active');
-            DOM.adminPanel.classList.remove('active');
-            DOM.tabsBar.style.display = 'flex';
-            DOM.heroArea.style.display = 'block';
-        }
-
-        function goHome() {
-            DOM.articleView.classList.remove('active');
-            DOM.adminPanel.classList.remove('active');
-            DOM.tabsBar.style.display = 'flex';
-            DOM.heroArea.style.display = 'block';
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            DOM.tabBlog.classList.add('active');
-            document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        window.addEventListener('scroll', handleScroll, { passive: true });
 
         /* ============ BLOG ============ */
         db.ref('posts').on('value', snap => {
@@ -850,7 +651,9 @@
                     state.postsMap.set(child.key, post);
                 });
             }
-            renderBlog(state.posts);
+            state.posts.reverse();
+            state.visiblePosts = Math.min(CONFIG.postsPerPage, state.posts.length);
+            renderBlog();
             renderAdminList();
         });
 
@@ -892,18 +695,22 @@
             return card;
         }
 
-        function renderBlog(list) {
+        function renderBlog() {
             DOM.blogList.innerHTML = '';
-            if (!list.length) {
-                const empty = document.createElement('div');
-                empty.className = 'empty-state';
-                empty.innerHTML = '<div class="empty-icon">📝</div>TIADA ARTIKEL';
-                DOM.blogList.appendChild(empty);
+            if (!state.posts.length) {
+                DOM.blogList.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div>TIADA ARTIKEL</div>';
+                DOM.loadMoreBtn.style.display = 'none';
                 return;
             }
             const fragment = document.createDocumentFragment();
-            list.forEach(post => fragment.appendChild(createBlogCard(post)));
+            state.posts.slice(0, state.visiblePosts).forEach(post => fragment.appendChild(createBlogCard(post)));
             DOM.blogList.appendChild(fragment);
+            DOM.loadMoreBtn.style.display = state.visiblePosts < state.posts.length ? 'block' : 'none';
+        }
+
+        function loadMore() {
+            state.visiblePosts += CONFIG.postsPerPage;
+            renderBlog();
         }
 
         const debouncedSearch = debounce(query => {
@@ -911,20 +718,58 @@
             const filtered = state.posts.filter(p =>
                 (p.title + ' ' + p.excerpt + ' ' + p.category).toLowerCase().includes(q)
             );
-            renderBlog(filtered);
+            DOM.blogList.innerHTML = '';
+            if (!filtered.length) {
+                DOM.blogList.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>TIADA HASIL</div>';
+                DOM.loadMoreBtn.style.display = 'none';
+                return;
+            }
+            const fragment = document.createDocumentFragment();
+            filtered.forEach(post => fragment.appendChild(createBlogCard(post)));
+            DOM.blogList.appendChild(fragment);
+            DOM.loadMoreBtn.style.display = 'none';
         });
+
+        /* ============ ARTICLE ============ */
+        let currentArticle = null;
 
         function openArticle(id) {
             const post = state.postsMap.get(id);
             if (!post) return;
-            DOM.articleView.classList.add('active');
-            DOM.tabsBar.style.display = 'none';
-            DOM.heroArea.style.display = 'none';
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            currentArticle = post;
             DOM.articleTitle.textContent = post.title;
+            DOM.articleAuthor.textContent = post.author || 'Tanpa Nama';
+            DOM.articleDate.textContent = post.date || '';
+            DOM.articleReadTime.textContent = readTime(post.content || '');
             DOM.articleImg.textContent = post.icon || '📄';
-            DOM.articleBody.innerHTML = post.content || '<p>Tiada kandungan.</p>';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            DOM.articleContent.innerHTML = post.content || '<p>Tiada kandungan.</p>';
+            DOM.articleView.classList.add('active');
+            DOM.articleView.scrollTop = 0;
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeArticle() {
+            DOM.articleView.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        async function shareArticle() {
+            if (!currentArticle) return;
+            const data = {
+                title: currentArticle.title,
+                text: currentArticle.excerpt || '',
+                url: window.location.href
+            };
+            if (navigator.share) {
+                try { await navigator.share(data); } catch(e) {}
+            } else {
+                try {
+                    await navigator.clipboard.writeText(data.url);
+                    toast('Pautan disalin! 📋', 'success');
+                } catch(e) {
+                    toast('Tidak dapat kongsi', 'error');
+                }
+            }
         }
 
         /* ============ CHAT ============ */
@@ -933,10 +778,20 @@
             const wasAtBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
             DOM.chatLog.innerHTML = '';
             const fragment = document.createDocumentFragment();
+            let lastDate = '';
 
             if (snap.exists()) {
                 snap.forEach(child => {
                     const data = child.val();
+                    const dateSep = getDateSeparator(data.timestamp || Date.now());
+                    if (dateSep !== lastDate) {
+                        lastDate = dateSep;
+                        const sep = document.createElement('div');
+                        sep.className = 'date-separator';
+                        sep.textContent = `— ${dateSep} —`;
+                        fragment.appendChild(sep);
+                    }
+
                     const div = document.createElement('div');
                     div.className = 'msg' + (data.name === myName ? ' own' : '');
 
@@ -960,7 +815,7 @@
                     } else if (data.type === 'audio') {
                         const audioEl = document.createElement('div');
                         audioEl.className = 'msg-audio';
-                        audioEl.innerHTML = `<span class="audio-icon">▶</span><div class="audio-bar"></div><span class="audio-duration">${data.duration || 0}s</span>`;
+                        audioEl.innerHTML = `<span class="audio-icon">▶</span><span class="audio-duration">${data.duration || 0}s</span>`;
                         audioEl.addEventListener('click', () => {
                             const audio = new Audio(data.data);
                             audio.play().catch(() => toast('Tidak dapat main audio!', 'error'));
@@ -968,23 +823,29 @@
                         div.appendChild(audioEl);
                     }
 
+                    if (data.name === myName) {
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'msg-delete-btn';
+                        delBtn.textContent = '✕';
+                        delBtn.addEventListener('click', () => {
+                            if (confirm('Padam mesej ini?')) db.ref('chat/' + child.key).remove();
+                        });
+                        div.appendChild(delBtn);
+                    }
+
                     fragment.appendChild(div);
                 });
             }
 
             DOM.chatLog.appendChild(fragment);
-            if (wasAtBottom) {
-                DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
-            }
+            if (wasAtBottom) DOM.chatLog.scrollTop = DOM.chatLog.scrollHeight;
         });
 
         function sendMessage(type, data) {
             db.ref('chat').push({
-                type,
-                name: getName(),
-                ...data,
-                time: getTime()
-            }).catch(err => toast('Gagal hantar!', 'error'));
+                type, name: getName(), timestamp: Date.now(),
+                ...data, time: getTime()
+            }).catch(() => toast('Gagal hantar!', 'error'));
         }
 
         function sendText() {
@@ -997,37 +858,26 @@
         function sendImage(event) {
             const file = event.target.files[0];
             if (!file) return;
-            if (file.size > CONFIG.maxImageSize) {
-                toast('Saiz gambar terlalu besar!', 'error');
-                return;
-            }
+            if (file.size > CONFIG.maxImageSize) { toast('Saiz terlalu besar!', 'error'); return; }
             const reader = new FileReader();
-            reader.onload = ev => {
-                sendMessage('image', { data: ev.target.result });
-                toast('Gambar dihantar! 📷', 'success');
-            };
+            reader.onload = ev => { sendMessage('image', { data: ev.target.result }); toast('Gambar dihantar!', 'success'); };
             reader.readAsDataURL(file);
             event.target.value = '';
         }
 
-        async function toggleRecord() {
-            if (state.isRecording) {
-                stopRecording();
-                return;
-            }
+        async function startRecord() {
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 state.recorder = new MediaRecorder(stream);
                 state.audioChunks = [];
                 state.recorder.ondataavailable = e => state.audioChunks.push(e.data);
                 state.recorder.onstop = () => {
-                    stream.getTracks().forEach(track => track.stop());
+                    stream.getTracks().forEach(t => t.stop());
                     const blob = new Blob(state.audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
                     reader.onload = ev => {
-                        const duration = Math.round((Date.now() - state.recordStart) / 1000);
-                        sendMessage('audio', { data: ev.target.result, duration });
-                        toast('Audio dihantar! 🎤', 'success');
+                        sendMessage('audio', { data: ev.target.result, duration: Math.round((Date.now() - state.recordStart) / 1000) });
+                        toast('Audio dihantar!', 'success');
                     };
                     reader.readAsDataURL(blob);
                 };
@@ -1036,56 +886,42 @@
                 state.recordStart = Date.now();
                 DOM.recordBtn.classList.add('recording');
                 DOM.recBar.classList.add('active');
-                setTimeout(() => { if (state.isRecording) stopRecording(); }, CONFIG.maxAudioDuration * 1000);
-            } catch (e) {
-                toast('Tidak dapat akses mikrofon!', 'error');
-            }
+                setTimeout(() => { if (state.isRecording) stopRecord(); }, CONFIG.maxAudioDuration * 1000);
+            } catch(e) { toast('Tidak dapat akses mikrofon!', 'error'); }
         }
 
-        function stopRecording() {
+        function stopRecord() {
             state.isRecording = false;
             DOM.recordBtn.classList.remove('recording');
             DOM.recBar.classList.remove('active');
             if (state.recorder) state.recorder.stop();
         }
 
-        /* ============ LIGHTBOX ============ */
-        function openLightbox(src) {
-            DOM.lightboxImg.src = src;
-            DOM.lightbox.classList.add('active');
-        }
+        /* ============ ONLINE ============ */
+        db.ref('.info/connected').on('value', snap => {
+            DOM.onlineStatus.textContent = snap.val() ? '● ONLINE' : '● OFFLINE';
+            DOM.onlineStatus.style.color = snap.val() ? 'var(--c-success)' : '#555';
+        });
 
-        function closeLightbox() {
-            DOM.lightbox.classList.remove('active');
-        }
+        /* ============ LIGHTBOX ============ */
+        function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.classList.add('active'); }
+        function closeLightbox() { DOM.lightbox.classList.remove('active'); }
 
         /* ============ ADMIN ============ */
-        function openAdmin() {
-            DOM.tabsBar.style.display = 'none';
-            DOM.heroArea.style.display = 'none';
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            DOM.articleView.classList.remove('active');
-            DOM.adminPanel.classList.add('active');
-            DOM.adminLogin.style.display = state.isAdmin ? 'none' : 'block';
-            DOM.adminDash.classList.toggle('active', state.isAdmin);
-        }
-
         function doLogin() {
             if (DOM.adminPass.value === CONFIG.adminPassword) {
                 state.isAdmin = true;
                 DOM.adminLogin.style.display = 'none';
-                DOM.adminDash.classList.add('active');
+                DOM.adminDash.style.display = 'block';
                 DOM.adminPass.value = '';
-                toast('Login berjaya! ✅', 'success');
-            } else {
-                toast('Kata laluan salah! ❌', 'error');
-            }
+                toast('Login berjaya!', 'success');
+            } else toast('Kata laluan salah!', 'error');
         }
 
         function doLogout() {
             state.isAdmin = false;
             DOM.adminLogin.style.display = 'block';
-            DOM.adminDash.classList.remove('active');
+            DOM.adminDash.style.display = 'none';
             resetForm();
         }
 
@@ -1108,14 +944,10 @@
                 const actions = document.createElement('div');
                 actions.className = 'admin-post-actions';
                 const editBtn = document.createElement('button');
-                editBtn.className = 'btn-primary';
-                editBtn.textContent = 'EDIT';
-                editBtn.style.padding = '5px 10px';
+                editBtn.className = 'btn-primary'; editBtn.textContent = 'EDIT'; editBtn.style.padding = '5px 10px';
                 editBtn.addEventListener('click', () => editPost(post.id));
                 const delBtn = document.createElement('button');
-                delBtn.className = 'btn-danger';
-                delBtn.textContent = 'PADAM';
-                delBtn.style.padding = '5px 8px';
+                delBtn.className = 'btn-danger'; delBtn.textContent = 'PADAM'; delBtn.style.padding = '5px 8px';
                 delBtn.addEventListener('click', () => deletePost(post.id));
                 actions.append(editBtn, delBtn);
                 item.append(info, actions);
@@ -1133,15 +965,12 @@
                 author: DOM.postAuthor.value.trim(),
                 excerpt: DOM.postExcerpt.value.trim(),
                 content: DOM.postContent.value.trim(),
-                date: new Date().toISOString().split('T')[0]
+                date: new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
             };
-            if (!data.title || !data.category || !data.author) {
-                toast('Sila isi ruangan wajib!', 'error');
-                return;
-            }
-            const ref = id ? db.ref('posts/' + id).update(data) : db.ref('posts').push(data);
-            ref.then(() => { toast('Disimpan! ✅', 'success'); resetForm(); })
-               .catch(() => toast('Gagal simpan!', 'error'));
+            if (!data.title || !data.category || !data.author) { toast('Sila isi ruangan wajib!', 'error'); return; }
+            (id ? db.ref('posts/' + id).update(data) : db.ref('posts').push(data))
+                .then(() => { toast('Disimpan!', 'success'); resetForm(); })
+                .catch(() => toast('Gagal simpan!', 'error'));
         }
 
         function editPost(id) {
@@ -1159,44 +988,44 @@
 
         function deletePost(id) {
             if (confirm('Padam artikel ini?')) {
-                db.ref('posts/' + id).remove()
-                    .then(() => toast('Dipadam! ✅', 'success'))
-                    .catch(() => toast('Gagal padam!', 'error'));
+                db.ref('posts/' + id).remove().then(() => toast('Dipadam!', 'success'));
             }
         }
 
         function resetForm() {
-            ['postId', 'postTitle', 'postCategory', 'postIcon', 'postAuthor', 'postExcerpt', 'postContent']
-                .forEach(id => DOM[id].value = '');
+            ['postId','postTitle','postCategory','postIcon','postAuthor','postExcerpt','postContent'].forEach(id => DOM[id].value = '');
             DOM.formTitle.textContent = '➕ TAMBAH ARTIKEL';
         }
 
-        /* ============ MENU ============ */
-        function toggleMenu() {
-            DOM.sideMenu.classList.toggle('active');
-            DOM.menuOverlay.classList.toggle('active');
+        /* ============ EVENTS ============ */
+        function initEvents() {
+            DOM.searchInput.addEventListener('input', e => debouncedSearch(e.target.value));
+            DOM.loadMoreBtn.addEventListener('click', loadMore);
+            $('sendBtn').addEventListener('click', sendText);
+            DOM.chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendText(); });
+            $('imgBtn').addEventListener('click', () => $('chatImageInput').click());
+            $('chatImageInput').addEventListener('change', sendImage);
+            DOM.recordBtn.addEventListener('click', () => state.isRecording ? stopRecord() : startRecord());
+            $('loginBtn').addEventListener('click', doLogin);
+            DOM.adminPass.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
+            $('savePostBtn').addEventListener('click', savePost);
+            $('resetFormBtn').addEventListener('click', resetForm);
+            $('logoutBtn').addEventListener('click', doLogout);
+            $('articleBackBtn').addEventListener('click', closeArticle);
+            DOM.shareBtn.addEventListener('click', shareArticle);
         }
 
-        /* ============ EVENT LISTENERS ============ */
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        DOM.searchInput.addEventListener('input', e => debouncedSearch(e.target.value));
-        $('searchBtn').addEventListener('click', () => debouncedSearch(DOM.searchInput.value));
-        $('sendBtn').addEventListener('click', sendText);
-        DOM.chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendText(); });
-        $('imgBtn').addEventListener('click', () => $('chatImageInput').click());
-        $('chatImageInput').addEventListener('change', sendImage);
-        DOM.recordBtn.addEventListener('click', toggleRecord);
-        $('loginBtn').addEventListener('click', doLogin);
-        DOM.adminPass.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
-        $('savePostBtn').addEventListener('click', savePost);
-        $('resetFormBtn').addEventListener('click', resetForm);
-        $('logoutBtn').addEventListener('click', doLogout);
-        $('backTop').addEventListener('click', scrollTop);
-        $('fabBtn').addEventListener('click', () => { burst(); toast('Letupan Partikel! ✨', 'success'); });
+        /* ============ SERVICE WORKER ============ */
+        if ('serviceWorker' in navigator) {
+            const swCode = `self.addEventListener('install',e=>self.skipWaiting());self.addEventListener('activate',e=>self.clients.claim());self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});`;
+            navigator.serviceWorker.register(URL.createObjectURL(new Blob([swCode], { type: 'text/javascript' }))).catch(() => {});
+        }
 
         /* ============ INIT ============ */
-        initParticles();
+        initEvents();
         handleScroll();
+        navigateTo('blog');
+        document.querySelectorAll('.nav-btn')[0].classList.add('active');
     </script>
 
 </body>
