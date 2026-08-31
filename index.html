@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Lives — Simulasi Kehidupan">
-    <title>ZACK Lives — Simulasi Kehidupan</title>
+    <meta name="description" content="ZACK Lives 2.0 — Simulasi Kehidupan Penuh">
+    <title>ZACK Lives 2.0</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
@@ -56,7 +56,8 @@
             background:
                 radial-gradient(circle at 20% 30%, rgba(255,0,51,0.12) 0%, transparent 50%),
                 radial-gradient(circle at 80% 70%, rgba(0,240,255,0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.08) 0%, transparent 60%);
+                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.08) 0%, transparent 60%),
+                radial-gradient(circle at 60% 20%, rgba(255,215,0,0.06) 0%, transparent 40%);
             z-index: 0;
             animation: auroraFloat 10s ease-in-out infinite;
         }
@@ -74,6 +75,22 @@
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; box-shadow: 0 0 8px var(--white); }
+        }
+
+        .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+        .particle {
+            position: absolute; width: 3px; height: 3px;
+            border-radius: 50%; animation: floatUp linear infinite;
+        }
+        .p-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
+        .p-cyan { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        .p-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .p-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
 
         .header {
@@ -116,6 +133,7 @@
             padding: 15px;
             backdrop-filter: blur(10px);
             animation: boxGlow 5s ease-in-out infinite;
+            flex-shrink: 0;
         }
         @keyframes boxGlow {
             0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.1); }
@@ -142,34 +160,31 @@
             text-align: center;
         }
         .stat-label {
-            font-size: 8px; color: var(--muted);
+            font-size: 7px; color: var(--muted);
             letter-spacing: 1px;
             font-family: 'Orbitron', sans-serif;
         }
         .stat-value {
             font-family: 'Orbitron', sans-serif;
-            font-size: 18px; font-weight: 900;
+            font-size: 16px; font-weight: 900;
             color: var(--white);
             margin-top: 3px;
         }
-        .stat-value.positive { color: var(--success); }
-        .stat-value.negative { color: var(--red); }
-
         .stat-bar {
-            height: 6px;
+            height: 5px;
             background: rgba(0,0,0,0.5);
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 5px;
+            margin-top: 4px;
         }
         .stat-bar-fill {
             height: 100%;
             border-radius: 3px;
             transition: width 0.5s var(--ease);
         }
-        .fill-green { background: var(--success); box-shadow: 0 0 10px var(--success); }
-        .fill-yellow { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
-        .fill-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
+        .fill-green { background: var(--success); }
+        .fill-yellow { background: var(--gold); }
+        .fill-red { background: var(--red); }
 
         .btn-primary {
             width: 100%; padding: 12px;
@@ -177,13 +192,7 @@
             font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px;
             border: none; border-radius: var(--r-full); font-weight: 700;
             cursor: pointer;
-            animation: sendGlow 2s ease-in-out infinite;
         }
-        @keyframes sendGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255,0,51,0.3); }
-            50% { box-shadow: 0 0 35px rgba(255,0,51,0.5), 0 0 50px rgba(0,240,255,0.3); }
-        }
-
         .btn-secondary {
             width: 100%; padding: 10px;
             background: rgba(255,0,51,0.08);
@@ -192,7 +201,7 @@
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 2px;
             border-radius: var(--r-full);
             cursor: pointer;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .event-box {
@@ -202,33 +211,39 @@
             padding: 12px;
             margin-bottom: 10px;
             text-align: center;
+            animation: fadeUp 0.3s var(--ease);
         }
-        .event-box p {
-            font-size: 12px;
-            color: var(--white);
-            line-height: 1.5;
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
+        .event-box p { font-size: 12px; color: var(--white); line-height: 1.5; }
+
+        .relationship-list { display: flex; flex-direction: column; gap: 6px; }
+        .relationship-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 12px;
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-glow);
+            border-radius: var(--r-sm);
+            font-size: 11px;
         }
 
-        .choice-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        .achievement-badge {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 5px 10px;
+            background: rgba(255,215,0,0.1);
+            border: 1px solid var(--gold);
+            border-radius: 15px;
+            font-size: 9px;
+            color: var(--gold);
+            margin: 3px;
         }
 
-        .death-screen {
-            text-align: center;
-            padding: 30px 15px;
-        }
-        .death-icon {
-            font-size: 60px;
-            margin-bottom: 15px;
-        }
+        .death-screen { text-align: center; padding: 30px 15px; }
+        .death-icon { font-size: 60px; margin-bottom: 15px; }
         .death-screen h2 {
             font-family: 'Orbitron', sans-serif;
             font-size: 20px;
             color: var(--red);
             margin-bottom: 15px;
-            text-shadow: 0 0 20px rgba(255,0,51,0.5);
         }
 
         .toast-wrap {
@@ -251,32 +266,31 @@
 
     <div class="aurora"></div>
     <div class="stars" id="stars"></div>
+    <div class="particles" id="particles"></div>
 
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="header">
-        <div class="logo">ZACK LIVES</div>
+        <div class="logo">ZACK LIVES 2.0</div>
     </div>
 
     <div class="main" id="mainContent">
 
-        <!-- START SCREEN -->
+        <!-- START -->
         <div id="startScreen">
             <div class="card" style="text-align:center;">
                 <h3>🌍 SIMULASI KEHIDUPAN</h3>
-                <p style="font-size:13px;color:var(--muted);margin-bottom:15px;line-height:1.6;">
-                    Lahir di negara rawak. Jalani kehidupan penuh dengan keputusan dan peristiwa rawak.
+                <p style="font-size:13px;color:var(--muted);margin-bottom:15px;">
+                    Lahir rawak. Jalani kehidupan penuh dengan hubungan, kerjaya, aset & pencapaian.
                 </p>
                 <button class="btn-primary" onclick="startLife()">👶 MULA KEHIDUPAN</button>
             </div>
         </div>
 
-        <!-- LIFE SCREEN -->
+        <!-- LIFE -->
         <div id="lifeScreen" style="display:none;">
-            <!-- EVENT -->
             <div id="eventContainer"></div>
 
-            <!-- STATS -->
             <div class="card">
                 <h3>📊 STATISTIK</h3>
                 <div class="stat-grid">
@@ -285,50 +299,77 @@
                         <div class="stat-value" id="statAge">0</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">KESIHATAN</div>
-                        <div class="stat-value positive" id="statHealth">100</div>
-                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="healthBar" style="width:100%"></div></div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">KEBAHAGIAAN</div>
-                        <div class="stat-value positive" id="statHappiness">70</div>
-                        <div class="stat-bar"><div class="stat-bar-fill fill-yellow" id="happinessBar" style="width:70%"></div></div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-label">KECERDASAN</div>
-                        <div class="stat-value positive" id="statIntelligence">50</div>
-                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="intelligenceBar" style="width:50%"></div></div>
-                    </div>
-                    <div class="stat-box">
                         <div class="stat-label">WANG (RM)</div>
                         <div class="stat-value" id="statMoney">100</div>
                     </div>
                     <div class="stat-box">
+                        <div class="stat-label">KESIHATAN</div>
+                        <div class="stat-value" id="statHealth">100</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="healthBar" style="width:100%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KEBAHAGIAAN</div>
+                        <div class="stat-value" id="statHappiness">70</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-yellow" id="happinessBar" style="width:70%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KECERDASAN</div>
+                        <div class="stat-value" id="statIntelligence">50</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="intelligenceBar" style="width:50%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KREATIVITI</div>
+                        <div class="stat-value" id="statCreativity">30</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-yellow" id="creativityBar" style="width:30%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">REPUTASI</div>
+                        <div class="stat-value" id="statReputation">10</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="reputationBar" style="width:10%"></div></div>
+                    </div>
+                    <div class="stat-box">
                         <div class="stat-label">PENDIDIKAN</div>
-                        <div class="stat-value" id="statEducation">Tiada</div>
+                        <div class="stat-value" id="statEducation" style="font-size:11px;">Tiada</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">PEKERJAAN</div>
+                        <div class="stat-value" id="statJob" style="font-size:11px;">Tiada</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">STATUS</div>
+                        <div class="stat-value" id="statMarriage" style="font-size:11px;">Bujang</div>
                     </div>
                 </div>
             </div>
 
-            <!-- IDENTITY -->
             <div class="card">
                 <h3>👤 IDENTITI</h3>
                 <p style="font-size:12px;color:var(--muted);" id="identityText"></p>
             </div>
 
-            <!-- ACTIONS -->
+            <div class="card" id="relationshipCard" style="display:none;">
+                <h3>❤️ HUBUNGAN</h3>
+                <div class="relationship-list" id="relationshipList"></div>
+            </div>
+
+            <div class="card" id="achievementCard" style="display:none;">
+                <h3>🏆 PENCAPAIAN</h3>
+                <div id="achievementList"></div>
+            </div>
+
             <div class="card">
                 <h3>🎯 TINDAKAN</h3>
-                <div class="choice-list" id="actionList"></div>
+                <div id="actionList"></div>
             </div>
         </div>
 
-        <!-- DEATH SCREEN -->
+        <!-- DEATH -->
         <div id="deathScreen" style="display:none;">
             <div class="death-screen">
                 <div class="death-icon">🕊️</div>
                 <h2>KISAH TAMAT</h2>
-                <p style="color:var(--muted);margin-bottom:20px;" id="deathSummary"></p>
+                <p style="color:var(--muted);margin-bottom:10px;" id="deathSummary"></p>
+                <div id="achievementSummary"></div>
                 <button class="btn-primary" onclick="restartLife()">🔄 KEHIDUPAN BARU</button>
             </div>
         </div>
@@ -354,45 +395,38 @@
         }
 
         const COUNTRIES = [
-            { name: 'Malaysia', icon: '🇲🇾', income: 'sederhana', education: 'baik', health: 'baik' },
-            { name: 'Jepun', icon: '🇯🇵', income: 'tinggi', education: 'cemerlang', health: 'cemerlang' },
-            { name: 'India', icon: '🇮🇳', income: 'rendah', education: 'sederhana', health: 'sederhana' },
-            { name: 'Brazil', icon: '🇧🇷', income: 'sederhana', education: 'sederhana', health: 'baik' },
-            { name: 'Nigeria', icon: '🇳🇬', income: 'rendah', education: 'rendah', health: 'rendah' },
-            { name: 'USA', icon: '🇺🇸', income: 'tinggi', education: 'baik', health: 'baik' },
-            { name: 'Indonesia', icon: '🇮🇩', income: 'rendah', education: 'sederhana', health: 'sederhana' },
-            { name: 'UK', icon: '🇬🇧', income: 'tinggi', education: 'cemerlang', health: 'cemerlang' },
-            { name: 'Mesir', icon: '🇪🇬', income: 'rendah', education: 'sederhana', health: 'sederhana' },
-            { name: 'Australia', icon: '🇦🇺', income: 'tinggi', education: 'baik', health: 'cemerlang' }
+            { name: 'Malaysia', icon: '🇲🇾' }, { name: 'Jepun', icon: '🇯🇵' },
+            { name: 'India', icon: '🇮🇳' }, { name: 'Brazil', icon: '🇧🇷' },
+            { name: 'Nigeria', icon: '🇳🇬' }, { name: 'USA', icon: '🇺🇸' },
+            { name: 'Indonesia', icon: '🇮🇩' }, { name: 'UK', icon: '🇬🇧' },
+            { name: 'Mesir', icon: '🇪🇬' }, { name: 'Australia', icon: '🇦🇺' },
+            { name: 'China', icon: '🇨🇳' }, { name: 'Perancis', icon: '🇫🇷' },
+            { name: 'Mexico', icon: '🇲🇽' }, { name: 'Thailand', icon: '🇹🇭' },
+            { name: 'Korea Selatan', icon: '🇰🇷' }, { name: 'Jerman', icon: '🇩🇪' }
         ];
 
-        const NAMES = ['Ahmad', 'Siti', 'John', 'Maria', 'Tanaka', 'Yuki', 'Raj', 'Priya', 'Carlos', 'Ana', 'Chinedu', 'Amara', 'Budi', 'Dewi', 'Omar', 'Layla'];
-
-        const JOBS = [
-            { title: 'Pelajar', salary: 0, education: 'Tiada' },
-            { title: 'Buruh', salary: 800, education: 'Rendah' },
-            { title: 'Pekerja Kilang', salary: 1500, education: 'Sederhana' },
-            { title: 'Guru', salary: 2500, education: 'Tinggi' },
-            { title: 'Jurutera', salary: 5000, education: 'Tinggi' },
-            { title: 'Doktor', salary: 8000, education: 'Cemerlang' },
-            { title: 'Peniaga', salary: 3000, education: 'Sederhana' },
-            { title: 'Artis', salary: 1200, education: 'Sederhana' }
-        ];
+        const NAMES = ['Ahmad','Siti','John','Maria','Tanaka','Yuki','Raj','Priya','Carlos','Ana','Chinedu','Amara','Budi','Dewi','Omar','Layla','Wei','Mei','Kim','Park'];
 
         const EVENTS = [
-            { text: '🎉 Anda mendapat kenaikan gaji!', happiness: +10, money: +500 },
+            { text: '🎉 Anda mendapat kenaikan gaji!', happiness: 10, money: 500 },
             { text: '🤒 Anda jatuh sakit.', health: -20, happiness: -10 },
-            { text: '📚 Anda belajar ilmu baru!', intelligence: +10, happiness: +5 },
+            { text: '📚 Anda belajar ilmu baru!', intelligence: 10, happiness: 5 },
             { text: '💔 Rakan anda berpindah.', happiness: -10 },
-            { text: '🏆 Anda memenangi pertandingan!', happiness: +20, money: +1000 },
+            { text: '🏆 Anda memenangi pertandingan!', happiness: 20, money: 1000 },
             { text: '🚗 Anda terlibat kemalangan kecil.', health: -15, money: -300 },
-            { text: '🎁 Anda menerima hadiah!', happiness: +15 },
+            { text: '🎁 Anda menerima hadiah!', happiness: 15 },
             { text: '📉 Ekonomi merosot.', money: -200, happiness: -5 },
             { text: '🌧️ Banjir melanda kawasan anda.', health: -10, money: -500 },
-            { text: '🌟 Anda bertemu kawan baru!', happiness: +15 }
+            { text: '🌟 Anda bertemu kawan baru!', happiness: 15 },
+            { text: '💑 Anda jatuh cinta!', happiness: 25 },
+            { text: '🏠 Anda mewarisi rumah!', money: 10000, happiness: 20 },
+            { text: '📰 Nama anda di akhbar!', reputation: 15, happiness: 10 },
+            { text: '🌪️ Ribut merosakkan rumah anda.', money: -800, health: -5 },
+            { text: '🎓 Anda menerima biasiswa!', intelligence: 15, money: 2000 }
         ];
 
         let life = null;
+        let achievements = [];
 
         function initStars() {
             const wrap = $('stars');
@@ -408,61 +442,76 @@
             wrap.appendChild(frag);
         }
 
+        function initParticles() {
+            const wrap = $('particles');
+            const colors = ['p-red','p-cyan','p-gold','p-purple'];
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < 15; i++) {
+                const p = document.createElement('div');
+                p.className = `particle ${colors[i % 4]}`;
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                frag.appendChild(p);
+            }
+            wrap.appendChild(frag);
+        }
+
         function startLife() {
             const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
             const name = NAMES[Math.floor(Math.random() * NAMES.length)];
             const gender = Math.random() > 0.5 ? 'Lelaki' : 'Perempuan';
 
             life = {
-                name: name,
-                gender: gender,
+                name, gender,
                 country: country.name,
                 icon: country.icon,
-                age: 0,
-                health: 100,
-                happiness: 70,
-                intelligence: 50,
+                age: 0, health: 100, happiness: 70,
+                intelligence: 50, creativity: 30, reputation: 10,
                 money: Math.floor(Math.random() * 500) + 100,
-                education: 'Tiada',
-                alive: true
+                education: 'Tiada', job: 'Tiada', married: false,
+                children: 0, alive: true, relationships: []
             };
+            achievements = [];
 
             $('startScreen').style.display = 'none';
             $('lifeScreen').style.display = 'block';
             $('deathScreen').style.display = 'none';
 
-            updateIdentity();
-            updateStats();
+            updateUI();
             generateActions();
             toast(`Lahir di ${country.icon} ${country.name}!`, 'success');
         }
 
-        function updateIdentity() {
-            $('identityText').textContent = `${life.icon} ${life.name} • ${life.gender} • ${life.country} • Umur ${life.age}`;
-        }
-
-        function updateStats() {
+        function updateUI() {
             $('statAge').textContent = life.age;
+            $('statMoney').textContent = 'RM ' + life.money.toLocaleString();
             $('statHealth').textContent = life.health;
             $('statHappiness').textContent = life.happiness;
             $('statIntelligence').textContent = life.intelligence;
-            $('statMoney').textContent = life.money.toLocaleString();
+            $('statCreativity').textContent = life.creativity;
+            $('statReputation').textContent = life.reputation;
             $('statEducation').textContent = life.education;
+            $('statJob').textContent = life.job;
+            $('statMarriage').textContent = life.married ? 'Kahwin' : 'Bujang';
 
             $('healthBar').style.width = life.health + '%';
             $('happinessBar').style.width = life.happiness + '%';
             $('intelligenceBar').style.width = life.intelligence + '%';
+            $('creativityBar').style.width = life.creativity + '%';
+            $('reputationBar').style.width = life.reputation + '%';
 
             $('healthBar').className = 'stat-bar-fill ' + (life.health > 50 ? 'fill-green' : life.health > 25 ? 'fill-yellow' : 'fill-red');
             $('happinessBar').className = 'stat-bar-fill ' + (life.happiness > 50 ? 'fill-green' : life.happiness > 25 ? 'fill-yellow' : 'fill-red');
-            $('intelligenceBar').className = 'stat-bar-fill ' + (life.intelligence > 50 ? 'fill-green' : life.intelligence > 25 ? 'fill-yellow' : 'fill-red');
+
+            $('identityText').textContent = `${life.icon} ${life.name} • ${life.gender} • ${life.country} • Umur ${life.age} • Anak: ${life.children}`;
         }
 
         function generateActions() {
             const list = $('actionList');
             list.innerHTML = '';
-            const actions = getActionsForAge(life.age);
             const frag = document.createDocumentFragment();
+            const actions = getActionsForAge(life.age);
 
             actions.forEach(action => {
                 const btn = document.createElement('button');
@@ -478,84 +527,131 @@
         function getActionsForAge(age) {
             const actions = [];
             if (age < 6) {
-                actions.push({ label: '🧸 Bermain', happiness: +10, health: +5 });
-                actions.push({ label: '📖 Belajar ABC', intelligence: +10 });
-                actions.push({ label: '😴 Tidur', health: +10, happiness: +5 });
+                actions.push({ label: '🧸 Bermain', happiness: 10, health: 5 });
+                actions.push({ label: '📖 Belajar ABC', intelligence: 10 });
+            } else if (age < 13) {
+                actions.push({ label: '📚 Sekolah rendah', intelligence: 12, happiness: -3 });
+                actions.push({ label: '⚽ Main sukan', health: 15, happiness: 10 });
+                actions.push({ label: '🎨 Lukis', creativity: 10, happiness: 5 });
             } else if (age < 18) {
-                actions.push({ label: '📚 Belajar di sekolah', intelligence: +15, happiness: -5 });
-                actions.push({ label: '⚽ Bermain sukan', health: +15, happiness: +10 });
-                actions.push({ label: '🎮 Main game', happiness: +10, health: -5 });
-                actions.push({ label: '📖 Baca buku', intelligence: +10, happiness: +5 });
-            } else if (age < 60) {
-                actions.push({ label: '💼 Bekerja', money: +1500, happiness: -5 });
-                actions.push({ label: '📚 Sambung belajar', intelligence: +10, money: -500 });
-                actions.push({ label: '🏋️ Bersenam', health: +15, happiness: +10 });
-                actions.push({ label: '💑 Cari pasangan', happiness: +15 });
-                actions.push({ label: '🏠 Beli rumah', money: -5000, happiness: +20 });
+                actions.push({ label: '📚 Sekolah menengah', intelligence: 15, happiness: -5 });
+                actions.push({ label: '🎮 Main game', happiness: 10, health: -5 });
+                actions.push({ label: '📖 Baca buku', intelligence: 10, creativity: 5 });
+                actions.push({ label: '🤝 Sertai kelab', reputation: 5, happiness: 10 });
+            } else if (age < 25) {
+                actions.push({ label: '🎓 Sambung universiti', intelligence: 20, money: -5000, education: 'Universiti' });
+                actions.push({ label: '💼 Mula kerja', money: 1500, happiness: -5, job: 'Pekerja' });
+                actions.push({ label: '💑 Cari pasangan', happiness: 15 });
+                actions.push({ label: '🏋️ Bersenam', health: 15, happiness: 10 });
+            } else if (age < 45) {
+                actions.push({ label: '💼 Bekerja keras', money: 2000, happiness: -10 });
+                actions.push({ label: '💍 Kahwin', happiness: 30, married: true });
+                actions.push({ label: '👶 Dapat anak', happiness: 25, children: 1 });
+                actions.push({ label: '🏠 Beli rumah', money: -10000, happiness: 20 });
+                actions.push({ label: '🚗 Beli kereta', money: -5000, happiness: 15 });
+                actions.push({ label: '📈 Labur', money: -2000, intelligence: 5 });
+                actions.push({ label: '🌍 Melancong', money: -1500, happiness: 20 });
+            } else if (age < 65) {
+                actions.push({ label: '💼 Bekerja', money: 1800, happiness: -5 });
+                actions.push({ label: '👨‍👩‍👧 Luang masa keluarga', happiness: 20 });
+                actions.push({ label: '🧘 Meditasi', health: 10, happiness: 10 });
+                actions.push({ label: '📚 Ambil kursus', intelligence: 10, money: -500 });
+                actions.push({ label: '🏠 Renovasi rumah', money: -3000, happiness: 15 });
             } else {
-                actions.push({ label: '🧘 Berehat', health: +10, happiness: +15 });
-                actions.push({ label: '👨‍👩‍👧 Luangkan masa dengan keluarga', happiness: +20 });
-                actions.push({ label: '📖 Baca buku', intelligence: +5, happiness: +10 });
+                actions.push({ label: '🧘 Berehat', health: 10, happiness: 15 });
+                actions.push({ label: '👨‍👩‍👧 Masa bersama cucu', happiness: 20 });
+                actions.push({ label: '📖 Baca buku', intelligence: 5, happiness: 10 });
             }
-            actions.push({ label: '⏭️ Teruskan hidup (1 tahun)', age: +1 });
+            actions.push({ label: '⏭️ Teruskan hidup (1 tahun)', age: 1 });
             return actions;
         }
 
         function performAction(action) {
             if (!life.alive) return;
-
-            if (action.age) {
-                life.age += action.age;
-            }
-            if (action.health) life.health = Math.max(0, Math.min(100, life.health + action.health));
-            if (action.happiness) life.happiness = Math.max(0, Math.min(100, life.happiness + action.happiness));
-            if (action.intelligence) life.intelligence = Math.max(0, Math.min(100, life.intelligence + action.intelligence));
+            if (action.age) life.age += 1;
+            if (action.health) life.health = clamp(life.health + action.health);
+            if (action.happiness) life.happiness = clamp(life.happiness + action.happiness);
+            if (action.intelligence) life.intelligence = clamp(life.intelligence + action.intelligence);
+            if (action.creativity) life.creativity = clamp(life.creativity + action.creativity);
+            if (action.reputation) life.reputation = clamp(life.reputation + action.reputation);
             if (action.money) life.money = Math.max(0, life.money + action.money);
+            if (action.education) life.education = action.education;
+            if (action.job) life.job = action.job;
+            if (action.married) life.married = true;
+            if (action.children) life.children += action.children;
 
-            // Random event
-            if (Math.random() < 0.3) {
+            if (Math.random() < 0.25) {
                 const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
                 showEvent(event);
-                if (event.health) life.health = Math.max(0, Math.min(100, life.health + event.health));
-                if (event.happiness) life.happiness = Math.max(0, Math.min(100, life.happiness + event.happiness));
-                if (event.intelligence) life.intelligence = Math.max(0, Math.min(100, life.intelligence + event.intelligence));
+                if (event.health) life.health = clamp(life.health + event.health);
+                if (event.happiness) life.happiness = clamp(life.happiness + event.happiness);
+                if (event.intelligence) life.intelligence = clamp(life.intelligence + event.intelligence);
+                if (event.reputation) life.reputation = clamp(life.reputation + event.reputation);
                 if (event.money) life.money = Math.max(0, life.money + event.money);
             }
 
-            // Check death
-            if (life.health <= 0) {
-                die('kesihatan teruk');
-                return;
-            }
-            if (life.age >= 90) {
-                die('usia lanjut');
-                return;
-            }
-            if (Math.random() < 0.01 && life.age > 50) {
-                die('penyakit');
-                return;
-            }
+            checkAchievements();
 
-            updateStats();
-            updateIdentity();
+            if (life.health <= 0) { die('kesihatan teruk'); return; }
+            if (life.age >= 100) { die('usia lanjut'); return; }
+            if (Math.random() < 0.008 && life.age > 50) { die('penyakit'); return; }
+
+            updateUI();
             generateActions();
         }
 
+        function clamp(val) { return Math.max(0, Math.min(100, val)); }
+
         function showEvent(event) {
             const container = $('eventContainer');
-            container.innerHTML = `
-                <div class="event-box">
-                    <p>${event.text}</p>
-                </div>
-            `;
+            container.innerHTML = `<div class="event-box"><p>${event.text}</p></div>`;
             setTimeout(() => container.innerHTML = '', 2500);
+        }
+
+        function checkAchievements() {
+            const checks = [
+                { id: 'age50', label: '🎂 Hidup 50 Tahun', cond: life.age >= 50 },
+                { id: 'age80', label: '🎂 Hidup 80 Tahun', cond: life.age >= 80 },
+                { id: 'rich', label: '💰 Wang > RM50k', cond: life.money >= 50000 },
+                { id: 'millionaire', label: '💎 Jutawan', cond: life.money >= 1000000 },
+                { id: 'genius', label: '🧠 IQ > 150', cond: life.intelligence >= 90 },
+                { id: 'married', label: '💍 Kahwin', cond: life.married },
+                { id: 'parent', label: '👶 Ada Anak', cond: life.children > 0 },
+                { id: 'educated', label: '🎓 Universiti', cond: life.education === 'Universiti' },
+                { id: 'famous', label: '⭐ Terkenal', cond: life.reputation >= 80 },
+                { id: 'happy', label: '😊 Sangat Bahagia', cond: life.happiness >= 90 }
+            ];
+
+            checks.forEach(check => {
+                if (check.cond && !achievements.includes(check.id)) {
+                    achievements.push(check.id);
+                    toast('Pencapaian: ' + check.label + '! 🏆', 'success');
+                }
+            });
+
+            renderAchievements();
+        }
+
+        function renderAchievements() {
+            const list = $('achievementList');
+            if (!achievements.length) { list.innerHTML = '<p style="color:#555;font-size:10px;">Tiada pencapaian lagi.</p>'; return; }
+            const labels = {
+                age50: '🎂 Hidup 50 Tahun', age80: '🎂 Hidup 80 Tahun',
+                rich: '💰 Wang > RM50k', millionaire: '💎 Jutawan',
+                genius: '🧠 IQ > 150', married: '💍 Kahwin',
+                parent: '👶 Ada Anak', educated: '🎓 Universiti',
+                famous: '⭐ Terkenal', happy: '😊 Sangat Bahagia'
+            };
+            list.innerHTML = achievements.map(id => `<span class="achievement-badge">${labels[id] || id}</span>`).join(' ');
+            $('achievementCard').style.display = 'block';
         }
 
         function die(reason) {
             life.alive = false;
             $('lifeScreen').style.display = 'none';
             $('deathScreen').style.display = 'block';
-            $('deathSummary').textContent = `${life.icon} ${life.name} meninggal pada umur ${life.age} tahun di ${life.country} kerana ${reason}. Wang: RM${life.money.toLocaleString()} • Pendidikan: ${life.education}`;
+            $('deathSummary').textContent = `${life.icon} ${life.name} meninggal pada umur ${life.age} tahun di ${life.country} kerana ${reason}. Wang: RM${life.money.toLocaleString()} • Pendidikan: ${life.education} • Anak: ${life.children}`;
+            $('achievementSummary').innerHTML = achievements.length ? `<p style="color:var(--gold);font-size:11px;">🏆 ${achievements.length} pencapaian</p>` : '';
             toast('Kehidupan tamat...', 'error');
         }
 
@@ -567,6 +663,7 @@
         }
 
         initStars();
+        initParticles();
     </script>
 
 </body>
