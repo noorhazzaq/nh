@@ -97,6 +97,8 @@
         .chat-log {
             flex: 1; overflow-y: auto; padding: 10px 10px 25px;
             min-height: 0;
+            will-change: scroll-position;
+            -webkit-overflow-scrolling: touch;
         }
 
         .date-sep {
@@ -104,7 +106,8 @@
             margin: 10px 0; font-family: 'Orbitron', sans-serif;
         }
 
-        .msg { margin-bottom: 10px; }
+        .msg { margin-bottom: 10px; animation: msgIn 0.2s var(--ease); }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(5px); } }
         .msg.own { text-align: right; }
         .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--cyan); margin-bottom: 3px; }
         .msg.own .msg-name { color: var(--success); }
@@ -137,6 +140,13 @@
         }
         .msg-del.confirm { color: var(--red); font-weight: 700; }
 
+        .typing-indicator {
+            font-size: 8px; color: #555; padding: 3px 10px;
+            display: none; letter-spacing: 1px;
+        }
+        .typing-indicator.show { display: block; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.5; } }
+
         .chat-input-area {
             padding: 8px 10px; border-top: 1px solid var(--border);
             display: flex; gap: 5px; align-items: center;
@@ -166,9 +176,10 @@
             background: rgba(255,0,51,0.06); border: 1px solid var(--border);
             color: var(--cyan); font-size: 13px;
             display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+            transition: all 0.2s var(--ease);
         }
+        .attach-btn:active { background: var(--red); color: var(--white); }
         .attach-btn.recording { background: var(--red); color: var(--white); animation: pulse 0.5s infinite; }
-        @keyframes pulse { 50% { opacity: 0.6; } }
 
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
@@ -202,10 +213,10 @@
 </head>
 <body>
 
-    <div class="toast-wrap" id="toastWrap"></div>
+    <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
     <div class="lightbox" id="lightbox">
-        <img id="lightboxImg" src="" alt="Gambar">
+        <img id="lightboxImg" src="" alt="Gambar penuh">
     </div>
 
     <div class="header">
@@ -213,16 +224,17 @@
     </div>
 
     <div class="main">
-        <div class="chat-box">
+        <div class="chat-box" role="region" aria-label="Chat">
             <div class="chat-head">
                 <h3>💬 CHAT</h3>
                 <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
             <div class="rec-bar" id="recBar">🔴 MERAKAM...</div>
-            <div class="chat-log" id="chatLog"></div>
+            <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
+            <div class="typing-indicator" id="typingIndicator">Seseorang sedang menaip...</div>
             <div class="chat-input-area">
-                <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20" aria-label="Nama anda">
-                <input type="text" id="chatInput" class="chat-input" placeholder="Tulis..." maxlength="500" aria-label="Tulis mesej">
+                <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20" aria-label="Nama anda" autocomplete="off">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Tulis..." maxlength="500" aria-label="Tulis mesej" autocomplete="off">
                 <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
                 <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
                 <button class="send-btn" id="sendBtn" disabled>HANTAR</button>
@@ -242,7 +254,8 @@
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             maxImageSize: 2 * 1024 * 1024,
             maxAudioDuration: 30,
-            maxImageDim: 1000
+            maxImageDim: 1000,
+            messageLimit: 30
         };
 
         /* ============ STATE ============ */
@@ -253,7 +266,9 @@
             audioChunks: [],
             recordTimer: null,
             deleteTarget: null,
-            deleteTimer: null
+            deleteTimer: null,
+            typingTimer: null,
+            typingRef: null
         };
 
         /* ============ DOM ============ */
@@ -270,7 +285,8 @@
             recBar: $('recBar'),
             sendBtn: $('sendBtn'),
             imgBtn: $('imgBtn'),
-            chatImageInput: $('chatImageInput')
+            chatImageInput: $('chatImageInput'),
+            typingIndicator: $('typingIndicator')
         };
 
         /* ============ FIREBASE ============ */
@@ -292,6 +308,10 @@
         function debounce(fn, delay = 500) {
             let timer;
             return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+        }
+
+        function haptic(pattern = 10) {
+            if (navigator.vibrate) navigator.vibrate(pattern);
         }
 
         const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
@@ -328,8 +348,28 @@
             reader.readAsDataURL(file);
         }
 
+        /* ============ TYPING INDICATOR ============ */
+        function setTyping(isTyping) {
+            if (isTyping) {
+                db.ref('typing/' + getName()).set(true).catch(() => {});
+                clearTimeout(state.typingTimer);
+                state.typingTimer = setTimeout(() => db.ref('typing/' + getName()).remove().catch(() => {}), 2000);
+            }
+        }
+
+        db.ref('typing').on('value', snap => {
+            const myName = getName();
+            let othersTyping = false;
+            if (snap.exists()) {
+                snap.forEach(child => {
+                    if (child.key !== myName && child.val() === true) othersTyping = true;
+                });
+            }
+            DOM.typingIndicator.classList.toggle('show', othersTyping);
+        });
+
         /* ============ CHAT ============ */
-        db.ref('chat').limitToLast(30).on('value', snap => {
+        db.ref('chat').limitToLast(CONFIG.messageLimit).on('value', snap => {
             const myName = getName();
             const atBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
             DOM.chatLog.innerHTML = '';
@@ -365,17 +405,23 @@
                         const img = document.createElement('img');
                         img.className = 'msg-image';
                         img.src = d.data;
+                        img.alt = 'Gambar dari ' + safeText(d.name);
                         img.addEventListener('click', () => openLightbox(d.data));
                         div.appendChild(img);
                     } else if (d.type === 'audio') {
                         const a = document.createElement('div');
                         a.className = 'msg-audio';
+                        a.setAttribute('role', 'button');
+                        a.setAttribute('aria-label', 'Mainkan audio');
                         const icon = document.createElement('span');
                         icon.textContent = '▶';
                         const dur = document.createElement('small');
                         dur.textContent = `${Math.floor((d.duration || 0) / 60)}:${((d.duration || 0) % 60).toString().padStart(2, '0')}`;
                         a.append(icon, dur);
-                        a.addEventListener('click', () => new Audio(d.data).play().catch(() => toast('Tidak dapat main audio!', 'error')));
+                        a.addEventListener('click', () => {
+                            const audio = new Audio(d.data);
+                            audio.play().catch(() => toast('Tidak dapat main audio!', 'error'));
+                        });
                         div.appendChild(a);
                     }
 
@@ -383,6 +429,7 @@
                         const del = document.createElement('button');
                         del.className = 'msg-del';
                         del.textContent = '✕';
+                        del.setAttribute('aria-label', 'Padam mesej');
                         del.addEventListener('click', () => handleDelete(child.key, del));
                         div.appendChild(del);
                     }
@@ -400,6 +447,7 @@
                 type, name: getName(), timestamp: Date.now(),
                 ...data, time: getTime()
             }).catch(() => toast('Gagal hantar!', 'error'));
+            haptic(10);
         }
 
         function updateSendBtn() {
@@ -449,6 +497,7 @@
                 DOM.recordBtn.classList.add('recording');
                 DOM.recBar.classList.add('active');
                 DOM.recBar.textContent = '🔴 MERAKAM... (30s)';
+                haptic(20);
                 state.recordTimer = setInterval(() => {
                     const elapsed = Math.round((Date.now() - state.recordStart) / 1000);
                     const remaining = CONFIG.maxAudioDuration - elapsed;
@@ -457,6 +506,7 @@
                 }, 1000);
             } catch(e) {
                 toast('Tidak dapat akses mikrofon!', 'error');
+                haptic([30, 50, 30]);
             }
         }
 
@@ -476,12 +526,16 @@
         function handleDelete(key, btn) {
             if (state.deleteTarget === key) {
                 clearTimeout(state.deleteTimer);
-                db.ref('chat/' + key).remove().then(() => toast('Dipadam!', 'success'));
+                db.ref('chat/' + key).remove().then(() => {
+                    toast('Dipadam!', 'success');
+                    haptic(15);
+                }).catch(() => toast('Gagal padam!', 'error'));
                 state.deleteTarget = null;
                 return;
             }
             state.deleteTarget = key;
             btn.classList.add('confirm');
+            haptic(5);
             state.deleteTimer = setTimeout(() => {
                 btn.classList.remove('confirm');
                 state.deleteTarget = null;
@@ -490,8 +544,9 @@
 
         /* ============ ONLINE ============ */
         db.ref('.info/connected').on('value', snap => {
-            DOM.onlineStatus.textContent = snap.val() ? '● ONLINE' : '● OFFLINE';
-            DOM.onlineStatus.style.color = snap.val() ? 'var(--success)' : '#555';
+            const isOnline = snap.val() === true;
+            DOM.onlineStatus.textContent = isOnline ? '● ONLINE' : '● OFFLINE';
+            DOM.onlineStatus.style.color = isOnline ? 'var(--success)' : '#555';
         });
 
         /* ============ LIGHTBOX ============ */
@@ -499,6 +554,7 @@
             DOM.lightboxImg.src = src;
             DOM.lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
+            haptic(5);
         }
         function closeLightbox() {
             DOM.lightbox.classList.remove('active');
@@ -512,7 +568,10 @@
 
         /* ============ EVENTS ============ */
         DOM.sendBtn.addEventListener('click', sendText);
-        DOM.chatInput.addEventListener('input', updateSendBtn);
+        DOM.chatInput.addEventListener('input', () => {
+            updateSendBtn();
+            setTyping(true);
+        });
         DOM.chatInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
                 e.preventDefault();
