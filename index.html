@@ -2,25 +2,25 @@
 <html lang="ms">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TRON LEGACY - Digital Realm</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRON LEGACY - Mobile</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
 
         :root {
             --neon-blue: #00f0ff;
             --neon-cyan: #00ffff;
-            --neon-orange: #ff6b00;
             --dark-bg: #000000;
-            --dark-grid: #001a1a;
             --glass: rgba(0, 255, 255, 0.05);
             --border-glow: rgba(0, 240, 255, 0.3);
+            --accent: #00f0ff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
             scroll-behavior: smooth;
         }
 
@@ -29,7 +29,7 @@
             font-family: 'Rajdhani', sans-serif;
             color: #ffffff;
             overflow-x: hidden;
-            cursor: default;
+            min-height: 100vh;
         }
 
         /* ===== GRID BACKGROUND ===== */
@@ -42,22 +42,18 @@
             background-image:
                 linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
+            background-size: 30px 30px;
             z-index: 0;
             pointer-events: none;
-            animation: gridMove 20s linear infinite;
+            animation: gridMove 15s linear infinite;
         }
 
         @keyframes gridMove {
-            0% {
-                background-position: 0 0;
-            }
-            100% {
-                background-position: 40px 40px;
-            }
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 30px; }
         }
 
-        /* ===== SCAN LINE EFFECT ===== */
+        /* ===== SCANLINE ===== */
         .scanline {
             position: fixed;
             top: 0;
@@ -66,8 +62,8 @@
             height: 100%;
             background: repeating-linear-gradient(
                 0deg,
-                rgba(0, 0, 0, 0.15) 0px,
-                rgba(0, 0, 0, 0.15) 1px,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
                 transparent 1px,
                 transparent 3px
             );
@@ -75,355 +71,393 @@
             pointer-events: none;
         }
 
-        /* ===== CONTAINER ===== */
-        .container {
-            position: relative;
-            z-index: 2;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* ===== NAVBAR ===== */
-        nav {
+        /* ===== HEADER ===== */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 12px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-glow);
-            position: relative;
-            z-index: 3;
-            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
         }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 24px;
+            font-size: 18px;
             font-weight: 900;
-            letter-spacing: 4px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue), 0 0 30px var(--neon-blue);
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent), 0 0 25px var(--accent);
             text-decoration: none;
         }
 
-        .nav-links {
+        .hamburger {
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--border-glow);
+            border-radius: 5px;
             display: flex;
-            gap: 30px;
-            list-style: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 101;
         }
 
-        .nav-links a {
-            color: #c0c0c0;
+        .hamburger span {
+            width: 20px;
+            height: 2px;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            transition: all 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 70%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 99;
+            transition: right 0.4s ease;
+            padding: 80px 20px 20px;
+            border-left: 1px solid var(--border-glow);
+            box-shadow: -10px 0 40px rgba(0, 240, 255, 0.2);
+        }
+
+        .mobile-menu.active {
+            right: 0;
+        }
+
+        .mobile-menu a {
+            display: block;
+            padding: 20px 15px;
+            color: #cccccc;
             text-decoration: none;
             font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
             transition: all 0.3s;
-            position: relative;
         }
 
-        .nav-links a:hover {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
+        .mobile-menu a:hover,
+        .mobile-menu a:active {
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            padding-left: 25px;
         }
 
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
+        /* ===== OVERLAY ===== */
+        .overlay {
+            position: fixed;
+            top: 0;
             left: 0;
-            width: 0%;
-            height: 1px;
-            background: var(--neon-blue);
-            transition: width 0.3s;
-            box-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .nav-links a:hover::after {
             width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 98;
+            display: none;
         }
 
-        /* ===== HERO SECTION ===== */
+        .overlay.active {
+            display: block;
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        main {
+            position: relative;
+            z-index: 2;
+            padding-top: 65px;
+            min-height: 100vh;
+        }
+
+        /* ===== HERO ===== */
         .hero {
-            min-height: 90vh;
+            min-height: calc(100vh - 65px);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            position: relative;
-            z-index: 2;
+            padding: 20px;
         }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 64px;
+            font-size: 28px;
             font-weight: 900;
-            letter-spacing: 12px;
+            letter-spacing: 6px;
             color: #ffffff;
-            text-shadow: 0 0 20px var(--neon-blue), 0 0 60px var(--neon-blue);
-            margin-bottom: 20px;
+            text-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent);
+            margin-bottom: 15px;
             animation: pulseGlow 3s ease-in-out infinite;
         }
 
         @keyframes pulseGlow {
-            0%, 100% {
-                text-shadow: 0 0 20px var(--neon-blue), 0 0 60px var(--neon-blue);
-            }
-            50% {
-                text-shadow: 0 0 40px var(--neon-blue), 0 0 100px var(--neon-blue);
-            }
+            0%, 100% { text-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent); }
+            50% { text-shadow: 0 0 30px var(--accent), 0 0 70px var(--accent); }
         }
 
         .hero .subtitle {
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 20px;
+            font-size: 13px;
             font-weight: 300;
-            letter-spacing: 6px;
-            color: var(--neon-cyan);
-            margin-bottom: 40px;
-            text-shadow: 0 0 15px var(--neon-cyan);
+            letter-spacing: 4px;
+            color: var(--accent);
+            margin-bottom: 25px;
+            text-shadow: 0 0 15px var(--accent);
         }
 
         .hero .tagline {
-            font-size: 18px;
+            font-size: 14px;
             font-weight: 300;
             color: #999999;
-            max-width: 600px;
-            line-height: 1.8;
-            margin-bottom: 50px;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            max-width: 90%;
         }
 
         .cta-buttons {
             display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 300px;
         }
 
         .btn {
-            padding: 15px 35px;
+            padding: 15px 20px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 3px;
+            font-size: 12px;
+            letter-spacing: 2px;
             text-decoration: none;
             transition: all 0.3s;
-            border: 1px solid var(--neon-blue);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid var(--accent);
+            text-align: center;
+            display: block;
         }
 
         .btn-primary {
-            background: var(--neon-blue);
+            background: var(--accent);
             color: #000000;
-            box-shadow: 0 0 20px var(--neon-blue);
+            box-shadow: 0 0 20px var(--accent);
         }
 
-        .btn-primary:hover {
+        .btn-primary:active {
             background: #ffffff;
-            box-shadow: 0 0 40px var(--neon-blue), 0 0 80px var(--neon-blue);
-            transform: translateY(-2px);
+            transform: scale(0.95);
         }
 
         .btn-outline {
             background: transparent;
-            color: var(--neon-blue);
+            color: var(--accent);
             box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
-        .btn-outline:hover {
+        .btn-outline:active {
             background: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 30px var(--neon-blue);
-            transform: translateY(-2px);
+            transform: scale(0.95);
         }
 
-        /* ===== SECTION TITLE ===== */
+        /* ===== SECTIONS ===== */
+        section {
+            padding: 50px 20px;
+            position: relative;
+            border-top: 1px solid var(--border-glow);
+        }
+
         .section-title {
             font-family: 'Orbitron', sans-serif;
-            font-size: 36px;
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: 8px;
+            letter-spacing: 5px;
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
             color: #ffffff;
-            text-shadow: 0 0 15px var(--neon-blue);
-            position: relative;
+            text-shadow: 0 0 15px var(--accent);
         }
 
         .section-title::after {
             content: '';
             display: block;
-            width: 80px;
+            width: 60px;
             height: 2px;
-            background: var(--neon-blue);
-            margin: 15px auto 0;
-            box-shadow: 0 0 20px var(--neon-blue);
+            background: var(--accent);
+            margin: 12px auto 0;
+            box-shadow: 0 0 15px var(--accent);
         }
 
-        /* ===== ABOUT SECTION ===== */
-        .about {
-            padding: 80px 0;
-            position: relative;
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid var(--border-glow);
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .about-grid {
+        /* ===== DASHBOARD ===== */
+        .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
-        .about-text p {
-            font-size: 18px;
-            font-weight: 300;
-            color: #cccccc;
-            line-height: 1.9;
-            margin-bottom: 20px;
-        }
-
-        .about-text .highlight {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        .about-image {
+        .stat-card {
             border: 1px solid var(--border-glow);
-            padding: 20px;
+            padding: 20px 10px;
             text-align: center;
             background: var(--glass);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
-            position: relative;
         }
 
-        .about-image .disk {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid var(--neon-blue);
-            margin: 0 auto;
-            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 30px var(--neon-blue);
-            animation: rotateDisk 10s linear infinite;
-            position: relative;
+        .stat-number {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-bottom: 8px;
         }
 
-        .disk::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--neon-blue);
-            box-shadow: 0 0 30px var(--neon-blue);
+        .stat-label {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: #999999;
         }
 
-        @keyframes rotateDisk {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
+        .system-bar {
+            margin-bottom: 15px;
+        }
+
+        .system-bar label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            letter-spacing: 1px;
+            color: #cccccc;
+            margin-bottom: 6px;
+        }
+
+        .bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glow);
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--accent);
+            box-shadow: 0 0 15px var(--accent);
+            animation: barPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes barPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* ===== CALCULATOR ===== */
+        .calculator-box {
+            border: 1px solid var(--border-glow);
+            padding: 25px 20px;
+            background: var(--glass);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.1);
+        }
+
+        .calculator-box input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 15px;
+            outline: none;
+            letter-spacing: 2px;
+            border-radius: 0;
+            -webkit-appearance: none;
+        }
+
+        .calculator-box input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+        }
+
+        .calc-result {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
+            margin-top: 15px;
+            display: none;
         }
 
         /* ===== FEATURES ===== */
-        .features {
-            padding: 80px 0;
-            position: relative;
-            z-index: 2;
-        }
-
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
+            gap: 15px;
         }
 
         .feature-card {
             border: 1px solid var(--border-glow);
-            padding: 30px;
+            padding: 25px 20px;
             text-align: center;
             background: var(--glass);
+            cursor: pointer;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
-        }
-
-        .feature-card:hover {
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
-            transform: translateY(-5px);
-            border-color: var(--neon-blue);
+        .feature-card:active {
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            border-color: var(--accent);
+            transform: scale(0.98);
         }
 
         .feature-icon {
-            font-size: 40px;
-            margin-bottom: 20px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 20px var(--neon-blue);
-            position: relative;
-            z-index: 1;
+            font-size: 35px;
+            margin-bottom: 15px;
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
         }
 
         .feature-card h3 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 18px;
+            font-size: 14px;
             letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             color: #ffffff;
-            position: relative;
-            z-index: 1;
         }
 
         .feature-card p {
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 300;
             color: #aaaaaa;
-            line-height: 1.7;
-            position: relative;
-            z-index: 1;
+            line-height: 1.6;
         }
 
         /* ===== CONTACT ===== */
-        .contact {
-            padding: 80px 0;
-            position: relative;
-            z-index: 2;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: 1px solid var(--border-glow);
-        }
-
-        .contact-form {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 15px;
         }
 
         .form-group input,
@@ -434,19 +468,20 @@
             border: 1px solid var(--border-glow);
             color: #ffffff;
             font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            transition: all 0.3s;
+            font-size: 15px;
             outline: none;
+            border-radius: 0;
+            -webkit-appearance: none;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
         }
 
         .form-group textarea {
-            height: 150px;
+            height: 120px;
             resize: vertical;
         }
 
@@ -459,25 +494,165 @@
         .submit-btn {
             width: 100%;
             padding: 15px;
-            background: var(--neon-blue);
+            background: var(--accent);
             color: #000000;
             font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            letter-spacing: 3px;
+            font-size: 12px;
+            letter-spacing: 2px;
             border: none;
             cursor: pointer;
+            box-shadow: 0 0 20px var(--accent);
             transition: all 0.3s;
-            box-shadow: 0 0 20px var(--neon-blue);
+            border-radius: 0;
+            -webkit-appearance: none;
         }
 
-        .submit-btn:hover {
+        .submit-btn:active {
             background: #ffffff;
-            box-shadow: 0 0 40px var(--neon-blue), 0 0 80px var(--neon-blue);
+            transform: scale(0.95);
+        }
+
+        /* ===== SETTINGS BUTTON ===== */
+        .settings-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            z-index: 90;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 0 25px var(--accent);
+            animation: gearSpin 4s linear infinite;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes gearSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== SETTINGS MODAL ===== */
+        .settings-modal {
+            position: fixed;
+            bottom: -100%;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.98);
+            z-index: 95;
+            border-top: 2px solid var(--accent);
+            box-shadow: 0 -10px 40px rgba(0, 240, 255, 0.3);
+            transition: bottom 0.4s ease;
+            padding: 25px 20px;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .settings-modal.active {
+            bottom: 0;
+        }
+
+        .settings-modal h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .setting-item {
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #cccccc;
+        }
+
+        .setting-item label {
+            display: block;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 15px;
+        }
+
+        .color-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .color-option:active {
+            border-color: #ffffff;
+            transform: scale(0.9);
+        }
+
+        .toggle-btn {
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 0;
+            -webkit-appearance: none;
+        }
+
+        .toggle-btn:active {
+            background: var(--accent);
+            color: #000000;
+        }
+
+        .close-settings {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 0;
+            -webkit-appearance: none;
+        }
+
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            left: 20px;
+            z-index: 90;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--accent);
+            color: var(--accent);
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 25px var(--accent);
+            display: none;
+            justify-content: center;
+            align-items: center;
         }
 
         /* ===== FOOTER ===== */
         footer {
-            padding: 30px 0;
+            padding: 25px 20px;
             text-align: center;
             border-top: 1px solid var(--border-glow);
             position: relative;
@@ -487,152 +662,303 @@
 
         footer p {
             font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
+            font-size: 9px;
             letter-spacing: 2px;
             color: #666666;
         }
 
         footer .footer-glow {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
-
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 32px;
-                letter-spacing: 6px;
-            }
-
-            .hero .subtitle {
-                font-size: 14px;
-                letter-spacing: 3px;
-            }
-
-            .section-title {
-                font-size: 24px;
-                letter-spacing: 4px;
-            }
-
-            .about-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .nav-links {
-                gap: 15px;
-            }
-
-            .nav-links a {
-                font-size: 10px;
-                letter-spacing: 1px;
-            }
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
         }
     </style>
 </head>
 <body>
 
     <!-- BACKGROUND EFFECTS -->
-    <div class="grid-bg"></div>
-    <div class="scanline"></div>
+    <div class="grid-bg" id="gridBg"></div>
+    <div class="scanline" id="scanline"></div>
 
-    <!-- NAVBAR -->
-    <nav>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
-            <a href="#" class="logo">TRON</a>
-            <ul class="nav-links">
-                <li><a href="#home">UTAMA</a></li>
-                <li><a href="#about">TENTANG</a></li>
-                <li><a href="#features">KEISTIMEWAAN</a></li>
-                <li><a href="#contact">HUBUNGI</a></li>
-            </ul>
+    <!-- HEADER -->
+    <header>
+        <a href="#" class="logo">TRON</a>
+        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-    </nav>
+    </header>
 
-    <!-- HERO SECTION -->
-    <section class="hero" id="home">
-        <div class="container">
+    <!-- OVERLAY -->
+    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+
+    <!-- MOBILE MENU -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#home" onclick="closeMenu()">UTAMA</a>
+        <a href="#dashboard" onclick="closeMenu()">DASHBOARD</a>
+        <a href="#calculator" onclick="closeMenu()">KALKULATOR</a>
+        <a href="#features" onclick="closeMenu()">KEISTIMEWAAN</a>
+        <a href="#contact" onclick="closeMenu()">HUBUNGI</a>
+        <a href="#" onclick="openSettings(); closeMenu();">TETAPAN</a>
+    </div>
+
+    <!-- SETTINGS BUTTON -->
+    <div class="settings-btn" onclick="openSettings()">⚙</div>
+
+    <!-- SETTINGS MODAL -->
+    <div class="settings-modal" id="settingsModal">
+        <h4>TETAPAN SISTEM</h4>
+        <div class="setting-item">
+            <label>WARNA TEMA</label>
+            <div class="color-options">
+                <span class="color-option" style="background: #00f0ff; box-shadow: 0 0 15px #00f0ff;" onclick="changeTheme('#00f0ff')"></span>
+                <span class="color-option" style="background: #ff6b00; box-shadow: 0 0 15px #ff6b00;" onclick="changeTheme('#ff6b00')"></span>
+                <span class="color-option" style="background: #8a2be2; box-shadow: 0 0 15px #8a2be2;" onclick="changeTheme('#8a2be2')"></span>
+                <span class="color-option" style="background: #ff0033; box-shadow: 0 0 15px #ff0033;" onclick="changeTheme('#ff0033')"></span>
+            </div>
+        </div>
+        <div class="setting-item">
+            <label>GRID BACKGROUND</label>
+            <button class="toggle-btn" onclick="toggleGrid()">HIDUP/MATI</button>
+        </div>
+        <div class="setting-item">
+            <label>SCANLINE</label>
+            <button class="toggle-btn" onclick="toggleScanline()">HIDUP/MATI</button>
+        </div>
+        <button class="close-settings" onclick="closeSettings()">TUTUP TETAPAN</button>
+    </div>
+
+    <!-- BACK TO TOP -->
+    <div class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</div>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <!-- HERO -->
+        <section class="hero" id="home" style="border-top: none;">
             <h1>TRON LEGACY</h1>
-            <p class="subtitle">THE DIGITAL REALM</p>
-            <p class="tagline">Melangkaui sempadan realiti. Satu dunia digital yang dibina daripada kod tulen, cahaya, dan tenaga. Selamat datang ke masa hadapan.</p>
+            <p class="subtitle">THE DIGITAL REALM MOBILE</p>
+            <p class="tagline">Melangkaui sempadan realiti. Dunia digital yang dibina daripada kod tulen dan cahaya.</p>
             <div class="cta-buttons">
-                <a href="#about" class="btn btn-primary">MULA SEKARANG</a>
+                <a href="#dashboard" class="btn btn-primary">MULA SEKARANG</a>
                 <a href="#features" class="btn btn-outline">TEROKAI</a>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- ABOUT SECTION -->
-    <section class="about" id="about">
-        <div class="container">
-            <h2 class="section-title">TENTANG SISTEM</h2>
-            <div class="about-grid">
-                <div class="about-text">
-                    <p><span class="highlight">TRON LEGACY</span> ialah platform digital futuristik yang direka untuk mereka yang mahu hidup dalam dunia teknologi tanpa had.</p>
-                    <p>Setiap elemen dibina dengan ketepatan tinggi, dipacu oleh data dan cahaya. Dari grid digital hingga tenaga tulen, semua berada dalam kawalan penuh.</p>
-                    <p>Sistem ini bukan sekadar laman web — ia adalah <span class="highlight">pintu masuk ke dimensi lain</span> di mana segala-galanya mungkin.</p>
+        <!-- DASHBOARD -->
+        <section id="dashboard">
+            <h2 class="section-title">PAPAN PEMUKA</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-number">12,847</div>
+                    <div class="stat-label">PENGGUNA</div>
                 </div>
-                <div class="about-image">
-                    <div class="disk"></div>
-                    <p style="margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 3px; color: var(--neon-blue);">DIGITAL DISK</p>
+                <div class="stat-card">
+                    <div class="stat-number">99.9%</div>
+                    <div class="stat-label">STABIL</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">8,420</div>
+                    <div class="stat-label">TENAGA (MW)</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">1,024</div>
+                    <div class="stat-label">SERVER</div>
                 </div>
             </div>
-        </div>
-    </section>
+            <div class="system-bar">
+                <label><span>PEMPROSESAN</span><span>78%</span></label>
+                <div class="bar-bg"><div class="bar-fill" style="width: 78%;"></div></div>
+            </div>
+            <div class="system-bar">
+                <label><span>KUASA GRID</span><span>92%</span></label>
+                <div class="bar-bg"><div class="bar-fill" style="width: 92%;"></div></div>
+            </div>
+            <div class="system-bar">
+                <label><span>KESELAMATAN</span><span>99%</span></label>
+                <div class="bar-bg"><div class="bar-fill" style="width: 99%;"></div></div>
+            </div>
+        </section>
 
-    <!-- FEATURES SECTION -->
-    <section class="features" id="features">
-        <div class="container">
+        <!-- CALCULATOR -->
+        <section id="calculator">
+            <h2 class="section-title">KALKULATOR</h2>
+            <div class="calculator-box">
+                <input type="number" id="energyInput" placeholder="MASUKKAN NILAI (MW)" min="0" inputmode="numeric">
+                <button class="btn btn-primary" style="width: 100%; border: none; cursor: pointer;" onclick="calculateEnergy()">KIRA TENAGA</button>
+                <div class="calc-result" id="calcResult"></div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section id="features">
             <h2 class="section-title">KEISTIMEWAAN</h2>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card" onclick="showFeatureAlert('KELAJUAN CAHAYA')">
                     <div class="feature-icon">⚡</div>
                     <h3>KELAJUAN CAHAYA</h3>
-                    <p>Sistem dipacu dengan pemprosesan ultra pantas, memberikan pengalaman tanpa gangguan.</p>
+                    <p>Pemprosesan ultra pantas tanpa gangguan.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="showFeatureAlert('GRID DIGITAL')">
                     <div class="feature-icon">🔷</div>
                     <h3>GRID DIGITAL</h3>
-                    <p>Infrastruktur digital yang kukuh dan selamat, dibina untuk persekitaran maya.</p>
+                    <p>Infrastruktur digital yang kukuh dan selamat.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="showFeatureAlert('KESELAMATAN MAKSIMUM')">
                     <div class="feature-icon">🛡️</div>
-                    <h3>KESELAMATAN MAKSIMUM</h3>
-                    <p>Perlindungan berlapis memastikan data anda selamat daripada ancaman luar.</p>
+                    <h3>KESELAMATAN</h3>
+                    <p>Perlindungan berlapis untuk data anda.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card" onclick="showFeatureAlert('HUBUNGAN GLOBAL')">
                     <div class="feature-icon">🌐</div>
                     <h3>HUBUNGAN GLOBAL</h3>
-                    <p>Akses ke rangkaian digital dari mana sahaja di dunia, pada bila-bila masa.</p>
+                    <p>Akses dari mana sahaja di dunia.</p>
+                </div>
+                <div class="feature-card" onclick="showFeatureAlert('AI PINTAR')">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI PINTAR</h3>
+                    <p>Kecerdasan buatan yang menyesuaikan diri.</p>
+                </div>
+                <div class="feature-card" onclick="showFeatureAlert('DATA TANPA HAD')">
+                    <div class="feature-icon">📡</div>
+                    <h3>DATA TANPA HAD</h3>
+                    <p>Aliran data tanpa sekatan.</p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- CONTACT SECTION -->
-    <section class="contact" id="contact">
-        <div class="container">
-            <h2 class="section-title">HUBUNGI KAMI</h2>
-            <form class="contact-form" onsubmit="alert('Mesej anda telah dihantar ke GRID. Terima kasih!'); return false;">
+        <!-- CONTACT -->
+        <section id="contact">
+            <h2 class="section-title">HUBUNGI</h2>
+            <form onsubmit="submitForm(event)">
                 <div class="form-group">
-                    <input type="text" placeholder="NAMA PENUH" required>
+                    <input type="text" placeholder="NAMA PENUH" id="contactName" required>
                 </div>
                 <div class="form-group">
-                    <input type="email" placeholder="ALAMAT E-MEL" required>
+                    <input type="email" placeholder="E-MEL" id="contactEmail" required>
                 </div>
                 <div class="form-group">
-                    <textarea placeholder="MESEJ ANDA" required></textarea>
+                    <textarea placeholder="MESEJ ANDA" id="contactMessage" required></textarea>
                 </div>
                 <button type="submit" class="submit-btn">HANTAR MESEJ</button>
             </form>
-        </div>
-    </section>
+        </section>
+
+    </main>
 
     <!-- FOOTER -->
     <footer>
-        <div class="container">
-            <p>© 2026 <span class="footer-glow">TRON LEGACY</span> — DIGITAL REALM. HAK CIPTA TERPELIHARA.</p>
-        </div>
+        <p>© 2026 <span class="footer-glow">TRON LEGACY</span> — MOBILE VERSION</p>
     </footer>
+
+    <script>
+        // ===== MOBILE MENU =====
+        function toggleMenu() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+            document.getElementById('hamburger').classList.toggle('active');
+        }
+
+        function closeMenu() {
+            document.getElementById('mobileMenu').classList.remove('active');
+            document.getElementById('overlay').classList.remove('active');
+            document.getElementById('hamburger').classList.remove('active');
+        }
+
+        // ===== SETTINGS =====
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // ===== CHANGE THEME =====
+        function changeTheme(color) {
+            document.documentElement.style.setProperty('--accent', color);
+            document.documentElement.style.setProperty('--neon-blue', color);
+            document.documentElement.style.setProperty('--border-glow', color + '4D');
+        }
+
+        // ===== TOGGLE GRID =====
+        function toggleGrid() {
+            const grid = document.getElementById('gridBg');
+            grid.style.display = grid.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ===== TOGGLE SCANLINE =====
+        function toggleScanline() {
+            const scanline = document.getElementById('scanline');
+            scanline.style.display = scanline.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // ===== CALCULATOR =====
+        function calculateEnergy() {
+            const input = document.getElementById('energyInput').value;
+            const result = document.getElementById('calcResult');
+
+            if (input === '' || input < 0) {
+                result.style.display = 'block';
+                result.textContent = '⚠ MASUKKAN NILAI SAH';
+                return;
+            }
+
+            const mw = parseFloat(input);
+            const homes = Math.round(mw * 1000);
+            const cost = (mw * 0.45).toFixed(2);
+
+            result.style.display = 'block';
+            result.innerHTML = `${mw} MW = ${homes.toLocaleString('ms-MY')} RUMAH<br>KOS: RM${cost} JUTA`;
+        }
+
+        // ===== FEATURE ALERT =====
+        function showFeatureAlert(feature) {
+            alert('✅ ' + feature + ' TELAH DIAKTIFKAN');
+        }
+
+        // ===== SUBMIT FORM =====
+        function submitForm(event) {
+            event.preventDefault();
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+
+            if (name && email) {
+                alert('✅ MESEJ ANDA TELAH DIHANTAR KE GRID\n\nNAMA: ' + name + '\nE-MEL: ' + email);
+                document.getElementById('contactName').value = '';
+                document.getElementById('contactEmail').value = '';
+                document.getElementById('contactMessage').value = '';
+            }
+        }
+
+        // ===== BACK TO TOP =====
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('backToTop');
+            if (window.scrollY > 300) {
+                backToTop.style.display = 'flex';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== PREVENT ZOOM ON DOUBLE TAP =====
+        document.addEventListener('dblclick', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+
+        // ===== HIDE SETTINGS ON SCROLL =====
+        window.addEventListener('scroll', function() {
+            if (document.getElementById('settingsModal').classList.contains('active')) {
+                if (window.scrollY > 100) {
+                    closeSettings();
+                }
+            }
+        });
+    </script>
 
 </body>
 </html>
