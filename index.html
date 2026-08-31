@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MERDEKA 69 - Daulat Tuanku</title>
+    <title>MERDEKA 69 - Daulat Tuanku 🇲🇾</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Playfair+Display:wght@400;700;900&display=swap');
 
@@ -33,7 +33,7 @@
             position: relative;
         }
 
-        /* ===== ANIMATED BACKGROUND ===== */
+        /* ===== STARS BACKGROUND ===== */
         .stars {
             position: fixed;
             top: 0;
@@ -48,8 +48,10 @@
                 radial-gradient(2px 2px at 50px 160px, #ffffff, transparent),
                 radial-gradient(2px 2px at 90px 40px, #ffffff, transparent),
                 radial-gradient(2px 2px at 130px 80px, #ffcc00, transparent),
-                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent);
-            background-size: 200px 200px;
+                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent),
+                radial-gradient(3px 3px at 200px 120px, #ffcc00, transparent),
+                radial-gradient(2px 2px at 250px 60px, #ffffff, transparent);
+            background-size: 300px 300px;
             animation: twinkle 3s ease-in-out infinite;
         }
 
@@ -88,32 +90,6 @@
             }
         }
 
-        /* ===== FLAG ANIMATION ===== */
-        .flag-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            background: linear-gradient(
-                180deg,
-                transparent 0%,
-                rgba(255, 204, 0, 0.02) 25%,
-                transparent 50%,
-                rgba(255, 204, 0, 0.02) 75%,
-                transparent 100%
-            );
-            animation: flagWave 5s ease-in-out infinite;
-        }
-
-        @keyframes flagWave {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
-        }
-
         /* ===== HEADER ===== */
         header {
             position: fixed;
@@ -132,7 +108,7 @@
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 900;
             letter-spacing: 2px;
             color: #ffcc00;
@@ -141,13 +117,6 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-
-        .logo img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid #ffcc00;
         }
 
         .hamburger {
@@ -248,7 +217,7 @@
 
         /* ===== HERO ===== */
         .hero {
-            min-height: 70vh;
+            min-height: 80vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -297,68 +266,203 @@
             margin-bottom: 15px;
         }
 
-        .hero .tagline {
-            font-size: 15px;
-            color: #cccccc;
-            max-width: 90%;
-            line-height: 1.7;
-            margin-bottom: 30px;
-        }
-
-        /* ===== MALAYSIA FLAG ===== */
-        .malaysia-flag {
-            width: 200px;
-            height: 120px;
-            margin: 0 auto 30px;
+        /* ===== REALISTIC FLAG ===== */
+        .flag-container {
             position: relative;
-            border: 3px solid #ffcc00;
-            box-shadow: 0 0 50px rgba(255, 204, 0, 0.3);
-            animation: flagWave 3s ease-in-out infinite;
+            width: 280px;
+            height: 168px;
+            margin: 20px auto;
+            perspective: 800px;
+            cursor: pointer;
         }
 
-        .flag-stripes {
-            position: absolute;
-            top: 0;
-            left: 40px;
-            width: 155px;
-            height: 114px;
-        }
-
-        .flag-stripe {
-            height: 16.28px;
+        .flag-wrapper {
+            position: relative;
             width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: flagWave 4s ease-in-out infinite;
         }
 
-        .stripe-red { background: #cc0001; }
-        .stripe-white { background: #ffffff; }
+        @keyframes flagWave {
+            0%, 100% {
+                transform: rotateX(2deg) rotateY(-5deg) rotateZ(0.5deg);
+            }
+            25% {
+                transform: rotateX(3deg) rotateY(-8deg) rotateZ(1deg);
+            }
+            50% {
+                transform: rotateX(2deg) rotateY(-5deg) rotateZ(0.5deg);
+            }
+            75% {
+                transform: rotateX(3deg) rotateY(-2deg) rotateZ(0deg);
+            }
+        }
 
-        .flag-canton {
+        .flag {
             position: absolute;
             top: 0;
             left: 0;
-            width: 40px;
-            height: 57px;
-            background: #003399;
+            width: 100%;
+            height: 100%;
+            border-radius: 3px;
+            box-shadow: 
+                0 10px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(0, 0, 0, 0.3),
+                inset 0 0 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            transform-origin: left center;
         }
 
-        .flag-crescent {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #ffcc00;
-            border-radius: 50%;
+        .stripes {
             position: absolute;
-            top: 18px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stripe {
+            flex: 1;
+            width: 100%;
+        }
+
+        .stripe-red {
+            background: linear-gradient(180deg, #e60000 0%, #cc0001 50%, #b30000 100%);
+        }
+
+        .stripe-white {
+            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 50%, #e8e8e8 100%);
+        }
+
+        .canton {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 54%;
+            background: linear-gradient(135deg, #003399 0%, #002266 50%, #001a4d 100%);
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .crescent {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            top: 8px;
             left: 8px;
+            z-index: 3;
         }
 
-        .flag-star {
-            width: 25px;
-            height: 25px;
+        .crescent-shape {
             position: absolute;
-            top: 30px;
-            left: 5px;
-            color: #ffcc00;
-            font-size: 20px;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: #ffcc00;
+            box-shadow: 
+                0 0 15px rgba(255, 204, 0, 0.3),
+                inset 0 2px 5px rgba(255, 255, 255, 0.3);
+        }
+
+        .crescent-overlay {
+            position: absolute;
+            width: 29px;
+            height: 29px;
+            border-radius: 50%;
+            background: #003399;
+            top: 6px;
+            left: 9px;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .star-14 {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            top: 8px;
+            right: 8px;
+            z-index: 4;
+            animation: starGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes starGlow {
+            0%, 100% {
+                filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.8));
+            }
+            50% {
+                filter: drop-shadow(0 0 15px rgba(255, 204, 0, 1));
+            }
+        }
+
+        .star-14 svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .fabric-texture {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 5;
+            background-image: 
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 1px,
+                    rgba(0, 0, 0, 0.03) 1px,
+                    rgba(0, 0, 0, 0.03) 2px
+                );
+            pointer-events: none;
+        }
+
+        .lighting {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 6;
+            background: linear-gradient(
+                135deg,
+                rgba(255, 255, 255, 0.15) 0%,
+                transparent 30%,
+                transparent 70%,
+                rgba(0, 0, 0, 0.1) 100%
+            );
+            pointer-events: none;
+        }
+
+        .flagpole {
+            position: absolute;
+            left: -15px;
+            top: -10px;
+            width: 5px;
+            height: 190px;
+            background: linear-gradient(90deg, #999999, #dddddd, #999999);
+            border-radius: 3px;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 10;
+        }
+
+        .flagpole-top {
+            position: absolute;
+            left: -18px;
+            top: -15px;
+            width: 11px;
+            height: 11px;
+            background: linear-gradient(135deg, #ffd700, #ffcc00);
+            border-radius: 50%;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+            z-index: 11;
         }
 
         /* ===== COUNTDOWN ===== */
@@ -540,52 +644,6 @@
             font-style: italic;
         }
 
-        /* ===== MUSIC BUTTON ===== */
-        .music-btn {
-            position: fixed;
-            bottom: 25px;
-            right: 20px;
-            z-index: 90;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #cc0001, #8b0000);
-            border: 3px solid #ffcc00;
-            color: #ffcc00;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
-            animation: pulseMusic 2s ease-in-out infinite;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @keyframes pulseMusic {
-            0%, 100% { box-shadow: 0 0 30px rgba(255, 204, 0, 0.5); }
-            50% { box-shadow: 0 0 50px rgba(255, 204, 0, 0.8); }
-        }
-
-        /* ===== BACK TO TOP ===== */
-        .back-to-top {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 90;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #003399, #0044cc);
-            border: 3px solid #ffcc00;
-            color: #ffcc00;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
         /* ===== FOOTER ===== */
         footer {
             padding: 25px 20px;
@@ -603,10 +661,35 @@
             color: #ffcc00;
         }
 
+        /* ===== BACK TO TOP ===== */
+        .back-to-top {
+            position: fixed;
+            bottom: 25px;
+            right: 20px;
+            z-index: 90;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #003399, #0044cc);
+            border: 3px solid #ffcc00;
+            color: #ffcc00;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (min-width: 768px) {
             .hero h1 {
                 font-size: 60px;
+            }
+            
+            .flag-container {
+                width: 400px;
+                height: 240px;
             }
             
             .royal-grid {
@@ -618,6 +701,32 @@
             .countdown-number {
                 font-size: 40px;
             }
+            
+            .crescent {
+                width: 50px;
+                height: 50px;
+                top: 12px;
+                left: 12px;
+            }
+            
+            .crescent-shape {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .crescent-overlay {
+                width: 41px;
+                height: 41px;
+                top: 9px;
+                left: 13px;
+            }
+            
+            .star-14 {
+                width: 46px;
+                height: 46px;
+                top: 12px;
+                right: 12px;
+            }
         }
     </style>
 </head>
@@ -625,7 +734,6 @@
 
     <!-- BACKGROUND EFFECTS -->
     <div class="stars"></div>
-    <div class="flag-animation"></div>
     <div class="confetti-container" id="confettiContainer"></div>
 
     <!-- HEADER -->
@@ -650,14 +758,7 @@
         <a href="#royal" onclick="closeMenu()">👑 SULTAN & RAJA</a>
         <a href="#history" onclick="closeMenu()">📜 SEJARAH</a>
         <a href="#pantun" onclick="closeMenu()">🎭 PANTUN</a>
-        <a href="#about" onclick="closeMenu()">🇲🇾 TENTANG</a>
     </div>
-
-    <!-- MUSIC BUTTON -->
-    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">🎵</button>
-
-    <!-- BACK TO TOP -->
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
     <!-- MAIN CONTENT -->
     <main>
@@ -667,24 +768,57 @@
             <div class="hero-badge">🇲🇾 TAHUN 2026 🇲🇾</div>
             <h1>MERDEKA 69</h1>
             <p class="subtitle">DAULAT TUANKU</p>
-            <p class="tagline">Sambutan kemerdekaan Malaysia ke-69 dengan penuh semangat patriotik dan kesetiaan kepada Raja-Raja Melayu.</p>
-            
-            <!-- MALAYSIA FLAG -->
-            <div class="malaysia-flag">
-                <div class="flag-canton">
-                    <div class="flag-crescent"></div>
-                    <div class="flag-star">★</div>
-                </div>
-                <div class="flag-stripes">
-                    <div class="flag-stripe stripe-red"></div>
-                    <div class="flag-stripe stripe-white"></div>
-                    <div class="flag-stripe stripe-red"></div>
-                    <div class="flag-stripe stripe-white"></div>
-                    <div class="flag-stripe stripe-red"></div>
-                    <div class="flag-stripe stripe-white"></div>
-                    <div class="flag-stripe stripe-red"></div>
+
+            <!-- REALISTIC MALAYSIA FLAG -->
+            <div class="flag-container" onclick="showFlagAlert()">
+                <div class="flag-wrapper">
+                    <div class="flagpole"></div>
+                    <div class="flagpole-top"></div>
+                    <div class="flag">
+                        <div class="stripes">
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                            <div class="stripe stripe-red"></div>
+                            <div class="stripe stripe-white"></div>
+                        </div>
+
+                        <div class="canton">
+                            <div class="crescent">
+                                <div class="crescent-shape"></div>
+                                <div class="crescent-overlay"></div>
+                            </div>
+
+                            <div class="star-14">
+                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                    <polygon 
+                                        points="50,0 61,35 98,35 67,56 79,93 50,70 21,93 33,56 2,35 39,35" 
+                                        fill="#ffcc00"
+                                        stroke="#ffd700"
+                                        stroke-width="1"
+                                    />
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="fabric-texture"></div>
+                        <div class="lighting"></div>
+                    </div>
                 </div>
             </div>
+
+            <p style="color: #cccccc; font-size: 15px; margin-top: 20px; max-width: 90%; line-height: 1.7;">
+                Sambutan kemerdekaan Malaysia ke-69 dengan penuh semangat patriotik dan kesetiaan kepada Raja-Raja Melayu.
+            </p>
         </section>
 
         <!-- COUNTDOWN -->
@@ -732,7 +866,7 @@
                 <div class="royal-card" onclick="showRoyalAlert('Sultan Pahang', 'KDYMM Al-Sultan Abdullah Riayatuddin Al-Mustafa Billah Shah')">
                     <div class="royal-crown">👑</div>
                     <div class="royal-name">SULTAN PAHANG</div>
-                    <div class="royal-title">KDYMM Al-Sultan Abdullah Riayatuddin Al-Mustafa Billah Shah</div>
+                    <div class="royal-title">KDYMM Al-Sultan Abdullah Riayatuddin</div>
                 </div>
                 <div class="royal-card" onclick="showRoyalAlert('Sultan Kedah', 'KDYMM Al-Aminul Karim Sultan Sallehuddin Ibni Almarhum Sultan Badlishah')">
                     <div class="royal-crown">👑</div>
@@ -749,7 +883,7 @@
                     <div class="royal-name">SULTAN TERENGGANU</div>
                     <div class="royal-title">KDYMM Sultan Mizan Zainal Abidin</div>
                 </div>
-                <div class="royal-card" onclick="showRoyalAlert('Yang di-Pertuan Besar Negeri Sembilan', 'DYMM Tuanku Muhriz Ibni Almarhum Tuanku Munawir')">
+                <div class="royal-card" onclick="showRoyalAlert('Negeri Sembilan', 'DYMM Tuanku Muhriz Ibni Almarhum Tuanku Munawir')">
                     <div class="royal-crown">👑</div>
                     <div class="royal-name">NEGERI SEMBILAN</div>
                     <div class="royal-title">DYMM Tuanku Muhriz Ibni Almarhum Tuanku Munawir</div>
@@ -759,7 +893,7 @@
                     <div class="royal-name">RAJA PERLIS</div>
                     <div class="royal-title">DYMM Tuanku Syed Sirajuddin</div>
                 </div>
-                <div class="royal-card" onclick="showRoyalAlert('Yang di-Pertua Negeri', 'Tuan Yang Terutama (TYT) bagi Pulau Pinang, Melaka, Sabah, dan Sarawak')">
+                <div class="royal-card" onclick="showRoyalAlert('Yang di-Pertua Negeri', 'TYT bagi Pulau Pinang, Melaka, Sabah, dan Sarawak')">
                     <div class="royal-crown">🎖️</div>
                     <div class="royal-name">YANG DI-PERTUA NEGERI</div>
                     <div class="royal-title">TYT bagi Pulau Pinang, Melaka, Sabah, dan Sarawak</div>
@@ -802,15 +936,13 @@
                     Malaysia maju gemilang.
                 </p>
             </div>
-        </section>
-
-        <!-- ABOUT SECTION -->
-        <section id="about">
-            <h2 class="section-title">🇲🇾 TENTANG SAMBUTAN</h2>
-            <div style="text-align: center; color: #cccccc; line-height: 1.8; font-size: 15px;">
-                <p>Sambutan <span style="color: #ffcc00; font-weight: 700;">Hari Kemerdekaan ke-69</span> pada tahun 2026.</p>
-                <p>Tema: <span style="color: #ffcc00; font-weight: 700;">"Malaysia MADANI: Jiwa Merdeka"</span></p>
-                <p>Daulat Tuanku! Dirgahayu Malaysiaku! 🎉🇲🇾</p>
+            <div class="pantun-box">
+                <p class="pantun-text">
+                    Tiang bendera tinggi menjulang,<br>
+                    Bendera berkibar indah sekali,<br>
+                    69 tahun Malaysia gemilang,<br>
+                    Daulat Tuanku kekal abadi.
+                </p>
             </div>
         </section>
 
@@ -822,13 +954,16 @@
         <p style="font-size: 10px; margin-top: 5px; color: #ffffff;">Dirgahayu Malaysiaku • 1957 - 2026</p>
     </footer>
 
+    <!-- BACK TO TOP -->
+    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
+
     <script>
         // ===== CONFETTI =====
         function createConfetti() {
             const container = document.getElementById('confettiContainer');
             const colors = ['#ffcc00', '#cc0001', '#ffffff', '#003399', '#ffd700'];
             
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 40; i++) {
                 const confetti = document.createElement('div');
                 confetti.className = 'confetti';
                 confetti.style.left = Math.random() * 100 + '%';
@@ -884,28 +1019,14 @@
             document.getElementById('hamburger').classList.remove('active');
         }
 
+        // ===== FLAG ALERT =====
+        function showFlagAlert() {
+            alert('🇲🇾 JALUR GEMILANG 🇲🇾\n\nBendera Malaysia:\n- 14 jalur merah & putih\n- Bintang pecah 14\n- Bulan sabit emas\n- Warna biru: Perpaduan\n- Warna merah: Keberanian\n- Warna putih: Kesucian\n- Warna kuning: Kesetiaan kepada Raja\n\nDaulat Tuanku!');
+        }
+
         // ===== ROYAL ALERT =====
         function showRoyalAlert(title, name) {
             alert('👑 ' + title + '\n\n' + name + '\n\nDaulat Tuanku! 🇲🇾');
-        }
-
-        // ===== MUSIC =====
-        let isMusicPlaying = false;
-        
-        function toggleMusic() {
-            const musicBtn = document.getElementById('musicBtn');
-            
-            if (isMusicPlaying) {
-                musicBtn.textContent = '🎵';
-                musicBtn.style.animation = 'none';
-                isMusicPlaying = false;
-                alert('Muzik dihentikan');
-            } else {
-                musicBtn.textContent = '🔊';
-                musicBtn.style.animation = 'pulseMusic 1s ease-in-out infinite';
-                isMusicPlaying = true;
-                alert('Muzik Negaraku dimainkan (simulasi)\n\nUntuk muzik sebenar, tambah fail audio');
-            }
         }
 
         // ===== BACK TO TOP =====
