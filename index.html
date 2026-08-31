@@ -48,15 +48,13 @@
             overflow: hidden;
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         ::-webkit-scrollbar { width: 0; height: 0; }
 
         /* ============ AURORA ============ */
         .aurora {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background:
                 radial-gradient(circle at 20% 30%, rgba(255,0,51,0.15) 0%, transparent 50%),
                 radial-gradient(circle at 80% 70%, rgba(0,240,255,0.15) 0%, transparent 50%),
@@ -66,7 +64,6 @@
             z-index: 0;
             animation: auroraFloat 10s ease-in-out infinite;
         }
-
         @keyframes auroraFloat {
             0%, 100% { transform: translate(0, 0) scale(1); }
             25% { transform: translate(15px, -20px) scale(1.05); }
@@ -77,14 +74,10 @@
         /* ============ STARS ============ */
         .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            border-radius: 50%;
-            background: var(--white);
+            position: absolute; width: 2px; height: 2px;
+            border-radius: 50%; background: var(--white);
             animation: twinkle 3s ease-in-out infinite;
         }
-
         @keyframes twinkle {
             0%, 100% { opacity: 0.3; }
             50% { opacity: 1; box-shadow: 0 0 8px var(--white); }
@@ -93,17 +86,13 @@
         /* ============ PARTICLES ============ */
         .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
         .particle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            border-radius: 50%;
-            animation: floatUp linear infinite;
+            position: absolute; width: 3px; height: 3px;
+            border-radius: 50%; animation: floatUp linear infinite;
         }
         .p-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
         .p-cyan { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
         .p-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
         .p-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
-
         @keyframes floatUp {
             0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
@@ -113,60 +102,34 @@
 
         /* ============ GRID ============ */
         .grid-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background-image:
                 linear-gradient(rgba(255,0,51,0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
             background-size: 35px 35px;
-            z-index: 0;
-            pointer-events: none;
+            z-index: 0; pointer-events: none;
             mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
             -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
         }
 
-        /* ============ ORBIT RINGS ============ */
+        /* ============ ORBIT ============ */
         .orbit {
-            position: fixed;
-            inset: 0;
-            z-index: 0;
+            position: fixed; inset: 0; z-index: 0;
             pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
         .orbit-ring {
-            position: absolute;
-            border: 1px solid rgba(0,240,255,0.08);
-            border-radius: 50%;
-            animation: orbitSpin 20s linear infinite;
+            position: absolute; border: 1px solid rgba(0,240,255,0.08);
+            border-radius: 50%; animation: orbitSpin 20s linear infinite;
         }
         .orbit-ring:nth-child(1) { width: 300px; height: 300px; }
-        .orbit-ring:nth-child(2) {
-            width: 500px;
-            height: 500px;
-            animation-duration: 30s;
-            border-color: rgba(255,0,51,0.06);
-        }
-        .orbit-ring:nth-child(3) {
-            width: 700px;
-            height: 700px;
-            animation-duration: 40s;
-            border-color: rgba(255,215,0,0.04);
-        }
-
-        @keyframes orbitSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
+        .orbit-ring:nth-child(2) { width: 500px; height: 500px; animation-duration: 30s; border-color: rgba(255,0,51,0.06); }
+        .orbit-ring:nth-child(3) { width: 700px; height: 700px; animation-duration: 40s; border-color: rgba(255,215,0,0.04); }
+        @keyframes orbitSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
         /* ============ HEADER ============ */
         .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: calc(12px + var(--safe-top)) 15px 12px;
             background: rgba(0,0,0,0.85);
             border-bottom: 1px solid var(--border-glow);
@@ -174,22 +137,17 @@
             -webkit-backdrop-filter: blur(25px);
             box-shadow: 0 5px 40px rgba(0,240,255,0.15), 0 5px 40px rgba(255,0,51,0.1);
         }
-
         .logo {
             font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 5px;
+            font-size: 22px; font-weight: 900; letter-spacing: 5px;
             text-align: center;
             background: var(--grad-text);
             background-size: 400% 400%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
             animation: logoGlow 4s ease infinite;
             filter: drop-shadow(0 0 20px rgba(255,0,51,0.5)) drop-shadow(0 0 40px rgba(0,240,255,0.3));
         }
-
         @keyframes logoGlow {
             0%, 100% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -197,141 +155,89 @@
 
         /* ============ MAIN ============ */
         .main {
-            position: relative;
-            z-index: 2;
+            position: relative; z-index: 2;
             padding: calc(60px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
-            max-width: 600px;
-            margin: 0 auto;
-            height: 100dvh;
-            display: flex;
-            flex-direction: column;
+            max-width: 600px; margin: 0 auto;
+            height: 100dvh; display: flex; flex-direction: column;
         }
 
         /* ============ CHAT BOX ============ */
         .chat-box {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
+            display: flex; flex-direction: column; flex: 1;
             border: 1px solid var(--border-glow);
             border-radius: var(--r-md);
             background: rgba(0,0,0,0.5);
-            overflow: hidden;
-            min-height: 0;
+            overflow: hidden; min-height: 0;
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             animation: boxGlow 5s ease-in-out infinite;
         }
-
         @keyframes boxGlow {
-            0%, 100% {
-                box-shadow: 0 0 30px rgba(255,0,51,0.15), 0 0 50px rgba(0,240,255,0.1);
-            }
-            50% {
-                box-shadow: 0 0 50px rgba(255,0,51,0.25), 0 0 80px rgba(0,240,255,0.2), 0 0 100px rgba(255,215,0,0.1);
-            }
+            0%, 100% { box-shadow: 0 0 30px rgba(255,0,51,0.15), 0 0 50px rgba(0,240,255,0.1); }
+            50% { box-shadow: 0 0 50px rgba(255,0,51,0.25), 0 0 80px rgba(0,240,255,0.2), 0 0 100px rgba(255,215,0,0.1); }
         }
 
         .chat-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 12px 14px;
             border-bottom: 1px solid var(--border-glow);
             background: linear-gradient(135deg, rgba(255,0,51,0.08), rgba(0,240,255,0.05));
             flex-shrink: 0;
         }
-
         .chat-head h3 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 12px;
-            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px;
             background: var(--grad-text);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        .chat-head .online {
-            font-size: 8px;
-            transition: color 0.3s;
-            letter-spacing: 1px;
-        }
+        .chat-head .online { font-size: 8px; transition: color 0.3s; letter-spacing: 1px; }
 
         .rec-bar {
-            display: none;
-            text-align: center;
-            padding: 5px;
+            display: none; text-align: center; padding: 5px;
             background: rgba(255,0,51,0.15);
             border-bottom: 1px solid var(--red);
-            font-size: 9px;
-            color: var(--red);
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
-            flex-shrink: 0;
-            animation: recPulse 0.5s infinite;
+            font-size: 9px; color: var(--red);
+            font-family: 'Orbitron', sans-serif; letter-spacing: 2px;
+            flex-shrink: 0; animation: recPulse 0.5s infinite;
         }
         .rec-bar.active { display: block; }
-
         @keyframes recPulse { 50% { opacity: 0.6; } }
 
         .chat-log {
-            flex: 1;
-            overflow-y: auto;
+            flex: 1; overflow-y: auto;
             padding: 12px 12px 30px;
             min-height: 0;
             -webkit-overflow-scrolling: touch;
         }
 
         .date-sep {
-            text-align: center;
-            font-size: 8px;
-            color: #555;
-            margin: 12px 0;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0,240,255,0.3);
+            text-align: center; font-size: 8px; color: #555;
+            margin: 12px 0; font-family: 'Orbitron', sans-serif;
+            letter-spacing: 2px; text-shadow: 0 0 10px rgba(0,240,255,0.3);
         }
 
-        .msg {
-            margin-bottom: 12px;
-            animation: msgGlow 0.3s var(--ease);
-        }
-
+        .msg { margin-bottom: 12px; animation: msgGlow 0.3s var(--ease); }
         @keyframes msgGlow {
             from { opacity: 0; transform: translateY(8px); filter: brightness(2); }
             to { opacity: 1; transform: translateY(0); filter: brightness(1); }
         }
-
         .msg.own { text-align: right; }
 
         .msg-name {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 8px;
-            letter-spacing: 1px;
-            color: var(--cyan);
-            margin-bottom: 4px;
-            text-shadow: 0 0 10px rgba(0,240,255,0.5);
+            font-family: 'Orbitron', sans-serif; font-size: 8px;
+            letter-spacing: 1px; color: var(--cyan);
+            margin-bottom: 4px; text-shadow: 0 0 10px rgba(0,240,255,0.5);
         }
-
-        .msg.own .msg-name {
-            color: var(--success);
-            text-shadow: 0 0 10px rgba(0,255,136,0.5);
-        }
+        .msg.own .msg-name { color: var(--success); text-shadow: 0 0 10px rgba(0,255,136,0.5); }
 
         .msg-text {
-            display: inline-block;
-            font-size: 12px;
-            color: #ddd;
-            background: rgba(0,0,0,0.5);
-            padding: 9px 12px;
-            border-radius: 12px;
-            word-break: break-word;
-            max-width: 100%;
-            text-align: left;
+            display: inline-block; font-size: 12px; color: #ddd;
+            background: rgba(0,0,0,0.5); padding: 9px 12px;
+            border-radius: 12px; word-break: break-word;
+            max-width: 100%; text-align: left;
             border: 1px solid rgba(0,240,255,0.1);
             box-shadow: 0 0 15px rgba(0,240,255,0.05);
         }
-
         .msg.own .msg-text {
             background: rgba(0,255,136,0.06);
             border-color: rgba(0,255,136,0.15);
@@ -339,224 +245,167 @@
         }
 
         .msg-audio {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(255,0,51,0.1);
-            border: 1px solid rgba(255,0,51,0.3);
-            border-radius: 20px;
-            padding: 8px 14px;
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,0,51,0.1); border: 1px solid rgba(255,0,51,0.3);
+            border-radius: 20px; padding: 8px 14px;
             box-shadow: 0 0 15px rgba(255,0,51,0.15);
         }
-
-        .msg-audio span {
-            font-size: 14px;
-            color: var(--cyan);
-            text-shadow: 0 0 10px rgba(0,240,255,0.5);
-        }
-
+        .msg-audio span { font-size: 14px; color: var(--cyan); text-shadow: 0 0 10px rgba(0,240,255,0.5); }
         .msg-audio small { font-size: 8px; color: #ccc; }
 
         .msg-image {
-            max-width: 150px;
-            border-radius: 10px;
+            max-width: 150px; border-radius: 10px;
             border: 1px solid rgba(0,240,255,0.3);
-            display: block;
-            pointer-events: auto;
+            display: block; pointer-events: auto;
             box-shadow: 0 0 25px rgba(0,240,255,0.2);
         }
         .msg.own .msg-image { margin-left: auto; }
 
-        .msg-del {
-            background: none;
-            border: none;
-            color: #555;
-            font-size: 10px;
-            padding: 2px;
-            margin-left: 6px;
-            transition: all 0.2s;
+        .msg-actions {
+            display: inline-flex; gap: 4px; margin-top: 4px;
         }
 
+        .msg-action-btn {
+            background: none; border: none; color: #555;
+            font-size: 12px; padding: 2px 4px;
+            transition: all 0.2s;
+        }
+        .msg-action-btn:active { transform: scale(1.3); }
+
+        .msg-del {
+            background: none; border: none; color: #555;
+            font-size: 10px; padding: 2px; margin-left: 6px;
+            transition: all 0.2s;
+        }
         .msg-del.confirm {
-            color: var(--red);
-            font-weight: 700;
+            color: var(--red); font-weight: 700;
             text-shadow: 0 0 15px var(--red);
         }
 
+        .msg-reply {
+            font-size: 9px; color: #666;
+            border-left: 2px solid var(--cyan);
+            padding-left: 8px; margin-bottom: 4px;
+            font-style: italic;
+        }
+
+        /* ============ INPUT ============ */
         .chat-input-area {
             padding: 10px 12px;
             border-top: 1px solid var(--border-glow);
-            display: flex;
-            gap: 6px;
-            align-items: center;
-            flex-shrink: 0;
-            background: rgba(0,0,0,0.4);
+            display: flex; gap: 6px; align-items: center;
+            flex-shrink: 0; background: rgba(0,0,0,0.4);
         }
 
         .chat-input {
-            flex: 1;
-            padding: 11px 15px;
+            flex: 1; padding: 11px 15px;
             background: rgba(0,0,0,0.7);
             border: 1px solid var(--border-glow);
             color: var(--white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 13px;
-            border-radius: var(--r-full);
-            outline: none;
-            min-width: 0;
+            font-family: 'Rajdhani', sans-serif; font-size: 13px;
+            border-radius: var(--r-full); outline: none; min-width: 0;
             transition: all 0.3s var(--ease);
         }
-
         .chat-input:focus {
             border-color: var(--cyan);
             box-shadow: 0 0 20px rgba(0,240,255,0.3), inset 0 0 15px rgba(0,240,255,0.05);
         }
-
         .name-input { flex: 0 0 75px; }
 
         .send-btn {
             padding: 11px 15px;
-            background: var(--grad-btn);
-            color: var(--white);
-            font-family: 'Orbitron', sans-serif;
-            font-size: 9px;
-            letter-spacing: 2px;
-            border: none;
-            border-radius: var(--r-full);
-            font-weight: 700;
-            opacity: 0.3;
-            transition: all 0.3s var(--ease);
+            background: var(--grad-btn); color: var(--white);
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 2px;
+            border: none; border-radius: var(--r-full); font-weight: 700;
+            opacity: 0.3; transition: all 0.3s var(--ease);
             box-shadow: 0 0 20px rgba(255,0,51,0.3), 0 0 30px rgba(0,240,255,0.2);
         }
-
         .send-btn:not(:disabled) {
-            opacity: 1;
-            cursor: pointer;
+            opacity: 1; cursor: pointer;
             animation: sendGlow 2s ease-in-out infinite;
         }
-
         @keyframes sendGlow {
-            0%, 100% {
-                box-shadow: 0 0 20px rgba(255,0,51,0.3), 0 0 30px rgba(0,240,255,0.2);
-            }
-            50% {
-                box-shadow: 0 0 40px rgba(255,0,51,0.5), 0 0 60px rgba(0,240,255,0.4), 0 0 80px rgba(255,215,0,0.2);
-            }
+            0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.3), 0 0 30px rgba(0,240,255,0.2); }
+            50% { box-shadow: 0 0 40px rgba(255,0,51,0.5), 0 0 60px rgba(0,240,255,0.4), 0 0 80px rgba(255,215,0,0.2); }
         }
-
         .send-btn:disabled { cursor: not-allowed; }
 
         .attach-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
+            width: 36px; height: 36px; border-radius: 50%;
             background: rgba(255,0,51,0.08);
             border: 1px solid var(--border-glow);
-            color: var(--cyan);
-            font-size: 14px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-            transition: all 0.3s var(--ease);
+            color: var(--cyan); font-size: 14px;
+            display: flex; justify-content: center; align-items: center;
+            flex-shrink: 0; transition: all 0.3s var(--ease);
             text-shadow: 0 0 10px rgba(0,240,255,0.5);
         }
-
         .attach-btn:active {
-            background: var(--red);
-            color: var(--white);
+            background: var(--red); color: var(--white);
             box-shadow: 0 0 30px rgba(255,0,51,0.5);
             transform: scale(0.9);
         }
-
         .attach-btn.recording {
-            background: var(--red);
-            color: var(--white);
+            background: var(--red); color: var(--white);
             animation: recPulse 0.5s infinite;
             box-shadow: 0 0 40px rgba(255,0,51,0.6);
         }
 
+        /* ============ EMOJI PICKER ============ */
+        .emoji-picker {
+            display: none;
+            flex-wrap: wrap; gap: 6px;
+            padding: 10px;
+            border-top: 1px solid var(--border-glow);
+            background: rgba(0,0,0,0.8);
+            flex-shrink: 0;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+        .emoji-picker.active { display: flex; }
+        .emoji-btn {
+            background: none; border: none;
+            font-size: 22px; padding: 4px;
+            transition: all 0.2s;
+        }
+        .emoji-btn:active { transform: scale(1.4); }
+
         /* ============ TOAST ============ */
         .toast-wrap {
-            position: fixed;
-            top: calc(55px + var(--safe-top));
-            right: 12px;
-            z-index: 300;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            max-width: 260px;
+            position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
+            display: flex; flex-direction: column; gap: 6px; max-width: 260px;
         }
-
         .toast {
-            padding: 11px 17px;
-            border-radius: 12px;
-            font-size: 11px;
-            border: 1px solid;
-            transform: translateX(0);
-            transition: all 0.4s var(--ease);
-            opacity: 1;
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            padding: 11px 17px; border-radius: 12px; font-size: 11px;
+            border: 1px solid; transform: translateX(0);
+            transition: all 0.4s var(--ease); opacity: 1;
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
         }
-
         .toast.hide { transform: translateX(120%); opacity: 0; }
-
-        .toast-success {
-            background: rgba(0,255,136,0.1);
-            border-color: rgba(0,255,136,0.4);
-            color: var(--success);
-            box-shadow: 0 0 30px rgba(0,255,136,0.3);
-        }
-
-        .toast-error {
-            background: rgba(255,0,51,0.1);
-            border-color: rgba(255,0,51,0.4);
-            color: var(--red);
-            box-shadow: 0 0 30px rgba(255,0,51,0.3);
-        }
-
-        .toast-info {
-            background: rgba(0,240,255,0.1);
-            border-color: rgba(0,240,255,0.4);
-            color: var(--cyan);
-            box-shadow: 0 0 30px rgba(0,240,255,0.3);
-        }
+        .toast-success { background: rgba(0,255,136,0.1); border-color: rgba(0,255,136,0.4); color: var(--success); box-shadow: 0 0 30px rgba(0,255,136,0.3); }
+        .toast-error { background: rgba(255,0,51,0.1); border-color: rgba(255,0,51,0.4); color: var(--red); box-shadow: 0 0 30px rgba(255,0,51,0.3); }
+        .toast-info { background: rgba(0,240,255,0.1); border-color: rgba(0,240,255,0.4); color: var(--cyan); box-shadow: 0 0 30px rgba(0,240,255,0.3); }
 
         /* ============ LIGHTBOX ============ */
         .lightbox {
-            position: fixed;
-            inset: 0;
-            z-index: 500;
+            position: fixed; inset: 0; z-index: 500;
             background: rgba(0,0,0,0.97);
-            display: none;
-            justify-content: center;
-            align-items: center;
+            display: none; justify-content: center; align-items: center;
         }
-
         .lightbox.active { display: flex; }
-
         .lightbox img {
-            max-width: 92%;
-            max-height: 85%;
-            border: 2px solid var(--cyan);
-            border-radius: 12px;
+            max-width: 92%; max-height: 85%;
+            border: 2px solid var(--cyan); border-radius: 12px;
             box-shadow: 0 0 60px rgba(0,240,255,0.5), 0 0 100px rgba(255,0,51,0.3), 0 0 150px rgba(255,215,0,0.15);
             pointer-events: none;
         }
 
         /* ============ RIPPLE ============ */
         .ripple {
-            position: fixed;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid var(--cyan);
-            pointer-events: none;
-            z-index: 400;
+            position: fixed; width: 20px; height: 20px;
+            border-radius: 50%; border: 2px solid var(--cyan);
+            pointer-events: none; z-index: 400;
             animation: rippleOut 0.6s var(--ease) forwards;
         }
-
         @keyframes rippleOut {
             from { transform: scale(0); opacity: 1; }
             to { transform: scale(10); opacity: 0; }
@@ -595,9 +444,11 @@
             </div>
             <div class="rec-bar" id="recBar">🔴 MERAKAM...</div>
             <div class="chat-log" id="chatLog"></div>
+            <div class="emoji-picker" id="emojiPicker"></div>
             <div class="chat-input-area">
                 <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20" aria-label="Nama anda">
                 <input type="text" id="chatInput" class="chat-input" placeholder="Tulis mesej..." maxlength="500" aria-label="Tulis mesej">
+                <button class="attach-btn" id="emojiBtn" aria-label="Emoji">😊</button>
                 <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
                 <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
                 <button class="send-btn" id="sendBtn" disabled>HANTAR</button>
@@ -629,7 +480,9 @@
             audioChunks: [],
             recordTimer: null,
             deleteTarget: null,
-            deleteTimer: null
+            deleteTimer: null,
+            replyTarget: null,
+            editTarget: null
         };
 
         /* ============ DOM ============ */
@@ -646,11 +499,16 @@
             recBar: $('recBar'),
             sendBtn: $('sendBtn'),
             imgBtn: $('imgBtn'),
+            emojiBtn: $('emojiBtn'),
+            emojiPicker: $('emojiPicker'),
             chatImageInput: $('chatImageInput')
         };
 
         /* ============ FIREBASE ============ */
         const db = firebase.initializeApp({ databaseURL: CONFIG.databaseURL }).database();
+
+        /* ============ EMOJI LIST ============ */
+        const EMOJIS = ['😀','😂','🤣','😊','😍','🥰','😎','🤩','😭','😅','😏','😴','🤔','🤯','🥳','😇','🤗','🤫','🤭','🤐','😬','😱','🤢','🤮','💀','👻','👽','🤖','🎃','😺','👍','👎','👏','🙏','💪','🤝','❤️','💔','🔥','⭐','🌟','✨','💫','🎉','🎊','🌈','☀️','🌙','⚡'];
 
         /* ============ STAR FIELD ============ */
         function initStars() {
@@ -685,6 +543,23 @@
             wrap.appendChild(frag);
         }
 
+        /* ============ EMOJI PICKER ============ */
+        function initEmojiPicker() {
+            const frag = document.createDocumentFragment();
+            EMOJIS.forEach(emoji => {
+                const btn = document.createElement('button');
+                btn.className = 'emoji-btn';
+                btn.textContent = emoji;
+                btn.type = 'button';
+                btn.addEventListener('click', () => {
+                    DOM.chatInput.value += emoji;
+                    updateSendBtn();
+                });
+                frag.appendChild(btn);
+            });
+            DOM.emojiPicker.appendChild(frag);
+        }
+
         /* ============ RIPPLE ============ */
         function createRipple(x, y) {
             const r = document.createElement('div');
@@ -693,6 +568,30 @@
             r.style.top = y + 'px';
             document.body.appendChild(r);
             setTimeout(() => r.remove(), 600);
+        }
+
+        /* ============ SOUND ============ */
+        function playSound(type) {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                const freqs = {
+                    send: [600, 900],
+                    receive: [800, 500],
+                    error: [200, 100],
+                    delete: [400, 200]
+                };
+                const [start, end] = freqs[type] || [500, 700];
+                osc.frequency.setValueAtTime(start, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(end, ctx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.2);
+            } catch(e) {}
         }
 
         /* ============ HELPERS ============ */
@@ -712,12 +611,7 @@
             if (navigator.vibrate) navigator.vibrate(pattern);
         }
 
-        const safeText = str => {
-            const d = document.createElement('div');
-            d.textContent = str;
-            return d.textContent;
-        };
-
+        const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
         const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
         const getName = () => DOM.chatName.value.trim() || 'Anonymous';
 
@@ -749,6 +643,8 @@
         }
 
         /* ============ CHAT ============ */
+        let lastSoundTime = 0;
+
         db.ref('chat').limitToLast(CONFIG.messageLimit).on('value', snap => {
             const myName = getName();
             const atBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
@@ -757,10 +653,11 @@
             let lastDate = '';
 
             if (snap.exists()) {
-                snap.forEach(child => {
-                    const d = child.val();
-                    const ds = dateSep(d.timestamp || Date.now());
+                const messages = [];
+                snap.forEach(child => messages.push({ key: child.key, ...child.val() }));
 
+                messages.forEach(d => {
+                    const ds = dateSep(d.timestamp || Date.now());
                     if (ds !== lastDate) {
                         lastDate = ds;
                         const sep = document.createElement('div');
@@ -776,6 +673,13 @@
                     name.className = 'msg-name';
                     name.textContent = `${safeText(d.name)} • ${d.time || ''}`;
                     div.appendChild(name);
+
+                    if (d.replyTo) {
+                        const reply = document.createElement('div');
+                        reply.className = 'msg-reply';
+                        reply.textContent = `↩ ${safeText(d.replyTo.name)}: ${safeText(d.replyTo.text || '...')}`;
+                        div.appendChild(reply);
+                    }
 
                     if (d.type === 'text') {
                         const t = document.createElement('div');
@@ -793,7 +697,6 @@
                         const a = document.createElement('div');
                         a.className = 'msg-audio';
                         a.setAttribute('role', 'button');
-                        a.setAttribute('aria-label', 'Mainkan audio');
                         const icon = document.createElement('span');
                         icon.textContent = '▶';
                         const dur = document.createElement('small');
@@ -803,16 +706,54 @@
                         div.appendChild(a);
                     }
 
+                    if (d.reactions) {
+                        const reactions = document.createElement('div');
+                        reactions.className = 'msg-actions';
+                        Object.entries(d.reactions).forEach(([emoji, count]) => {
+                            const btn = document.createElement('button');
+                            btn.className = 'msg-action-btn';
+                            btn.textContent = `${emoji} ${count}`;
+                            btn.type = 'button';
+                            btn.addEventListener('click', () => addReaction(d.key, emoji));
+                            reactions.appendChild(btn);
+                        });
+                        div.appendChild(reactions);
+                    }
+
+                    const actions = document.createElement('div');
+                    actions.className = 'msg-actions';
+
+                    const likeBtn = document.createElement('button');
+                    likeBtn.className = 'msg-action-btn';
+                    likeBtn.textContent = '👍';
+                    likeBtn.type = 'button';
+                    likeBtn.addEventListener('click', () => addReaction(d.key, '👍'));
+                    actions.appendChild(likeBtn);
+
+                    const replyBtn = document.createElement('button');
+                    replyBtn.className = 'msg-action-btn';
+                    replyBtn.textContent = '↩';
+                    replyBtn.type = 'button';
+                    replyBtn.addEventListener('click', () => setReply(d));
+                    actions.appendChild(replyBtn);
+
                     if (d.name === myName) {
+                        const editBtn = document.createElement('button');
+                        editBtn.className = 'msg-action-btn';
+                        editBtn.textContent = '✏️';
+                        editBtn.type = 'button';
+                        editBtn.addEventListener('click', () => startEdit(d));
+                        actions.appendChild(editBtn);
+
                         const del = document.createElement('button');
                         del.className = 'msg-del';
                         del.textContent = '✕';
                         del.type = 'button';
-                        del.setAttribute('aria-label', 'Padam mesej');
-                        del.addEventListener('click', () => handleDelete(child.key, del));
-                        div.appendChild(del);
+                        del.addEventListener('click', () => handleDelete(d.key, del));
+                        actions.appendChild(del);
                     }
 
+                    div.appendChild(actions);
                     frag.appendChild(div);
                 });
             }
@@ -823,12 +764,10 @@
 
         function send(type, data) {
             db.ref('chat').push({
-                type,
-                name: getName(),
-                timestamp: Date.now(),
-                ...data,
-                time: getTime()
+                type, name: getName(), timestamp: Date.now(),
+                ...data, time: getTime()
             }).catch(() => toast('Gagal hantar!', 'error'));
+            playSound('send');
         }
 
         function updateSendBtn() {
@@ -838,10 +777,43 @@
         function sendText() {
             const text = DOM.chatInput.value.trim();
             if (!text) return;
-            send('text', { text });
+            const data = { text };
+            if (state.replyTarget) {
+                data.replyTo = {
+                    name: state.replyTarget.name,
+                    text: state.replyTarget.text || '🖼️ Gambar'
+                };
+                state.replyTarget = null;
+            }
+            if (state.editTarget) {
+                db.ref('chat/' + state.editTarget).update(data)
+                    .then(() => { toast('Dikemaskini!', 'success'); state.editTarget = null; })
+                    .catch(() => toast('Gagal edit!', 'error'));
+            } else {
+                send('text', data);
+            }
             DOM.chatInput.value = '';
             updateSendBtn();
             haptic(10);
+        }
+
+        function setReply(d) {
+            state.replyTarget = d;
+            DOM.chatInput.placeholder = `Balas kepada ${d.name}...`;
+            DOM.chatInput.focus();
+        }
+
+        function startEdit(d) {
+            state.editTarget = d.key;
+            DOM.chatInput.value = d.text || '';
+            DOM.chatInput.focus();
+            updateSendBtn();
+        }
+
+        function addReaction(key, emoji) {
+            db.ref('chat/' + key + '/reactions/' + emoji).transaction(count => (count || 0) + 1)
+                .catch(() => toast('Gagal react!', 'error'));
+            haptic(5);
         }
 
         function sendImage(e) {
@@ -886,7 +858,7 @@
                     if (remaining <= 0) { stopRecord(); return; }
                     DOM.recBar.textContent = `🔴 MERAKAM... (${remaining}s)`;
                 }, 1000);
-            } catch (e) {
+            } catch(e) {
                 toast('Tidak dapat akses mikrofon!', 'error');
                 haptic([30, 50, 30]);
             }
@@ -899,9 +871,7 @@
             DOM.recBar.classList.remove('active');
             DOM.recBar.textContent = '🔴 MERAKAM...';
             clearInterval(state.recordTimer);
-            if (state.recorder) {
-                try { state.recorder.stop(); } catch (e) {}
-            }
+            if (state.recorder) { try { state.recorder.stop(); } catch(e) {} }
         }
 
         function handleDelete(key, btn) {
@@ -909,6 +879,7 @@
                 clearTimeout(state.deleteTimer);
                 db.ref('chat/' + key).remove().then(() => {
                     toast('Dipadam!', 'success');
+                    playSound('delete');
                     haptic(15);
                 }).catch(() => toast('Gagal padam!', 'error'));
                 state.deleteTarget = null;
@@ -934,7 +905,6 @@
             DOM.lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
-
         function closeLightbox() {
             DOM.lightbox.classList.remove('active');
             document.body.style.overflow = 'auto';
@@ -954,6 +924,9 @@
         DOM.imgBtn.addEventListener('click', () => DOM.chatImageInput.click());
         DOM.chatImageInput.addEventListener('change', sendImage);
         DOM.recordBtn.addEventListener('click', toggleRecord);
+        DOM.emojiBtn.addEventListener('click', () => {
+            DOM.emojiPicker.classList.toggle('active');
+        });
         DOM.lightbox.addEventListener('click', closeLightbox);
 
         document.addEventListener('click', e => {
@@ -964,6 +937,7 @@
 
         initStars();
         initParticles();
+        initEmojiPicker();
         updateSendBtn();
     </script>
 
