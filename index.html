@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRON BLOG - Blog & Chat</title>
+    <title>TRON BLOG - Chat Multimedia</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
 
@@ -121,9 +121,6 @@
 
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         .pulse { animation: pulse 0.5s; }
-
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .bounce { animation: bounce 0.5s; }
 
         /* ===== HEADER ===== */
         header {
@@ -420,16 +417,16 @@
         .chat-online { font-size: 8px; color: var(--success); letter-spacing: 1px; }
 
         .chat-messages {
-            height: 300px; overflow-y: auto;
+            height: 350px; overflow-y: auto;
             border: 1px solid var(--border-glow); border-radius: 10px;
             padding: 8px; margin-bottom: 8px;
         }
 
-        .chat-msg { margin-bottom: 8px; }
+        .chat-msg { margin-bottom: 10px; }
 
         .chat-msg .msg-name {
             font-family: 'Orbitron', sans-serif; font-size: 8px;
-            letter-spacing: 1px; color: var(--accent); margin-bottom: 2px;
+            letter-spacing: 1px; color: var(--accent); margin-bottom: 3px;
         }
 
         .chat-msg .msg-text {
@@ -441,7 +438,61 @@
         .chat-msg.own .msg-name { color: var(--success); text-align: right; }
         .chat-msg.own .msg-text { background: rgba(0, 255, 136, 0.1); }
 
-        .chat-input-row { display: flex; gap: 6px; }
+        /* ===== CHAT AUDIO ===== */
+        .chat-msg .msg-audio {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            min-width: 180px;
+            max-width: 250px;
+        }
+
+        .chat-msg .msg-audio .audio-icon {
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        .chat-msg .msg-audio .audio-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(0, 240, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .chat-msg .msg-audio .audio-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+            box-shadow: 0 0 10px var(--accent);
+            width: 0%;
+            transition: width 0.1s;
+        }
+
+        .chat-msg .msg-audio .audio-duration {
+            font-size: 9px;
+            color: #cccccc;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+
+        /* ===== CHAT IMAGE ===== */
+        .chat-msg .msg-image {
+            max-width: 180px;
+            border-radius: 10px;
+            border: 1px solid var(--accent);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            cursor: pointer;
+            display: block;
+        }
+
+        /* ===== CHAT INPUT ===== */
+        .chat-input-row { display: flex; gap: 5px; align-items: center; }
 
         .chat-input-row input {
             flex: 1; padding: 10px 14px;
@@ -455,6 +506,72 @@
             color: #000000; font-family: 'Orbitron', sans-serif;
             font-size: 10px; letter-spacing: 1px; border: none;
             cursor: pointer; border-radius: 20px; font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .chat-attach-btn {
+            width: 35px; height: 35px; border-radius: 50%;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--border-glow);
+            color: var(--accent); font-size: 14px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+            transition: all 0.3s; flex-shrink: 0;
+        }
+
+        .chat-attach-btn:active {
+            background: var(--accent); color: #000000;
+            box-shadow: var(--shadow-neon); transform: scale(0.9);
+        }
+
+        .chat-attach-btn.recording {
+            background: var(--danger); color: #ffffff;
+            border-color: var(--danger);
+            box-shadow: 0 0 20px var(--danger);
+            animation: pulse 0.5s infinite;
+        }
+
+        /* ===== RECORDING INDICATOR ===== */
+        .recording-indicator {
+            display: none;
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 0, 51, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 10px;
+            margin-bottom: 5px;
+            font-size: 10px;
+            color: var(--danger);
+            letter-spacing: 2px;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .recording-indicator.active {
+            display: block;
+            animation: pulse 0.5s infinite;
+        }
+
+        /* ===== IMAGE LIGHTBOX ===== */
+        .image-lightbox {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 500;
+            display: none; justify-content: center; align-items: center;
+        }
+
+        .image-lightbox.active { display: flex; }
+
+        .image-lightbox img {
+            max-width: 95%; max-height: 90%;
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 50px var(--accent);
+            border-radius: 10px;
+        }
+
+        .image-lightbox-close {
+            position: absolute; top: 20px; right: 20px;
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent);
+            color: var(--accent); font-size: 22px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
         }
 
         /* ===== READING PROGRESS ===== */
@@ -629,6 +746,9 @@
         }
 
         .fab:active { transform: scale(0.85) rotate(90deg); }
+
+        /* ===== FILE INPUT HIDDEN ===== */
+        #chatImageInput { display: none; }
     </style>
 </head>
 <body>
@@ -644,6 +764,12 @@
 
     <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- IMAGE LIGHTBOX -->
+    <div class="image-lightbox" id="imageLightbox" onclick="closeImageLightbox()">
+        <button class="image-lightbox-close" onclick="closeImageLightbox()">✕</button>
+        <img id="lightboxImage" src="" alt="Gambar">
+    </div>
 
     <!-- HEADER -->
     <header>
@@ -707,15 +833,24 @@
         <div class="tab-content" id="tab-chat">
             <div class="chat-section">
                 <div class="chat-header">
-                    <h3>💬 CHAT LANGSUNG</h3>
+                    <h3>💬 CHAT MULTIMEDIA</h3>
                     <span class="chat-online">● ONLINE</span>
                 </div>
+
+                <!-- RECORDING INDICATOR -->
+                <div class="recording-indicator" id="recordingIndicator">🔴 MERAKAM...</div>
+
                 <div class="chat-messages" id="chatMessages"></div>
+
+                <!-- CHAT INPUT ROW -->
                 <div class="chat-input-row">
-                    <input type="text" id="chatName" placeholder="NAMA" style="max-width:80px;">
+                    <input type="text" id="chatName" placeholder="NAMA" style="max-width:70px;">
                     <input type="text" id="chatInput" placeholder="TULIS MESEJ..." onkeypress="if(event.key==='Enter')sendChat()">
+                    <button class="chat-attach-btn" onclick="document.getElementById('chatImageInput').click()" title="Hantar Gambar">📷</button>
+                    <button class="chat-attach-btn" id="recordBtn" onclick="toggleRecording()" title="Rakam Audio">🎤</button>
                     <button onclick="sendChat()">HANTAR</button>
                 </div>
+                <input type="file" id="chatImageInput" accept="image/*" onchange="sendImage(event)">
             </div>
         </div>
 
@@ -759,7 +894,7 @@
 
     <!-- FOOTER -->
     <footer>
-        <p>© 2026 <span class="footer-glow">TRON BLOG</span> — BLOG & CHAT</p>
+        <p>© 2026 <span class="footer-glow">TRON BLOG</span> — CHAT MULTIMEDIA</p>
     </footer>
 
     <!-- BUTTONS -->
@@ -782,8 +917,13 @@
         let isAdminLoggedIn = false;
         let blogPosts = [];
         let audioContext = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let recordingStartTime = 0;
+        let recordingTimer = null;
 
-        // ===== AUDIO =====
+        // ===== AUDIO (Sound Effects) =====
         function initAudio() {
             if (!audioContext) {
                 audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -975,6 +1115,7 @@
             document.getElementById('adminPanel').classList.remove('active');
             document.getElementById('tabsContainer').style.display = 'flex';
             document.getElementById('tab-blog').style.display = 'block';
+            document.getElementById('tab-chat').style.display = 'block';
             showTab('blog');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -986,6 +1127,7 @@
             if (!msg) return;
             playSound('success');
             database.ref('chat').push({
+                type: 'text',
                 name: name,
                 text: msg,
                 time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
@@ -993,22 +1135,171 @@
             document.getElementById('chatInput').value = '';
         }
 
+        function sendImage(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showToast('Saiz gambar terlalu besar (max 2MB)!', 'error');
+                return;
+            }
+
+            const name = document.getElementById('chatName').value.trim() || 'Anonymous';
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                playSound('success');
+                database.ref('chat').push({
+                    type: 'image',
+                    name: name,
+                    data: e.target.result,
+                    time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+                });
+                showToast('Gambar dihantar! 📷', 'success');
+            };
+            reader.readAsDataURL(file);
+            event.target.value = '';
+        }
+
+        // ===== AUDIO RECORDING =====
+        async function toggleRecording() {
+            const recordBtn = document.getElementById('recordBtn');
+            const indicator = document.getElementById('recordingIndicator');
+
+            if (isRecording) {
+                // Stop recording
+                isRecording = false;
+                recordBtn.classList.remove('recording');
+                indicator.classList.remove('active');
+                clearInterval(recordingTimer);
+                mediaRecorder.stop();
+                showToast('Rakaman dihentikan, menghantar...', 'info');
+                return;
+            }
+
+            // Start recording
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (e) => {
+                    audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    stream.getTracks().forEach(track => track.stop());
+                    
+                    if (audioBlob.size > 500 * 1024) {
+                        showToast('Audio terlalu panjang (max 30 saat)!', 'error');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const duration = Math.round((Date.now() - recordingStartTime) / 1000);
+                        const name = document.getElementById('chatName').value.trim() || 'Anonymous';
+                        playSound('success');
+                        database.ref('chat').push({
+                            type: 'audio',
+                            name: name,
+                            data: e.target.result,
+                            duration: duration,
+                            time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+                        });
+                        showToast('Audio dihantar! 🎤', 'success');
+                    };
+                    reader.readAsDataURL(audioBlob);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                recordingStartTime = Date.now();
+                recordBtn.classList.add('recording');
+                indicator.classList.add('active');
+                playSound('click');
+
+                // Auto stop after 30 seconds
+                recordingTimer = setInterval(() => {
+                    const elapsed = (Date.now() - recordingStartTime) / 1000;
+                    if (elapsed >= 30 && isRecording) {
+                        toggleRecording();
+                    }
+                }, 1000);
+
+                showToast('Rakaman bermula...', 'info');
+            } catch(e) {
+                playSound('error');
+                showToast('Tidak dapat akses mikrofon!', 'error');
+            }
+        }
+
+        // ===== PLAY AUDIO MESSAGE =====
+        function playAudioMessage(audioData, duration) {
+            try {
+                const audio = new Audio(audioData);
+                audio.play();
+                showToast('Memainkan audio (' + duration + 's)...', 'info');
+            } catch(e) {
+                showToast('Tidak dapat main audio!', 'error');
+            }
+        }
+
+        // ===== IMAGE LIGHTBOX =====
+        function openImageLightbox(imageData) {
+            document.getElementById('lightboxImage').src = imageData;
+            document.getElementById('imageLightbox').classList.add('active');
+        }
+
+        function closeImageLightbox() {
+            document.getElementById('imageLightbox').classList.remove('active');
+        }
+
+        // ===== LOAD CHAT =====
         function loadChat() {
             database.ref('chat').limitToLast(50).on('value', (snapshot) => {
                 const container = document.getElementById('chatMessages');
                 container.innerHTML = '';
+                const currentName = document.getElementById('chatName').value.trim() || 'Anonymous';
+
                 if (snapshot.exists()) {
                     snapshot.forEach((child) => {
                         const data = child.val();
                         const msgDiv = document.createElement('div');
                         msgDiv.className = 'chat-msg';
-                        if (data.name === (document.getElementById('chatName').value || 'Anonymous')) {
+                        
+                        if (data.name === currentName) {
                             msgDiv.classList.add('own');
                         }
-                        msgDiv.innerHTML = `
-                            <div class="msg-name">${data.name} • ${data.time || ''}</div>
-                            <div class="msg-text">${data.text}</div>
-                        `;
+
+                        const nameDisplay = document.createElement('div');
+                        nameDisplay.className = 'msg-name';
+                        nameDisplay.textContent = `${data.name} • ${data.time || ''}`;
+                        msgDiv.appendChild(nameDisplay);
+
+                        if (data.type === 'text') {
+                            const textDiv = document.createElement('div');
+                            textDiv.className = 'msg-text';
+                            textDiv.textContent = data.text;
+                            msgDiv.appendChild(textDiv);
+                        } else if (data.type === 'image') {
+                            const img = document.createElement('img');
+                            img.className = 'msg-image';
+                            img.src = data.data;
+                            img.onclick = () => openImageLightbox(data.data);
+                            msgDiv.appendChild(img);
+                        } else if (data.type === 'audio') {
+                            const audioDiv = document.createElement('div');
+                            audioDiv.className = 'msg-audio';
+                            audioDiv.onclick = () => playAudioMessage(data.data, data.duration);
+                            audioDiv.innerHTML = `
+                                <span class="audio-icon">▶</span>
+                                <div class="audio-bar"><div class="audio-bar-fill"></div></div>
+                                <span class="audio-duration">${data.duration || 0}s</span>
+                            `;
+                            msgDiv.appendChild(audioDiv);
+                        }
+
                         container.appendChild(msgDiv);
                     });
                 }
