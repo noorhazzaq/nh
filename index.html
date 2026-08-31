@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Tube — Video Platform">
-    <title>ZACK Tube</title>
+    <meta name="description" content="ZACK Lives — Simulasi Kehidupan">
+    <title>ZACK Lives — Simulasi Kehidupan</title>
 
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Tube","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -82,9 +82,7 @@
             background: rgba(0,0,0,0.85);
             border-bottom: 1px solid var(--border-glow);
             backdrop-filter: blur(25px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
         }
         .logo {
             font-family: 'Orbitron', sans-serif;
@@ -102,127 +100,135 @@
 
         .main {
             position: relative; z-index: 2;
-            padding: calc(55px + var(--safe-top)) 10px calc(70px + var(--safe-bottom));
+            padding: calc(55px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
             max-width: 600px; margin: 0 auto;
             height: 100dvh;
             display: flex;
             flex-direction: column;
+            gap: 10px;
+            overflow-y: auto;
         }
 
-        .page { display: none; flex: 1; flex-direction: column; min-height: 0; }
-        .page.active { display: flex; animation: fadeUp 0.3s var(--ease); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
-
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-            padding: 8px 10px calc(8px + var(--safe-bottom));
-            background: rgba(0,0,0,0.95);
-            border-top: 1px solid var(--border-glow);
-            display: flex;
-            justify-content: space-around;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .nav-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            padding: 8px 15px; border: none; background: none;
-            color: #666; font-family: 'Orbitron', sans-serif; font-size: 7px;
-            cursor: pointer; border-radius: 10px;
-        }
-        .nav-btn .nav-icon { font-size: 18px; }
-        .nav-btn.active { color: var(--cyan); text-shadow: 0 0 10px rgba(0,240,255,0.5); }
-
-        .video-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
-        .video-card {
+        .card {
             border: 1px solid var(--border-glow);
             border-radius: var(--r-md);
             background: rgba(0,0,0,0.5);
-            overflow: hidden;
-            cursor: pointer;
+            padding: 15px;
+            backdrop-filter: blur(10px);
             animation: boxGlow 5s ease-in-out infinite;
         }
         @keyframes boxGlow {
             0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.1); }
-            50% { box-shadow: 0 0 35px rgba(0,240,255,0.2); }
-        }
-        .video-thumb {
-            height: 160px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 50px;
-            background: linear-gradient(135deg, rgba(255,0,51,0.2), rgba(0,240,255,0.1));
-            border-bottom: 1px solid var(--border-glow);
-        }
-        .video-info { padding: 12px; }
-        .video-title {
-            font-family: 'Orbitron', sans-serif; font-size: 13px;
-            color: var(--white); margin-bottom: 5px;
-        }
-        .video-meta {
-            display: flex; justify-content: space-between;
-            font-size: 9px; color: var(--muted);
+            50% { box-shadow: 0 0 35px rgba(0,240,255,0.15); }
         }
 
-        .watch-container {
-            flex: 1; display: flex; flex-direction: column;
-            overflow-y: auto; gap: 12px;
+        .card h3 {
+            font-family: 'Orbitron', sans-serif; font-size: 12px;
+            letter-spacing: 2px; color: var(--cyan);
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(0,240,255,0.5);
         }
-        .video-player {
-            height: 200px;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 70px;
-            background: linear-gradient(135deg, rgba(255,0,51,0.3), rgba(0,240,255,0.2));
-            border: 1px solid var(--border-glow);
-            border-radius: var(--r-md);
-            animation: boxGlow 5s ease-in-out infinite;
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
         }
-        .video-title-lg {
-            font-family: 'Orbitron', sans-serif; font-size: 16px;
-            color: var(--white);
-        }
-        .video-actions { display: flex; gap: 10px; }
-        .action-btn {
-            padding: 8px 15px;
-            background: rgba(255,0,51,0.08);
-            border: 1px solid var(--border-glow);
-            color: var(--cyan);
-            font-family: 'Orbitron', sans-serif; font-size: 9px;
-            border-radius: var(--r-full); cursor: pointer;
-        }
-        .comment-list { display: flex; flex-direction: column; gap: 8px; }
-        .comment {
+        .stat-box {
+            background: rgba(0,0,0,0.5);
             border: 1px solid var(--border-glow);
             border-radius: var(--r-sm);
             padding: 10px;
-            background: rgba(0,0,0,0.4);
-        }
-        .comment-name {
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            color: var(--cyan); margin-bottom: 3px;
-        }
-        .comment-text { font-size: 11px; color: #ccc; }
-
-        .upload-card {
-            border: 1px solid var(--border-glow);
-            border-radius: var(--r-md);
-            background: rgba(0,0,0,0.5);
-            padding: 20px;
             text-align: center;
         }
-        .input-field {
-            width: 100%; padding: 11px 15px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid var(--border-glow);
-            color: var(--white);
-            font-family: 'Rajdhani', sans-serif; font-size: 13px;
-            border-radius: var(--r-full); outline: none;
-            margin-bottom: 10px;
+        .stat-label {
+            font-size: 8px; color: var(--muted);
+            letter-spacing: 1px;
+            font-family: 'Orbitron', sans-serif;
         }
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px; font-weight: 900;
+            color: var(--white);
+            margin-top: 3px;
+        }
+        .stat-value.positive { color: var(--success); }
+        .stat-value.negative { color: var(--red); }
+
+        .stat-bar {
+            height: 6px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .stat-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s var(--ease);
+        }
+        .fill-green { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        .fill-yellow { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .fill-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
+
         .btn-primary {
             width: 100%; padding: 12px;
             background: var(--grad-btn); color: var(--white);
             font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px;
             border: none; border-radius: var(--r-full); font-weight: 700;
             cursor: pointer;
+            animation: sendGlow 2s ease-in-out infinite;
+        }
+        @keyframes sendGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(255,0,51,0.3); }
+            50% { box-shadow: 0 0 35px rgba(255,0,51,0.5), 0 0 50px rgba(0,240,255,0.3); }
+        }
+
+        .btn-secondary {
+            width: 100%; padding: 10px;
+            background: rgba(255,0,51,0.08);
+            border: 1px solid var(--border-glow);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 2px;
+            border-radius: var(--r-full);
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .event-box {
+            border: 1px solid var(--gold);
+            border-radius: var(--r-sm);
+            background: rgba(255,215,0,0.08);
+            padding: 12px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .event-box p {
+            font-size: 12px;
+            color: var(--white);
+            line-height: 1.5;
+        }
+
+        .choice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .death-screen {
+            text-align: center;
+            padding: 30px 15px;
+        }
+        .death-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        .death-screen h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            color: var(--red);
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255,0,51,0.5);
         }
 
         .toast-wrap {
@@ -249,53 +255,88 @@
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="header">
-        <div class="logo">ZACK TUBE</div>
+        <div class="logo">ZACK LIVES</div>
     </div>
 
-    <div class="main">
+    <div class="main" id="mainContent">
 
-        <!-- HOME -->
-        <div class="page active" id="page-home">
-            <div class="video-list" id="videoList"></div>
+        <!-- START SCREEN -->
+        <div id="startScreen">
+            <div class="card" style="text-align:center;">
+                <h3>🌍 SIMULASI KEHIDUPAN</h3>
+                <p style="font-size:13px;color:var(--muted);margin-bottom:15px;line-height:1.6;">
+                    Lahir di negara rawak. Jalani kehidupan penuh dengan keputusan dan peristiwa rawak.
+                </p>
+                <button class="btn-primary" onclick="startLife()">👶 MULA KEHIDUPAN</button>
+            </div>
         </div>
 
-        <!-- WATCH -->
-        <div class="page" id="page-watch">
-            <div class="watch-container" id="watchContainer"></div>
+        <!-- LIFE SCREEN -->
+        <div id="lifeScreen" style="display:none;">
+            <!-- EVENT -->
+            <div id="eventContainer"></div>
+
+            <!-- STATS -->
+            <div class="card">
+                <h3>📊 STATISTIK</h3>
+                <div class="stat-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">UMUR</div>
+                        <div class="stat-value" id="statAge">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KESIHATAN</div>
+                        <div class="stat-value positive" id="statHealth">100</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="healthBar" style="width:100%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KEBAHAGIAAN</div>
+                        <div class="stat-value positive" id="statHappiness">70</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-yellow" id="happinessBar" style="width:70%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">KECERDASAN</div>
+                        <div class="stat-value positive" id="statIntelligence">50</div>
+                        <div class="stat-bar"><div class="stat-bar-fill fill-green" id="intelligenceBar" style="width:50%"></div></div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">WANG (RM)</div>
+                        <div class="stat-value" id="statMoney">100</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">PENDIDIKAN</div>
+                        <div class="stat-value" id="statEducation">Tiada</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- IDENTITY -->
+            <div class="card">
+                <h3>👤 IDENTITI</h3>
+                <p style="font-size:12px;color:var(--muted);" id="identityText"></p>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="card">
+                <h3>🎯 TINDAKAN</h3>
+                <div class="choice-list" id="actionList"></div>
+            </div>
         </div>
 
-        <!-- UPLOAD -->
-        <div class="page" id="page-upload">
-            <div class="upload-card">
-                <h3 style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--cyan);margin-bottom:15px;">📤 MUAT NAIK VIDEO</h3>
-                <input type="text" id="videoTitle" class="input-field" placeholder="TAJUK VIDEO" maxlength="100">
-                <input type="text" id="videoIcon" class="input-field" placeholder="IKON (EMOJI)" maxlength="5" value="🎬">
-                <input type="text" id="videoDesc" class="input-field" placeholder="DESKRIPSI" maxlength="200">
-                <input type="text" id="videoAuthor" class="input-field" placeholder="NAMA ANDA" maxlength="30">
-                <button class="btn-primary" onclick="uploadVideo()">🚀 TERBITKAN</button>
+        <!-- DEATH SCREEN -->
+        <div id="deathScreen" style="display:none;">
+            <div class="death-screen">
+                <div class="death-icon">🕊️</div>
+                <h2>KISAH TAMAT</h2>
+                <p style="color:var(--muted);margin-bottom:20px;" id="deathSummary"></p>
+                <button class="btn-primary" onclick="restartLife()">🔄 KEHIDUPAN BARU</button>
             </div>
         </div>
 
     </div>
 
-    <div class="bottom-nav">
-        <button class="nav-btn active" onclick="showPage('home', this)"><span class="nav-icon">🏠</span>HOME</button>
-        <button class="nav-btn" onclick="showPage('upload', this)"><span class="nav-icon">📤</span>UPLOAD</button>
-        <button class="nav-btn" onclick="showPage('home', this)"><span class="nav-icon">🔔</span>SUB</button>
-        <button class="nav-btn" onclick="showPage('home', this)"><span class="nav-icon">👤</span>SAYA</button>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-
     <script>
         'use strict';
-
-        const CONFIG = {
-            databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'
-        };
-
-        const db = firebase.initializeApp({ databaseURL: CONFIG.databaseURL }).database();
 
         const $ = id => document.getElementById(id);
 
@@ -312,8 +353,46 @@
             }, 3000);
         }
 
-        const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
-        const getDate = () => new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
+        const COUNTRIES = [
+            { name: 'Malaysia', icon: '🇲🇾', income: 'sederhana', education: 'baik', health: 'baik' },
+            { name: 'Jepun', icon: '🇯🇵', income: 'tinggi', education: 'cemerlang', health: 'cemerlang' },
+            { name: 'India', icon: '🇮🇳', income: 'rendah', education: 'sederhana', health: 'sederhana' },
+            { name: 'Brazil', icon: '🇧🇷', income: 'sederhana', education: 'sederhana', health: 'baik' },
+            { name: 'Nigeria', icon: '🇳🇬', income: 'rendah', education: 'rendah', health: 'rendah' },
+            { name: 'USA', icon: '🇺🇸', income: 'tinggi', education: 'baik', health: 'baik' },
+            { name: 'Indonesia', icon: '🇮🇩', income: 'rendah', education: 'sederhana', health: 'sederhana' },
+            { name: 'UK', icon: '🇬🇧', income: 'tinggi', education: 'cemerlang', health: 'cemerlang' },
+            { name: 'Mesir', icon: '🇪🇬', income: 'rendah', education: 'sederhana', health: 'sederhana' },
+            { name: 'Australia', icon: '🇦🇺', income: 'tinggi', education: 'baik', health: 'cemerlang' }
+        ];
+
+        const NAMES = ['Ahmad', 'Siti', 'John', 'Maria', 'Tanaka', 'Yuki', 'Raj', 'Priya', 'Carlos', 'Ana', 'Chinedu', 'Amara', 'Budi', 'Dewi', 'Omar', 'Layla'];
+
+        const JOBS = [
+            { title: 'Pelajar', salary: 0, education: 'Tiada' },
+            { title: 'Buruh', salary: 800, education: 'Rendah' },
+            { title: 'Pekerja Kilang', salary: 1500, education: 'Sederhana' },
+            { title: 'Guru', salary: 2500, education: 'Tinggi' },
+            { title: 'Jurutera', salary: 5000, education: 'Tinggi' },
+            { title: 'Doktor', salary: 8000, education: 'Cemerlang' },
+            { title: 'Peniaga', salary: 3000, education: 'Sederhana' },
+            { title: 'Artis', salary: 1200, education: 'Sederhana' }
+        ];
+
+        const EVENTS = [
+            { text: '🎉 Anda mendapat kenaikan gaji!', happiness: +10, money: +500 },
+            { text: '🤒 Anda jatuh sakit.', health: -20, happiness: -10 },
+            { text: '📚 Anda belajar ilmu baru!', intelligence: +10, happiness: +5 },
+            { text: '💔 Rakan anda berpindah.', happiness: -10 },
+            { text: '🏆 Anda memenangi pertandingan!', happiness: +20, money: +1000 },
+            { text: '🚗 Anda terlibat kemalangan kecil.', health: -15, money: -300 },
+            { text: '🎁 Anda menerima hadiah!', happiness: +15 },
+            { text: '📉 Ekonomi merosot.', money: -200, happiness: -5 },
+            { text: '🌧️ Banjir melanda kawasan anda.', health: -10, money: -500 },
+            { text: '🌟 Anda bertemu kawan baru!', happiness: +15 }
+        ];
+
+        let life = null;
 
         function initStars() {
             const wrap = $('stars');
@@ -329,160 +408,165 @@
             wrap.appendChild(frag);
         }
 
-        function showPage(name, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            $(`page-${name}`).classList.add('active');
-            if (btn) btn.classList.add('active');
-            if (name === 'home') renderVideos();
-        }
+        function startLife() {
+            const country = COUNTRIES[Math.floor(Math.random() * COUNTRIES.length)];
+            const name = NAMES[Math.floor(Math.random() * NAMES.length)];
+            const gender = Math.random() > 0.5 ? 'Lelaki' : 'Perempuan';
 
-        function renderVideos() {
-            const list = $('videoList');
-            list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Memuat video...</p>';
-            db.ref('videos').limitToLast(50).on('value', snap => {
-                list.innerHTML = '';
-                if (!snap.exists()) {
-                    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Tiada video. Jadilah yang pertama!</p>';
-                    return;
-                }
-                const frag = document.createDocumentFragment();
-                const videos = [];
-                snap.forEach(child => videos.push({ key: child.key, ...child.val() }));
-                videos.reverse();
-                videos.forEach(v => {
-                    const card = document.createElement('div');
-                    card.className = 'video-card';
-                    card.innerHTML = `
-                        <div class="video-thumb">${v.icon || '🎬'}</div>
-                        <div class="video-info">
-                            <div class="video-title">${safeText(v.title)}</div>
-                            <div class="video-meta">
-                                <span>${safeText(v.author)}</span>
-                                <span>${safeText(v.views || 0)} tontonan • ${safeText(v.date)}</span>
-                            </div>
-                        </div>
-                    `;
-                    card.addEventListener('click', () => watchVideo(v.key));
-                    frag.appendChild(card);
-                });
-                list.appendChild(frag);
-            });
-        }
-
-        function watchVideo(key) {
-            db.ref('videos/' + key).once('value', snap => {
-                if (!snap.exists()) return;
-                const v = snap.val();
-                const container = $('watchContainer');
-                container.innerHTML = `
-                    <div class="video-player">${v.icon || '🎬'}</div>
-                    <div class="video-title-lg">${safeText(v.title)}</div>
-                    <div class="video-meta">
-                        <span>${safeText(v.author)} • ${safeText(v.views || 0)} tontonan • ${safeText(v.date)}</span>
-                    </div>
-                    <div class="video-actions">
-                        <button class="action-btn" onclick="likeVideo('${key}')">👍 ${v.likes || 0}</button>
-                        <button class="action-btn" onclick="shareVideo('${key}')">📤 KONGSI</button>
-                    </div>
-                    <p style="font-size:11px;color:var(--muted);">${safeText(v.desc || '')}</p>
-                    <h3 style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--cyan);">💬 KOMEN</h3>
-                    <div class="comment-list" id="commentList"></div>
-                    <div style="display:flex;gap:6px;">
-                        <input type="text" id="commentInput" class="input-field" placeholder="Tulis komen..." style="margin-bottom:0;">
-                        <button class="btn-primary" style="width:auto;padding:11px 15px;" onclick="addComment('${key}')">HANTAR</button>
-                    </div>
-                `;
-                db.ref('videos/' + key).update({ views: (v.views || 0) + 1 });
-                loadComments(key);
-                showPage('watch');
-                document.querySelectorAll('.nav-btn')[0].classList.add('active');
-            });
-        }
-
-        function likeVideo(key) {
-            db.ref('videos/' + key).transaction(v => {
-                if (v) {
-                    v.likes = (v.likes || 0) + 1;
-                }
-                return v;
-            }).then(() => toast('Dilike! 👍', 'success'));
-        }
-
-        function shareVideo(key) {
-            if (navigator.share) {
-                navigator.share({ title: 'ZACK Tube', url: window.location.href }).catch(() => {});
-            } else {
-                toast('Pautan disalin!', 'info');
-            }
-        }
-
-        function loadComments(videoKey) {
-            db.ref('comments/' + videoKey).limitToLast(30).on('value', snap => {
-                const list = $('commentList');
-                list.innerHTML = '';
-                if (!snap.exists()) {
-                    list.innerHTML = '<p style="color:#555;font-size:10px;">Tiada komen.</p>';
-                    return;
-                }
-                const frag = document.createDocumentFragment();
-                snap.forEach(child => {
-                    const c = child.val();
-                    const div = document.createElement('div');
-                    div.className = 'comment';
-                    div.innerHTML = `
-                        <div class="comment-name">${safeText(c.name)}</div>
-                        <div class="comment-text">${safeText(c.text)}</div>
-                    `;
-                    frag.appendChild(div);
-                });
-                list.appendChild(frag);
-            });
-        }
-
-        function addComment(videoKey) {
-            const input = $('commentInput');
-            const text = input.value.trim();
-            if (!text) return;
-            const name = localStorage.getItem('zack_name') || 'Anonymous';
-            db.ref('comments/' + videoKey).push({
+            life = {
                 name: name,
-                text: text,
-                time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
-            }).then(() => {
-                input.value = '';
-                toast('Komen dihantar!', 'success');
-            });
+                gender: gender,
+                country: country.name,
+                icon: country.icon,
+                age: 0,
+                health: 100,
+                happiness: 70,
+                intelligence: 50,
+                money: Math.floor(Math.random() * 500) + 100,
+                education: 'Tiada',
+                alive: true
+            };
+
+            $('startScreen').style.display = 'none';
+            $('lifeScreen').style.display = 'block';
+            $('deathScreen').style.display = 'none';
+
+            updateIdentity();
+            updateStats();
+            generateActions();
+            toast(`Lahir di ${country.icon} ${country.name}!`, 'success');
         }
 
-        function uploadVideo() {
-            const title = $('videoTitle').value.trim();
-            const icon = $('videoIcon').value.trim() || '🎬';
-            const desc = $('videoDesc').value.trim();
-            const author = $('videoAuthor').value.trim() || localStorage.getItem('zack_name') || 'Anonymous';
-            if (!title) { toast('Sila isi tajuk!', 'error'); return; }
-            if (!author) { toast('Sila isi nama!', 'error'); return; }
-            localStorage.setItem('zack_name', author);
-            db.ref('videos').push({
-                title: title,
-                icon: icon,
-                desc: desc,
-                author: author,
-                views: 0,
-                likes: 0,
-                date: getDate(),
-                timestamp: Date.now()
-            }).then(() => {
-                toast('Video diterbitkan! 🎉', 'success');
-                $('videoTitle').value = '';
-                $('videoDesc').value = '';
-                showPage('home');
-                document.querySelectorAll('.nav-btn')[0].classList.add('active');
-            }).catch(() => toast('Gagal terbit!', 'error'));
+        function updateIdentity() {
+            $('identityText').textContent = `${life.icon} ${life.name} • ${life.gender} • ${life.country} • Umur ${life.age}`;
+        }
+
+        function updateStats() {
+            $('statAge').textContent = life.age;
+            $('statHealth').textContent = life.health;
+            $('statHappiness').textContent = life.happiness;
+            $('statIntelligence').textContent = life.intelligence;
+            $('statMoney').textContent = life.money.toLocaleString();
+            $('statEducation').textContent = life.education;
+
+            $('healthBar').style.width = life.health + '%';
+            $('happinessBar').style.width = life.happiness + '%';
+            $('intelligenceBar').style.width = life.intelligence + '%';
+
+            $('healthBar').className = 'stat-bar-fill ' + (life.health > 50 ? 'fill-green' : life.health > 25 ? 'fill-yellow' : 'fill-red');
+            $('happinessBar').className = 'stat-bar-fill ' + (life.happiness > 50 ? 'fill-green' : life.happiness > 25 ? 'fill-yellow' : 'fill-red');
+            $('intelligenceBar').className = 'stat-bar-fill ' + (life.intelligence > 50 ? 'fill-green' : life.intelligence > 25 ? 'fill-yellow' : 'fill-red');
+        }
+
+        function generateActions() {
+            const list = $('actionList');
+            list.innerHTML = '';
+            const actions = getActionsForAge(life.age);
+            const frag = document.createDocumentFragment();
+
+            actions.forEach(action => {
+                const btn = document.createElement('button');
+                btn.className = 'btn-secondary';
+                btn.textContent = action.label;
+                btn.addEventListener('click', () => performAction(action));
+                frag.appendChild(btn);
+            });
+
+            list.appendChild(frag);
+        }
+
+        function getActionsForAge(age) {
+            const actions = [];
+            if (age < 6) {
+                actions.push({ label: '🧸 Bermain', happiness: +10, health: +5 });
+                actions.push({ label: '📖 Belajar ABC', intelligence: +10 });
+                actions.push({ label: '😴 Tidur', health: +10, happiness: +5 });
+            } else if (age < 18) {
+                actions.push({ label: '📚 Belajar di sekolah', intelligence: +15, happiness: -5 });
+                actions.push({ label: '⚽ Bermain sukan', health: +15, happiness: +10 });
+                actions.push({ label: '🎮 Main game', happiness: +10, health: -5 });
+                actions.push({ label: '📖 Baca buku', intelligence: +10, happiness: +5 });
+            } else if (age < 60) {
+                actions.push({ label: '💼 Bekerja', money: +1500, happiness: -5 });
+                actions.push({ label: '📚 Sambung belajar', intelligence: +10, money: -500 });
+                actions.push({ label: '🏋️ Bersenam', health: +15, happiness: +10 });
+                actions.push({ label: '💑 Cari pasangan', happiness: +15 });
+                actions.push({ label: '🏠 Beli rumah', money: -5000, happiness: +20 });
+            } else {
+                actions.push({ label: '🧘 Berehat', health: +10, happiness: +15 });
+                actions.push({ label: '👨‍👩‍👧 Luangkan masa dengan keluarga', happiness: +20 });
+                actions.push({ label: '📖 Baca buku', intelligence: +5, happiness: +10 });
+            }
+            actions.push({ label: '⏭️ Teruskan hidup (1 tahun)', age: +1 });
+            return actions;
+        }
+
+        function performAction(action) {
+            if (!life.alive) return;
+
+            if (action.age) {
+                life.age += action.age;
+            }
+            if (action.health) life.health = Math.max(0, Math.min(100, life.health + action.health));
+            if (action.happiness) life.happiness = Math.max(0, Math.min(100, life.happiness + action.happiness));
+            if (action.intelligence) life.intelligence = Math.max(0, Math.min(100, life.intelligence + action.intelligence));
+            if (action.money) life.money = Math.max(0, life.money + action.money);
+
+            // Random event
+            if (Math.random() < 0.3) {
+                const event = EVENTS[Math.floor(Math.random() * EVENTS.length)];
+                showEvent(event);
+                if (event.health) life.health = Math.max(0, Math.min(100, life.health + event.health));
+                if (event.happiness) life.happiness = Math.max(0, Math.min(100, life.happiness + event.happiness));
+                if (event.intelligence) life.intelligence = Math.max(0, Math.min(100, life.intelligence + event.intelligence));
+                if (event.money) life.money = Math.max(0, life.money + event.money);
+            }
+
+            // Check death
+            if (life.health <= 0) {
+                die('kesihatan teruk');
+                return;
+            }
+            if (life.age >= 90) {
+                die('usia lanjut');
+                return;
+            }
+            if (Math.random() < 0.01 && life.age > 50) {
+                die('penyakit');
+                return;
+            }
+
+            updateStats();
+            updateIdentity();
+            generateActions();
+        }
+
+        function showEvent(event) {
+            const container = $('eventContainer');
+            container.innerHTML = `
+                <div class="event-box">
+                    <p>${event.text}</p>
+                </div>
+            `;
+            setTimeout(() => container.innerHTML = '', 2500);
+        }
+
+        function die(reason) {
+            life.alive = false;
+            $('lifeScreen').style.display = 'none';
+            $('deathScreen').style.display = 'block';
+            $('deathSummary').textContent = `${life.icon} ${life.name} meninggal pada umur ${life.age} tahun di ${life.country} kerana ${reason}. Wang: RM${life.money.toLocaleString()} • Pendidikan: ${life.education}`;
+            toast('Kehidupan tamat...', 'error');
+        }
+
+        function restartLife() {
+            $('deathScreen').style.display = 'none';
+            $('lifeScreen').style.display = 'none';
+            $('startScreen').style.display = 'block';
+            $('eventContainer').innerHTML = '';
         }
 
         initStars();
-        renderVideos();
     </script>
 
 </body>
