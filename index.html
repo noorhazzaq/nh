@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK — Chat">
-    <title>ZACK — Chat</title>
+    <meta name="description" content="ZACK — Realm of Light Chat">
+    <title>ZACK — Realm of Light</title>
 
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
@@ -17,13 +17,13 @@
             --cyan: #00f0ff;
             --gold: #ffd700;
             --purple: #8a2be2;
+            --pink: #ff00ff;
             --bg: #000000;
             --white: #ffffff;
             --muted: #999999;
             --success: #00ff88;
-            --border: rgba(255,0,51,0.15);
             --border-glow: rgba(0,240,255,0.3);
-            --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff, #ffd700);
+            --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff, #ffd700, #ff00ff);
             --grad-btn: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
             --r-sm: 10px;
             --r-md: 16px;
@@ -47,14 +47,15 @@
 
         ::-webkit-scrollbar { width: 0; height: 0; }
 
-        /* ============ AURORA BACKGROUND ============ */
-        .aurora-bg {
+        /* ============ AURORA ============ */
+        .aurora {
             position: fixed; inset: 0;
             background:
                 radial-gradient(circle at 20% 30%, rgba(255,0,51,0.15) 0%, transparent 50%),
                 radial-gradient(circle at 80% 70%, rgba(0,240,255,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.08) 0%, transparent 60%),
-                radial-gradient(circle at 60% 20%, rgba(255,215,0,0.06) 0%, transparent 40%);
+                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.1) 0%, transparent 60%),
+                radial-gradient(circle at 60% 20%, rgba(255,215,0,0.08) 0%, transparent 40%),
+                radial-gradient(circle at 40% 80%, rgba(255,0,255,0.06) 0%, transparent 50%);
             z-index: 0;
             animation: auroraFloat 10s ease-in-out infinite;
         }
@@ -65,6 +66,47 @@
             75% { transform: translate(-20px, -15px) scale(1.02); }
         }
 
+        /* ============ STAR FIELD ============ */
+        .stars {
+            position: fixed; inset: 0; z-index: 0;
+            pointer-events: none;
+        }
+        .star {
+            position: absolute;
+            width: 2px; height: 2px;
+            border-radius: 50%;
+            background: var(--white);
+            animation: twinkle 3s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; box-shadow: 0 0 8px var(--white); }
+        }
+
+        /* ============ PARTICLES ============ */
+        .particles {
+            position: fixed; inset: 0; z-index: 0;
+            pointer-events: none;
+        }
+        .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            border-radius: 50%;
+            animation: floatUp linear infinite;
+        }
+        .particle-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
+        .particle-cyan { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
+        .particle-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .particle-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* ============ GRID ============ */
         .grid-overlay {
             position: fixed; inset: 0;
             background-image:
@@ -75,6 +117,28 @@
             pointer-events: none;
             mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
             -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
+        }
+
+        /* ============ ORBIT RINGS ============ */
+        .orbit {
+            position: fixed; inset: 0; z-index: 0;
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .orbit-ring {
+            position: absolute;
+            border: 1px solid rgba(0,240,255,0.08);
+            border-radius: 50%;
+            animation: orbitSpin 20s linear infinite;
+        }
+        .orbit-ring:nth-child(1) { width: 300px; height: 300px; }
+        .orbit-ring:nth-child(2) { width: 500px; height: 500px; animation-duration: 30s; border-color: rgba(255,0,51,0.06); }
+        .orbit-ring:nth-child(3) { width: 700px; height: 700px; animation-duration: 40s; border-color: rgba(255,215,0,0.04); }
+        @keyframes orbitSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* ============ HEADER ============ */
@@ -131,12 +195,8 @@
             animation: boxGlow 5s ease-in-out infinite;
         }
         @keyframes boxGlow {
-            0%, 100% {
-                box-shadow: 0 0 30px rgba(255,0,51,0.15), 0 0 50px rgba(0,240,255,0.1);
-            }
-            50% {
-                box-shadow: 0 0 50px rgba(255,0,51,0.25), 0 0 80px rgba(0,240,255,0.2);
-            }
+            0%, 100% { box-shadow: 0 0 30px rgba(255,0,51,0.15), 0 0 50px rgba(0,240,255,0.1); }
+            50% { box-shadow: 0 0 50px rgba(255,0,51,0.25), 0 0 80px rgba(0,240,255,0.2), 0 0 100px rgba(255,215,0,0.1); }
         }
 
         .chat-head {
@@ -245,16 +305,6 @@
             text-shadow: 0 0 15px var(--red);
         }
 
-        .typing-indicator {
-            font-size: 8px; color: #666; padding: 4px 12px;
-            display: none; letter-spacing: 1px;
-        }
-        .typing-indicator.show {
-            display: block;
-            animation: typingGlow 1s infinite;
-        }
-        @keyframes typingGlow { 50% { opacity: 0.5; text-shadow: 0 0 10px rgba(0,240,255,0.5); } }
-
         .chat-input-area {
             padding: 10px 12px;
             border-top: 1px solid var(--border-glow);
@@ -293,7 +343,7 @@
         }
         @keyframes sendGlow {
             0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.3), 0 0 30px rgba(0,240,255,0.2); }
-            50% { box-shadow: 0 0 40px rgba(255,0,51,0.5), 0 0 60px rgba(0,240,255,0.4); }
+            50% { box-shadow: 0 0 40px rgba(255,0,51,0.5), 0 0 60px rgba(0,240,255,0.4), 0 0 80px rgba(255,215,0,0.2); }
         }
         .send-btn:disabled { cursor: not-allowed; }
 
@@ -361,8 +411,23 @@
         .lightbox img {
             max-width: 92%; max-height: 85%;
             border: 2px solid var(--cyan); border-radius: 12px;
-            box-shadow: 0 0 60px rgba(0,240,255,0.5), 0 0 100px rgba(255,0,51,0.3);
+            box-shadow: 0 0 60px rgba(0,240,255,0.5), 0 0 100px rgba(255,0,51,0.3), 0 0 150px rgba(255,215,0,0.15);
             pointer-events: none;
+        }
+
+        /* ============ RIPPLE EFFECT ============ */
+        .ripple {
+            position: fixed;
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--cyan);
+            pointer-events: none;
+            z-index: 400;
+            animation: rippleOut 0.6s var(--ease) forwards;
+        }
+        @keyframes rippleOut {
+            from { transform: scale(0); opacity: 1; }
+            to { transform: scale(10); opacity: 0; }
         }
 
         #chatImageInput { display: none; }
@@ -370,8 +435,15 @@
 </head>
 <body>
 
-    <div class="aurora-bg"></div>
+    <div class="aurora"></div>
+    <div class="stars" id="stars"></div>
+    <div class="particles" id="particles"></div>
     <div class="grid-overlay"></div>
+    <div class="orbit">
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring"></div>
+        <div class="orbit-ring"></div>
+    </div>
 
     <div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
 
@@ -386,12 +458,11 @@
     <div class="main">
         <div class="chat-box" role="region" aria-label="Chat">
             <div class="chat-head">
-                <h3>💬 CHAT</h3>
+                <h3>💬 REALM OF LIGHT</h3>
                 <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
             <div class="rec-bar" id="recBar">🔴 MERAKAM...</div>
             <div class="chat-log" id="chatLog"></div>
-            <div class="typing-indicator" id="typingIndicator">Seseorang sedang menaip...</div>
             <div class="chat-input-area">
                 <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA" maxlength="20" aria-label="Nama anda">
                 <input type="text" id="chatInput" class="chat-input" placeholder="Tulis mesej..." maxlength="500" aria-label="Tulis mesej">
@@ -409,6 +480,7 @@
     <script>
         'use strict';
 
+        /* ============ CONFIG ============ */
         const CONFIG = {
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
             maxImageSize: 2 * 1024 * 1024,
@@ -417,6 +489,7 @@
             messageLimit: 50
         };
 
+        /* ============ STATE ============ */
         const state = {
             isRecording: false,
             recordStart: 0,
@@ -427,6 +500,7 @@
             deleteTimer: null
         };
 
+        /* ============ DOM ============ */
         const $ = id => document.getElementById(id);
         const DOM = {
             toastWrap: $('toastWrap'),
@@ -440,12 +514,56 @@
             recBar: $('recBar'),
             sendBtn: $('sendBtn'),
             imgBtn: $('imgBtn'),
-            chatImageInput: $('chatImageInput'),
-            typingIndicator: $('typingIndicator')
+            chatImageInput: $('chatImageInput')
         };
 
+        /* ============ FIREBASE ============ */
         const db = firebase.initializeApp({ databaseURL: CONFIG.databaseURL }).database();
 
+        /* ============ STAR FIELD ============ */
+        function initStars() {
+            const wrap = $('stars');
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < 50; i++) {
+                const s = document.createElement('div');
+                s.className = 'star';
+                s.style.left = Math.random() * 100 + '%';
+                s.style.top = Math.random() * 100 + '%';
+                s.style.animationDelay = Math.random() * 3 + 's';
+                s.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                frag.appendChild(s);
+            }
+            wrap.appendChild(frag);
+        }
+
+        /* ============ PARTICLES ============ */
+        function initParticles() {
+            const wrap = $('particles');
+            const colors = ['particle-red', 'particle-cyan', 'particle-gold', 'particle-purple'];
+            const frag = document.createDocumentFragment();
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.className = `particle ${colors[i % 4]}`;
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDuration = (Math.random() * 6 + 4) + 's';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                p.style.width = p.style.height = (Math.random() * 3 + 2) + 'px';
+                frag.appendChild(p);
+            }
+            wrap.appendChild(frag);
+        }
+
+        /* ============ RIPPLE ============ */
+        function createRipple(x, y) {
+            const r = document.createElement('div');
+            r.className = 'ripple';
+            r.style.left = x + 'px';
+            r.style.top = y + 'px';
+            document.body.appendChild(r);
+            setTimeout(() => r.remove(), 600);
+        }
+
+        /* ============ HELPERS ============ */
         function toast(msg, type = 'info') {
             while (DOM.toastWrap.children.length >= 3) DOM.toastWrap.firstChild.remove();
             const el = document.createElement('div');
@@ -480,10 +598,7 @@
             reader.onload = e => {
                 const img = new Image();
                 img.onload = () => {
-                    if (img.width <= CONFIG.maxImageDim) {
-                        cb(reader.result);
-                        return;
-                    }
+                    if (img.width <= CONFIG.maxImageDim) { cb(reader.result); return; }
                     const canvas = document.createElement('canvas');
                     const ratio = CONFIG.maxImageDim / img.width;
                     canvas.width = CONFIG.maxImageDim;
@@ -496,6 +611,7 @@
             reader.readAsDataURL(file);
         }
 
+        /* ============ CHAT ============ */
         db.ref('chat').limitToLast(CONFIG.messageLimit).on('value', snap => {
             const myName = getName();
             const atBottom = DOM.chatLog.scrollHeight - DOM.chatLog.scrollTop - DOM.chatLog.clientHeight < 50;
@@ -514,15 +630,12 @@
                         sep.textContent = `— ${ds} —`;
                         frag.appendChild(sep);
                     }
-
                     const div = document.createElement('div');
                     div.className = 'msg' + (d.name === myName ? ' own' : '');
-
                     const name = document.createElement('div');
                     name.className = 'msg-name';
                     name.textContent = `${safeText(d.name)} • ${d.time || ''}`;
                     div.appendChild(name);
-
                     if (d.type === 'text') {
                         const t = document.createElement('div');
                         t.className = 'msg-text';
@@ -548,7 +661,6 @@
                         a.addEventListener('click', () => new Audio(d.data).play().catch(() => toast('Tidak dapat main audio!', 'error')));
                         div.appendChild(a);
                     }
-
                     if (d.name === myName) {
                         const del = document.createElement('button');
                         del.className = 'msg-del';
@@ -558,7 +670,6 @@
                         del.addEventListener('click', () => handleDelete(child.key, del));
                         div.appendChild(del);
                     }
-
                     frag.appendChild(div);
                 });
             }
@@ -642,9 +753,7 @@
             DOM.recBar.classList.remove('active');
             DOM.recBar.textContent = '🔴 MERAKAM...';
             clearInterval(state.recordTimer);
-            if (state.recorder) {
-                try { state.recorder.stop(); } catch(e) {}
-            }
+            if (state.recorder) { try { state.recorder.stop(); } catch(e) {} }
         }
 
         function handleDelete(key, btn) {
@@ -698,6 +807,14 @@
         DOM.recordBtn.addEventListener('click', toggleRecord);
         DOM.lightbox.addEventListener('click', closeLightbox);
 
+        document.addEventListener('click', e => {
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'BUTTON') {
+                createRipple(e.clientX, e.clientY);
+            }
+        });
+
+        initStars();
+        initParticles();
         updateSendBtn();
     </script>
 
