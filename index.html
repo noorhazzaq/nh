@@ -2,28 +2,40 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real Lives 2026 Engine (Full 888 Realism Matrix)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Real Lives 2026 Engine Core</title>
   <style>
     :root {
-      --bg-color: #0b0f19;
-      --card-bg: #151c2c;
-      --border-color: #273549;
-      --text-main: #f1f5f9;
-      --text-muted: #94a3b8;
+      --bg: #090d16;
+      --panel-bg: #111827;
+      --card-bg: #1f293d;
+      --border: #2d3748;
+      --border-accent: #3b82f6;
+      
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+      
       --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
       --danger: #f43f5e;
-      --warning: #f59e0b;
+      --warning: #fbbf24;
       --success: #10b981;
-      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      
+      --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
     body {
-      background-color: var(--bg-color);
+      background-color: var(--bg);
       color: var(--text-main);
-      font-family: var(--font-family);
+      font-family: var(--font);
       line-height: 1.4;
       padding: 0.75rem;
       max-width: 1200px;
@@ -31,16 +43,34 @@
     }
 
     header {
-      margin-bottom: 1rem;
-      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
       padding-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    h1 { font-size: 1.25rem; font-weight: 700; color: var(--accent); }
-    .subtitle { font-size: 0.8rem; color: var(--text-muted); }
+    h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: -0.01em;
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--border);
+      color: var(--text-main);
+      text-transform: uppercase;
+      font-family: var(--mono);
+    }
+
+    .badge.alive { background: var(--success); color: #000; }
+    .badge.dead { background: var(--danger); color: #fff; }
 
     .layout-grid {
       display: grid;
@@ -49,101 +79,151 @@
     }
 
     @media (min-width: 768px) {
-      .layout-grid { grid-template-columns: 320px 1fr; }
+      .layout-grid {
+        grid-template-columns: 320px 1fr;
+      }
     }
 
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--border-color);
+    .panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
     }
 
-    .card-title {
-      font-size: 0.9rem;
+    .panel-header {
+      font-size: 0.85rem;
       font-weight: 600;
-      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sub);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.4rem;
     }
 
-    .controls { display: flex; flex-direction: column; gap: 0.75rem; }
+    .controls-group {
+      display: flex;
+      gap: 0.5rem;
+    }
 
     button {
       background: var(--accent);
-      color: #0b0f19;
+      color: #040914;
       border: none;
-      padding: 0.6rem 1rem;
-      font-weight: 600;
+      padding: 0.75rem 1rem;
+      font-weight: 700;
+      font-size: 0.9rem;
       border-radius: 6px;
       cursor: pointer;
       width: 100%;
-      transition: opacity 0.2s;
+      transition: background 0.15s ease, transform 0.05s ease;
     }
 
-    button:hover { opacity: 0.9; }
-    button:disabled { background: var(--border-color); color: var(--text-muted); cursor: not-allowed; }
+    button:active {
+      transform: scale(0.98);
+    }
 
-    .stat-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    button:disabled {
+      background: var(--border);
+      color: var(--text-sub);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button.btn-sub {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-sub);
+      padding: 0.5rem;
+      font-weight: 500;
+      font-size: 0.8rem;
+    }
+
+    .stat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
     .stat-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.8rem;
     }
 
-    .stat-label { color: var(--text-muted); }
-    .stat-value { font-weight: 600; font-family: monospace; }
-
-    .progress-bar {
-      width: 100%;
-      height: 4px;
-      background: var(--border-color);
-      border-radius: 2px;
-      overflow: hidden;
-      margin-top: 2px;
+    .stat-label {
+      color: var(--text-sub);
     }
 
-    .progress-fill {
+    .stat-val {
+      font-family: var(--mono);
+      font-weight: 600;
+    }
+
+    .track {
+      width: 100%;
+      height: 5px;
+      background: var(--border);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 3px;
+    }
+
+    .fill {
       height: 100%;
       background: var(--accent);
-      transition: width 0.2s ease;
+      transition: width 0.2s ease-out;
     }
 
-    .progress-fill.danger { background: var(--danger); }
-    .progress-fill.warning { background: var(--warning); }
+    .fill.warning { background: var(--warning); }
+    .fill.danger { background: var(--danger); }
 
-    .log-container {
-      height: 520px;
+    .log-viewport {
+      height: 480px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-      font-family: monospace;
-      font-size: 0.8rem;
+      font-family: var(--mono);
+      font-size: 0.78rem;
       padding-right: 0.25rem;
     }
 
-    .log-entry {
-      padding: 0.4rem 0.6rem;
+    .log-card {
+      padding: 0.5rem 0.65rem;
       border-radius: 4px;
-      background: rgba(255, 255, 255, 0.02);
+      background: var(--card-bg);
       border-left: 3px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
-    .log-entry.system { border-color: var(--text-muted); }
-    .log-entry.warning { border-color: var(--warning); }
-    .log-entry.danger { border-color: var(--danger); }
-    .log-entry.death { border-color: var(--danger); background: rgba(244, 63, 94, 0.15); }
+    .log-card.system { border-color: var(--text-sub); }
+    .log-card.warning { border-color: var(--warning); }
+    .log-card.danger { border-color: var(--danger); }
+    .log-card.death {
+      border-color: var(--danger);
+      background: rgba(244, 63, 94, 0.12);
+    }
 
-    .tag {
+    .log-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-sub);
       font-size: 0.7rem;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: var(--border-color);
+    }
+
+    .log-body {
       color: var(--text-main);
-      text-transform: uppercase;
+      word-break: break-word;
     }
   </style>
 </head>
@@ -152,155 +232,154 @@
   <header>
     <div>
       <h1>Real Lives 2026 Engine</h1>
-      <p class="subtitle">Complete Realism Matrix (Mechanics #1–#888)</p>
+      <div style="font-size: 0.75rem; color: var(--text-sub);">Optimized Realism System Matrix</div>
     </div>
-    <span id="year-display" class="tag">Age 30.0</span>
+    <span id="badge-age" class="badge">Age 30.0</span>
   </header>
 
   <div class="layout-grid">
-    <aside class="controls">
-      <div class="card">
-        <div class="card-title">
-          <span>Control Panel</span>
-          <span id="life-status" class="tag">Alive</span>
-        </div>
-        <button id="btn-step">Run Year Step</button>
-        <button id="btn-reset" style="background: transparent; color: var(--text-muted); margin-top: 0.4rem;">Reset State</button>
+    <!-- Left Panel: State Metrics & Controllers -->
+    <aside class="panel">
+      <div class="panel-header">
+        <span>Controls</span>
+        <span id="badge-status" class="badge alive">Alive</span>
       </div>
 
-      <div class="card">
-        <div class="card-title">Biological Status</div>
-        <div class="stat-group" id="biomarkers-root"></div>
-      </div>
+      <button id="btn-step">Run Simulation Step</button>
 
-      <div class="card">
-        <div class="card-title">Socio-Economic Status</div>
-        <div class="stat-group" id="econ-root"></div>
-      </div>
+      <div class="panel-header" style="margin-top: 0.25rem;">Biological Domain</div>
+      <div id="bio-root" class="stat-list"></div>
+
+      <div class="panel-header" style="margin-top: 0.25rem;">Socio-Economic Domain</div>
+      <div id="econ-root" class="stat-list"></div>
+
+      <button id="btn-reset" class="btn-sub" style="margin-top: auto;">Reset State Machine</button>
     </aside>
 
-    <main class="card">
-      <div class="card-title">
-        <span>Event Engine Resolution Log</span>
-        <span id="mechanic-count" class="tag">888 Active Mechanics</span>
+    <!-- Right Panel: Event Pipeline Log -->
+    <main class="panel">
+      <div class="panel-header">
+        <span>Pipeline Execution Stream</span>
+        <span id="badge-count" class="badge">888 Realism Active</span>
       </div>
-      <div id="log-root" class="log-container"></div>
+      <div id="log-viewport" class="log-viewport"></div>
     </main>
   </div>
 
   <script>
     /**
-     * Real Lives 2026 Engine - Single File Monolith
-     * Built for performance with zero external dependencies.
+     * Real Lives 2026 Engine
+     * Zero-dependency single-file monolith. Optimized for low-latency mobile platforms.
      */
 
+    // --- Core State Model ---
     const createInitialState = () => ({
       age: 30.0,
       isAlive: true,
       
-      // Biological Domain (001-300)
-      telomereLength: 1.0,
-      mitochondrialHealth: 1.0,
-      cardiovascularStrain: 0.0,
-      chronicInflammation: 0.0,
-      immuneEfficacy: 1.0,
+      // Biological Metrics (#001–#300)
+      telomeres: 1.0,
+      mitochondria: 1.0,
+      cvStrain: 0.0,
+      inflammation: 0.0,
+      immunity: 1.0,
 
-      // Socio-Economic Domain (301-600)
-      liquidCapital: 5000.0,
+      // Socio-Economic Metrics (#301–#600)
+      capital: 5000.0,
       purchasingPower: 1.0,
       creditScore: 710,
 
-      // Environmental Domain (601-888)
-      infrastructureIntegrity: 0.95,
-      surveillanceThreat: 0.05,
-      globalPathogenDensity: 0.025
+      // Environmental Mechanics (#601–#888)
+      infrastructure: 0.95,
+      surveillance: 0.05,
+      pathogens: 0.025
     });
 
-    let agentState = createInitialState();
+    let state = createInitialState();
 
-    // Factory: Build full array of all 888 unique mechanics
-    const build888Mechanics = () => {
-      const bioPrefixes = ["Epigenetic", "Mitochondrial", "Vascular", "Immune", "Neuro", "Cellular", "Metabolic", "Endocrine"];
-      const bioTypes = ["Decay", "Mutation", "Strain", "Toxicity", "Atrophy", "Suppression", "Dysfunction", "Inflammation"];
-      
-      const econPrefixes = ["Algorithmic", "Liquidity", "Credit", "Market", "Regulatory", "Taxation", "Asset", "Debt"];
-      const econTypes = ["Depreciation", "Shock", "Penalty", "Lag", "Default", "Seizure", "Devaluation", "Contagion"];
-      
-      const envPrefixes = ["Grid", "Subsea", "Atmospheric", "Pathogen", "Microplastic", "Surveillance", "Supply Chain", "Thermal"];
-      const envTypes = ["Failure", "Interference", "Saturation", "Vector", "Outage", "Cascade", "Sabotage", "Collapse"];
+    // --- Mechanics Registry (#001–#888) ---
+    const buildFullMatrix = () => {
+      const bioTerms = ["Epigenetic", "Mitochondrial", "Vascular", "Immune", "Neuro", "Cellular", "Metabolic", "Endocrine"];
+      const econTerms = ["Algorithmic", "Liquidity", "Credit", "Market", "Regulatory", "Taxation", "Asset", "Debt"];
+      const envTerms = ["Grid", "Subsea", "Atmospheric", "Pathogen", "Microplastic", "Surveillance", "Infrastructure", "Thermal"];
 
-      const mechanics = [];
+      const matrix = [];
 
       for (let id = 1; id <= 888; id++) {
-        // High-fidelity specific definitions for documented anchor mechanics
+        // High-fidelity specific definitions for explicit anchors
         if (id === 426) {
-          mechanics.push({
+          matrix.push({
             id: 426,
             name: "Mitochondrial Cytopathy",
             category: "Biological",
-            getProb: (s) => 0.01 * (2.0 - s.mitochondrialHealth),
+            getProb: (s) => 0.01 * (2.0 - s.mitochondria),
             exec: (s) => {
-              s.mitochondrialHealth = Math.max(0, s.mitochondrialHealth - 0.12);
-              return { text: "Cellular ATP output degraded by cytopathy.", level: "warning" };
+              s.mitochondria = Math.max(0, s.mitochondria - 0.12);
+              return { text: "Cellular ATP output degraded by mitochondrial cytopathy.", level: "warning" };
             }
           });
           continue;
         }
+
         if (id === 434) {
-          mechanics.push({
+          matrix.push({
             id: 434,
             name: "Sleep Apnea CV Strain",
             category: "Biological",
-            getProb: (s) => 0.04 * (1.0 + s.cardiovascularStrain * 2.5),
+            getProb: (s) => 0.04 * (1.0 + s.cvStrain * 2.5),
             exec: (s) => {
-              s.cardiovascularStrain = Math.min(1.0, s.cardiovascularStrain + 0.15);
-              return { text: "Nocturnal hypoxia increased vascular strain.", level: "warning" };
+              s.cvStrain = Math.min(1.0, s.cvStrain + 0.15);
+              return { text: "Nocturnal hypoxia increased vascular load.", level: "warning" };
             }
           });
           continue;
         }
+
         if (id === 435) {
-          mechanics.push({
+          matrix.push({
             id: 435,
             name: "Sovereign Bond Cascade",
             category: "Socio-Economic",
             getProb: () => 0.005,
             exec: (s) => {
-              s.liquidCapital *= 0.85;
+              s.capital *= 0.85;
               s.purchasingPower *= 0.80;
               return { text: "Macro debt crisis liquidated 15% liquid reserves.", level: "danger" };
             }
           });
           continue;
         }
+
         if (id === 465) {
-          mechanics.push({
+          matrix.push({
             id: 465,
             name: "Lead Water Service Line Toxicity",
             category: "Environmental",
-            getProb: (s) => 0.03 * (1.0 - s.infrastructureIntegrity) * 4.0,
+            getProb: (s) => 0.03 * (1.0 - s.infrastructure) * 4.0,
             exec: (s) => {
-              s.chronicInflammation = Math.min(1.0, s.chronicInflammation + 0.2);
+              s.inflammation = Math.min(1.0, s.inflammation + 0.2);
               return { text: "Heavy metal exposure increased systemic inflammation.", level: "danger" };
             }
           });
           continue;
         }
+
         if (id === 517) {
-          mechanics.push({
+          matrix.push({
             id: 517,
             name: "Algorithmic Credit Rating Reduction",
             category: "Socio-Economic",
-            getProb: (s) => (s.liquidCapital < 1000 ? 0.08 : 0.02),
+            getProb: (s) => (s.capital < 1000 ? 0.08 : 0.02),
             exec: (s) => {
               s.creditScore = Math.max(300, s.creditScore - 55);
-              return { text: "Automated risk model degraded credit rating.", level: "warning" };
+              return { text: "Automated risk model degraded credit score.", level: "warning" };
             }
           });
           continue;
         }
+
         if (id === 888) {
-          mechanics.push({
+          matrix.push({
             id: 888,
             name: "Subsea Telecom Cable Sabotage",
             category: "Environmental",
@@ -313,85 +392,89 @@
           continue;
         }
 
-        // Procedural generation of mechanics #001 to #888
+        // Optimized dynamic generator for full 888 matrix coverage
         if (id <= 300) {
-          // Domain 1: Biological (001-300)
-          const name = `${bioPrefixes[id % bioPrefixes.length]} ${bioTypes[(id * 3) % bioTypes.length]} #${id}`;
-          mechanics.push({
+          const name = `${bioTerms[id % bioTerms.length]} Marker Shift #${id}`;
+          matrix.push({
             id,
             name,
             category: "Biological",
-            getProb: (s) => 0.003 * (1.0 + s.chronicInflammation),
+            getProb: (s) => 0.003 * (1.0 + s.inflammation),
             exec: (s) => {
-              s.mitochondrialHealth = Math.max(0, s.mitochondrialHealth - 0.015);
-              s.cardiovascularStrain = Math.min(1.0, s.cardiovascularStrain + 0.01);
-              return { text: `Biological systemic marker update (${name}).`, level: "system" };
+              s.mitochondria = Math.max(0, s.mitochondria - 0.012);
+              s.cvStrain = Math.min(1.0, s.cvStrain + 0.008);
+              return { text: `Systemic biological adjustment resolved (${name}).`, level: "system" };
             }
           });
         } else if (id <= 600) {
-          // Domain 2: Socio-Economic (301-600)
-          const name = `${econPrefixes[id % econPrefixes.length]} ${econTypes[(id * 7) % econTypes.length]} #${id}`;
-          mechanics.push({
+          const name = `${econTerms[id % econTerms.length]} Adjustment #${id}`;
+          matrix.push({
             id,
             name,
             category: "Socio-Economic",
-            getProb: (s) => 0.004 * (s.liquidCapital < 2000 ? 1.5 : 0.8),
+            getProb: (s) => 0.004 * (s.capital < 2000 ? 1.4 : 0.8),
             exec: (s) => {
-              s.liquidCapital = Math.max(0, s.liquidCapital - 45);
-              s.purchasingPower = Math.max(0.1, s.purchasingPower - 0.005);
-              return { text: `Economic shift resolved (${name}).`, level: "warning" };
+              s.capital = Math.max(0, s.capital - 40);
+              s.purchasingPower = Math.max(0.1, s.purchasingPower - 0.004);
+              return { text: `Economic metric shift resolved (${name}).`, level: "warning" };
             }
           });
         } else {
-          // Domain 3: Environmental (601-888)
-          const name = `${envPrefixes[id % envPrefixes.length]} ${envTypes[(id * 11) % envTypes.length]} #${id}`;
-          mechanics.push({
+          const name = `${envTerms[id % envTerms.length]} Event #${id}`;
+          matrix.push({
             id,
             name,
             category: "Environmental",
-            getProb: (s) => 0.0025 * (1.0 + (1.0 - s.infrastructureIntegrity)),
+            getProb: (s) => 0.0025 * (1.0 + (1.0 - s.infrastructure)),
             exec: (s) => {
-              s.infrastructureIntegrity = Math.max(0, s.infrastructureIntegrity - 0.008);
-              s.chronicInflammation = Math.min(1.0, s.chronicInflammation + 0.01);
-              return { text: `External environment event processed (${name}).`, level: "system" };
+              s.infrastructure = Math.max(0, s.infrastructure - 0.006);
+              s.inflammation = Math.min(1.0, s.inflammation + 0.008);
+              return { text: `Environmental vector impact processed (${name}).`, level: "system" };
             }
           });
         }
       }
 
-      return mechanics;
+      return matrix;
     };
 
-    const MechanicsRegistry = build888Mechanics();
+    const MatrixRegistry = buildFullMatrix();
 
-    // --- Simulation Pipeline ---
-    const runSimulationStep = (state) => {
-      if (!state.isAlive) return [];
+    // --- Pipeline Simulation Step ---
+    const runSimulationStep = (s) => {
+      if (!s.isAlive) return [];
 
       const stepLogs = [];
-      state.age += 1.0;
+      s.age += 1.0;
 
-      // Baseline bio-decay step
-      state.telomereLength -= 0.007 * (1.0 + state.chronicInflammation * 0.5);
-      state.mitochondrialHealth -= 0.005 * (1.0 + state.cardiovascularStrain * 0.4);
-      state.infrastructureIntegrity = Math.max(0, state.infrastructureIntegrity - 0.01);
+      // Baseline bio-decay updates
+      s.telomeres -= 0.007 * (1.0 + s.inflammation * 0.5);
+      s.mitochondria -= 0.005 * (1.0 + s.cvStrain * 0.4);
+      s.infrastructure = Math.max(0, s.infrastructure - 0.01);
 
-      // Evaluate 888 Mechanics Pipeline
-      for (let i = 0; i < MechanicsRegistry.length; i++) {
-        const m = MechanicsRegistry[i];
-        if (Math.random() < m.getProb(state)) {
-          const res = m.exec(state);
-          stepLogs.push({ id: m.id, name: m.name, text: res.text, level: res.level });
+      // Execute Registry Matrix
+      for (let i = 0; i < MatrixRegistry.length; i++) {
+        const mechanic = MatrixRegistry[i];
+        if (Math.random() < mechanic.getProb(s)) {
+          const res = mechanic.exec(s);
+          stepLogs.push({
+            id: mechanic.id,
+            name: mechanic.name,
+            category: mechanic.category,
+            text: res.text,
+            level: res.level
+          });
         }
       }
 
-      // Life State Check
-      if (state.telomereLength <= 0.05 || state.mitochondrialHealth <= 0.05 || state.immuneEfficacy <= 0.0) {
-        state.isAlive = false;
+      // Life State Verification Guard Clause
+      if (s.telomeres <= 0.05 || s.mitochondria <= 0.05 || s.immunity <= 0.0) {
+        s.isAlive = false;
         stepLogs.push({
           id: 0,
           name: "TERMINATION",
-          text: `Critical state reached. Biological termination at age ${state.age.toFixed(1)}.`,
+          category: "System",
+          text: `Critical state reached. Biological failure at age ${s.age.toFixed(1)}.`,
           level: "death"
         });
       }
@@ -399,15 +482,15 @@
       return stepLogs;
     };
 
-    // --- DOM Binding ---
+    // --- DOM Cache & Batch Rendering ---
     const DOM = {
       btnStep: document.getElementById('btn-step'),
       btnReset: document.getElementById('btn-reset'),
-      yearDisplay: document.getElementById('year-display'),
-      lifeStatus: document.getElementById('life-status'),
-      biomarkersRoot: document.getElementById('biomarkers-root'),
+      badgeAge: document.getElementById('badge-age'),
+      badgeStatus: document.getElementById('badge-status'),
+      bioRoot: document.getElementById('bio-root'),
       econRoot: document.getElementById('econ-root'),
-      logRoot: document.getElementById('log-root')
+      logViewport: document.getElementById('log-viewport')
     };
 
     const renderProgressRow = (label, val, maxVal = 1.0, invertColors = false) => {
@@ -426,84 +509,94 @@
         <div>
           <div class="stat-row">
             <span class="stat-label">${label}</span>
-            <span class="stat-value">${val.toFixed(2)}</span>
+            <span class="stat-val">${val.toFixed(2)}</span>
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill ${fillClass}" style="width: ${pct}%"></div>
+          <div class="track">
+            <div class="fill ${fillClass}" style="width: ${pct}%"></div>
           </div>
         </div>
       `;
     };
 
     const renderState = (logs = []) => {
-      DOM.yearDisplay.textContent = `Age ${agentState.age.toFixed(1)}`;
-      DOM.lifeStatus.textContent = agentState.isAlive ? "Alive" : "Deceased";
-      DOM.lifeStatus.style.background = agentState.isAlive ? "var(--success)" : "var(--danger)";
-      DOM.btnStep.disabled = !agentState.isAlive;
+      // 1. Batch UI Updates
+      DOM.badgeAge.textContent = `Age ${state.age.toFixed(1)}`;
+      DOM.badgeStatus.textContent = state.isAlive ? "Alive" : "Deceased";
+      DOM.badgeStatus.className = `badge ${state.isAlive ? 'alive' : 'dead'}`;
+      DOM.btnStep.disabled = !state.isAlive;
 
-      DOM.biomarkersRoot.innerHTML = `
-        ${renderProgressRow("Mitochondrial Health", agentState.mitochondrialHealth)}
-        ${renderProgressRow("Telomere Integrity", agentState.telomereLength)}
-        ${renderProgressRow("CV Strain", agentState.cardiovascularStrain, 1.0, true)}
-        ${renderProgressRow("Chronic Inflammation", agentState.chronicInflammation, 1.0, true)}
-        ${renderProgressRow("Immune Efficacy", agentState.immuneEfficacy)}
+      DOM.bioRoot.innerHTML = `
+        ${renderProgressRow("Mitochondrial Health", state.mitochondria)}
+        ${renderProgressRow("Telomere Integrity", state.telomeres)}
+        ${renderProgressRow("CV Strain", state.cvStrain, 1.0, true)}
+        ${renderProgressRow("Chronic Inflammation", state.inflammation, 1.0, true)}
+        ${renderProgressRow("Immune Efficacy", state.immunity)}
       `;
 
       DOM.econRoot.innerHTML = `
         <div class="stat-row">
           <span class="stat-label">Liquid Capital</span>
-          <span class="stat-value">$${agentState.liquidCapital.toFixed(2)}</span>
+          <span class="stat-val">$${state.capital.toFixed(2)}</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Purchasing Power</span>
-          <span class="stat-value">${(agentState.purchasingPower * 100).toFixed(0)}%</span>
+          <span class="stat-val">${(state.purchasingPower * 100).toFixed(0)}%</span>
         </div>
         <div class="stat-row">
           <span class="stat-label">Credit Rating</span>
-          <span class="stat-value">${agentState.creditScore}</span>
+          <span class="stat-val">${state.creditScore}</span>
         </div>
       `;
 
+      // 2. Append Event Logs via DocumentFragment
       if (logs.length > 0) {
         const fragment = document.createDocumentFragment();
+        
         logs.forEach(log => {
           const div = document.createElement('div');
-          div.className = `log-entry ${log.level}`;
+          div.className = `log-card ${log.level}`;
           div.innerHTML = `
-            <strong>[#${log.id}] ${log.name}</strong> (Age ${agentState.age.toFixed(1)})<br>
-            <span>${log.text}</span>
+            <div class="log-meta">
+              <span>#${log.id} • ${log.category}</span>
+              <span>Age ${state.age.toFixed(1)}</span>
+            </div>
+            <div class="log-body">
+              <strong>${log.name}</strong> — ${log.text}
+            </div>
           `;
           fragment.appendChild(div);
         });
 
-        DOM.logRoot.appendChild(fragment);
-        DOM.logRoot.scrollTop = DOM.logRoot.scrollHeight;
+        DOM.logViewport.appendChild(fragment);
+        DOM.logViewport.scrollTop = DOM.logViewport.scrollHeight;
       }
     };
 
-    // --- Controllers ---
+    // --- Controller Handlers ---
     DOM.btnStep.addEventListener('click', () => {
-      if (!agentState.isAlive) return;
-      const stepLogs = runSimulationStep(agentState);
-      renderState(stepLogs);
+      if (!state.isAlive) return;
+      const logs = runSimulationStep(state);
+      renderState(logs);
     });
 
     DOM.btnReset.addEventListener('click', () => {
-      agentState = createInitialState();
-      DOM.logRoot.innerHTML = '';
+      state = createInitialState();
+      DOM.logViewport.innerHTML = '';
       renderState([{
         id: 0,
         name: "INITIALIZATION",
-        text: "Simulation state reinitialized to age 30.0.",
+        category: "System",
+        text: "State machine reinitialized to default configuration.",
         level: "system"
       }]);
     });
 
-    // Initial Launch
+    // Initial View Render
     renderState([{
       id: 0,
-      name: "SYSTEM READY",
-      text: "Full 888 Mechanics Matrix active. Click 'Run Year Step' to execute simulation ticks.",
+      name: "ENGINE READY",
+      category: "System",
+      text: "Real Lives 2026 initialized. Execute simulation steps to proceed.",
       level: "system"
     }]);
   </script>
