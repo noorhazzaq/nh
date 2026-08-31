@@ -51,6 +51,9 @@
         .pemain{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:10px;margin-bottom:3px;font-size:9px}
         .pemain-nama{color:var(--c);font-family:'Orbitron',sans-serif}
         .pemain-bank{color:var(--s)}
+        .pemain-mati{opacity:.4;border-color:var(--r)}
+        .pemain-mati .pemain-nama{color:var(--r);text-decoration:line-through}
+        .pemain-mati .pemain-bank{color:var(--m)}
     </style>
 </head>
 <body>
@@ -58,7 +61,13 @@
     <div class="header"><div class="logo">ZACK LIVES X</div><span id="umur" class="badge">UMUR 30</span></div>
     <div class="main">
         <div class="halaman aktif" id="hal-login">
-            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA" maxlength="20"><button class="butang" id="btnLogin">MASUK</button></div>
+            <div class="kad">
+                <h3>🔐 LOGIN</h3>
+                <input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA" maxlength="20">
+                <input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20">
+                <button class="butang" id="btnLogin">MASUK</button>
+                <button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR BARU</button>
+            </div>
         </div>
         <div class="halaman" id="hal-status">
             <div class="kad">
@@ -105,9 +114,9 @@
         {n:'Masalah Kesihatan',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'Kesihatan merosot',aras:'bahaya'}}}]}
     ];
     function tukar(nama,btn){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+nama).classList.add('aktif');if(btn)btn.classList.add('aktif');if(nama==='pemain')muatPemain()}
-    function simpanProfil(){if(!pengguna)return;db.ref('profil/'+pengguna).set(s).catch(()=>{})}
+    function simpanProfil(){if(!pengguna)return;db.ref('profil/'+pengguna).update(s).catch(()=>{})}
     function muatProfil(nama){db.ref('profil/'+nama).once('value').then(snap=>{if(snap.exists()){s=snap.val();s.ch=null}else{s={umur:30,hidup:1,kesihatan:80,mental:80,imun:70,stamina:60,jangka:75,kebahagiaan:70,reputasi:50,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,ch:null};db.ref('profil/'+nama).set(s).catch(()=>{})}papar([])})}
-    function muatPemain(){db.ref('profil').on('value',snap=>{const list=[];if(snap.exists()){snap.forEach(child=>{list.push({nama:child.key,bank:child.val().bank||0})})}list.sort((a,b)=>b.bank-a.bank);$('senaraiPemain').innerHTML=list.map(p=>`<div class="pemain"><span class="pemain-nama">${p.nama}${p.nama===pengguna?' (Anda)':''}</span><span class="pemain-bank">$${p.bank.toFixed(0)}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px;">Tiada pemain.</p>'})}
+    function muatPemain(){db.ref('profil').on('value',snap=>{const list=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();list.push({nama:child.key,bank:d.bank||0,hidup:d.hidup!==0})})}list.sort((a,b)=>(b.hidup?b.bank:0)-(a.hidup?a.bank:0));$('senaraiPemain').innerHTML=list.map(p=>`<div class="pemain ${!p.hidup?'pemain-mati':''}"><span class="pemain-nama">${p.nama}${p.nama===pengguna?' (Anda)':''}${!p.hidup?' 💀':''}</span><span class="pemain-bank">${p.hidup?'$'+p.bank.toFixed(0):'Meninggal'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px;">Tiada pemain.</p>'})}
     function bukaTransfer(){
         $('tindakan').innerHTML+=`<div class="kad" style="margin-top:6px"><h3>💸 TRANSFER</h3><input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button></div>`;
         $('btnTransfer').addEventListener('click',()=>{
@@ -116,8 +125,9 @@
             if(s.bank<jumlah){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Baki tidak cukup',aras:'bahaya'}]);return}
             db.ref('profil/'+penerima).once('value').then(snap=>{
                 if(!snap.exists()){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima tidak wujud',aras:'amaran'}]);return}
-                const data=snap.val();data.bank=(data.bank||0)+jumlah;s.bank-=jumlah;
-                db.ref('profil/'+penerima).set(data).catch(()=>{});
+                const data=snap.val();if(data.hidup===0){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima telah meninggal',aras:'amaran'}]);return}
+                data.bank=(data.bank||0)+jumlah;s.bank-=jumlah;
+                db.ref('profil/'+penerima).update({bank:data.bank}).catch(()=>{});
                 simpanProfil();
                 papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:`$${jumlah} dihantar kepada ${penerima}`,aras:'tindakan'}]);
                 $('penerima').value='';$('jumlah').value='';
@@ -145,7 +155,31 @@
     }
     window.ea=id=>{const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.bank<a.c)return;const r=a.e(s);if(a.i!=='a7')papar([{id:0,nama:a.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpanProfil()};
     window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Pilihan',teks:r.teks,aras:r.aras}]);simpanProfil()};
-    $('btnLogin').addEventListener('click',()=>{const nama=$('nama').value.trim();if(!nama)return;pengguna=nama;$('hal-login').classList.remove('aktif');$('tabBar').style.display='flex';tukar('status');document.querySelectorAll('.tab')[0].classList.add('aktif');muatProfil(nama)});
+    $('btnDaftar').addEventListener('click',()=>{
+        const nama=$('nama').value.trim(),kata=$('kata').value.trim();
+        if(!nama||!kata)return;
+        db.ref('auth/'+nama).once('value').then(snap=>{
+            if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama sudah wujud',aras:'amaran'}]);return}
+            db.ref('auth/'+nama).set({password:kata}).then(()=>{
+                const profil={umur:30,hidup:1,kesihatan:80,mental:80,imun:70,stamina:60,jangka:75,kebahagiaan:70,reputasi:50,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,ch:null};
+                db.ref('profil/'+nama).set(profil).then(()=>{papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Pendaftaran berjaya!',aras:'tindakan'}])});
+            })
+        })
+    });
+    $('btnLogin').addEventListener('click',()=>{
+        const nama=$('nama').value.trim(),kata=$('kata').value.trim();
+        if(!nama||!kata)return;
+        db.ref('auth/'+nama).once('value').then(snap=>{
+            if(!snap.exists()){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Nama tidak wujud. Sila daftar.',aras:'amaran'}]);return}
+            if(snap.val().password!==kata){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Kata laluan salah',aras:'bahaya'}]);return}
+            pengguna=nama;
+            $('hal-login').classList.remove('aktif');
+            $('tabBar').style.display='flex';
+            tukar('status');
+            document.querySelectorAll('.tab')[0].classList.add('aktif');
+            muatProfil(nama);
+        })
+    });
     $('langkah').addEventListener('click',()=>papar(langkah()));
     </script>
 </body>
