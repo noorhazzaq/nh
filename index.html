@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK — Digital Chronicles">
-    <title>ZACK — Digital Chronicles</title>
+    <meta name="description" content="ZACK — Chat Multimedia">
+    <title>ZACK — Chat</title>
 
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 192 192\'%3E%3Crect width=\'192\' height=\'192\' rx=\'40\' fill=\'%23ff0033\'/%3E%3Ctext x=\'96\' y=\'130\' font-size=\'110\' text-anchor=\'middle\' fill=\'%2300f0ff\' font-family=\'Arial\' font-weight=\'bold\'%3EZ%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml"}]}'>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
@@ -22,7 +22,6 @@
             --c-danger: #ff0033;
             --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
             --grad-btn: linear-gradient(135deg, #ff0033, #00f0ff);
-            --glow-red: 0 0 12px rgba(255,0,51,0.4);
             --glow-cyan: 0 0 12px rgba(0,240,255,0.4);
             --border-red: rgba(255,0,51,0.2);
             --r-sm: 10px;
@@ -39,8 +38,8 @@
             background: var(--c-bg);
             font-family: 'Rajdhani', sans-serif;
             color: var(--c-white);
-            min-height: 100dvh;
-            overflow-x: hidden;
+            height: 100dvh;
+            overflow: hidden;
             touch-action: manipulation;
             -webkit-font-smoothing: antialiased;
         }
@@ -73,180 +72,55 @@
             background-size: 300% 300%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
-            cursor: pointer;
             animation: logoShift 4s ease infinite;
         }
         @keyframes logoShift { 50% { background-position: 100% 50%; } }
 
-        /* Bottom Nav */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-            padding: 8px 10px calc(8px + var(--safe-bottom));
-            background: rgba(0,0,0,0.95);
-            border-top: 1px solid var(--border-red);
-        }
-        .bottom-nav-row { display: flex; justify-content: space-around; max-width: 600px; margin: 0 auto; }
-
-        .nav-btn {
-            display: flex; flex-direction: column; align-items: center; gap: 2px;
-            padding: 8px 15px; border: none; background: none;
-            color: #666; font-family: 'Orbitron', sans-serif; font-size: 7px;
-            cursor: pointer; border-radius: 10px;
-        }
-        .nav-btn .nav-icon { font-size: 18px; }
-        .nav-btn.active { color: var(--c-cyan); }
-        .nav-btn:active { transform: scale(0.9); }
-
         /* Main */
         .main {
             position: relative; z-index: 2;
-            padding: calc(60px + var(--safe-top)) 15px calc(80px + var(--safe-bottom));
+            padding: calc(60px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
             max-width: 600px; margin: 0 auto;
-        }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeUp 0.25s var(--ease); }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } }
-
-        .hero { text-align: center; padding: 15px 0; }
-        .hero h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px; font-weight: 900; letter-spacing: 8px;
-            background: var(--grad-text);
-            background-size: 300% 300%;
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: logoShift 4s ease infinite;
-        }
-        .hero .subtitle { font-size: 9px; letter-spacing: 4px; color: var(--c-cyan); }
-
-        /* Search */
-        .search-row { position: relative; margin-bottom: 12px; }
-        .search-input {
-            width: 100%; padding: 11px 16px;
-            background: rgba(0,0,0,0.7); border: 1px solid var(--border-red);
-            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 14px;
-            border-radius: var(--r-full); outline: none;
-        }
-        .search-input:focus { border-color: var(--c-cyan); box-shadow: var(--glow-cyan); }
-
-        /* Blog Cards */
-        .blog-list { display: grid; gap: 12px; }
-        .blog-card {
-            border: 1px solid var(--border-red);
-            background: rgba(255,0,51,0.04);
-            border-radius: var(--r-md); overflow: hidden; cursor: pointer;
-        }
-        .blog-card:active { border-color: var(--c-cyan); transform: scale(0.98); }
-
-        .card-img {
-            height: 120px; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(0,240,255,0.06));
-            font-size: 38px; color: var(--c-cyan);
-            border-bottom: 1px solid var(--border-red);
-        }
-        .card-body { padding: 12px; }
-        .card-tag {
-            display: inline-block; padding: 3px 10px;
-            background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
-            color: var(--c-red); font-family: 'Orbitron', sans-serif;
-            font-size: 7px; border-radius: 10px; margin-bottom: 8px;
-        }
-        .card-title { font-family: 'Orbitron', sans-serif; font-size: 13px; color: var(--c-white); margin-bottom: 5px; }
-        .card-excerpt {
-            font-size: 11px; color: var(--c-muted); line-height: 1.5;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-            margin-bottom: 8px;
-        }
-        .card-meta {
-            display: flex; justify-content: space-between;
-            font-size: 9px; color: #555; padding-top: 8px;
-            border-top: 1px solid rgba(255,0,51,0.06);
-        }
-        .card-meta .author { color: var(--c-cyan); }
-
-        .load-more-btn {
-            width: 100%; padding: 12px; margin-top: 12px;
-            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
-            color: var(--c-cyan); font-family: 'Orbitron', sans-serif;
-            font-size: 10px; letter-spacing: 2px; border-radius: var(--r-full); cursor: pointer;
-        }
-        .empty-state {
-            text-align: center; padding: 40px 15px;
-            border: 2px dashed var(--border-red); border-radius: var(--r-md);
-            color: #555; font-family: 'Orbitron', sans-serif; font-size: 11px;
-        }
-        .empty-icon { font-size: 40px; margin-bottom: 10px; }
-
-        /* Article */
-        .article-view {
-            position: fixed; inset: 0; z-index: 150;
-            background: var(--c-bg); overflow-y: auto; display: none;
-            animation: slideUp 0.3s var(--ease);
-        }
-        .article-view.active { display: block; }
-        @keyframes slideUp { from { transform: translateY(30%); opacity: 0; } }
-
-        .article-header-bar {
-            position: sticky; top: 0; z-index: 10;
-            padding: calc(10px + var(--safe-top)) 15px 10px;
-            background: rgba(0,0,0,0.92);
-            border-bottom: 1px solid var(--border-red);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .back-btn {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
-            color: var(--c-cyan); font-size: 14px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-        }
-        .article-body-wrap { padding: 15px 15px calc(30px + var(--safe-bottom)); max-width: 600px; margin: 0 auto; }
-        .article-title {
-            font-family: 'Orbitron', sans-serif; font-size: 17px;
-            background: var(--grad-text);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; text-align: center; margin-bottom: 8px;
-        }
-        .article-meta { text-align: center; font-size: 10px; color: #555; margin-bottom: 12px; }
-        .article-meta .read-time { color: var(--c-cyan); }
-        .article-img {
-            height: 140px; display: flex; justify-content: center; align-items: center;
-            background: linear-gradient(135deg, rgba(255,0,51,0.12), rgba(0,240,255,0.04));
-            font-size: 45px; color: var(--c-cyan);
-            border: 1px solid var(--border-red); border-radius: var(--r-md); margin-bottom: 12px;
-        }
-        .article-content {
-            font-size: 14px; line-height: 1.8; color: #ccc;
-            padding: 15px; border: 1px solid var(--border-red);
-            border-radius: var(--r-md); background: rgba(255,0,51,0.04);
-        }
-        .article-content p { margin-bottom: 12px; }
-        .share-btn {
-            display: block; width: 100%; padding: 12px; margin-top: 12px;
-            background: var(--grad-btn); color: var(--c-white);
-            font-family: 'Orbitron', sans-serif; font-size: 10px;
-            border: none; border-radius: var(--r-full); cursor: pointer; font-weight: 700;
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
         }
 
         /* Chat */
         .chat-box {
             display: flex; flex-direction: column;
-            height: calc(100dvh - 190px - var(--safe-top) - var(--safe-bottom));
-            min-height: 280px;
+            flex: 1;
             border: 1px solid var(--border-red); border-radius: var(--r-md);
             background: rgba(255,0,51,0.04); overflow: hidden;
+            min-height: 0;
         }
+
         .chat-head {
             display: flex; justify-content: space-between; align-items: center;
             padding: 10px 12px; border-bottom: 1px solid var(--border-red);
+            flex-shrink: 0;
         }
         .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--c-cyan); }
         .chat-head .online { font-size: 8px; }
 
-        .chat-log { flex: 1; overflow-y: auto; padding: 10px; }
+        .recording-bar {
+            display: none; text-align: center; padding: 4px;
+            background: rgba(255,0,51,0.08); border-bottom: 1px solid var(--c-danger);
+            font-size: 9px; color: var(--c-danger); font-family: 'Orbitron', sans-serif;
+            flex-shrink: 0;
+        }
+        .recording-bar.active { display: block; }
+
+        .chat-log {
+            flex: 1; overflow-y: auto; padding: 10px;
+            min-height: 0;
+        }
+
         .date-separator {
             text-align: center; font-size: 8px; color: #444;
             margin: 10px 0; font-family: 'Orbitron', sans-serif;
         }
+
         .msg { margin-bottom: 10px; }
         .msg.own { text-align: right; }
         .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--c-cyan); margin-bottom: 3px; }
@@ -257,6 +131,7 @@
             word-break: break-word; max-width: 100%; text-align: left;
         }
         .msg.own .msg-text { background: rgba(0,255,136,0.08); }
+
         .msg-audio {
             display: inline-flex; align-items: center; gap: 8px;
             background: rgba(255,0,51,0.08); border: 1px solid var(--c-red);
@@ -264,29 +139,40 @@
         }
         .msg-audio .audio-icon { font-size: 14px; color: var(--c-cyan); }
         .msg-audio .audio-duration { font-size: 8px; color: #ccc; }
-        .msg-image { max-width: 140px; border-radius: 8px; border: 1px solid var(--c-cyan); cursor: pointer; display: block; }
+
+        .msg-image {
+            max-width: 140px; border-radius: 8px; border: 1px solid var(--c-cyan);
+            cursor: pointer; display: block;
+        }
         .msg.own .msg-image { margin-left: auto; }
+
         .msg-delete-btn {
             background: none; border: none; color: #444; font-size: 10px;
             cursor: pointer; padding: 2px; margin-left: 5px;
         }
+        .msg-delete-btn:active { color: var(--c-danger); }
 
         .chat-input-area {
             padding: 8px 10px; border-top: 1px solid var(--border-red);
             display: flex; gap: 5px; align-items: center;
+            flex-shrink: 0;
         }
+
         .chat-input {
             flex: 1; padding: 10px 13px;
             background: rgba(0,0,0,0.6); border: 1px solid var(--border-red);
             color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
             border-radius: var(--r-full); outline: none; min-width: 0;
         }
+        .chat-input:focus { border-color: var(--c-cyan); }
         .name-input { max-width: 70px; }
+
         .send-btn {
             padding: 10px 14px; background: var(--grad-btn); color: var(--c-white);
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
             border: none; border-radius: var(--r-full); font-weight: 700; cursor: pointer;
         }
+
         .attach-btn {
             width: 34px; height: 34px; border-radius: 50%;
             background: rgba(255,0,51,0.06); border: 1px solid var(--border-red);
@@ -299,74 +185,10 @@
         }
         @keyframes pulse { 50% { opacity: 0.6; } }
 
-        .recording-bar {
-            display: none; text-align: center; padding: 4px;
-            background: rgba(255,0,51,0.08); border-bottom: 1px solid var(--c-danger);
-            font-size: 9px; color: var(--c-danger); font-family: 'Orbitron', sans-serif;
-        }
-        .recording-bar.active { display: block; }
-
-        /* Admin */
-        .admin-login {
-            border: 1px solid var(--border-red); padding: 20px;
-            background: rgba(255,0,51,0.04); border-radius: var(--r-md); text-align: center;
-        }
-        .admin-login h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 13px; margin-bottom: 12px;
-            background: var(--grad-text);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .admin-login input {
-            width: 100%; padding: 11px 14px;
-            background: rgba(0,0,0,0.7); border: 1px solid var(--border-red);
-            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 13px;
-            border-radius: var(--r-full); outline: none; text-align: center;
-            letter-spacing: 3px; margin-bottom: 10px;
-        }
-        .admin-dash h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 14px; text-align: center;
-            margin-bottom: 12px;
-            background: var(--grad-text);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .admin-form {
-            border: 1px solid var(--border-red); padding: 14px;
-            background: rgba(255,0,51,0.04); border-radius: var(--r-md); margin-bottom: 12px;
-        }
-        .admin-form h3 { font-family: 'Orbitron', sans-serif; font-size: 10px; color: var(--c-cyan); margin-bottom: 10px; }
-        .admin-form input, .admin-form textarea {
-            width: 100%; padding: 10px 12px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--border-red);
-            color: var(--c-white); font-family: 'Rajdhani', sans-serif; font-size: 12px;
-            border-radius: var(--r-sm); outline: none; margin-bottom: 8px;
-        }
-        .admin-form textarea { height: 90px; resize: vertical; }
-        .btn-row { display: flex; gap: 6px; }
-        .btn-primary {
-            flex: 1; padding: 11px 15px; background: var(--grad-btn); color: var(--c-white);
-            font-family: 'Orbitron', sans-serif; font-size: 9px; border: none;
-            border-radius: var(--r-full); font-weight: 700; cursor: pointer;
-        }
-        .btn-danger {
-            padding: 9px 13px; background: transparent;
-            border: 1px solid var(--c-danger); color: var(--c-danger);
-            font-family: 'Orbitron', sans-serif; font-size: 8px; border-radius: var(--r-full); cursor: pointer;
-        }
-        .admin-post {
-            border: 1px solid var(--border-red); padding: 11px; border-radius: var(--r-sm);
-            background: rgba(255,0,51,0.04); display: flex; justify-content: space-between;
-            align-items: center; gap: 6px; margin-bottom: 6px;
-        }
-        .admin-post h4 { font-family: 'Orbitron', sans-serif; font-size: 9px; color: var(--c-white); }
-        .admin-post p { font-size: 8px; color: #555; }
-        .admin-post-actions { display: flex; gap: 4px; }
-
         /* Toast */
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
-            display: flex; flex-direction: column; gap: 6px; max-width: 280px;
+            display: flex; flex-direction: column; gap: 6px; max-width: 260px;
         }
         .toast {
             padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
@@ -377,12 +199,6 @@
         .toast-info { background: rgba(0,240,255,0.12); border-color: var(--c-cyan); color: var(--c-cyan); }
         @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
         @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
-
-        /* Progress */
-        .progress {
-            position: fixed; top: 0; left: 0; height: 2px; width: 0%;
-            background: var(--grad-btn); z-index: 200;
-        }
 
         /* Lightbox */
         .lightbox {
@@ -406,7 +222,6 @@
 <body>
 
     <div class="bg-grid"></div>
-    <div class="progress" id="progress"></div>
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -416,91 +231,26 @@
 
     <div class="header">
         <div class="header-row">
-            <div class="logo" onclick="navigateTo('blog')">ZACK</div>
+            <div class="logo">ZACK</div>
         </div>
     </div>
 
     <div class="main">
-        <div class="page active" id="page-blog">
-            <div class="hero">
-                <h1>ZACK</h1>
-                <p class="subtitle">DIGITAL CHRONICLES</p>
+        <div class="chat-box">
+            <div class="chat-head">
+                <h3>💬 CHAT</h3>
+                <span class="online" id="onlineStatus">● OFFLINE</span>
             </div>
-            <div class="search-row">
-                <input type="text" id="searchInput" class="search-input" placeholder="Cari artikel...">
+            <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
+            <div class="chat-log" id="chatLog"></div>
+            <div class="chat-input-area">
+                <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA">
+                <input type="text" id="chatInput" class="chat-input" placeholder="Tulis...">
+                <button class="attach-btn" id="imgBtn" aria-label="Hantar gambar">📷</button>
+                <button class="attach-btn" id="recordBtn" aria-label="Rakam audio">🎤</button>
+                <button class="send-btn" id="sendBtn">HANTAR</button>
             </div>
-            <div class="blog-list" id="blogList"></div>
-            <button class="load-more-btn" id="loadMoreBtn" style="display:none;">MUAT LAGI</button>
-        </div>
-
-        <div class="page" id="page-chat">
-            <div class="chat-box">
-                <div class="chat-head">
-                    <h3>💬 CHAT</h3>
-                    <span class="online" id="onlineStatus">● OFFLINE</span>
-                </div>
-                <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
-                <div class="chat-log" id="chatLog"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatName" class="chat-input name-input" placeholder="NAMA">
-                    <input type="text" id="chatInput" class="chat-input" placeholder="Tulis...">
-                    <button class="attach-btn" id="imgBtn">📷</button>
-                    <button class="attach-btn" id="recordBtn">🎤</button>
-                    <button class="send-btn" id="sendBtn">HANTAR</button>
-                </div>
-                <input type="file" id="chatImageInput" accept="image/*">
-            </div>
-        </div>
-
-        <div class="page" id="page-admin">
-            <div class="admin-login" id="adminLogin">
-                <h2>🔐 LOGIN ADMIN</h2>
-                <input type="password" id="adminPass" placeholder="KATA LALUAN">
-                <button class="btn-primary" id="loginBtn">LOGIN</button>
-            </div>
-            <div class="admin-dash" id="adminDash" style="display:none;">
-                <h2>📝 PENGURUSAN ARTIKEL</h2>
-                <div class="admin-form">
-                    <h3 id="formTitle">➕ TAMBAH ARTIKEL</h3>
-                    <input type="hidden" id="postId">
-                    <input type="text" id="postTitle" placeholder="TAJUK">
-                    <input type="text" id="postCategory" placeholder="KATEGORI">
-                    <input type="text" id="postIcon" placeholder="IKON (EMOJI)">
-                    <input type="text" id="postAuthor" placeholder="PENULIS">
-                    <textarea id="postExcerpt" placeholder="RINGKASAN"></textarea>
-                    <textarea id="postContent" placeholder="KANDUNGAN (HTML)"></textarea>
-                    <div class="btn-row">
-                        <button class="btn-primary" id="savePostBtn">💾 SIMPAN</button>
-                        <button class="btn-danger" id="resetFormBtn">BATAL</button>
-                    </div>
-                </div>
-                <div id="adminList"></div>
-                <button class="btn-danger" id="logoutBtn" style="margin-top:8px;">🚪 LOGOUT</button>
-            </div>
-        </div>
-
-        <div class="article-view" id="articleView">
-            <div class="article-header-bar">
-                <button class="back-btn" id="articleBackBtn">←</button>
-                <span style="font-family:'Orbitron',sans-serif;font-size:12px;color:var(--c-cyan);">ARTIKEL</span>
-            </div>
-            <div class="article-body-wrap">
-                <div class="article-title" id="articleTitle"></div>
-                <div class="article-meta">
-                    <span id="articleAuthor"></span> • <span id="articleDate"></span> • <span class="read-time" id="articleReadTime"></span>
-                </div>
-                <div class="article-img" id="articleImg"></div>
-                <div class="article-content" id="articleContent"></div>
-                <button class="share-btn" id="shareBtn">📤 KONGSI ARTIKEL</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="bottom-nav-row">
-            <button class="nav-btn active" onclick="navigateTo('blog', this)"><span class="nav-icon">📝</span>BLOG</button>
-            <button class="nav-btn" onclick="navigateTo('chat', this)"><span class="nav-icon">💬</span>CHAT</button>
-            <button class="nav-btn" onclick="navigateTo('admin', this)"><span class="nav-icon">🔐</span>ADMIN</button>
+            <input type="file" id="chatImageInput" accept="image/*">
         </div>
     </div>
 
@@ -513,18 +263,12 @@
         /* ============ CONFIG ============ */
         const CONFIG = {
             databaseURL: 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/',
-            adminPassword: 'admin123',
             maxImageSize: 2 * 1024 * 1024,
-            maxAudioDuration: 30,
-            postsPerPage: 10
+            maxAudioDuration: 30
         };
 
         /* ============ STATE ============ */
         const state = {
-            isAdmin: false,
-            posts: [],
-            postsMap: new Map(),
-            visiblePosts: 0,
             isRecording: false,
             recordStart: 0,
             recorder: null,
@@ -535,39 +279,15 @@
         const $ = id => document.getElementById(id);
 
         const DOM = {
-            progress: $('progress'),
             toastWrap: $('toastWrap'),
             lightbox: $('lightbox'),
             lightboxImg: $('lightboxImg'),
-            blogList: $('blogList'),
-            loadMoreBtn: $('loadMoreBtn'),
             chatLog: $('chatLog'),
             chatName: $('chatName'),
             chatInput: $('chatInput'),
             onlineStatus: $('onlineStatus'),
-            adminPass: $('adminPass'),
-            adminLogin: $('adminLogin'),
-            adminDash: $('adminDash'),
-            adminList: $('adminList'),
             recordBtn: $('recordBtn'),
-            recBar: $('recBar'),
-            searchInput: $('searchInput'),
-            postId: $('postId'),
-            postTitle: $('postTitle'),
-            postCategory: $('postCategory'),
-            postIcon: $('postIcon'),
-            postAuthor: $('postAuthor'),
-            postExcerpt: $('postExcerpt'),
-            postContent: $('postContent'),
-            formTitle: $('formTitle'),
-            articleView: $('articleView'),
-            articleTitle: $('articleTitle'),
-            articleAuthor: $('articleAuthor'),
-            articleDate: $('articleDate'),
-            articleReadTime: $('articleReadTime'),
-            articleImg: $('articleImg'),
-            articleContent: $('articleContent'),
-            shareBtn: $('shareBtn')
+            recBar: $('recBar')
         };
 
         /* ============ FIREBASE ============ */
@@ -581,11 +301,6 @@
             el.textContent = msg;
             DOM.toastWrap.appendChild(el);
             setTimeout(() => el.remove(), 3300);
-        }
-
-        function debounce(fn, delay = 300) {
-            let timer;
-            return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
         }
 
         function sanitizeText(str) {
@@ -602,14 +317,6 @@
             return DOM.chatName.value.trim() || 'Anonymous';
         }
 
-        function readTime(content) {
-            const div = document.createElement('div');
-            div.innerHTML = content;
-            const text = div.textContent || '';
-            const words = text.trim().split(/\s+/).length;
-            return Math.max(1, Math.ceil(words / 200)) + ' minit';
-        }
-
         function getDateSeparator(timestamp) {
             const today = new Date().toDateString();
             const yesterday = new Date(Date.now() - 86400000).toDateString();
@@ -617,159 +324,6 @@
             if (msgDate === today) return 'HARI INI';
             if (msgDate === yesterday) return 'SEMALAM';
             return new Date(timestamp).toLocaleDateString('ms-MY', { day: 'numeric', month: 'long' });
-        }
-
-        /* ============ NAVIGATION ============ */
-        function navigateTo(name, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            $(`page-${name}`).classList.add('active');
-            if (btn) btn.classList.add('active');
-            if (name === 'admin' && !state.isAdmin) {
-                DOM.adminLogin.style.display = 'block';
-                DOM.adminDash.style.display = 'none';
-            }
-            window.scrollTo({ top: 0 });
-        }
-
-        /* ============ SCROLL ============ */
-        function handleScroll() {
-            const doc = document.documentElement;
-            const percent = (window.scrollY / (doc.scrollHeight - innerHeight)) * 100;
-            DOM.progress.style.width = percent + '%';
-        }
-        window.addEventListener('scroll', handleScroll, { passive: true });
-
-        /* ============ BLOG ============ */
-        db.ref('posts').on('value', snap => {
-            state.posts = [];
-            state.postsMap.clear();
-            if (snap.exists()) {
-                snap.forEach(child => {
-                    const post = { id: child.key, ...child.val() };
-                    state.posts.push(post);
-                    state.postsMap.set(child.key, post);
-                });
-            }
-            state.posts.reverse();
-            state.visiblePosts = Math.min(CONFIG.postsPerPage, state.posts.length);
-            renderBlog();
-            renderAdminList();
-        });
-
-        function createBlogCard(post) {
-            const card = document.createElement('div');
-            card.className = 'blog-card';
-            card.addEventListener('click', () => openArticle(post.id));
-
-            const img = document.createElement('div');
-            img.className = 'card-img';
-            img.textContent = post.icon || '📄';
-
-            const body = document.createElement('div');
-            body.className = 'card-body';
-
-            const tag = document.createElement('span');
-            tag.className = 'card-tag';
-            tag.textContent = sanitizeText(post.category || 'UMUM');
-
-            const title = document.createElement('div');
-            title.className = 'card-title';
-            title.textContent = sanitizeText(post.title);
-
-            const excerpt = document.createElement('div');
-            excerpt.className = 'card-excerpt';
-            excerpt.textContent = sanitizeText(post.excerpt || '');
-
-            const meta = document.createElement('div');
-            meta.className = 'card-meta';
-            const author = document.createElement('span');
-            author.className = 'author';
-            author.textContent = sanitizeText(post.author || 'Tanpa Nama');
-            const date = document.createElement('span');
-            date.textContent = sanitizeText(post.date || '');
-            meta.append(author, date);
-
-            body.append(tag, title, excerpt, meta);
-            card.append(img, body);
-            return card;
-        }
-
-        function renderBlog() {
-            DOM.blogList.innerHTML = '';
-            if (!state.posts.length) {
-                DOM.blogList.innerHTML = '<div class="empty-state"><div class="empty-icon">📝</div>TIADA ARTIKEL</div>';
-                DOM.loadMoreBtn.style.display = 'none';
-                return;
-            }
-            const fragment = document.createDocumentFragment();
-            state.posts.slice(0, state.visiblePosts).forEach(post => fragment.appendChild(createBlogCard(post)));
-            DOM.blogList.appendChild(fragment);
-            DOM.loadMoreBtn.style.display = state.visiblePosts < state.posts.length ? 'block' : 'none';
-        }
-
-        function loadMore() {
-            state.visiblePosts += CONFIG.postsPerPage;
-            renderBlog();
-        }
-
-        const debouncedSearch = debounce(query => {
-            const q = query.toLowerCase();
-            const filtered = state.posts.filter(p =>
-                (p.title + ' ' + p.excerpt + ' ' + p.category).toLowerCase().includes(q)
-            );
-            DOM.blogList.innerHTML = '';
-            if (!filtered.length) {
-                DOM.blogList.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div>TIADA HASIL</div>';
-                DOM.loadMoreBtn.style.display = 'none';
-                return;
-            }
-            const fragment = document.createDocumentFragment();
-            filtered.forEach(post => fragment.appendChild(createBlogCard(post)));
-            DOM.blogList.appendChild(fragment);
-            DOM.loadMoreBtn.style.display = 'none';
-        });
-
-        /* ============ ARTICLE ============ */
-        let currentArticle = null;
-
-        function openArticle(id) {
-            const post = state.postsMap.get(id);
-            if (!post) return;
-            currentArticle = post;
-            DOM.articleTitle.textContent = post.title;
-            DOM.articleAuthor.textContent = post.author || 'Tanpa Nama';
-            DOM.articleDate.textContent = post.date || '';
-            DOM.articleReadTime.textContent = readTime(post.content || '');
-            DOM.articleImg.textContent = post.icon || '📄';
-            DOM.articleContent.innerHTML = post.content || '<p>Tiada kandungan.</p>';
-            DOM.articleView.classList.add('active');
-            DOM.articleView.scrollTop = 0;
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeArticle() {
-            DOM.articleView.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
-
-        async function shareArticle() {
-            if (!currentArticle) return;
-            const data = {
-                title: currentArticle.title,
-                text: currentArticle.excerpt || '',
-                url: window.location.href
-            };
-            if (navigator.share) {
-                try { await navigator.share(data); } catch(e) {}
-            } else {
-                try {
-                    await navigator.clipboard.writeText(data.url);
-                    toast('Pautan disalin! 📋', 'success');
-                } catch(e) {
-                    toast('Tidak dapat kongsi', 'error');
-                }
-            }
         }
 
         /* ============ CHAT ============ */
@@ -907,112 +461,13 @@
         function openLightbox(src) { DOM.lightboxImg.src = src; DOM.lightbox.classList.add('active'); }
         function closeLightbox() { DOM.lightbox.classList.remove('active'); }
 
-        /* ============ ADMIN ============ */
-        function doLogin() {
-            if (DOM.adminPass.value === CONFIG.adminPassword) {
-                state.isAdmin = true;
-                DOM.adminLogin.style.display = 'none';
-                DOM.adminDash.style.display = 'block';
-                DOM.adminPass.value = '';
-                toast('Login berjaya!', 'success');
-            } else toast('Kata laluan salah!', 'error');
-        }
-
-        function doLogout() {
-            state.isAdmin = false;
-            DOM.adminLogin.style.display = 'block';
-            DOM.adminDash.style.display = 'none';
-            resetForm();
-        }
-
-        function renderAdminList() {
-            DOM.adminList.innerHTML = '';
-            if (!state.posts.length) {
-                DOM.adminList.innerHTML = '<p style="color:#555;text-align:center;padding:10px;">Tiada artikel.</p>';
-                return;
-            }
-            const fragment = document.createDocumentFragment();
-            state.posts.forEach(post => {
-                const item = document.createElement('div');
-                item.className = 'admin-post';
-                const info = document.createElement('div');
-                const h4 = document.createElement('h4');
-                h4.textContent = sanitizeText(post.title);
-                const p = document.createElement('p');
-                p.textContent = sanitizeText(post.category || 'UMUM');
-                info.append(h4, p);
-                const actions = document.createElement('div');
-                actions.className = 'admin-post-actions';
-                const editBtn = document.createElement('button');
-                editBtn.className = 'btn-primary'; editBtn.textContent = 'EDIT'; editBtn.style.padding = '5px 10px';
-                editBtn.addEventListener('click', () => editPost(post.id));
-                const delBtn = document.createElement('button');
-                delBtn.className = 'btn-danger'; delBtn.textContent = 'PADAM'; delBtn.style.padding = '5px 8px';
-                delBtn.addEventListener('click', () => deletePost(post.id));
-                actions.append(editBtn, delBtn);
-                item.append(info, actions);
-                fragment.appendChild(item);
-            });
-            DOM.adminList.appendChild(fragment);
-        }
-
-        function savePost() {
-            const id = DOM.postId.value;
-            const data = {
-                title: DOM.postTitle.value.trim(),
-                category: DOM.postCategory.value.trim(),
-                icon: DOM.postIcon.value.trim() || '📄',
-                author: DOM.postAuthor.value.trim(),
-                excerpt: DOM.postExcerpt.value.trim(),
-                content: DOM.postContent.value.trim(),
-                date: new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' })
-            };
-            if (!data.title || !data.category || !data.author) { toast('Sila isi ruangan wajib!', 'error'); return; }
-            (id ? db.ref('posts/' + id).update(data) : db.ref('posts').push(data))
-                .then(() => { toast('Disimpan!', 'success'); resetForm(); })
-                .catch(() => toast('Gagal simpan!', 'error'));
-        }
-
-        function editPost(id) {
-            const post = state.postsMap.get(id);
-            if (!post) return;
-            DOM.postId.value = post.id;
-            DOM.postTitle.value = post.title || '';
-            DOM.postCategory.value = post.category || '';
-            DOM.postIcon.value = post.icon || '';
-            DOM.postAuthor.value = post.author || '';
-            DOM.postExcerpt.value = post.excerpt || '';
-            DOM.postContent.value = post.content || '';
-            DOM.formTitle.textContent = '✏️ EDIT ARTIKEL';
-        }
-
-        function deletePost(id) {
-            if (confirm('Padam artikel ini?')) {
-                db.ref('posts/' + id).remove().then(() => toast('Dipadam!', 'success'));
-            }
-        }
-
-        function resetForm() {
-            ['postId','postTitle','postCategory','postIcon','postAuthor','postExcerpt','postContent'].forEach(id => DOM[id].value = '');
-            DOM.formTitle.textContent = '➕ TAMBAH ARTIKEL';
-        }
-
         /* ============ EVENTS ============ */
         function initEvents() {
-            DOM.searchInput.addEventListener('input', e => debouncedSearch(e.target.value));
-            DOM.loadMoreBtn.addEventListener('click', loadMore);
             $('sendBtn').addEventListener('click', sendText);
             DOM.chatInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendText(); });
             $('imgBtn').addEventListener('click', () => $('chatImageInput').click());
             $('chatImageInput').addEventListener('change', sendImage);
             DOM.recordBtn.addEventListener('click', () => state.isRecording ? stopRecord() : startRecord());
-            $('loginBtn').addEventListener('click', doLogin);
-            DOM.adminPass.addEventListener('keypress', e => { if (e.key === 'Enter') doLogin(); });
-            $('savePostBtn').addEventListener('click', savePost);
-            $('resetFormBtn').addEventListener('click', resetForm);
-            $('logoutBtn').addEventListener('click', doLogout);
-            $('articleBackBtn').addEventListener('click', closeArticle);
-            DOM.shareBtn.addEventListener('click', shareArticle);
         }
 
         /* ============ SERVICE WORKER ============ */
@@ -1023,9 +478,6 @@
 
         /* ============ INIT ============ */
         initEvents();
-        handleScroll();
-        navigateTo('blog');
-        document.querySelectorAll('.nav-btn')[0].classList.add('active');
     </script>
 
 </body>
