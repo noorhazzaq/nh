@@ -16,7 +16,6 @@
       --text-sub: #9ca3af;
       
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.15);
       --danger: #f43f5e;
       --warning: #fbbf24;
       --success: #10b981;
@@ -38,7 +37,7 @@
       font-family: var(--font);
       line-height: 1.4;
       padding: 0.75rem;
-      max-width: 1200px;
+      max-width: 1280px;
       margin: 0 auto;
     }
 
@@ -78,9 +77,9 @@
       gap: 0.75rem;
     }
 
-    @media (min-width: 768px) {
+    @media (min-width: 900px) {
       .layout-grid {
-        grid-template-columns: 320px 1fr;
+        grid-template-columns: 320px 1fr 340px;
       }
     }
 
@@ -105,11 +104,6 @@
       align-items: center;
       border-bottom: 1px solid var(--border);
       padding-bottom: 0.4rem;
-    }
-
-    .controls-group {
-      display: flex;
-      gap: 0.5rem;
     }
 
     button {
@@ -143,6 +137,24 @@
       padding: 0.5rem;
       font-weight: 500;
       font-size: 0.8rem;
+    }
+
+    button.btn-action {
+      background: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      text-align: left;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.78rem;
+      font-weight: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    button.btn-action:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.05);
     }
 
     .stat-list {
@@ -185,8 +197,8 @@
     .fill.warning { background: var(--warning); }
     .fill.danger { background: var(--danger); }
 
-    .log-viewport {
-      height: 480px;
+    .scroll-viewport {
+      height: 440px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
@@ -207,6 +219,7 @@
     }
 
     .log-card.system { border-color: var(--text-sub); }
+    .log-card.action { border-color: var(--accent); background: var(--accent-glow); }
     .log-card.warning { border-color: var(--warning); }
     .log-card.danger { border-color: var(--danger); }
     .log-card.death {
@@ -225,6 +238,53 @@
       color: var(--text-main);
       word-break: break-word;
     }
+
+    .choice-banner {
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid var(--warning);
+      border-radius: 6px;
+      padding: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .choice-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--warning);
+    }
+
+    .choice-desc {
+      font-size: 0.78rem;
+      color: var(--text-main);
+    }
+
+    .choice-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .todo-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.78rem;
+      padding: 0.4rem 0.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+    }
+
+    .todo-item.done {
+      opacity: 0.5;
+      text-decoration: line-through;
+    }
+
+    .todo-checkbox {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -232,16 +292,16 @@
   <header>
     <div>
       <h1>Real Lives 2026 Engine</h1>
-      <div style="font-size: 0.75rem; color: var(--text-sub);">Optimized Realism System Matrix</div>
+      <div style="font-size: 0.75rem; color: var(--text-sub);">Interactive Realism Matrix & Decision Engine</div>
     </div>
     <span id="badge-age" class="badge">Age 30.0</span>
   </header>
 
   <div class="layout-grid">
-    <!-- Left Panel: State Metrics & Controllers -->
+    <!-- Left Panel: State Metrics & Reset -->
     <aside class="panel">
       <div class="panel-header">
-        <span>Controls</span>
+        <span>Status</span>
         <span id="badge-status" class="badge alive">Alive</span>
       </div>
 
@@ -256,26 +316,40 @@
       <button id="btn-reset" class="btn-sub" style="margin-top: auto;">Reset State Machine</button>
     </aside>
 
-    <!-- Right Panel: Event Pipeline Log -->
+    <!-- Middle Panel: Event Pipeline Stream & Choices -->
     <main class="panel">
       <div class="panel-header">
-        <span>Pipeline Execution Stream</span>
+        <span>Execution Stream & Events</span>
         <span id="badge-count" class="badge">888 Realism Active</span>
       </div>
-      <div id="log-viewport" class="log-viewport"></div>
+
+      <!-- Dynamic Interruption Choice Node -->
+      <div id="choice-root" style="display: none;"></div>
+
+      <div id="log-viewport" class="scroll-viewport"></div>
     </main>
+
+    <!-- Right Panel: Actions & Realism To-Do Vector -->
+    <aside class="panel">
+      <div class="panel-header">Active Interventions</div>
+      <div id="actions-root" style="display: flex; flex-direction: column; gap: 0.4rem;"></div>
+
+      <div class="panel-header" style="margin-top: 0.5rem;">Realism To-Do Directives</div>
+      <div id="todo-root" class="scroll-viewport" style="height: 240px;"></div>
+    </aside>
   </div>
 
   <script>
     /**
-     * Real Lives 2026 Engine
-     * Zero-dependency single-file monolith. Optimized for low-latency mobile platforms.
+     * Real Lives 2026 Engine - Single File Monolith
+     * Integrated Choice, Action, and Realism To-Do State Engine.
      */
 
     // --- Core State Model ---
     const createInitialState = () => ({
       age: 30.0,
       isAlive: true,
+      pendingChoice: null,
       
       // Biological Metrics (#001–#300)
       telomeres: 1.0,
@@ -292,12 +366,124 @@
       // Environmental Mechanics (#601–#888)
       infrastructure: 0.95,
       surveillance: 0.05,
-      pathogens: 0.025
+      pathogens: 0.025,
+
+      // Active Realism Directives (To-Do Vector)
+      todos: [
+        { id: "td1", label: "Mitigate Lead Service Line Exposure", done: false, triggerMechId: 465 },
+        { id: "td2", label: "Stabilize Mitochondrial ATP Efficiency", done: false, triggerMechId: 426 },
+        { id: "td3", label: "Build Capital Buffer (> $10,000)", done: false, check: (s) => s.capital >= 10000 },
+        { id: "td4", label: "Maintain Immune Efficacy Above 80%", done: false, check: (s) => s.immunity >= 0.8 }
+      ]
     });
 
     let state = createInitialState();
 
-    // --- Mechanics Registry (#001–#888) ---
+    // --- Realism Action Deck ---
+    const ActionRegistry = [
+      {
+        id: "act_hb",
+        name: "Hyperbaric Oxygen Therapy",
+        cost: 400,
+        getAvailable: (s) => s.capital >= 400,
+        exec: (s) => {
+          s.capital -= 400;
+          s.mitochondria = Math.min(1.0, s.mitochondria + 0.08);
+          s.inflammation = Math.max(0, s.inflammation - 0.05);
+          return { text: "Executed Hyperbaric Oxygen Therapy. Mitochondrial health restored.", level: "action" };
+        }
+      },
+      {
+        id: "act_wf",
+        name: "Install Reverse Osmosis Filter",
+        cost: 250,
+        getAvailable: (s) => s.capital >= 250,
+        exec: (s) => {
+          s.capital -= 250;
+          s.infrastructure = Math.min(1.0, s.infrastructure + 0.1);
+          s.inflammation = Math.max(0, s.inflammation - 0.1);
+          const td = s.todos.find(t => t.id === "td1");
+          if (td) td.done = true;
+          return { text: "Installed Reverse Osmosis Filter. Reduced toxic heavy metal exposure.", level: "action" };
+        }
+      },
+      {
+        id: "act_cpap",
+        name: "Adopt CPAP Therapy",
+        cost: 600,
+        getAvailable: (s) => s.capital >= 600,
+        exec: (s) => {
+          s.capital -= 600;
+          s.cvStrain = Math.max(0, s.cvStrain - 0.2);
+          return { text: "Adopted CPAP Therapy. Reduced nocturnal cardiovascular strain.", level: "action" };
+        }
+      },
+      {
+        id: "act_inv",
+        name: "Yield-Bearing Asset Allocation",
+        cost: 1000,
+        getAvailable: (s) => s.capital >= 1000,
+        exec: (s) => {
+          s.capital -= 1000;
+          s.purchasingPower = Math.min(1.5, s.purchasingPower + 0.05);
+          return { text: "Allocated $1,000 to capital yield assets.", level: "action" };
+        }
+      }
+    ];
+
+    // --- Choice Realism Events Array ---
+    const ChoiceEvents = [
+      {
+        id: "ch_med",
+        name: "Experimental Cellular Therapy",
+        desc: "An experimental peptide therapy promises mitochondrial repair, but carries credit risk and severe potential side effects.",
+        options: [
+          {
+            label: "Authorize Therapy ($1,500)",
+            getValid: (s) => s.capital >= 1500,
+            resolve: (s) => {
+              s.capital -= 1500;
+              s.mitochondria = Math.min(1.0, s.mitochondria + 0.25);
+              return { text: "Authorized cellular therapy. Mitochondrial integrity restored +0.25.", level: "action" };
+            }
+          },
+          {
+            label: "Decline and Preserve Reserves",
+            getValid: () => true,
+            resolve: (s) => {
+              s.mitochondria = Math.max(0, s.mitochondria - 0.05);
+              return { text: "Declined therapy. Mitochondrial degradation continues.", level: "warning" };
+            }
+          }
+        ]
+      },
+      {
+        id: "ch_macro",
+        name: "Automated Sovereign Bail-In Notice",
+        desc: "Sovereign debt instability requires mandatory deposit haircut or transition to decentralized capital reserves.",
+        options: [
+          {
+            label: "Accept Liquidity Loss (-20% Capital)",
+            getValid: () => true,
+            resolve: (s) => {
+              s.capital *= 0.8;
+              return { text: "Accepted 20% liquid capital bail-in penalty.", level: "warning" };
+            }
+          },
+          {
+            label: "Pay Algorithmic Hedge Fee ($800)",
+            getValid: (s) => s.capital >= 800,
+            resolve: (s) => {
+              s.capital -= 800;
+              s.purchasingPower *= 0.98;
+              return { text: "Hedged capital against sovereign bail-in.", level: "action" };
+            }
+          }
+        ]
+      }
+    ];
+
+    // --- Full 888 Mechanics Registry Matrix ---
     const buildFullMatrix = () => {
       const bioTerms = ["Epigenetic", "Mitochondrial", "Vascular", "Immune", "Neuro", "Cellular", "Metabolic", "Endocrine"];
       const econTerms = ["Algorithmic", "Liquidity", "Credit", "Market", "Regulatory", "Taxation", "Asset", "Debt"];
@@ -306,7 +492,6 @@
       const matrix = [];
 
       for (let id = 1; id <= 888; id++) {
-        // High-fidelity specific definitions for explicit anchors
         if (id === 426) {
           matrix.push({
             id: 426,
@@ -392,7 +577,6 @@
           continue;
         }
 
-        // Optimized dynamic generator for full 888 matrix coverage
         if (id <= 300) {
           const name = `${bioTerms[id % bioTerms.length]} Marker Shift #${id}`;
           matrix.push({
@@ -440,9 +624,9 @@
 
     const MatrixRegistry = buildFullMatrix();
 
-    // --- Pipeline Simulation Step ---
+    // --- Simulation Core Loop ---
     const runSimulationStep = (s) => {
-      if (!s.isAlive) return [];
+      if (!s.isAlive || s.pendingChoice) return [];
 
       const stepLogs = [];
       s.age += 1.0;
@@ -467,6 +651,26 @@
         }
       }
 
+      // Check Choice Event Triggers
+      if (Math.random() < 0.25) {
+        const choiceEvent = ChoiceEvents[Math.floor(Math.random() * ChoiceEvents.length)];
+        s.pendingChoice = choiceEvent;
+      }
+
+      // Check Realism To-Do State Auto-Completions
+      s.todos.forEach(t => {
+        if (!t.done && t.check && t.check(s)) {
+          t.done = true;
+          stepLogs.push({
+            id: 0,
+            name: "DIRECTIVE COMPLETE",
+            category: "To-Do",
+            text: `Completed realism directive: ${t.label}`,
+            level: "action"
+          });
+        }
+      });
+
       // Life State Verification Guard Clause
       if (s.telomeres <= 0.05 || s.mitochondria <= 0.05 || s.immunity <= 0.0) {
         s.isAlive = false;
@@ -490,7 +694,10 @@
       badgeStatus: document.getElementById('badge-status'),
       bioRoot: document.getElementById('bio-root'),
       econRoot: document.getElementById('econ-root'),
-      logViewport: document.getElementById('log-viewport')
+      logViewport: document.getElementById('log-viewport'),
+      choiceRoot: document.getElementById('choice-root'),
+      actionsRoot: document.getElementById('actions-root'),
+      todoRoot: document.getElementById('todo-root')
     };
 
     const renderProgressRow = (label, val, maxVal = 1.0, invertColors = false) => {
@@ -523,7 +730,7 @@
       DOM.badgeAge.textContent = `Age ${state.age.toFixed(1)}`;
       DOM.badgeStatus.textContent = state.isAlive ? "Alive" : "Deceased";
       DOM.badgeStatus.className = `badge ${state.isAlive ? 'alive' : 'dead'}`;
-      DOM.btnStep.disabled = !state.isAlive;
+      DOM.btnStep.disabled = !state.isAlive || !!state.pendingChoice;
 
       DOM.bioRoot.innerHTML = `
         ${renderProgressRow("Mitochondrial Health", state.mitochondria)}
@@ -548,7 +755,45 @@
         </div>
       `;
 
-      // 2. Append Event Logs via DocumentFragment
+      // 2. Render Active Choice Interruption Banner
+      if (state.pendingChoice) {
+        const c = state.pendingChoice;
+        DOM.choiceRoot.style.display = 'block';
+        DOM.choiceRoot.innerHTML = `
+          <div class="choice-banner">
+            <div class="choice-title">DECISION REQUIRED: ${c.name}</div>
+            <div class="choice-desc">${c.desc}</div>
+            <div class="choice-options">
+              ${c.options.map((opt, idx) => `
+                <button ${!opt.getValid(state) ? 'disabled' : ''} onclick="resolveChoice(${idx})">
+                  ${opt.label}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else {
+        DOM.choiceRoot.style.display = 'none';
+        DOM.choiceRoot.innerHTML = '';
+      }
+
+      // 3. Render Interventions (Actions Panel)
+      DOM.actionsRoot.innerHTML = ActionRegistry.map(act => `
+        <button class="btn-action" ${(!state.isAlive || !act.getAvailable(state) || !!state.pendingChoice) ? 'disabled' : ''} onclick="executeAction('${act.id}')">
+          <span>${act.name}</span>
+          <span style="font-size: 0.7rem; color: var(--text-sub);">$${act.cost} • Action Command</span>
+        </button>
+      `).join('');
+
+      // 4. Render To-Do Vector Directives
+      DOM.todoRoot.innerHTML = state.todos.map(t => `
+        <div class="todo-item ${t.done ? 'done' : ''}">
+          <input type="checkbox" class="todo-checkbox" ${t.done ? 'checked' : ''} disabled />
+          <span>${t.label}</span>
+        </div>
+      `).join('');
+
+      // 5. Append Event Logs via DocumentFragment
       if (logs.length > 0) {
         const fragment = document.createDocumentFragment();
         
@@ -572,9 +817,40 @@
       }
     };
 
-    // --- Controller Handlers ---
+    // --- Action & Choice Controller Interactivity ---
+    window.executeAction = (actionId) => {
+      const act = ActionRegistry.find(a => a.id === actionId);
+      if (!act || !act.getAvailable(state) || !state.isAlive) return;
+      const res = act.exec(state);
+      renderState([{
+        id: 0,
+        name: act.name,
+        category: "Action",
+        text: res.text,
+        level: res.level
+      }]);
+    };
+
+    window.resolveChoice = (optionIdx) => {
+      if (!state.pendingChoice) return;
+      const opt = state.pendingChoice.options[optionIdx];
+      if (!opt || !opt.getValid(state)) return;
+      
+      const res = opt.resolve(state);
+      state.pendingChoice = null;
+
+      renderState([{
+        id: 0,
+        name: "CHOICE RESOLVED",
+        category: "Decision",
+        text: res.text,
+        level: res.level
+      }]);
+    };
+
+    // --- Primary Controllers ---
     DOM.btnStep.addEventListener('click', () => {
-      if (!state.isAlive) return;
+      if (!state.isAlive || !!state.pendingChoice) return;
       const logs = runSimulationStep(state);
       renderState(logs);
     });
@@ -586,7 +862,7 @@
         id: 0,
         name: "INITIALIZATION",
         category: "System",
-        text: "State machine reinitialized to default configuration.",
+        text: "State engine reinitialized to default configuration.",
         level: "system"
       }]);
     });
@@ -596,7 +872,7 @@
       id: 0,
       name: "ENGINE READY",
       category: "System",
-      text: "Real Lives 2026 initialized. Execute simulation steps to proceed.",
+      text: "Real Lives 2026 Core active. Choices, Actions, and To-Dos integrated.",
       level: "system"
     }]);
   </script>
