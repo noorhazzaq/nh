@@ -1,296 +1,638 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="ms">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>📜 99 Proverbs</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,sans-serif;background:#0f0e17;color:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:16px;overflow:hidden;position:relative}
-#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
-#trail-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
-.container{max-width:700px;width:100%;background:rgba(26,26,46,.75);backdrop-filter:blur(30px);border-radius:24px;padding:24px;box-shadow:0 20px 80px rgba(0,0,0,.9);text-align:center;position:relative;z-index:1;border:1px solid rgba(255,255,255,.05);animation:float 6s ease-in-out infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-h1{font-size:2rem;margin-bottom:4px;background:linear-gradient(135deg,#fbbf24,#f59e0b,#e94560,#ff6b81);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:grad 6s ease-in-out infinite}
-@keyframes grad{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.sub{font-size:.85rem;opacity:.7;margin-bottom:8px;animation:pulse 3s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:.5}50%{opacity:.9}}
-.badge{display:inline-block;padding:6px 20px;border-radius:50px;font-size:.7rem;font-weight:600;margin-bottom:12px;background:rgba(251,191,36,.15);color:#fbbf24;border:1px solid rgba(251,191,36,.2);box-shadow:0 0 40px rgba(251,191,36,.1);animation:bp 2s ease-in-out infinite}
-@keyframes bp{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
-.icon{font-size:3.5rem;display:block;margin:8px 0;min-height:70px}
-.loading{font-size:1rem;opacity:.6;padding:20px;animation:pulse 1.5s ease-in-out infinite}
-.proverb-box{min-height:140px;display:flex;align-items:center;justify-content:center;padding:16px;margin:8px 0;background:rgba(255,255,255,.02);border-radius:16px;border:1px solid rgba(255,255,255,.03);position:relative}
-.proverb-text{font-size:1.2rem;line-height:1.8;opacity:.9;font-style:italic}
-.proverb-text .origin{display:block;font-size:.7rem;opacity:.5;margin-top:8px;font-style:normal;letter-spacing:1px;text-transform:uppercase}
-.counter{font-size:.6rem;opacity:.3;margin:6px 0;min-height:20px}
-.btn-group{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
-.btn{padding:10px 20px;border:none;border-radius:50px;font-size:.75rem;font-weight:600;cursor:pointer;transition:.3s;position:relative;overflow:hidden;flex:1;min-width:80px;max-width:140px}
-.btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);opacity:0;transition:.3s}
-.btn:hover::before{opacity:1}
-.btn:active{transform:scale(.95)}
-.btn--next{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#0f0e17;box-shadow:0 4px 30px rgba(251,191,36,.3)}
-.btn--next:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(251,191,36,.5)}
-.btn--rand{background:linear-gradient(135deg,#e94560,#ff6b81);color:#fff;box-shadow:0 4px 30px rgba(233,69,96,.3)}
-.btn--rand:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(233,69,96,.5)}
-.btn--prev{background:linear-gradient(135deg,#60a5fa,#3b82f6);color:#fff;box-shadow:0 4px 30px rgba(96,165,250,.3)}
-.btn--prev:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(96,165,250,.5)}
-.btn--refresh{background:linear-gradient(135deg,#34d399,#059669);color:#fff;box-shadow:0 4px 30px rgba(52,211,153,.3)}
-.btn--refresh:hover{transform:scale(1.05);box-shadow:0 10px 50px rgba(52,211,153,.5)}
-.clock{font-size:.6rem;opacity:.3;margin-top:12px;font-variant-numeric:tabular-nums}
-.flower{position:fixed;font-size:2rem;pointer-events:none;z-index:0;animation:ff 25s ease-in-out infinite;opacity:.08}
-@keyframes ff{0%,100%{transform:translateY(0) rotate(0deg) scale(1)}25%{transform:translateY(-40px) rotate(20deg) scale(1.1)}50%{transform:translateY(20px) rotate(-10deg) scale(.9)}75%{transform:translateY(-20px) rotate(10deg) scale(1.05)}}
-@media(max-width:480px){.container{padding:16px}h1{font-size:1.5rem}.proverb-text{font-size:1rem}.btn{padding:8px 12px;font-size:.65rem;min-width:60px}.icon{font-size:2.5rem}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRON LEGACY - Digital Realm</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
+
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-cyan: #00ffff;
+            --neon-orange: #ff6b00;
+            --dark-bg: #000000;
+            --dark-grid: #001a1a;
+            --glass: rgba(0, 255, 255, 0.05);
+            --border-glow: rgba(0, 240, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--dark-bg);
+            font-family: 'Rajdhani', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 40px 40px;
+            }
+        }
+
+        /* ===== SCAN LINE EFFECT ===== */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15) 0px,
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* ===== CONTAINER ===== */
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== NAVBAR ===== */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-glow);
+            position: relative;
+            z-index: 3;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 4px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 30px var(--neon-blue);
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #c0c0c0;
+            text-decoration: none;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background: var(--neon-blue);
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* ===== HERO SECTION ===== */
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 64px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            color: #ffffff;
+            text-shadow: 0 0 20px var(--neon-blue), 0 0 60px var(--neon-blue);
+            margin-bottom: 20px;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% {
+                text-shadow: 0 0 20px var(--neon-blue), 0 0 60px var(--neon-blue);
+            }
+            50% {
+                text-shadow: 0 0 40px var(--neon-blue), 0 0 100px var(--neon-blue);
+            }
+        }
+
+        .hero .subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 20px;
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: var(--neon-cyan);
+            margin-bottom: 40px;
+            text-shadow: 0 0 15px var(--neon-cyan);
+        }
+
+        .hero .tagline {
+            font-size: 18px;
+            font-weight: 300;
+            color: #999999;
+            max-width: 600px;
+            line-height: 1.8;
+            margin-bottom: 50px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            text-decoration: none;
+            transition: all 0.3s;
+            border: 1px solid var(--neon-blue);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--neon-blue);
+            color: #000000;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .btn-primary:hover {
+            background: #ffffff;
+            box-shadow: 0 0 40px var(--neon-blue), 0 0 80px var(--neon-blue);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--neon-blue);
+            box-shadow: inset 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+
+        .btn-outline:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 30px var(--neon-blue);
+            transform: translateY(-2px);
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #ffffff;
+            text-shadow: 0 0 15px var(--neon-blue);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 2px;
+            background: var(--neon-blue);
+            margin: 15px auto 0;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        /* ===== ABOUT SECTION ===== */
+        .about {
+            padding: 80px 0;
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid var(--border-glow);
+            border-bottom: 1px solid var(--border-glow);
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .about-text p {
+            font-size: 18px;
+            font-weight: 300;
+            color: #cccccc;
+            line-height: 1.9;
+            margin-bottom: 20px;
+        }
+
+        .about-text .highlight {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .about-image {
+            border: 1px solid var(--border-glow);
+            padding: 20px;
+            text-align: center;
+            background: var(--glass);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
+            position: relative;
+        }
+
+        .about-image .disk {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid var(--neon-blue);
+            margin: 0 auto;
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 30px var(--neon-blue);
+            animation: rotateDisk 10s linear infinite;
+            position: relative;
+        }
+
+        .disk::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue);
+        }
+
+        @keyframes rotateDisk {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ===== FEATURES ===== */
+        .features {
+            padding: 80px 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            border: 1px solid var(--border-glow);
+            padding: 30px;
+            text-align: center;
+            background: var(--glass);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            transform: translateY(-5px);
+            border-color: var(--neon-blue);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px var(--neon-blue);
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            color: #ffffff;
+            position: relative;
+            z-index: 1;
+        }
+
+        .feature-card p {
+            font-size: 15px;
+            font-weight: 300;
+            color: #aaaaaa;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ===== CONTACT ===== */
+        .contact {
+            padding: 80px 0;
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid var(--border-glow);
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .form-group textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #666666;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--neon-blue);
+            color: #000000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        .submit-btn:hover {
+            background: #ffffff;
+            box-shadow: 0 0 40px var(--neon-blue), 0 0 80px var(--neon-blue);
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            padding: 30px 0;
+            text-align: center;
+            border-top: 1px solid var(--border-glow);
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        footer p {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: #666666;
+        }
+
+        footer .footer-glow {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 32px;
+                letter-spacing: 6px;
+            }
+
+            .hero .subtitle {
+                font-size: 14px;
+                letter-spacing: 3px;
+            }
+
+            .section-title {
+                font-size: 24px;
+                letter-spacing: 4px;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .nav-links a {
+                font-size: 10px;
+                letter-spacing: 1px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<canvas id="bg-canvas"></canvas>
-<canvas id="trail-canvas"></canvas>
+    <!-- BACKGROUND EFFECTS -->
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
 
-<div class="flower" style="top:5%;left:3%;animation-delay:0s">📜</div>
-<div class="flower" style="top:15%;right:5%;animation-delay:-4s">🕊️</div>
-<div class="flower" style="bottom:20%;left:8%;animation-delay:-8s">🌿</div>
-<div class="flower" style="bottom:10%;right:3%;animation-delay:-12s">⭐</div>
-<div class="flower" style="top:45%;left:2%;animation-delay:-16s">🌙</div>
-<div class="flower" style="top:60%;right:2%;animation-delay:-20s">☀️</div>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <a href="#" class="logo">TRON</a>
+            <ul class="nav-links">
+                <li><a href="#home">UTAMA</a></li>
+                <li><a href="#about">TENTANG</a></li>
+                <li><a href="#features">KEISTIMEWAAN</a></li>
+                <li><a href="#contact">HUBUNGI</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<div class="container">
-<div class="badge" id="badge">📜 Loading...</div>
-<h1>99 Proverbs</h1>
-<div class="sub">Fresh wisdom from free APIs</div>
-<div class="icon" id="icon">📜</div>
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h1>TRON LEGACY</h1>
+            <p class="subtitle">THE DIGITAL REALM</p>
+            <p class="tagline">Melangkaui sempadan realiti. Satu dunia digital yang dibina daripada kod tulen, cahaya, dan tenaga. Selamat datang ke masa hadapan.</p>
+            <div class="cta-buttons">
+                <a href="#about" class="btn btn-primary">MULA SEKARANG</a>
+                <a href="#features" class="btn btn-outline">TEROKAI</a>
+            </div>
+        </div>
+    </section>
 
-<div class="proverb-box">
-<div class="proverb-text" id="proverb"><span class="loading">⏳ Loading wisdom...</span></div>
-</div>
-<div class="counter" id="counter">—</div>
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+        <div class="container">
+            <h2 class="section-title">TENTANG SISTEM</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <p><span class="highlight">TRON LEGACY</span> ialah platform digital futuristik yang direka untuk mereka yang mahu hidup dalam dunia teknologi tanpa had.</p>
+                    <p>Setiap elemen dibina dengan ketepatan tinggi, dipacu oleh data dan cahaya. Dari grid digital hingga tenaga tulen, semua berada dalam kawalan penuh.</p>
+                    <p>Sistem ini bukan sekadar laman web — ia adalah <span class="highlight">pintu masuk ke dimensi lain</span> di mana segala-galanya mungkin.</p>
+                </div>
+                <div class="about-image">
+                    <div class="disk"></div>
+                    <p style="margin-top: 20px; font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 3px; color: var(--neon-blue);">DIGITAL DISK</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div class="btn-group">
-<button class="btn btn--prev" onclick="fetchPrev()">◀ Prev</button>
-<button class="btn btn--rand" onclick="fetchRandom()">🎲 Random</button>
-<button class="btn btn--next" onclick="fetchNext()">Next ▶</button>
-</div>
+    <!-- FEATURES SECTION -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">KEISTIMEWAAN</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>KELAJUAN CAHAYA</h3>
+                    <p>Sistem dipacu dengan pemprosesan ultra pantas, memberikan pengalaman tanpa gangguan.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔷</div>
+                    <h3>GRID DIGITAL</h3>
+                    <p>Infrastruktur digital yang kukuh dan selamat, dibina untuk persekitaran maya.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>KESELAMATAN MAKSIMUM</h3>
+                    <p>Perlindungan berlapis memastikan data anda selamat daripada ancaman luar.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🌐</div>
+                    <h3>HUBUNGAN GLOBAL</h3>
+                    <p>Akses ke rangkaian digital dari mana sahaja di dunia, pada bila-bila masa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-<div class="btn-group">
-<button class="btn btn--refresh" onclick="fetchFresh()" style="max-width:200px">🔄 Fresh Proverb</button>
-</div>
+    <!-- CONTACT SECTION -->
+    <section class="contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">HUBUNGI KAMI</h2>
+            <form class="contact-form" onsubmit="alert('Mesej anda telah dihantar ke GRID. Terima kasih!'); return false;">
+                <div class="form-group">
+                    <input type="text" placeholder="NAMA PENUH" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="ALAMAT E-MEL" required>
+                </div>
+                <div class="form-group">
+                    <textarea placeholder="MESEJ ANDA" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">HANTAR MESEJ</button>
+            </form>
+        </div>
+    </section>
 
-<div class="clock" id="clock"></div>
-</div>
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <p>© 2026 <span class="footer-glow">TRON LEGACY</span> — DIGITAL REALM. HAK CIPTA TERPELIHARA.</p>
+        </div>
+    </footer>
 
-<script>
-// ============================================================
-// PROVERBS — FIXED (Works offline + online)
-// ============================================================
-
-var current=null;
-var history=[];
-var totalFetched=0;
-
-// ===== BUILT-IN PROVERBS (Always works) =====
-var fallbackProverbs=[
-{proverb:"A journey of a thousand miles begins with a single step.",origin:"Chinese"},
-{proverb:"Patience is bitter, but its fruit is sweet.",origin:"Aristotle"},
-{proverb:"The only true wisdom is in knowing you know nothing.",origin:"Socrates"},
-{proverb:"Fall seven times, stand up eight.",origin:"Japanese"},
-{proverb:"A friend in need is a friend indeed.",origin:"Latin"},
-{proverb:"Where there is love, there is life.",origin:"Indian"},
-{proverb:"Happiness is not something ready made. It comes from your own actions.",origin:"Dalai Lama"},
-{proverb:"The darkest hour has only sixty minutes.",origin:"African"},
-{proverb:"Wisdom is the reward you get for a lifetime of listening.",origin:"Will Rogers"},
-{proverb:"If you want to go fast, go alone. If you want to go far, go together.",origin:"African"},
-{proverb:"The best time to plant a tree was 20 years ago. The second best time is now.",origin:"Chinese"},
-{proverb:"Little strokes fell great oaks.",origin:"Benjamin Franklin"},
-{proverb:"Trust, but verify.",origin:"Russian"},
-{proverb:"A smooth sea never made a skilled sailor.",origin:"Franklin D. Roosevelt"},
-{proverb:"The unexamined life is not worth living.",origin:"Socrates"},
-{proverb:"Necessity is the mother of invention.",origin:"English"},
-{proverb:"Better to remain silent and be thought a fool than to speak and remove all doubt.",origin:"Abraham Lincoln"},
-{proverb:"The only thing we have to fear is fear itself.",origin:"Franklin D. Roosevelt"},
-{proverb:"All that glitters is not gold.",origin:"Shakespeare"},
-{proverb:"Absence makes the heart grow fonder.",origin:"English"},
-{proverb:"Actions speak louder than words.",origin:"English"},
-{proverb:"Beauty is in the eye of the beholder.",origin:"English"},
-{proverb:"Every cloud has a silver lining.",origin:"John Milton"},
-{proverb:"Good things come to those who wait.",origin:"English"},
-{proverb:"Knowledge is power.",origin:"Francis Bacon"},
-{proverb:"Love is blind.",origin:"Shakespeare"},
-{proverb:"No pain, no gain.",origin:"English"},
-{proverb:"Rome wasn't built in a day.",origin:"English"},
-{proverb:"The pen is mightier than the sword.",origin:"Edward Bulwer-Lytton"},
-{proverb:"Time is money.",origin:"Benjamin Franklin"},
-{proverb:"Two heads are better than one.",origin:"English"},
-{proverb:"What goes around comes around.",origin:"English"},
-{proverb:"You reap what you sow.",origin:"Galatians"},
-{proverb:"A chain is only as strong as its weakest link.",origin:"English"},
-{proverb:"A penny saved is a penny earned.",origin:"Benjamin Franklin"},
-{proverb:"A watched pot never boils.",origin:"English"},
-{proverb:"Cleanliness is next to godliness.",origin:"English"},
-{proverb:"Discretion is the better part of valor.",origin:"Shakespeare"},
-{proverb:"Early to bed and early to rise makes a man healthy, wealthy, and wise.",origin:"Benjamin Franklin"},
-{proverb:"Fools rush in where angels fear to tread.",origin:"Alexander Pope"},
-{proverb:"Genius is one percent inspiration and ninety-nine percent perspiration.",origin:"Thomas Edison"},
-{proverb:"Great minds think alike.",origin:"English"},
-{proverb:"If you can't stand the heat, get out of the kitchen.",origin:"Harry S. Truman"},
-{proverb:"It takes two to tango.",origin:"English"},
-{proverb:"Keep your friends close and your enemies closer.",origin:"Sun Tzu"},
-{proverb:"Let sleeping dogs lie.",origin:"English"},
-{proverb:"Make hay while the sun shines.",origin:"English"},
-{proverb:"Old habits die hard.",origin:"English"},
-{proverb:"One good turn deserves another.",origin:"English"},
-{proverb:"Power tends to corrupt, and absolute power corrupts absolutely.",origin:"Lord Acton"},
-{proverb:"Still waters run deep.",origin:"English"},
-{proverb:"The best things in life are free.",origin:"English"},
-{proverb:"The squeaky wheel gets the grease.",origin:"English"},
-{proverb:"There is no 'I' in team.",origin:"English"},
-{proverb:"Time heals all wounds.",origin:"English"},
-{proverb:"To err is human, to forgive divine.",origin:"Alexander Pope"},
-{proverb:"Waste not, want not.",origin:"English"},
-{proverb:"Where there's smoke, there's fire.",origin:"English"},
-{proverb:"A stitch in time saves nine.",origin:"English"},
-{proverb:"Beggars can't be choosers.",origin:"English"},
-{proverb:"Blood is thicker than water.",origin:"English"},
-{proverb:"In the land of the blind, the one-eyed man is king.",origin:"Erasmus"},
-{proverb:"Life is just one damned thing after another.",origin:"Elbert Hubbard"},
-{proverb:"No man is an island.",origin:"John Donne"},
-{proverb:"Something is better than nothing.",origin:"English"},
-{proverb:"The truth is rarely pure and never simple.",origin:"Oscar Wilde"},
-{proverb:"To know thyself is the beginning of wisdom.",origin:"Socrates"},
-{proverb:"When in Rome, do as the Romans do.",origin:"English"}
-];
-
-function showLoading(msg){
-msg=msg||'⏳ Fetching wisdom...';
-document.getElementById('proverb').innerHTML='<span class="loading">'+msg+'</span>';
-document.getElementById('counter').textContent='⏳ Loading...';
-document.getElementById('badge').textContent='📜 Fetching...';
-document.getElementById('icon').textContent='⏳';
-}
-
-function display(data){
-var text=data.proverb||data.quote||data.text||'Wisdom';
-var origin=data.origin||data.author||data.source||'Unknown';
-var cat=data.category||'Wisdom';
-var icons=['📜','🕊️','🌿','⭐','🌙','☀️','💫','🌟','✨','🪷','🔮','🌈','🦋','🌸','🍀'];
-var icon=icons[Math.floor(Math.random()*icons.length)];
-
-document.getElementById('proverb').innerHTML='"'+text+'"<span class="origin">— '+origin+'</span>';
-document.getElementById('counter').textContent='📖 #'+totalFetched+' · '+cat;
-document.getElementById('badge').textContent='📜 '+cat;
-document.getElementById('icon').textContent=icon;
-current=data;
-}
-
-// ===== FETCH FROM API =====
-function fetchFromAPI(){
-showLoading();
-
-var apis=[
-
-function(){
-return fetch('https://api.quotable.io/random')
-.then(function(r){if(!r.ok)throw new Error('Quotable failed');return r.json();})
-.then(function(d){return{proverb:d.content,origin:d.author||'Unknown',source:'Quotable'};});
-},
-
-function(){
-return fetch('https://api.adviceslip.com/advice')
-.then(function(r){if(!r.ok)throw new Error('Advice failed');return r.json();})
-.then(function(d){var a=d.slip||{};return{proverb:a.advice||'Advice',origin:'Wisdom',source:'Advice Slip'};});
-},
-
-function(){
-return fetch('https://zenquotes.io/api/random')
-.then(function(r){if(!r.ok)throw new Error('Zen failed');return r.json();})
-.then(function(d){var q=d[0]||{};return{proverb:q.q||'Quote',origin:q.a||'Zen',source:'Zen Quotes'};});
-}
-];
-
-return apis.reduce(function(promise,fn){
-return promise.catch(function(){return fn();});
-}, Promise.reject())
-.catch(function(){
-// Use built-in proverbs
-var p=fallbackProverbs[Math.floor(Math.random()*fallbackProverbs.length)];
-return{proverb:p.proverb,origin:p.origin,source:'Built-in'};
-});
-}
-
-// ===== FETCH FUNCTIONS =====
-function fetchFresh(){
-fetchFromAPI().then(function(data){
-totalFetched++;
-display(data);
-history.push(data);
-}).catch(function(){
-// Ultimate fallback
-var p=fallbackProverbs[Math.floor(Math.random()*fallbackProverbs.length)];
-totalFetched++;
-display({proverb:p.proverb,origin:p.origin,source:'Built-in'});
-history.push({proverb:p.proverb,origin:p.origin,source:'Built-in'});
-});
-}
-
-function fetchRandom(){fetchFresh();}
-function fetchNext(){fetchFresh();}
-
-function fetchPrev(){
-if(history.length>1){
-var prev=history[history.length-2];
-display(prev);
-history.pop();
-}else{
-fetchFresh();
-}
-}
-
-// ============================================================
-// CLOCK
-// ============================================================
-
-function updateClock(){
-var d=new Date();
-document.getElementById('clock').textContent='🕐 '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0');
-}
-setInterval(updateClock,1000);updateClock();
-
-// ============================================================
-// PARTICLES
-// ============================================================
-
-var c=document.getElementById('bg-canvas'),ctx=c.getContext('2d'),W,H,pts=[],running=true;
-function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
-window.addEventListener('resize',resize);resize();
-document.addEventListener('visibilitychange',function(){running=!document.hidden});
-var cols=['#fbbf24','#e94560','#60a5fa','#34d399','#a78bfa','#fb923c','#ff6b81','#22d3ee'];
-for(var i=0;i<50;i++){pts.push({x:Math.random()*W,y:Math.random()*H,s:Math.random()*3+1,vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4-.1,c:cols[Math.floor(Math.random()*cols.length)],l:Math.random()*120+60,ml:Math.random()*120+60,g:Math.random()*12+6})}
-function draw(){if(!running){requestAnimationFrame(draw);return}ctx.clearRect(0,0,W,H);pts.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.l--;if(p.l<=0||p.x<0||p.x>W||p.y<0||p.y>H){p.x=Math.random()*W;p.y=H;p.l=p.ml;p.vx=(Math.random()-.5)*.4;p.vy=-Math.random()*.4-.1;p.c=cols[Math.floor(Math.random()*cols.length)]}var a=p.l/p.ml;ctx.beginPath();ctx.arc(p.x,p.y,p.s*a,0,Math.PI*2);ctx.fillStyle=p.c;ctx.shadowColor=p.c;ctx.shadowBlur=p.g*a;ctx.fill()});requestAnimationFrame(draw)}
-draw();
-
-// ============================================================
-// MOUSE TRAIL
-// ============================================================
-
-var tc=document.getElementById('trail-canvas'),tctx=tc.getContext('2d'),trail=[];
-function resizeTrail(){tc.width=window.innerWidth;tc.height=window.innerHeight}
-window.addEventListener('resize',resizeTrail);resizeTrail();
-document.addEventListener('mousemove',function(e){trail.push({x:e.clientX,y:e.clientY,life:1});if(trail.length>30)trail.shift()});
-document.addEventListener('touchmove',function(e){var t=e.touches[0];trail.push({x:t.clientX,y:t.clientY,life:1});if(trail.length>30)trail.shift()},{passive:true});
-function drawTrail(){tctx.clearRect(0,0,tc.width,tc.height);trail.forEach(function(p){p.life-=0.03;if(p.life>0){var a=p.life*0.3;var s=p.life*8+2;var g=tctx.createRadialGradient(p.x,p.y,0,p.x,p.y,s);g.addColorStop(0,'rgba(251,191,36,'+a+')');g.addColorStop(1,'rgba(251,191,36,0)');tctx.beginPath();tctx.arc(p.x,p.y,s,0,Math.PI*2);tctx.fillStyle=g;tctx.fill()}});trail=trail.filter(function(p){return p.life>0});requestAnimationFrame(drawTrail)}
-drawTrail();
-
-// ============================================================
-// BREATHING
-// ============================================================
-
-var breathe=0;setInterval(function(){breathe=(breathe+1)%100;var s=1+Math.sin(breathe/20)*.008;document.querySelector('.container').style.transform='scale('+s+')'},100);
-
-// ============================================================
-// INIT
-// ============================================================
-
-fetchFresh();
-console.log('📜 Proverbs — Fixed (works offline)');
-</script>
 </body>
 </html>
