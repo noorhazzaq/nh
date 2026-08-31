@@ -133,8 +133,9 @@
         .msg-del {
             background: none; border: none; color: #444; font-size: 10px;
             padding: 2px; margin-left: 5px;
+            transition: color 0.2s;
         }
-        .msg-del:active { color: var(--red); }
+        .msg-del.confirm { color: var(--red); font-weight: 700; }
 
         .chat-input-area {
             padding: 8px 10px; border-top: 1px solid var(--border);
@@ -175,6 +176,7 @@
         }
         .toast {
             padding: 10px 16px; border-radius: 10px; font-size: 11px; border: 1px solid;
+            transform: translateX(0);
             transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
             opacity: 1;
         }
@@ -287,6 +289,11 @@
             }, 3000);
         }
 
+        function debounce(fn, delay = 500) {
+            let timer;
+            return (...args) => { clearTimeout(timer); timer = setTimeout(() => fn(...args), delay); };
+        }
+
         const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
         const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
         const getName = () => DOM.chatName.value.trim() || 'Anonymous';
@@ -306,18 +313,17 @@
                 const img = new Image();
                 img.onload = () => {
                     if (img.width <= CONFIG.maxImageDim) {
-                        cb(e.target.result);
+                        cb(reader.result);
                         return;
                     }
                     const canvas = document.createElement('canvas');
-                    let w = img.width, h = img.height;
-                    h = h * (CONFIG.maxImageDim / w);
-                    w = CONFIG.maxImageDim;
-                    canvas.width = w; canvas.height = h;
-                    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                    const ratio = CONFIG.maxImageDim / img.width;
+                    canvas.width = CONFIG.maxImageDim;
+                    canvas.height = Math.round(img.height * ratio);
+                    canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
                     cb(canvas.toDataURL('image/jpeg', 0.7));
                 };
-                img.src = e.target.result;
+                img.src = reader.result;
             };
             reader.readAsDataURL(file);
         }
@@ -449,19 +455,24 @@
                     if (remaining <= 0) { stopRecord(); return; }
                     DOM.recBar.textContent = `🔴 MERAKAM... (${remaining}s)`;
                 }, 1000);
-            } catch(e) { toast('Tidak dapat akses mikrofon!', 'error'); }
+            } catch(e) {
+                toast('Tidak dapat akses mikrofon!', 'error');
+            }
         }
 
         function stopRecord() {
+            if (!state.isRecording) return;
             state.isRecording = false;
             DOM.recordBtn.classList.remove('recording');
             DOM.recBar.classList.remove('active');
             DOM.recBar.textContent = '🔴 MERAKAM...';
             clearInterval(state.recordTimer);
-            if (state.recorder) state.recorder.stop();
+            if (state.recorder) {
+                try { state.recorder.stop(); } catch(e) {}
+            }
         }
 
-        /* ============ LONG-PRESS DELETE ============ */
+        /* ============ DELETE (Double-tap) ============ */
         function handleDelete(key, btn) {
             if (state.deleteTarget === key) {
                 clearTimeout(state.deleteTimer);
@@ -470,11 +481,9 @@
                 return;
             }
             state.deleteTarget = key;
-            btn.style.color = 'var(--red)';
-            btn.textContent = '✕?';
+            btn.classList.add('confirm');
             state.deleteTimer = setTimeout(() => {
-                btn.style.color = '#444';
-                btn.textContent = '✕';
+                btn.classList.remove('confirm');
                 state.deleteTarget = null;
             }, 2000);
         }
@@ -498,11 +507,8 @@
 
         /* ============ NAME PERSIST ============ */
         DOM.chatName.value = localStorage.getItem('zack_name') || '';
-        let nameSaveTimer;
-        DOM.chatName.addEventListener('input', () => {
-            clearTimeout(nameSaveTimer);
-            nameSaveTimer = setTimeout(() => localStorage.setItem('zack_name', getName()), 500);
-        });
+        const saveNameDebounced = debounce(() => localStorage.setItem('zack_name', getName()), 500);
+        DOM.chatName.addEventListener('input', saveNameDebounced);
 
         /* ============ EVENTS ============ */
         DOM.sendBtn.addEventListener('click', sendText);
