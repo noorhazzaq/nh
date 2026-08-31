@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MERDEKA 69 - Daulat Tuanku 🇲🇾</title>
+    <title>TRON BLOG - Admin Panel</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Playfair+Display:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
 
         :root {
-            --blue: #003399;
-            --red: #cc0001;
-            --yellow: #ffcc00;
-            --white: #ffffff;
-            --gold: #ffd700;
-            --dark: #1a1a1a;
-            --royal: #8b0000;
+            --neon-blue: #00f0ff;
+            --neon-cyan: #00ffff;
+            --neon-orange: #ff6b00;
+            --dark-bg: #000000;
+            --glass: rgba(0, 255, 255, 0.05);
+            --border-glow: rgba(0, 240, 255, 0.3);
+            --accent: #00f0ff;
+            --text: #ffffff;
+            --text-muted: #999999;
+            --danger: #ff0033;
+            --success: #00ff00;
         }
 
         * {
@@ -22,72 +26,54 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            scroll-behavior: smooth;
         }
 
         body {
+            background: var(--dark-bg);
             font-family: 'Rajdhani', sans-serif;
-            background: linear-gradient(135deg, #001133 0%, #003399 30%, #0044cc 50%, #003399 70%, #001133 100%);
-            color: #ffffff;
+            color: var(--text);
             overflow-x: hidden;
             min-height: 100vh;
-            position: relative;
         }
 
-        /* ===== STARS BACKGROUND ===== */
-        .stars {
+        /* ===== GRID BACKGROUND ===== */
+        .grid-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: 0;
             background-image:
-                radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
-                radial-gradient(2px 2px at 40px 70px, #ffcc00, transparent),
-                radial-gradient(2px 2px at 50px 160px, #ffffff, transparent),
-                radial-gradient(2px 2px at 90px 40px, #ffffff, transparent),
-                radial-gradient(2px 2px at 130px 80px, #ffcc00, transparent),
-                radial-gradient(2px 2px at 160px 30px, #ffffff, transparent),
-                radial-gradient(3px 3px at 200px 120px, #ffcc00, transparent),
-                radial-gradient(2px 2px at 250px 60px, #ffffff, transparent);
-            background-size: 300px 300px;
-            animation: twinkle 3s ease-in-out infinite;
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+            animation: gridMove 20s linear infinite;
         }
 
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 1; }
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 40px; }
         }
 
-        /* ===== CONFETTI ===== */
-        .confetti-container {
+        /* ===== SCANLINE ===== */
+        .scanline {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.1) 0px,
+                rgba(0, 0, 0, 0.1) 1px,
+                transparent 1px,
+                transparent 3px
+            );
             z-index: 1;
-            overflow: hidden;
-        }
-
-        .confetti {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            animation: confettiFall linear infinite;
-        }
-
-        @keyframes confettiFall {
-            0% {
-                transform: translateY(-100%) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100vh) rotate(720deg);
-                opacity: 0;
-            }
+            pointer-events: none;
         }
 
         /* ===== HEADER ===== */
@@ -97,33 +83,56 @@
             left: 0;
             width: 100%;
             z-index: 100;
-            background: linear-gradient(135deg, #cc0001, #8b0000, #cc0001);
-            border-bottom: 3px solid #ffcc00;
-            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 1px solid var(--border-glow);
+            padding: 15px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
         }
 
         .logo {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
             font-weight: 900;
-            letter-spacing: 2px;
-            color: #ffcc00;
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
+            letter-spacing: 3px;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent), 0 0 30px var(--accent);
             text-decoration: none;
+            cursor: pointer;
+        }
+
+        .header-actions {
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 8px;
+        }
+
+        .admin-btn {
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .admin-btn:hover {
+            background: var(--accent);
+            color: #000000;
+            box-shadow: 0 0 20px var(--accent);
         }
 
         .hamburger {
             width: 40px;
             height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #ffcc00;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--border-glow);
             border-radius: 5px;
             display: flex;
             flex-direction: column;
@@ -138,7 +147,8 @@
         .hamburger span {
             width: 20px;
             height: 2px;
-            background: #ffcc00;
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
             transition: all 0.3s;
         }
 
@@ -161,12 +171,12 @@
             right: -100%;
             width: 75%;
             height: 100vh;
-            background: linear-gradient(135deg, #8b0000, #cc0001, #8b0000);
+            background: rgba(0, 0, 0, 0.98);
             z-index: 99;
             transition: right 0.4s ease;
             padding: 80px 20px 20px;
-            border-left: 3px solid #ffcc00;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            border-left: 1px solid var(--border-glow);
+            box-shadow: -10px 0 40px rgba(0, 240, 255, 0.2);
         }
 
         .mobile-menu.active {
@@ -176,19 +186,20 @@
         .mobile-menu a {
             display: block;
             padding: 18px 15px;
-            color: #ffffff;
+            color: #cccccc;
             text-decoration: none;
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            letter-spacing: 1px;
-            border-bottom: 1px solid rgba(255, 204, 0, 0.3);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .mobile-menu a:hover,
         .mobile-menu a:active {
-            color: #ffcc00;
-            text-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+            color: var(--accent);
+            text-shadow: 0 0 15px var(--accent);
             padding-left: 25px;
         }
 
@@ -211,454 +222,439 @@
         main {
             position: relative;
             z-index: 2;
-            padding-top: 65px;
+            padding-top: 70px;
             min-height: 100vh;
+            max-width: 900px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         /* ===== HERO ===== */
         .hero {
-            min-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             text-align: center;
-            padding: 30px 20px;
-            position: relative;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 10px 25px;
-            background: linear-gradient(135deg, #ffcc00, #ffd700);
-            color: #8b0000;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 14px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            border-radius: 50px;
-            margin-bottom: 20px;
-            box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
-            animation: pulseBadge 2s ease-in-out infinite;
-        }
-
-        @keyframes pulseBadge {
-            0%, 100% { transform: scale(1); box-shadow: 0 0 30px rgba(255, 204, 0, 0.5); }
-            50% { transform: scale(1.05); box-shadow: 0 0 50px rgba(255, 204, 0, 0.8); }
+            padding: 50px 0 40px;
         }
 
         .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 42px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 36px;
             font-weight: 900;
-            letter-spacing: 3px;
-            color: #ffcc00;
-            text-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
-            margin-bottom: 10px;
-            line-height: 1.2;
+            letter-spacing: 8px;
+            color: #ffffff;
+            text-shadow: 0 0 20px var(--accent), 0 0 60px var(--accent);
+            margin-bottom: 15px;
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { text-shadow: 0 0 20px var(--accent), 0 0 60px var(--accent); }
+            50% { text-shadow: 0 0 40px var(--accent), 0 0 100px var(--accent); }
         }
 
         .hero .subtitle {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 5px;
-            color: #ffffff;
-            margin-bottom: 15px;
-        }
-
-        /* ===== REALISTIC FLAG ===== */
-        .flag-container {
-            position: relative;
-            width: 280px;
-            height: 168px;
-            margin: 20px auto;
-            perspective: 800px;
-            cursor: pointer;
-        }
-
-        .flag-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            animation: flagWave 4s ease-in-out infinite;
-        }
-
-        @keyframes flagWave {
-            0%, 100% {
-                transform: rotateX(2deg) rotateY(-5deg) rotateZ(0.5deg);
-            }
-            25% {
-                transform: rotateX(3deg) rotateY(-8deg) rotateZ(1deg);
-            }
-            50% {
-                transform: rotateX(2deg) rotateY(-5deg) rotateZ(0.5deg);
-            }
-            75% {
-                transform: rotateX(3deg) rotateY(-2deg) rotateZ(0deg);
-            }
-        }
-
-        .flag {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 3px;
-            box-shadow: 
-                0 10px 40px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(0, 0, 0, 0.3),
-                inset 0 0 30px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            transform-origin: left center;
-        }
-
-        .stripes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stripe {
-            flex: 1;
-            width: 100%;
-        }
-
-        .stripe-red {
-            background: linear-gradient(180deg, #e60000 0%, #cc0001 50%, #b30000 100%);
-        }
-
-        .stripe-white {
-            background: linear-gradient(180deg, #ffffff 0%, #f5f5f5 50%, #e8e8e8 100%);
-        }
-
-        .canton {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 50%;
-            height: 54%;
-            background: linear-gradient(135deg, #003399 0%, #002266 50%, #001a4d 100%);
-            z-index: 2;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .crescent {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            top: 8px;
-            left: 8px;
-            z-index: 3;
-        }
-
-        .crescent-shape {
-            position: absolute;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #ffcc00;
-            box-shadow: 
-                0 0 15px rgba(255, 204, 0, 0.3),
-                inset 0 2px 5px rgba(255, 255, 255, 0.3);
-        }
-
-        .crescent-overlay {
-            position: absolute;
-            width: 29px;
-            height: 29px;
-            border-radius: 50%;
-            background: #003399;
-            top: 6px;
-            left: 9px;
-            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .star-14 {
-            position: absolute;
-            width: 32px;
-            height: 32px;
-            top: 8px;
-            right: 8px;
-            z-index: 4;
-            animation: starGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes starGlow {
-            0%, 100% {
-                filter: drop-shadow(0 0 5px rgba(255, 204, 0, 0.8));
-            }
-            50% {
-                filter: drop-shadow(0 0 15px rgba(255, 204, 0, 1));
-            }
-        }
-
-        .star-14 svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .fabric-texture {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            background-image: 
-                repeating-linear-gradient(
-                    0deg,
-                    transparent,
-                    transparent 1px,
-                    rgba(0, 0, 0, 0.03) 1px,
-                    rgba(0, 0, 0, 0.03) 2px
-                );
-            pointer-events: none;
-        }
-
-        .lighting {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 6;
-            background: linear-gradient(
-                135deg,
-                rgba(255, 255, 255, 0.15) 0%,
-                transparent 30%,
-                transparent 70%,
-                rgba(0, 0, 0, 0.1) 100%
-            );
-            pointer-events: none;
-        }
-
-        .flagpole {
-            position: absolute;
-            left: -15px;
-            top: -10px;
-            width: 5px;
-            height: 190px;
-            background: linear-gradient(90deg, #999999, #dddddd, #999999);
-            border-radius: 3px;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
-            z-index: 10;
-        }
-
-        .flagpole-top {
-            position: absolute;
-            left: -18px;
-            top: -15px;
-            width: 11px;
-            height: 11px;
-            background: linear-gradient(135deg, #ffd700, #ffcc00);
-            border-radius: 50%;
-            box-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
-            z-index: 11;
-        }
-
-        /* ===== COUNTDOWN ===== */
-        .countdown-section {
-            padding: 40px 20px;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 3px solid #ffcc00;
-            border-bottom: 3px solid #ffcc00;
-        }
-
-        .countdown-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 24px;
-            font-weight: 700;
-            color: #ffcc00;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
-        }
-
-        .countdown-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        .countdown-item {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #ffcc00;
-            padding: 15px 5px;
-            border-radius: 10px;
-        }
-
-        .countdown-number {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            font-weight: 900;
-            color: #ffcc00;
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.5);
-        }
-
-        .countdown-label {
-            font-size: 10px;
-            letter-spacing: 1px;
-            color: #ffffff;
-            margin-top: 5px;
-        }
-
-        /* ===== SECTIONS ===== */
-        section {
-            padding: 40px 20px;
-            position: relative;
-            border-bottom: 3px solid rgba(255, 204, 0, 0.2);
-        }
-
-        .section-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: 2px;
-            text-align: center;
+            font-size: 16px;
+            font-weight: 300;
+            letter-spacing: 4px;
+            color: var(--accent);
             margin-bottom: 30px;
-            color: #ffcc00;
-            text-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
-            position: relative;
+            text-shadow: 0 0 15px var(--accent);
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(90deg, #ffcc00, #cc0001, #ffcc00);
-            margin: 15px auto 0;
-            border-radius: 2px;
+        /* ===== SEARCH BAR ===== */
+        .search-bar {
+            max-width: 500px;
+            margin: 0 auto 30px;
+            display: flex;
+            gap: 10px;
         }
 
-        /* ===== ROYAL CARDS ===== */
-        .royal-grid {
+        .search-bar input {
+            flex: 1;
+            padding: 12px 18px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+        }
+
+        .search-bar button {
+            padding: 12px 25px;
+            background: var(--accent);
+            color: #000000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .search-bar button:hover {
+            background: #ffffff;
+            box-shadow: 0 0 40px var(--accent);
+        }
+
+        /* ===== BLOG GRID ===== */
+        .blog-grid {
             display: grid;
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 25px;
+            margin-bottom: 50px;
         }
 
-        .royal-card {
-            background: linear-gradient(135deg, rgba(139, 0, 0, 0.8), rgba(204, 0, 1, 0.6));
-            border: 2px solid #ffcc00;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
+        .blog-card {
+            border: 1px solid var(--border-glow);
+            background: var(--glass);
             transition: all 0.3s;
             cursor: pointer;
             position: relative;
             overflow: hidden;
         }
 
-        .royal-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 204, 0, 0.2) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.3s;
+        .blog-card:hover {
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.3);
+            border-color: var(--accent);
+            transform: translateY(-5px);
         }
 
-        .royal-card:active {
-            transform: scale(0.95);
-            box-shadow: 0 0 40px rgba(255, 204, 0, 0.5);
-        }
-
-        .royal-card:hover::before {
-            opacity: 1;
-        }
-
-        .royal-crown {
-            font-size: 40px;
-            margin-bottom: 15px;
+        .blog-card-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.05));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 60px;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent);
             position: relative;
-            z-index: 1;
+            overflow: hidden;
         }
 
-        .royal-name {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: #ffcc00;
+        .blog-card-content {
+            padding: 20px;
+        }
+
+        .blog-card-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 9px;
+            letter-spacing: 2px;
             margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
         }
 
-        .royal-title {
-            font-size: 14px;
+        .blog-card h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 2px;
             color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .blog-card-excerpt {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .blog-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #666666;
             letter-spacing: 1px;
-            position: relative;
-            z-index: 1;
         }
 
-        /* ===== HISTORY ===== */
-        .history-content {
-            max-width: 600px;
-            margin: 0 auto;
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
             text-align: center;
+            padding: 60px 20px;
+            border: 1px dashed var(--border-glow);
+            color: #666666;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 3px;
+            grid-column: 1 / -1;
         }
 
-        .history-text {
+        .empty-state .empty-icon {
+            font-size: 60px;
+            margin-bottom: 20px;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent);
+        }
+
+        /* ===== ARTICLE VIEW ===== */
+        .article-view {
+            display: none;
+            margin-bottom: 50px;
+        }
+
+        .article-view.active {
+            display: block;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .article-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 0 20px var(--accent);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .article-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(0, 240, 255, 0.05));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 80px;
+            color: var(--accent);
+            text-shadow: 0 0 30px var(--accent);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-glow);
+        }
+
+        .article-content {
             font-size: 15px;
+            line-height: 1.9;
             color: #cccccc;
-            line-height: 1.8;
+        }
+
+        .article-content p {
             margin-bottom: 20px;
         }
 
-        .history-highlight {
-            color: #ffcc00;
-            font-weight: 700;
-            font-size: 18px;
+        .back-to-blog {
+            display: inline-block;
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s;
         }
 
-        /* ===== PANTUN ===== */
-        .pantun-box {
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid #ffcc00;
-            border-radius: 10px;
-            padding: 25px;
-            margin: 20px 0;
+        .back-to-blog:hover {
+            background: var(--accent);
+            color: #000000;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        /* ===== ADMIN PANEL ===== */
+        .admin-panel {
+            display: none;
+            margin-bottom: 50px;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .admin-login {
+            max-width: 400px;
+            margin: 0 auto;
+            border: 1px solid var(--border-glow);
+            padding: 30px;
+            background: var(--glass);
             text-align: center;
         }
 
-        .pantun-text {
-            font-family: 'Playfair Display', serif;
-            font-size: 16px;
-            line-height: 1.8;
+        .admin-login h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .admin-login input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--border-glow);
             color: #ffffff;
-            font-style: italic;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 15px;
+            margin-bottom: 15px;
+            outline: none;
+            text-align: center;
+        }
+
+        .admin-login input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .admin-dashboard {
+            display: none;
+        }
+
+        .admin-dashboard.active {
+            display: block;
+        }
+
+        .admin-dashboard h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .admin-form {
+            border: 1px solid var(--border-glow);
+            padding: 25px;
+            background: var(--glass);
+            margin-bottom: 30px;
+        }
+
+        .admin-form h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            letter-spacing: 2px;
+            color: var(--accent);
+            margin-bottom: 20px;
+        }
+
+        .admin-form input,
+        .admin-form textarea {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .admin-form input:focus,
+        .admin-form textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        .admin-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .admin-btn-primary {
+            padding: 12px 25px;
+            background: var(--accent);
+            color: #000000;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent);
+            transition: all 0.3s;
+        }
+
+        .admin-btn-primary:hover {
+            background: #ffffff;
+            box-shadow: 0 0 30px var(--accent);
+        }
+
+        .admin-btn-danger {
+            padding: 8px 15px;
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .admin-btn-danger:hover {
+            background: var(--danger);
+            color: #ffffff;
+        }
+
+        .admin-post-item {
+            border: 1px solid var(--border-glow);
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--glass);
+        }
+
+        .admin-post-info h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .admin-post-info p {
+            font-size: 11px;
+            color: #666666;
+        }
+
+        .admin-post-actions {
+            display: flex;
+            gap: 8px;
         }
 
         /* ===== FOOTER ===== */
         footer {
-            padding: 25px 20px;
+            padding: 30px 20px;
             text-align: center;
-            background: linear-gradient(135deg, #8b0000, #cc0001, #8b0000);
-            border-top: 3px solid #ffcc00;
+            border-top: 1px solid var(--border-glow);
             position: relative;
             z-index: 2;
+            background: rgba(0, 0, 0, 0.7);
         }
 
         footer p {
-            font-family: 'Playfair Display', serif;
-            font-size: 12px;
-            letter-spacing: 1px;
-            color: #ffcc00;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #666666;
+        }
+
+        footer .footer-glow {
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent);
         }
 
         /* ===== BACK TO TOP ===== */
@@ -670,12 +666,12 @@
             width: 55px;
             height: 55px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #003399, #0044cc);
-            border: 3px solid #ffcc00;
-            color: #ffcc00;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid var(--accent);
+            color: var(--accent);
             font-size: 20px;
             cursor: pointer;
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.3);
+            box-shadow: 0 0 25px var(--accent);
             display: none;
             justify-content: center;
             align-items: center;
@@ -684,48 +680,21 @@
         /* ===== RESPONSIVE ===== */
         @media (min-width: 768px) {
             .hero h1 {
-                font-size: 60px;
+                font-size: 48px;
+                letter-spacing: 10px;
             }
             
-            .flag-container {
-                width: 400px;
-                height: 240px;
-            }
-            
-            .royal-grid {
+            .blog-grid {
                 grid-template-columns: repeat(2, 1fr);
-                max-width: 800px;
-                margin: 0 auto;
             }
             
-            .countdown-number {
-                font-size: 40px;
+            .article-header h1 {
+                font-size: 36px;
             }
             
-            .crescent {
-                width: 50px;
-                height: 50px;
-                top: 12px;
-                left: 12px;
-            }
-            
-            .crescent-shape {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .crescent-overlay {
-                width: 41px;
-                height: 41px;
-                top: 9px;
-                left: 13px;
-            }
-            
-            .star-14 {
-                width: 46px;
-                height: 46px;
-                top: 12px;
-                right: 12px;
+            .article-image {
+                height: 350px;
+                font-size: 100px;
             }
         }
     </style>
@@ -733,18 +702,19 @@
 <body>
 
     <!-- BACKGROUND EFFECTS -->
-    <div class="stars"></div>
-    <div class="confetti-container" id="confettiContainer"></div>
+    <div class="grid-bg"></div>
+    <div class="scanline"></div>
 
     <!-- HEADER -->
     <header>
-        <a href="#" class="logo">
-            <span>👑</span> MERDEKA 69
-        </a>
-        <div class="hamburger" id="hamburger" onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
+        <a class="logo" onclick="showHome()">TRON BLOG</a>
+        <div class="header-actions">
+            <a class="admin-btn" onclick="showAdminPanel()">ADMIN</a>
+            <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </header>
 
@@ -753,258 +723,355 @@
 
     <!-- MOBILE MENU -->
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#home" onclick="closeMenu()">🏠 UTAMA</a>
-        <a href="#countdown" onclick="closeMenu()">⏰ KIRAAN DETIK</a>
-        <a href="#royal" onclick="closeMenu()">👑 SULTAN & RAJA</a>
-        <a href="#history" onclick="closeMenu()">📜 SEJARAH</a>
-        <a href="#pantun" onclick="closeMenu()">🎭 PANTUN</a>
+        <a onclick="showHome(); closeMenu();">🏠 UTAMA</a>
+        <a onclick="showAdminPanel(); closeMenu();">🔐 ADMIN</a>
+        <a onclick="closeMenu();">📖 BACA ARTIKEL</a>
+        <a onclick="closeMenu();">ℹ️ TENTANG</a>
     </div>
 
     <!-- MAIN CONTENT -->
     <main>
 
         <!-- HERO -->
-        <section class="hero" id="home">
-            <div class="hero-badge">🇲🇾 TAHUN 2026 🇲🇾</div>
-            <h1>MERDEKA 69</h1>
-            <p class="subtitle">DAULAT TUANKU</p>
+        <div class="hero" id="heroSection">
+            <h1>TRON BLOG</h1>
+            <p class="subtitle">DIGITAL CHRONICLES</p>
+        </div>
 
-            <!-- REALISTIC MALAYSIA FLAG -->
-            <div class="flag-container" onclick="showFlagAlert()">
-                <div class="flag-wrapper">
-                    <div class="flagpole"></div>
-                    <div class="flagpole-top"></div>
-                    <div class="flag">
-                        <div class="stripes">
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                            <div class="stripe stripe-red"></div>
-                            <div class="stripe stripe-white"></div>
-                        </div>
+        <!-- SEARCH BAR -->
+        <div class="search-bar" id="searchSection">
+            <input type="text" id="searchInput" placeholder="CARI ARTIKEL..." onkeyup="searchPosts(this.value)">
+            <button onclick="searchPosts(document.getElementById('searchInput').value)">CARI</button>
+        </div>
 
-                        <div class="canton">
-                            <div class="crescent">
-                                <div class="crescent-shape"></div>
-                                <div class="crescent-overlay"></div>
-                            </div>
+        <!-- BLOG GRID -->
+        <div class="blog-grid" id="blogGrid">
+            <!-- Blog cards akan dipaparkan di sini -->
+        </div>
 
-                            <div class="star-14">
-                                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                                    <polygon 
-                                        points="50,0 61,35 98,35 67,56 79,93 50,70 21,93 33,56 2,35 39,35" 
-                                        fill="#ffcc00"
-                                        stroke="#ffd700"
-                                        stroke-width="1"
-                                    />
-                                </svg>
-                            </div>
-                        </div>
+        <!-- ARTICLE VIEW -->
+        <div class="article-view" id="articleView">
+            <button class="back-to-blog" onclick="showHome()">← KEMBALI KE BLOG</button>
+            <div class="article-header">
+                <h1 id="articleTitle"></h1>
+            </div>
+            <div class="article-image" id="articleImage"></div>
+            <div class="article-content" id="articleContent"></div>
+        </div>
 
-                        <div class="fabric-texture"></div>
-                        <div class="lighting"></div>
-                    </div>
-                </div>
+        <!-- ADMIN PANEL -->
+        <div class="admin-panel" id="adminPanel">
+            <!-- LOGIN -->
+            <div class="admin-login" id="adminLogin">
+                <h2>🔐 LOGIN ADMIN</h2>
+                <input type="password" id="adminPassword" placeholder="KATA LALUAN" onkeypress="if(event.key === 'Enter') adminLogin()">
+                <button class="admin-btn-primary" onclick="adminLogin()">LOGIN</button>
             </div>
 
-            <p style="color: #cccccc; font-size: 15px; margin-top: 20px; max-width: 90%; line-height: 1.7;">
-                Sambutan kemerdekaan Malaysia ke-69 dengan penuh semangat patriotik dan kesetiaan kepada Raja-Raja Melayu.
-            </p>
-        </section>
+            <!-- DASHBOARD -->
+            <div class="admin-dashboard" id="adminDashboard">
+                <h2>📝 PENGURUSAN ARTIKEL</h2>
+                
+                <!-- FORM -->
+                <div class="admin-form" id="adminForm">
+                    <h3 id="formTitle">➕ TAMBAH ARTIKEL BARU</h3>
+                    <input type="hidden" id="postId">
+                    <input type="text" id="postTitle" placeholder="TAJUK ARTIKEL">
+                    <input type="text" id="postCategory" placeholder="KATEGORI (TECH / SCI-FI / GAMING / AI)">
+                    <input type="text" id="postIcon" placeholder="IKON (EMOJI) — Contoh: 💻">
+                    <input type="text" id="postAuthor" placeholder="NAMA PENULIS">
+                    <textarea id="postExcerpt" placeholder="RINGKASAN ARTIKEL"></textarea>
+                    <textarea id="postContent" placeholder="KANDUNGAN ARTIKEL (HTML)"></textarea>
+                    <button class="admin-btn-primary" onclick="savePost()">💾 SIMPAN ARTIKEL</button>
+                    <button class="admin-btn-danger" onclick="resetForm()" style="margin-left: 10px;">BATAL</button>
+                </div>
 
-        <!-- COUNTDOWN -->
-        <section class="countdown-section" id="countdown">
-            <h2 class="countdown-title">⏰ KIRAAN DETIK MERDEKA</h2>
-            <div class="countdown-grid">
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdownDays">00</div>
-                    <div class="countdown-label">HARI</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdownHours">00</div>
-                    <div class="countdown-label">JAM</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdownMinutes">00</div>
-                    <div class="countdown-label">MINIT</div>
-                </div>
-                <div class="countdown-item">
-                    <div class="countdown-number" id="countdownSeconds">00</div>
-                    <div class="countdown-label">SAAT</div>
-                </div>
-            </div>
-        </section>
+                <!-- POST LIST -->
+                <div id="adminPostList"></div>
 
-        <!-- ROYAL SECTION -->
-        <section id="royal">
-            <h2 class="section-title">👑 SULTAN & RAJA-RAJA MELAYU</h2>
-            <div class="royal-grid">
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Johor', 'DYMM Sultan Ibrahim Ibni Almarhum Sultan Iskandar')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN JOHOR</div>
-                    <div class="royal-title">DYMM Sultan Ibrahim Ibni Almarhum Sultan Iskandar</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Selangor', 'DYMM Sultan Sharafuddin Idris Shah Al-Haj')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN SELANGOR</div>
-                    <div class="royal-title">DYMM Sultan Sharafuddin Idris Shah Al-Haj</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Perak', 'DYMM Sultan Nazrin Muizzuddin Shah')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN PERAK</div>
-                    <div class="royal-title">DYMM Sultan Nazrin Muizzuddin Shah</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Pahang', 'KDYMM Al-Sultan Abdullah Riayatuddin Al-Mustafa Billah Shah')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN PAHANG</div>
-                    <div class="royal-title">KDYMM Al-Sultan Abdullah Riayatuddin</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Kedah', 'KDYMM Al-Aminul Karim Sultan Sallehuddin Ibni Almarhum Sultan Badlishah')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN KEDAH</div>
-                    <div class="royal-title">KDYMM Al-Aminul Karim Sultan Sallehuddin</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Kelantan', 'KDYMM Sultan Muhammad V')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN KELANTAN</div>
-                    <div class="royal-title">KDYMM Sultan Muhammad V</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Sultan Terengganu', 'KDYMM Sultan Mizan Zainal Abidin')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">SULTAN TERENGGANU</div>
-                    <div class="royal-title">KDYMM Sultan Mizan Zainal Abidin</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Negeri Sembilan', 'DYMM Tuanku Muhriz Ibni Almarhum Tuanku Munawir')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">NEGERI SEMBILAN</div>
-                    <div class="royal-title">DYMM Tuanku Muhriz Ibni Almarhum Tuanku Munawir</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Raja Perlis', 'DYMM Tuanku Syed Sirajuddin Ibni Almarhum Tuanku Syed Putra Jamalullail')">
-                    <div class="royal-crown">👑</div>
-                    <div class="royal-name">RAJA PERLIS</div>
-                    <div class="royal-title">DYMM Tuanku Syed Sirajuddin</div>
-                </div>
-                <div class="royal-card" onclick="showRoyalAlert('Yang di-Pertua Negeri', 'TYT bagi Pulau Pinang, Melaka, Sabah, dan Sarawak')">
-                    <div class="royal-crown">🎖️</div>
-                    <div class="royal-name">YANG DI-PERTUA NEGERI</div>
-                    <div class="royal-title">TYT bagi Pulau Pinang, Melaka, Sabah, dan Sarawak</div>
-                </div>
+                <button class="admin-btn-danger" onclick="adminLogout()" style="margin-top: 20px;">🚪 LOGOUT</button>
             </div>
-        </section>
-
-        <!-- HISTORY SECTION -->
-        <section id="history">
-            <h2 class="section-title">📜 SEJARAH KEMERDEKAAN</h2>
-            <div class="history-content">
-                <p class="history-text">
-                    Pada <span class="history-highlight">31 Ogos 1957</span>, Tanah Melayu mencapai kemerdekaan daripada penjajahan British.
-                </p>
-                <p class="history-text">
-                    Detik bersejarah ini diisytiharkan di <span class="history-highlight">Stadium Merdeka, Kuala Lumpur</span> dengan laungan "Merdeka!" sebanyak 7 kali oleh Tunku Abdul Rahman Putra Al-Haj.
-                </p>
-                <p class="history-text">
-                    Kini, setelah <span class="history-highlight">69 tahun</span> merdeka, Malaysia terus berdiri teguh sebagai sebuah negara yang berdaulat, aman, dan makmur di bawah naungan Duli Yang Maha Mulia Seri Paduka Baginda Yang di-Pertuan Agong.
-                </p>
-            </div>
-        </section>
-
-        <!-- PANTUN SECTION -->
-        <section id="pantun">
-            <h2 class="section-title">🎭 PANTUN MERDEKA</h2>
-            <div class="pantun-box">
-                <p class="pantun-text">
-                    Bunga raya bunga kebangsaan,<br>
-                    Mekar indah di taman raya,<br>
-                    Merdeka ke-69 sambutan,<br>
-                    Daulat Tuanku Raja-Raja.
-                </p>
-            </div>
-            <div class="pantun-box">
-                <p class="pantun-text">
-                    Jalur Gemilang berkibar megah,<br>
-                    Di angkasa biru terbentang,<br>
-                    Rakyat bersatu penuh amanah,<br>
-                    Malaysia maju gemilang.
-                </p>
-            </div>
-            <div class="pantun-box">
-                <p class="pantun-text">
-                    Tiang bendera tinggi menjulang,<br>
-                    Bendera berkibar indah sekali,<br>
-                    69 tahun Malaysia gemilang,<br>
-                    Daulat Tuanku kekal abadi.
-                </p>
-            </div>
-        </section>
+        </div>
 
     </main>
 
     <!-- FOOTER -->
     <footer>
-        <p>🇲🇾 MERDEKA 69 — DAULAT TUANKU 🇲🇾</p>
-        <p style="font-size: 10px; margin-top: 5px; color: #ffffff;">Dirgahayu Malaysiaku • 1957 - 2026</p>
+        <p>© 2026 <span class="footer-glow">TRON BLOG</span> — DIGITAL CHRONICLES</p>
     </footer>
 
     <!-- BACK TO TOP -->
     <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
 
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
     <script>
-        // ===== CONFETTI =====
-        function createConfetti() {
-            const container = document.getElementById('confettiContainer');
-            const colors = ['#ffcc00', '#cc0001', '#ffffff', '#003399', '#ffd700'];
-            
-            for (let i = 0; i < 40; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + '%';
-                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                confetti.style.animationDelay = Math.random() * 5 + 's';
-                confetti.style.width = (Math.random() * 10 + 5) + 'px';
-                confetti.style.height = (Math.random() * 10 + 5) + 'px';
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                container.appendChild(confetti);
-            }
+        // ===== FIREBASE CONFIG =====
+        const firebaseConfig = {
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // ===== ADMIN PASSWORD =====
+        const ADMIN_PASSWORD = "admin123"; // Tukar kata laluan ini
+
+        let isAdminLoggedIn = false;
+        let blogPosts = [];
+        let currentArticle = null;
+
+        // ===== LOAD POSTS FROM FIREBASE =====
+        function loadPosts() {
+            database.ref('posts').on('value', (snapshot) => {
+                blogPosts = [];
+                if (snapshot.exists()) {
+                    snapshot.forEach((childSnapshot) => {
+                        blogPosts.push({
+                            id: childSnapshot.key,
+                            ...childSnapshot.val()
+                        });
+                    });
+                }
+                renderBlog(blogPosts);
+                renderAdminPostList();
+            });
         }
 
-        createConfetti();
+        // ===== RENDER BLOG =====
+        function renderBlog(posts) {
+            const blogGrid = document.getElementById('blogGrid');
+            blogGrid.innerHTML = '';
 
-        // ===== COUNTDOWN =====
-        function updateCountdown() {
-            const targetDate = new Date('2026-08-31T00:00:00+08:00');
-            const now = new Date();
-            const difference = targetDate - now;
+            if (posts.length === 0) {
+                blogGrid.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        TIADA ARTIKEL<br>
+                        <span style="font-size: 11px; color: #444444; letter-spacing: 1px;">TAMBAH ARTIKEL MELALUI PANEL ADMIN</span>
+                    </div>
+                `;
+                return;
+            }
 
-            if (difference > 0) {
-                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            posts.forEach((post) => {
+                const card = document.createElement('div');
+                card.className = 'blog-card';
+                card.onclick = () => openArticle(post.id);
+                card.innerHTML = `
+                    <div class="blog-card-image">${post.icon || '📄'}</div>
+                    <div class="blog-card-content">
+                        <span class="blog-card-tag">${post.category || 'UMUM'}</span>
+                        <h2>${post.title}</h2>
+                        <p class="blog-card-excerpt">${post.excerpt || ''}</p>
+                        <div class="blog-card-meta">
+                            <span>${post.author || 'Tanpa Nama'}</span>
+                            <span>${post.date || ''}</span>
+                        </div>
+                    </div>
+                `;
+                blogGrid.appendChild(card);
+            });
+        }
 
-                document.getElementById('countdownDays').textContent = String(days).padStart(2, '0');
-                document.getElementById('countdownHours').textContent = String(hours).padStart(2, '0');
-                document.getElementById('countdownMinutes').textContent = String(minutes).padStart(2, '0');
-                document.getElementById('countdownSeconds').textContent = String(seconds).padStart(2, '0');
+        // ===== SEARCH =====
+        function searchPosts(query) {
+            const filtered = blogPosts.filter(post => {
+                const searchText = (post.title + ' ' + post.excerpt + ' ' + post.category).toLowerCase();
+                return searchText.includes(query.toLowerCase());
+            });
+            renderBlog(filtered);
+        }
+
+        // ===== OPEN ARTICLE =====
+        function openArticle(id) {
+            const post = blogPosts.find(p => p.id === id);
+            if (!post) return;
+
+            currentArticle = id;
+
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('blogGrid').style.display = 'none';
+            document.getElementById('adminPanel').classList.remove('active');
+            document.getElementById('articleView').classList.add('active');
+
+            document.getElementById('articleTitle').textContent = post.title;
+            document.getElementById('articleImage').textContent = post.icon || '📄';
+            document.getElementById('articleContent').innerHTML = post.content || '<p>Tiada kandungan.</p>';
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== SHOW HOME =====
+        function showHome() {
+            document.getElementById('heroSection').style.display = 'block';
+            document.getElementById('searchSection').style.display = 'flex';
+            document.getElementById('blogGrid').style.display = 'grid';
+            document.getElementById('articleView').classList.remove('active');
+            document.getElementById('adminPanel').classList.remove('active');
+            renderBlog(blogPosts);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== SHOW ADMIN PANEL =====
+        function showAdminPanel() {
+            document.getElementById('heroSection').style.display = 'none';
+            document.getElementById('searchSection').style.display = 'none';
+            document.getElementById('blogGrid').style.display = 'none';
+            document.getElementById('articleView').classList.remove('active');
+            document.getElementById('adminPanel').classList.add('active');
+
+            if (isAdminLoggedIn) {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminDashboard').classList.add('active');
             } else {
-                document.getElementById('countdownDays').textContent = '00';
-                document.getElementById('countdownHours').textContent = '00';
-                document.getElementById('countdownMinutes').textContent = '00';
-                document.getElementById('countdownSeconds').textContent = '00';
+                document.getElementById('adminLogin').style.display = 'block';
+                document.getElementById('adminDashboard').classList.remove('active');
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== ADMIN LOGIN =====
+        function adminLogin() {
+            const password = document.getElementById('adminPassword').value;
+
+            if (password === ADMIN_PASSWORD) {
+                isAdminLoggedIn = true;
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminDashboard').classList.add('active');
+                document.getElementById('adminPassword').value = '';
+                renderAdminPostList();
+            } else {
+                alert('❌ KATA LALUAN SALAH!');
             }
         }
 
-        updateCountdown();
-        setInterval(updateCountdown, 1000);
+        // ===== ADMIN LOGOUT =====
+        function adminLogout() {
+            isAdminLoggedIn = false;
+            document.getElementById('adminLogin').style.display = 'block';
+            document.getElementById('adminDashboard').classList.remove('active');
+            resetForm();
+        }
+
+        // ===== RENDER ADMIN POST LIST =====
+        function renderAdminPostList() {
+            const list = document.getElementById('adminPostList');
+            list.innerHTML = '';
+
+            if (blogPosts.length === 0) {
+                list.innerHTML = '<p style="color: #444444; text-align: center; padding: 20px;">Tiada artikel.</p>';
+                return;
+            }
+
+            blogPosts.forEach(post => {
+                const item = document.createElement('div');
+                item.className = 'admin-post-item';
+                item.innerHTML = `
+                    <div class="admin-post-info">
+                        <h4>${post.title}</h4>
+                        <p>${post.category || 'UMUM'} • ${post.date || ''}</p>
+                    </div>
+                    <div class="admin-post-actions">
+                        <button class="admin-btn-primary" onclick="editPost('${post.id}')">EDIT</button>
+                        <button class="admin-btn-danger" onclick="deletePost('${post.id}')">PADAM</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // ===== SAVE POST =====
+        function savePost() {
+            const id = document.getElementById('postId').value;
+            const title = document.getElementById('postTitle').value.trim();
+            const category = document.getElementById('postCategory').value.trim();
+            const icon = document.getElementById('postIcon').value.trim();
+            const author = document.getElementById('postAuthor').value.trim();
+            const excerpt = document.getElementById('postExcerpt').value.trim();
+            const content = document.getElementById('postContent').value.trim();
+
+            if (!title || !category || !author) {
+                alert('⚠️ Sila isi sekurang-kurangnya Tajuk, Kategori, dan Penulis.');
+                return;
+            }
+
+            const postData = {
+                title: title,
+                category: category,
+                icon: icon || '📄',
+                author: author,
+                excerpt: excerpt,
+                content: content,
+                date: new Date().toISOString().split('T')[0]
+            };
+
+            if (id) {
+                // Update
+                database.ref('posts/' + id).update(postData)
+                    .then(() => {
+                        alert('✅ Artikel berjaya dikemaskini!');
+                        resetForm();
+                    })
+                    .catch((error) => {
+                        alert('❌ Gagal: ' + error.message);
+                    });
+            } else {
+                // Create
+                database.ref('posts').push(postData)
+                    .then(() => {
+                        alert('✅ Artikel berjaya disimpan!');
+                        resetForm();
+                    })
+                    .catch((error) => {
+                        alert('❌ Gagal: ' + error.message);
+                    });
+            }
+        }
+
+        // ===== EDIT POST =====
+        function editPost(id) {
+            const post = blogPosts.find(p => p.id === id);
+            if (!post) return;
+
+            document.getElementById('postId').value = post.id;
+            document.getElementById('postTitle').value = post.title || '';
+            document.getElementById('postCategory').value = post.category || '';
+            document.getElementById('postIcon').value = post.icon || '';
+            document.getElementById('postAuthor').value = post.author || '';
+            document.getElementById('postExcerpt').value = post.excerpt || '';
+            document.getElementById('postContent').value = post.content || '';
+            document.getElementById('formTitle').textContent = '✏️ EDIT ARTIKEL';
+        }
+
+        // ===== DELETE POST =====
+        function deletePost(id) {
+            if (confirm('⚠️ Adakah anda pasti ingin memadam artikel ini?')) {
+                database.ref('posts/' + id).remove()
+                    .then(() => {
+                        alert('✅ Artikel berjaya dipadam!');
+                    })
+                    .catch((error) => {
+                        alert('❌ Gagal: ' + error.message);
+                    });
+            }
+        }
+
+        // ===== RESET FORM =====
+        function resetForm() {
+            document.getElementById('postId').value = '';
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postCategory').value = '';
+            document.getElementById('postIcon').value = '';
+            document.getElementById('postAuthor').value = '';
+            document.getElementById('postExcerpt').value = '';
+            document.getElementById('postContent').value = '';
+            document.getElementById('formTitle').textContent = '➕ TAMBAH ARTIKEL BARU';
+        }
 
         // ===== MOBILE MENU =====
         function toggleMenu() {
@@ -1017,16 +1084,6 @@
             document.getElementById('mobileMenu').classList.remove('active');
             document.getElementById('overlay').classList.remove('active');
             document.getElementById('hamburger').classList.remove('active');
-        }
-
-        // ===== FLAG ALERT =====
-        function showFlagAlert() {
-            alert('🇲🇾 JALUR GEMILANG 🇲🇾\n\nBendera Malaysia:\n- 14 jalur merah & putih\n- Bintang pecah 14\n- Bulan sabit emas\n- Warna biru: Perpaduan\n- Warna merah: Keberanian\n- Warna putih: Kesucian\n- Warna kuning: Kesetiaan kepada Raja\n\nDaulat Tuanku!');
-        }
-
-        // ===== ROYAL ALERT =====
-        function showRoyalAlert(title, name) {
-            alert('👑 ' + title + '\n\n' + name + '\n\nDaulat Tuanku! 🇲🇾');
         }
 
         // ===== BACK TO TOP =====
@@ -1042,6 +1099,9 @@
         function scrollToTop() {
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // ===== INITIAL LOAD =====
+        loadPosts();
 
         // ===== PREVENT ZOOM ON DOUBLE TAP =====
         document.addEventListener('dblclick', function(e) {
