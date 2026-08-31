@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TRON BLOG - Chat Multimedia</title>
+    <title>TRON BLOG — Digital Chronicles</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
 
         :root {
-            --neon-blue: #00f0ff;
-            --neon-cyan: #00ffff;
-            --neon-magenta: #ff00ff;
-            --dark-bg: #000000;
-            --glass: rgba(0, 255, 255, 0.05);
-            --glass-strong: rgba(0, 255, 255, 0.1);
-            --border-glow: rgba(0, 240, 255, 0.3);
             --accent: #00f0ff;
+            --accent-2: #ff00ff;
+            --bg: #000000;
+            --glass: rgba(0, 255, 255, 0.05);
+            --border: rgba(0, 240, 255, 0.25);
             --text: #ffffff;
-            --text-muted: #999999;
+            --muted: #888888;
             --danger: #ff0033;
             --success: #00ff88;
-            --gradient-main: linear-gradient(135deg, #00f0ff, #0088ff, #ff00ff);
-            --shadow-neon: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.3);
-            --shadow-neon-strong: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 50px rgba(0, 240, 255, 0.5);
+            --gradient: linear-gradient(135deg, #00f0ff, #0088ff, #ff00ff);
+            --glow: 0 0 15px rgba(0, 240, 255, 0.4), 0 0 40px rgba(0, 240, 255, 0.2);
+            --glow-strong: 0 0 25px rgba(0, 240, 255, 0.7), 0 0 60px rgba(0, 240, 255, 0.4);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --radius-full: 25px;
         }
 
         * {
@@ -30,825 +30,610 @@
             padding: 0;
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
-            scroll-behavior: smooth;
         }
 
         body {
-            background: var(--dark-bg);
+            background: var(--bg);
             font-family: 'Rajdhani', sans-serif;
             color: var(--text);
-            overflow-x: hidden;
             min-height: 100vh;
+            overflow-x: hidden;
             touch-action: manipulation;
         }
 
         ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-track { background: #000000; }
+        ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
 
-        /* ===== BACKGROUND ===== */
-        .grid-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        /* ===== BACKGROUND LAYERS ===== */
+        .bg-grid {
+            position: fixed; inset: 0;
             background-image:
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+                linear-gradient(rgba(0,240,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
             background-size: 30px 30px;
             z-index: 0; pointer-events: none;
-            animation: gridMove 15s linear infinite;
+            animation: gridShift 15s linear infinite;
         }
+        @keyframes gridShift { 0% { background-position: 0 0; } 100% { background-position: 30px 30px; } }
 
-        @keyframes gridMove {
-            0% { background-position: 0 0; }
-            100% { background-position: 30px 30px; }
-        }
-
-        .scanline {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                0deg, rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0.06) 1px,
-                transparent 1px, transparent 3px
-            );
+        .bg-scan {
+            position: fixed; inset: 0;
+            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.06) 0 1px, transparent 1px 3px);
             z-index: 1; pointer-events: none;
         }
 
-        .aurora {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
+        .bg-aurora {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
             background:
-                radial-gradient(circle at 30% 20%, rgba(0, 240, 255, 0.06) 0%, transparent 40%),
-                radial-gradient(circle at 70% 80%, rgba(255, 0, 255, 0.06) 0%, transparent 40%);
-            animation: auroraShift 8s ease-in-out infinite;
+                radial-gradient(circle at 30% 20%, rgba(0,240,255,0.06), transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(255,0,255,0.06), transparent 40%);
+            animation: aurora 8s ease-in-out infinite;
         }
+        @keyframes aurora { 50% { opacity: 1; } }
 
-        @keyframes auroraShift { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
-
-        .particles-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 1;
+        .bg-particles {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
         }
 
         .particle {
             position: absolute; width: 3px; height: 3px;
             background: var(--accent); border-radius: 50%;
             box-shadow: 0 0 8px var(--accent);
-            animation: floatParticle linear infinite;
+            animation: floatUp linear infinite;
         }
-
-        @keyframes floatParticle {
-            0% { transform: translateY(100vh) translateX(0); opacity: 0; }
-            10% { opacity: 1; } 90% { opacity: 1; }
-            100% { transform: translateY(-100vh) translateX(30px); opacity: 0; }
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
         }
-
-        .particle-burst { position: fixed; pointer-events: none; z-index: 999; }
-
-        .burst-particle {
-            position: absolute; width: 6px; height: 6px; border-radius: 50%;
-            animation: burstFly 1s ease-out forwards;
-        }
-
-        @keyframes burstFly {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) scale(0); opacity: 0; }
-        }
-
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-            20%, 40%, 60%, 80% { transform: translateX(5px); }
-        }
-        .shake { animation: shake 0.5s; }
-
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
-        .pulse { animation: pulse 0.5s; }
 
         /* ===== HEADER ===== */
-        header {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-            background: rgba(0, 0, 0, 0.92);
-            border-bottom: 1px solid var(--border-glow);
-            padding: 12px 15px;
+        .header {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             display: flex; justify-content: space-between; align-items: center;
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 5px 30px rgba(0, 240, 255, 0.1);
+            padding: 12px 15px;
+            background: rgba(0,0,0,0.92);
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
         }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 17px; font-weight: 900; letter-spacing: 3px;
-            background: var(--gradient-main);
+            background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text; cursor: pointer;
         }
 
-        .header-actions { display: flex; gap: 8px; align-items: center; }
+        .header-actions { display: flex; gap: 6px; }
 
         .icon-btn {
             width: 38px; height: 38px; border-radius: 50%;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--border-glow);
-            color: var(--accent); font-size: 16px; cursor: pointer;
+            background: rgba(0,240,255,0.08);
+            border: 1px solid var(--border);
+            color: var(--accent); font-size: 15px; cursor: pointer;
             display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
-
-        .icon-btn:active {
-            background: var(--accent); color: #000000;
-            box-shadow: var(--shadow-neon); transform: scale(0.9);
-        }
+        .icon-btn:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.9); }
 
         /* ===== MENU ===== */
-        .mobile-menu {
-            position: fixed; top: 0; right: -100%;
-            width: 80%; height: 100vh;
-            background: rgba(0, 0, 0, 0.97); z-index: 99;
-            transition: right 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        .menu-overlay {
+            position: fixed; inset: 0; z-index: 98;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(3px);
+            display: none;
+        }
+        .menu-overlay.active { display: block; }
+
+        .side-menu {
+            position: fixed; top: 0; right: -100%; bottom: 0;
+            width: 78%; z-index: 99;
+            background: rgba(0,0,0,0.97);
+            border-left: 1px solid var(--border);
             padding: 70px 15px 20px;
-            border-left: 1px solid var(--border-glow);
-            box-shadow: -10px 0 50px rgba(0, 240, 255, 0.3);
-            backdrop-filter: blur(20px); overflow-y: auto;
+            transition: right 0.35s cubic-bezier(0.68,-0.55,0.265,1.55);
+            overflow-y: auto;
         }
+        .side-menu.active { right: 0; }
 
-        .mobile-menu.active { right: 0; }
-
-        .mobile-menu a {
+        .side-menu a {
             display: flex; align-items: center; gap: 12px;
-            padding: 16px 15px; color: #cccccc; text-decoration: none;
+            padding: 15px; color: #ccc; text-decoration: none;
             font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 2px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.08);
-            transition: all 0.3s; cursor: pointer; border-radius: 10px;
+            border-bottom: 1px solid rgba(0,240,255,0.08);
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
         }
-
-        .mobile-menu a:active {
-            color: var(--accent); background: rgba(0, 240, 255, 0.08); padding-left: 20px;
-        }
-
-        .menu-icon { font-size: 20px; width: 30px; text-align: center; }
-
-        .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7); z-index: 98; display: none;
-            backdrop-filter: blur(3px);
-        }
-        .overlay.active { display: block; }
+        .side-menu a:active { color: var(--accent); background: rgba(0,240,255,0.08); padding-left: 20px; }
 
         /* ===== MAIN ===== */
-        main {
-            position: relative; z-index: 2; padding-top: 62px;
-            min-height: 100vh; padding-left: 15px; padding-right: 15px;
-            padding-bottom: 80px;
+        .main {
+            position: relative; z-index: 2;
+            padding: 62px 15px 80px;
+            max-width: 600px; margin: 0 auto;
         }
 
-        .hero { text-align: center; padding: 35px 0 25px; }
+        .hero { text-align: center; padding: 30px 0 20px; }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 28px; font-weight: 900; letter-spacing: 6px;
-            background: var(--gradient-main);
+            font-size: 26px; font-weight: 900; letter-spacing: 6px;
+            background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; margin-bottom: 10px;
+            background-clip: text; margin-bottom: 8px;
             animation: textGlow 3s ease-in-out infinite;
         }
-
         @keyframes textGlow {
-            0%, 100% { filter: drop-shadow(0 0 15px rgba(0, 240, 255, 0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(0, 240, 255, 0.8)); }
+            50% { filter: drop-shadow(0 0 25px rgba(0,240,255,0.7)); }
         }
 
-        .hero .subtitle {
-            font-size: 11px; letter-spacing: 4px;
-            color: var(--accent); text-shadow: 0 0 10px var(--accent);
-        }
+        .hero .subtitle { font-size: 11px; letter-spacing: 4px; color: var(--accent); }
 
-        .status-bar {
+        /* ===== INFO CARD ===== */
+        .info-card {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 8px 12px; background: rgba(0, 0, 0, 0.5);
-            border: 1px solid var(--border-glow); border-radius: 20px;
-            margin-bottom: 15px; font-size: 10px; color: #666666; letter-spacing: 1px;
+            padding: 10px 14px; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border); border-radius: var(--radius-full);
+            margin-bottom: 12px; font-size: 10px; color: var(--muted);
         }
-
         .status-dot {
-            width: 8px; height: 8px; border-radius: 50%;
-            background: var(--success); box-shadow: 0 0 10px var(--success);
-            animation: pulse 2s infinite; display: inline-block; margin-right: 5px;
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--success); box-shadow: 0 0 8px var(--success);
+            display: inline-block; margin-right: 5px;
+            animation: pulse 2s infinite;
         }
+        @keyframes pulse { 50% { opacity: 0.5; } }
 
-        .clock-display {
-            text-align: center; padding: 12px;
-            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-glow);
-            border-radius: 15px; margin-bottom: 15px;
+        /* ===== CLOCK ===== */
+        .clock {
+            text-align: center; padding: 10px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+            border-radius: var(--radius); margin-bottom: 12px;
         }
-
         .clock-time {
-            font-family: 'Orbitron', sans-serif; font-size: 24px; font-weight: 900;
-            color: var(--accent); text-shadow: 0 0 20px var(--accent);
+            font-family: 'Orbitron', sans-serif; font-size: 22px; font-weight: 900;
+            color: var(--accent); text-shadow: 0 0 15px var(--accent);
         }
-
-        .clock-date { font-size: 10px; color: #666666; letter-spacing: 2px; margin-top: 3px; }
+        .clock-date { font-size: 10px; color: var(--muted); letter-spacing: 2px; }
 
         /* ===== TABS ===== */
         .tabs {
-            display: flex; gap: 5px; margin-bottom: 15px;
-            overflow-x: auto; white-space: nowrap;
+            display: flex; gap: 6px; margin-bottom: 12px;
         }
-
         .tab-btn {
-            flex: 1; min-width: 100px; padding: 10px 12px;
-            background: rgba(0, 240, 255, 0.08);
-            border: 1px solid var(--border-glow); color: #cccccc;
+            flex: 1; padding: 10px;
+            background: rgba(0,240,255,0.06);
+            border: 1px solid var(--border); color: #ccc;
             font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
-            cursor: pointer; border-radius: 15px; transition: all 0.3s;
+            border-radius: var(--radius-full); cursor: pointer; transition: all 0.2s;
             text-align: center;
         }
-
         .tab-btn.active {
-            background: var(--accent); color: #000000;
-            border-color: var(--accent); box-shadow: var(--shadow-neon);
+            background: var(--accent); color: #000; border-color: var(--accent);
+            box-shadow: var(--glow);
         }
-
-        .tab-btn:active { transform: scale(0.9); }
+        .tab-btn:active { transform: scale(0.95); }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; animation: fadeUp 0.3s ease; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* ===== SEARCH ===== */
+        .search-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .search-row input {
+            flex: 1; padding: 11px 16px;
+            background: rgba(0,0,0,0.7); border: 1px solid var(--border);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 14px;
+            border-radius: var(--radius-full); outline: none;
+        }
+        .search-row input:focus { border-color: var(--accent); box-shadow: var(--glow); }
+        .search-row button {
+            padding: 11px 18px; background: var(--gradient); color: #000;
+            font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 1px;
+            border: none; border-radius: var(--radius-full); font-weight: 700; cursor: pointer;
+            box-shadow: var(--glow);
         }
 
-        /* ===== BLOG ===== */
-        .search-bar { display: flex; gap: 8px; margin-bottom: 15px; }
-
-        .search-bar input {
-            flex: 1; padding: 12px 18px;
-            background: rgba(0, 0, 0, 0.7); border: 1px solid var(--border-glow);
-            color: #ffffff; font-family: 'Rajdhani', sans-serif; font-size: 14px;
-            outline: none; transition: all 0.3s; border-radius: 25px;
-        }
-
-        .search-bar input:focus { border-color: var(--accent); box-shadow: var(--shadow-neon); }
-
-        .search-bar button {
-            padding: 12px 20px; background: var(--gradient-main); color: #000000;
-            font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 1px;
-            border: none; cursor: pointer; border-radius: 25px; font-weight: 700;
-            box-shadow: var(--shadow-neon);
-        }
-
-        .blog-grid { display: grid; gap: 15px; margin-bottom: 20px; }
+        /* ===== BLOG CARDS ===== */
+        .blog-list { display: grid; gap: 12px; }
 
         .blog-card {
-            border: 1px solid var(--border-glow); background: var(--glass);
-            transition: all 0.3s; cursor: pointer; position: relative;
-            overflow: hidden; border-radius: 15px; backdrop-filter: blur(10px);
+            border: 1px solid var(--border); background: var(--glass);
+            border-radius: var(--radius); overflow: hidden; cursor: pointer;
+            transition: all 0.25s; backdrop-filter: blur(10px);
+        }
+        .blog-card:active { border-color: var(--accent); box-shadow: var(--glow-strong); transform: scale(0.97); }
+
+        .blog-card .card-img {
+            height: 130px; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(0,240,255,0.05), rgba(255,0,255,0.08));
+            font-size: 42px; color: var(--accent); text-shadow: 0 0 25px var(--accent);
+            border-bottom: 1px solid var(--border);
         }
 
-        .blog-card:active {
-            box-shadow: var(--shadow-neon-strong); border-color: var(--accent);
-            transform: scale(0.97);
-        }
+        .blog-card .card-body { padding: 12px; }
 
-        .blog-card-image {
-            width: 100%; height: 140px;
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.05), rgba(255, 0, 255, 0.1));
-            display: flex; justify-content: center; align-items: center;
-            font-size: 45px; color: var(--accent); text-shadow: 0 0 25px var(--accent);
-            border-bottom: 1px solid var(--border-glow);
-        }
-
-        .blog-card-content { padding: 12px; }
-
-        .blog-card-tag {
-            display: inline-block; padding: 4px 10px;
-            background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent);
+        .card-tag {
+            display: inline-block; padding: 3px 10px;
+            background: rgba(0,240,255,0.1); border: 1px solid var(--accent);
             color: var(--accent); font-family: 'Orbitron', sans-serif;
-            font-size: 8px; letter-spacing: 2px; margin-bottom: 8px; border-radius: 12px;
+            font-size: 7px; letter-spacing: 2px; border-radius: 10px; margin-bottom: 8px;
         }
-
-        .blog-card h2 {
+        .card-title {
             font-family: 'Orbitron', sans-serif; font-size: 13px;
-            letter-spacing: 1px; color: #ffffff; margin-bottom: 6px; line-height: 1.3;
+            letter-spacing: 1px; color: #fff; margin-bottom: 5px;
         }
-
-        .blog-card-excerpt {
-            font-size: 11px; color: var(--text-muted); line-height: 1.5;
-            margin-bottom: 8px; display: -webkit-box;
-            -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+        .card-excerpt {
+            font-size: 11px; color: var(--muted); line-height: 1.5;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+            margin-bottom: 8px;
         }
-
-        .blog-card-meta {
+        .card-meta {
             display: flex; justify-content: space-between;
-            font-size: 9px; color: #555555; letter-spacing: 1px;
-            padding-top: 8px; border-top: 1px solid rgba(0, 240, 255, 0.08);
+            font-size: 9px; color: #555; padding-top: 8px;
+            border-top: 1px solid rgba(0,240,255,0.06);
         }
+        .card-meta .author { color: var(--accent); }
 
-        .blog-card-meta .author { color: var(--accent); }
-
-        .empty-state {
-            text-align: center; padding: 40px 20px;
-            border: 2px dashed var(--border-glow); color: #555555;
-            font-family: 'Orbitron', sans-serif; font-size: 12px; letter-spacing: 2px;
-            border-radius: 15px; animation: pulseBorder 2s ease-in-out infinite;
+        /* ===== EMPTY ===== */
+        .empty {
+            text-align: center; padding: 40px 15px;
+            border: 2px dashed var(--border); border-radius: var(--radius);
+            color: #555; font-family: 'Orbitron', sans-serif;
+            font-size: 11px; letter-spacing: 2px;
+            animation: borderPulse 2s infinite;
         }
-
-        @keyframes pulseBorder {
-            0%, 100% { border-color: var(--border-glow); }
-            50% { border-color: var(--accent); }
-        }
-
-        .empty-icon { font-size: 45px; margin-bottom: 12px; animation: floatIcon 3s ease-in-out infinite; }
-
-        @keyframes floatIcon {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
+        @keyframes borderPulse { 50% { border-color: var(--accent); } }
+        .empty-icon { font-size: 40px; margin-bottom: 10px; animation: float 3s infinite; }
+        @keyframes float { 50% { transform: translateY(-6px); } }
 
         /* ===== ARTICLE ===== */
-        .article-view { display: none; margin-bottom: 20px; }
-        .article-view.active { display: block; animation: slideIn 0.4s ease; }
+        .article-view { display: none; }
+        .article-view.active { display: block; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(25px); } }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(30px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        .back-to-blog {
-            display: inline-block; padding: 10px 18px;
+        .back-btn {
+            display: inline-block; padding: 9px 16px;
             background: transparent; border: 1px solid var(--accent);
             color: var(--accent); font-family: 'Orbitron', sans-serif;
-            font-size: 10px; letter-spacing: 2px; cursor: pointer;
-            margin-bottom: 15px; border-radius: 20px;
+            font-size: 9px; letter-spacing: 2px; border-radius: var(--radius-full);
+            cursor: pointer; margin-bottom: 12px;
         }
+        .back-btn:active { background: var(--accent); color: #000; }
 
-        .article-header h1 {
-            font-family: 'Orbitron', sans-serif; font-size: 18px; letter-spacing: 2px;
-            background: var(--gradient-main);
+        .article-title {
+            font-family: 'Orbitron', sans-serif; font-size: 17px; letter-spacing: 1px;
+            background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            background-clip: text; margin-bottom: 12px; text-align: center; line-height: 1.4;
+            background-clip: text; text-align: center; margin-bottom: 12px; line-height: 1.3;
         }
 
-        .article-image {
-            width: 100%; height: 160px;
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(0, 240, 255, 0.05));
-            display: flex; justify-content: center; align-items: center;
-            font-size: 55px; color: var(--accent); text-shadow: 0 0 25px var(--accent);
-            margin-bottom: 15px; border: 1px solid var(--border-glow); border-radius: 15px;
+        .article-img {
+            height: 150px; display: flex; justify-content: center; align-items: center;
+            background: linear-gradient(135deg, rgba(0,240,255,0.12), rgba(0,240,255,0.04));
+            font-size: 50px; color: var(--accent); text-shadow: 0 0 25px var(--accent);
+            border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px;
         }
 
-        .article-content {
-            font-size: 13px; line-height: 1.7; color: #cccccc;
-            padding: 15px; border: 1px solid var(--border-glow);
-            border-radius: 15px; background: var(--glass);
+        .article-body {
+            font-size: 13px; line-height: 1.7; color: #ccc;
+            padding: 14px; border: 1px solid var(--border);
+            border-radius: var(--radius); background: var(--glass);
         }
 
         /* ===== CHAT ===== */
-        .chat-section {
-            border: 1px solid var(--border-glow); border-radius: 15px;
-            padding: 12px; background: var(--glass); margin-bottom: 15px;
+        .chat-box {
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 12px; background: var(--glass);
+        }
+        .chat-head { display: flex; justify-content: space-between; margin-bottom: 8px; }
+        .chat-head h3 { font-family: 'Orbitron', sans-serif; font-size: 11px; letter-spacing: 2px; color: var(--accent); }
+        .chat-head .online { font-size: 8px; color: var(--success); }
+
+        .chat-log {
+            height: 320px; overflow-y: auto;
+            border: 1px solid var(--border); border-radius: var(--radius-sm);
+            padding: 10px; margin-bottom: 8px;
         }
 
-        .chat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .msg { margin-bottom: 10px; }
+        .msg-name { font-family: 'Orbitron', sans-serif; font-size: 8px; color: var(--accent); margin-bottom: 3px; }
+        .msg-text {
+            display: inline-block; font-size: 11px; color: #ccc;
+            background: rgba(0,0,0,0.4); padding: 7px 10px; border-radius: 10px;
+        }
+        .msg.own .msg-name { color: var(--success); text-align: right; }
+        .msg.own .msg-text { background: rgba(0,255,136,0.08); }
 
-        .chat-header h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            letter-spacing: 2px; color: var(--accent);
+        .msg-audio {
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(0,240,255,0.1); border: 1px solid var(--accent);
+            border-radius: 20px; padding: 7px 12px; cursor: pointer;
+            max-width: 220px;
+        }
+        .msg-audio .audio-icon { font-size: 16px; color: var(--accent); }
+        .msg-audio .audio-bar { flex: 1; height: 3px; background: rgba(0,240,255,0.2); border-radius: 2px; overflow: hidden; }
+        .msg-audio .audio-duration { font-size: 8px; color: #ccc; font-family: 'Orbitron', sans-serif; }
+
+        .msg-image {
+            max-width: 150px; border-radius: 8px;
+            border: 1px solid var(--accent); cursor: pointer;
+            box-shadow: 0 0 15px rgba(0,240,255,0.25);
         }
 
-        .chat-online { font-size: 8px; color: var(--success); letter-spacing: 1px; }
-
-        .chat-messages {
-            height: 350px; overflow-y: auto;
-            border: 1px solid var(--border-glow); border-radius: 10px;
-            padding: 8px; margin-bottom: 8px;
-        }
-
-        .chat-msg { margin-bottom: 10px; }
-
-        .chat-msg .msg-name {
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            letter-spacing: 1px; color: var(--accent); margin-bottom: 3px;
-        }
-
-        .chat-msg .msg-text {
-            font-size: 11px; color: #cccccc; line-height: 1.5;
-            background: rgba(0, 0, 0, 0.4); padding: 8px 10px;
-            border-radius: 10px; display: inline-block;
-        }
-
-        .chat-msg.own .msg-name { color: var(--success); text-align: right; }
-        .chat-msg.own .msg-text { background: rgba(0, 255, 136, 0.1); }
-
-        /* ===== CHAT AUDIO ===== */
-        .chat-msg .msg-audio {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: 20px;
-            padding: 8px 15px;
-            cursor: pointer;
-            min-width: 180px;
-            max-width: 250px;
-        }
-
-        .chat-msg .msg-audio .audio-icon {
-            font-size: 20px;
-            color: var(--accent);
-        }
-
-        .chat-msg .msg-audio .audio-bar {
-            flex: 1;
-            height: 4px;
-            background: rgba(0, 240, 255, 0.2);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .chat-msg .msg-audio .audio-bar-fill {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 2px;
-            box-shadow: 0 0 10px var(--accent);
-            width: 0%;
-            transition: width 0.1s;
-        }
-
-        .chat-msg .msg-audio .audio-duration {
-            font-size: 9px;
-            color: #cccccc;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-        }
-
-        /* ===== CHAT IMAGE ===== */
-        .chat-msg .msg-image {
-            max-width: 180px;
-            border-radius: 10px;
-            border: 1px solid var(--accent);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-            cursor: pointer;
-            display: block;
-        }
-
-        /* ===== CHAT INPUT ===== */
         .chat-input-row { display: flex; gap: 5px; align-items: center; }
-
         .chat-input-row input {
-            flex: 1; padding: 10px 14px;
-            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-glow);
-            color: #ffffff; font-family: 'Rajdhani', sans-serif; font-size: 12px;
-            outline: none; border-radius: 20px;
+            flex: 1; padding: 10px 13px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 12px;
+            border-radius: var(--radius-full); outline: none;
         }
-
-        .chat-input-row button {
-            padding: 10px 15px; background: var(--gradient-main);
-            color: #000000; font-family: 'Orbitron', sans-serif;
-            font-size: 10px; letter-spacing: 1px; border: none;
-            cursor: pointer; border-radius: 20px; font-weight: 700;
+        .chat-input-row .send-btn {
+            padding: 10px 15px; background: var(--gradient); color: #000;
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px;
+            border: none; border-radius: var(--radius-full); font-weight: 700; cursor: pointer;
             white-space: nowrap;
         }
-
-        .chat-attach-btn {
-            width: 35px; height: 35px; border-radius: 50%;
-            background: rgba(0, 240, 255, 0.1);
-            border: 1px solid var(--border-glow);
-            color: var(--accent); font-size: 14px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-            transition: all 0.3s; flex-shrink: 0;
+        .attach-btn {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: rgba(0,240,255,0.08); border: 1px solid var(--border);
+            color: var(--accent); font-size: 13px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; flex-shrink: 0;
+        }
+        .attach-btn:active { background: var(--accent); color: #000; box-shadow: var(--glow); transform: scale(0.9); }
+        .attach-btn.recording {
+            background: var(--danger); color: #fff; border-color: var(--danger);
+            box-shadow: 0 0 15px var(--danger); animation: pulse 0.5s infinite;
         }
 
-        .chat-attach-btn:active {
-            background: var(--accent); color: #000000;
-            box-shadow: var(--shadow-neon); transform: scale(0.9);
-        }
-
-        .chat-attach-btn.recording {
-            background: var(--danger); color: #ffffff;
-            border-color: var(--danger);
-            box-shadow: 0 0 20px var(--danger);
-            animation: pulse 0.5s infinite;
-        }
-
-        /* ===== RECORDING INDICATOR ===== */
-        .recording-indicator {
-            display: none;
-            text-align: center;
-            padding: 8px;
-            background: rgba(255, 0, 51, 0.1);
-            border: 1px solid var(--danger);
-            border-radius: 10px;
+        .recording-bar {
+            display: none; text-align: center; padding: 6px;
+            background: rgba(255,0,51,0.08); border: 1px solid var(--danger);
+            border-radius: 8px; font-size: 9px; color: var(--danger);
+            letter-spacing: 2px; font-family: 'Orbitron', sans-serif;
             margin-bottom: 5px;
-            font-size: 10px;
-            color: var(--danger);
-            letter-spacing: 2px;
-            font-family: 'Orbitron', sans-serif;
         }
-
-        .recording-indicator.active {
-            display: block;
-            animation: pulse 0.5s infinite;
-        }
-
-        /* ===== IMAGE LIGHTBOX ===== */
-        .image-lightbox {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); z-index: 500;
-            display: none; justify-content: center; align-items: center;
-        }
-
-        .image-lightbox.active { display: flex; }
-
-        .image-lightbox img {
-            max-width: 95%; max-height: 90%;
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 50px var(--accent);
-            border-radius: 10px;
-        }
-
-        .image-lightbox-close {
-            position: absolute; top: 20px; right: 20px;
-            width: 45px; height: 45px; border-radius: 50%;
-            background: rgba(0, 0, 0, 0.8); border: 2px solid var(--accent);
-            color: var(--accent); font-size: 22px; cursor: pointer;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        /* ===== READING PROGRESS ===== */
-        .reading-progress {
-            position: fixed; top: 0; left: 0; width: 0%; height: 3px;
-            background: var(--gradient-main); box-shadow: 0 0 15px var(--accent);
-            z-index: 200; transition: width 0.3s;
-        }
-
-        /* ===== TOAST ===== */
-        .toast-container {
-            position: fixed; top: 70px; right: 15px; z-index: 300;
-            display: flex; flex-direction: column; gap: 8px;
-        }
-
-        .toast {
-            padding: 12px 18px; border-radius: 10px;
-            font-size: 12px; letter-spacing: 1px;
-            animation: toastIn 0.4s ease, toastOut 0.4s ease 2.5s forwards;
-            border: 1px solid; max-width: 260px; backdrop-filter: blur(10px);
-        }
-
-        .toast-success {
-            background: rgba(0, 255, 136, 0.15); border-color: var(--success);
-            color: var(--success); box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
-        }
-
-        .toast-error {
-            background: rgba(255, 0, 51, 0.15); border-color: var(--danger);
-            color: var(--danger); box-shadow: 0 0 20px rgba(255, 0, 51, 0.3);
-        }
-
-        .toast-info {
-            background: rgba(0, 240, 255, 0.15); border-color: var(--accent);
-            color: var(--accent); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-        }
-
-        @keyframes toastIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
-        }
-
-        @keyframes toastOut {
-            from { transform: translateX(0); opacity: 1; }
-            to { transform: translateX(100%); opacity: 0; }
-        }
+        .recording-bar.active { display: block; animation: pulse 0.5s infinite; }
 
         /* ===== ADMIN ===== */
-        .admin-panel { display: none; margin-bottom: 20px; }
-        .admin-panel.active { display: block; animation: slideIn 0.4s ease; }
+        .admin-panel { display: none; }
+        .admin-panel.active { display: block; animation: slideIn 0.3s ease; }
 
         .admin-login {
-            border: 1px solid var(--border-glow); padding: 20px;
-            background: var(--glass); text-align: center;
-            border-radius: 15px; box-shadow: var(--shadow-neon);
+            border: 1px solid var(--border); padding: 20px;
+            background: var(--glass); border-radius: var(--radius);
+            text-align: center; box-shadow: var(--glow);
         }
-
         .admin-login h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 14px;
-            letter-spacing: 2px; margin-bottom: 15px;
-            background: var(--gradient-main);
+            font-family: 'Orbitron', sans-serif; font-size: 13px; letter-spacing: 2px;
+            margin-bottom: 12px; background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .admin-login input {
-            width: 100%; padding: 12px 15px;
-            background: rgba(0, 0, 0, 0.7); border: 1px solid var(--border-glow);
-            color: #ffffff; font-family: 'Rajdhani', sans-serif; font-size: 14px;
-            margin-bottom: 12px; outline: none; text-align: center;
-            border-radius: 20px; letter-spacing: 3px;
+            width: 100%; padding: 11px 14px;
+            background: rgba(0,0,0,0.7); border: 1px solid var(--border);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 13px;
+            border-radius: var(--radius-full); outline: none; text-align: center;
+            letter-spacing: 3px; margin-bottom: 10px;
         }
 
-        .admin-dashboard { display: none; }
-        .admin-dashboard.active { display: block; }
-
-        .admin-dashboard h2 {
-            font-family: 'Orbitron', sans-serif; font-size: 15px;
-            letter-spacing: 2px; margin-bottom: 15px; text-align: center;
-            background: var(--gradient-main);
+        .admin-dash { display: none; }
+        .admin-dash.active { display: block; }
+        .admin-dash h2 {
+            font-family: 'Orbitron', sans-serif; font-size: 14px; letter-spacing: 2px;
+            text-align: center; margin-bottom: 12px; background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         .admin-form {
-            border: 1px solid var(--border-glow); padding: 15px;
-            background: var(--glass); margin-bottom: 15px; border-radius: 15px;
+            border: 1px solid var(--border); padding: 14px;
+            background: var(--glass); border-radius: var(--radius); margin-bottom: 12px;
         }
-
-        .admin-form h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            letter-spacing: 2px; color: var(--accent); margin-bottom: 12px;
-        }
-
+        .admin-form h3 { font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px; color: var(--accent); margin-bottom: 10px; }
         .admin-form input, .admin-form textarea {
-            width: 100%; padding: 11px 13px;
-            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--border-glow);
-            color: #ffffff; font-family: 'Rajdhani', sans-serif; font-size: 12px;
-            margin-bottom: 10px; outline: none; border-radius: 10px;
+            width: 100%; padding: 10px 12px;
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border);
+            color: #fff; font-family: 'Rajdhani', sans-serif; font-size: 12px;
+            border-radius: var(--radius-sm); outline: none; margin-bottom: 8px;
         }
+        .admin-form textarea { height: 90px; resize: vertical; }
+        .admin-form input:focus, .admin-form textarea:focus { border-color: var(--accent); box-shadow: var(--glow); }
 
-        .admin-form textarea { height: 100px; resize: vertical; }
+        .btn-row { display: flex; gap: 6px; }
 
-        .btn-row { display: flex; gap: 8px; }
-
-        .admin-btn-primary {
-            flex: 1; padding: 12px 18px;
-            background: var(--gradient-main); color: #000000;
-            font-family: 'Orbitron', sans-serif; font-size: 9px;
-            letter-spacing: 2px; border: none; cursor: pointer;
-            border-radius: 20px; font-weight: 700; box-shadow: var(--shadow-neon);
+        .btn-primary {
+            flex: 1; padding: 11px 15px; background: var(--gradient); color: #000;
+            font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 2px;
+            border: none; border-radius: var(--radius-full); font-weight: 700;
+            cursor: pointer; box-shadow: var(--glow);
         }
-
-        .admin-btn-danger {
-            padding: 10px 14px; background: transparent;
+        .btn-danger {
+            padding: 9px 13px; background: transparent;
             border: 1px solid var(--danger); color: var(--danger);
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            letter-spacing: 1px; cursor: pointer; border-radius: 20px;
+            font-family: 'Orbitron', sans-serif; font-size: 8px; letter-spacing: 1px;
+            border-radius: var(--radius-full); cursor: pointer;
         }
 
-        .admin-post-item {
-            border: 1px solid var(--border-glow); padding: 12px;
-            margin-bottom: 8px; display: flex; justify-content: space-between;
-            align-items: center; background: var(--glass); border-radius: 10px;
-            gap: 8px;
+        .admin-post {
+            border: 1px solid var(--border); padding: 11px;
+            border-radius: var(--radius-sm); background: var(--glass);
+            display: flex; justify-content: space-between; align-items: center;
+            gap: 6px; margin-bottom: 6px;
         }
-
-        .admin-post-info h4 {
-            font-family: 'Orbitron', sans-serif; font-size: 10px;
-            letter-spacing: 1px; color: #ffffff; margin-bottom: 3px;
-        }
-
-        .admin-post-info p { font-size: 8px; color: #555555; }
-
+        .admin-post h4 { font-family: 'Orbitron', sans-serif; font-size: 9px; letter-spacing: 1px; color: #fff; }
+        .admin-post p { font-size: 8px; color: #555; }
         .admin-post-actions { display: flex; gap: 4px; flex-shrink: 0; }
-        .admin-post-actions button { padding: 5px 8px; font-size: 7px; }
+
+        /* ===== TOAST ===== */
+        .toast-wrap {
+            position: fixed; top: 65px; right: 12px; z-index: 300;
+            display: flex; flex-direction: column; gap: 6px;
+        }
+        .toast {
+            padding: 10px 16px; border-radius: 10px; font-size: 11px;
+            border: 1px solid; animation: toastIn 0.3s ease, toastOut 0.3s ease 2.4s forwards;
+            backdrop-filter: blur(10px);
+        }
+        .toast-success { background: rgba(0,255,136,0.12); border-color: var(--success); color: var(--success); }
+        .toast-error { background: rgba(255,0,51,0.12); border-color: var(--danger); color: var(--danger); }
+        .toast-info { background: rgba(0,240,255,0.12); border-color: var(--accent); color: var(--accent); }
+        @keyframes toastIn { from { transform: translateX(100%); opacity: 0; } }
+        @keyframes toastOut { to { transform: translateX(100%); opacity: 0; } }
+
+        /* ===== PROGRESS ===== */
+        .progress {
+            position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+            background: var(--gradient); box-shadow: 0 0 12px var(--accent);
+            z-index: 200; transition: width 0.2s;
+        }
+
+        /* ===== FLOATING BUTTONS ===== */
+        .back-top {
+            position: fixed; bottom: 18px; right: 14px; z-index: 90;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: rgba(0,0,0,0.9); border: 2px solid var(--accent);
+            color: var(--accent); font-size: 16px; cursor: pointer;
+            box-shadow: var(--glow); display: none;
+            justify-content: center; align-items: center;
+        }
+        .back-top.show { display: flex; }
+
+        .fab {
+            position: fixed; bottom: 18px; left: 14px; z-index: 90;
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--gradient); border: none; color: #000;
+            font-size: 18px; cursor: pointer; box-shadow: var(--glow-strong);
+            display: flex; justify-content: center; align-items: center; font-weight: 900;
+        }
+        .fab:active { transform: scale(0.85) rotate(90deg); }
+
+        /* ===== LIGHTBOX ===== */
+        .lightbox {
+            position: fixed; inset: 0; z-index: 500;
+            background: rgba(0,0,0,0.95);
+            display: none; justify-content: center; align-items: center;
+        }
+        .lightbox.active { display: flex; }
+        .lightbox img { max-width: 92%; max-height: 85%; border: 2px solid var(--accent); border-radius: 10px; box-shadow: 0 0 50px var(--accent); }
+        .lightbox-close {
+            position: absolute; top: 18px; right: 18px;
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(0,0,0,0.8); border: 2px solid var(--accent);
+            color: var(--accent); font-size: 20px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center;
+        }
 
         /* ===== FOOTER ===== */
-        footer {
-            padding: 20px 15px; text-align: center;
-            border-top: 1px solid var(--border-glow);
-            position: relative; z-index: 2; background: rgba(0, 0, 0, 0.7);
+        .footer {
+            text-align: center; padding: 18px 15px;
+            border-top: 1px solid var(--border);
+            position: relative; z-index: 2; background: rgba(0,0,0,0.7);
         }
-
-        footer p {
-            font-family: 'Orbitron', sans-serif; font-size: 9px;
-            letter-spacing: 2px; color: #555555;
-        }
-
-        footer .footer-glow {
-            background: var(--gradient-main);
+        .footer p { font-family: 'Orbitron', sans-serif; font-size: 8px; letter-spacing: 2px; color: #555; }
+        .footer .glow {
+            background: var(--gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        /* ===== BUTTONS ===== */
-        .back-to-top {
-            position: fixed; bottom: 20px; right: 15px; z-index: 90;
-            width: 45px; height: 45px; border-radius: 50%;
-            background: rgba(0, 0, 0, 0.9); border: 2px solid var(--accent);
-            color: var(--accent); font-size: 16px; cursor: pointer;
-            box-shadow: var(--shadow-neon); display: none;
-            justify-content: center; align-items: center;
-        }
-
-        .fab {
-            position: fixed; bottom: 20px; left: 15px; z-index: 90;
-            width: 45px; height: 45px; border-radius: 50%;
-            background: var(--gradient-main); border: none; color: #000000;
-            font-size: 20px; cursor: pointer; box-shadow: var(--shadow-neon-strong);
-            display: flex; justify-content: center; align-items: center; font-weight: 900;
-        }
-
-        .fab:active { transform: scale(0.85) rotate(90deg); }
-
-        /* ===== FILE INPUT HIDDEN ===== */
         #chatImageInput { display: none; }
     </style>
 </head>
 <body>
 
     <!-- BACKGROUND -->
-    <div class="grid-bg"></div>
-    <div class="scanline"></div>
-    <div class="aurora"></div>
-    <div class="particles-container" id="particlesContainer"></div>
+    <div class="bg-grid"></div>
+    <div class="bg-scan"></div>
+    <div class="bg-aurora"></div>
+    <div class="bg-particles" id="particles"></div>
 
-    <!-- READING PROGRESS -->
-    <div class="reading-progress" id="readingProgress"></div>
+    <!-- PROGRESS -->
+    <div class="progress" id="progress"></div>
 
     <!-- TOAST -->
-    <div class="toast-container" id="toastContainer"></div>
+    <div class="toast-wrap" id="toastWrap"></div>
 
-    <!-- IMAGE LIGHTBOX -->
-    <div class="image-lightbox" id="imageLightbox" onclick="closeImageLightbox()">
-        <button class="image-lightbox-close" onclick="closeImageLightbox()">✕</button>
-        <img id="lightboxImage" src="" alt="Gambar">
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">✕</button>
+        <img id="lightboxImg" src="" alt="Gambar">
     </div>
 
     <!-- HEADER -->
-    <header>
-        <div class="logo" onclick="showHome()">TRON BLOG</div>
+    <div class="header">
+        <div class="logo" onclick="goHome()">TRON</div>
         <div class="header-actions">
-            <button class="icon-btn" onclick="showTab('blog')">📝</button>
-            <button class="icon-btn" onclick="showTab('chat')">💬</button>
-            <button class="icon-btn" onclick="showAdminPanel()">🔐</button>
-            <button class="icon-btn" id="hamburger" onclick="toggleMenu()">☰</button>
+            <button class="icon-btn" onclick="switchTab('blog')">📝</button>
+            <button class="icon-btn" onclick="switchTab('chat')">💬</button>
+            <button class="icon-btn" onclick="openAdmin()">🔐</button>
+            <button class="icon-btn" id="menuBtn" onclick="toggleMenu()">☰</button>
         </div>
-    </header>
-
-    <!-- OVERLAY -->
-    <div class="overlay" id="overlay" onclick="closeMenu()"></div>
+    </div>
 
     <!-- MENU -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a onclick="showHome(); closeMenu();"><span class="menu-icon">🏠</span> UTAMA</a>
-        <a onclick="showTab('chat'); closeMenu();"><span class="menu-icon">💬</span> CHAT</a>
-        <a onclick="showAdminPanel(); closeMenu();"><span class="menu-icon">🔐</span> ADMIN</a>
-        <a onclick="createBurstParticles(); closeMenu();"><span class="menu-icon">✨</span> PARTIKEL</a>
+    <div class="menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+    <div class="side-menu" id="sideMenu">
+        <a onclick="goHome()">🏠 UTAMA</a>
+        <a onclick="switchTab('chat')">💬 CHAT</a>
+        <a onclick="openAdmin()">🔐 ADMIN</a>
+        <a onclick="burst()">✨ PARTIKEL</a>
     </div>
 
     <!-- MAIN -->
-    <main>
+    <div class="main">
 
         <!-- HERO -->
-        <div class="hero" id="heroSection">
+        <div class="hero" id="heroArea">
             <h1>TRON BLOG</h1>
             <p class="subtitle">DIGITAL CHRONICLES</p>
         </div>
 
-        <!-- STATUS -->
-        <div class="status-bar">
+        <!-- INFO -->
+        <div class="info-card">
             <span><span class="status-dot"></span>ONLINE</span>
-            <span id="visitorCount">👁️ 0</span>
+            <span id="visitors">👁️ 0</span>
         </div>
 
         <!-- CLOCK -->
-        <div class="clock-display">
+        <div class="clock">
             <div class="clock-time" id="clockTime">00:00:00</div>
             <div class="clock-date" id="clockDate">---</div>
         </div>
 
         <!-- TABS -->
-        <div class="tabs" id="tabsContainer">
-            <button class="tab-btn active" onclick="showTab('blog', this)">📝 BLOG</button>
-            <button class="tab-btn" onclick="showTab('chat', this)">💬 CHAT</button>
+        <div class="tabs" id="tabsBar">
+            <button class="tab-btn active" onclick="switchTab('blog', this)">📝 BLOG</button>
+            <button class="tab-btn" onclick="switchTab('chat', this)">💬 CHAT</button>
         </div>
 
         <!-- BLOG TAB -->
         <div class="tab-content active" id="tab-blog">
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="CARI ARTIKEL..." onkeyup="searchPosts(this.value)">
+            <div class="search-row">
+                <input type="text" id="searchInput" placeholder="Cari artikel..." onkeyup="searchPosts(this.value)">
                 <button onclick="searchPosts(document.getElementById('searchInput').value)">CARI</button>
             </div>
-            <div class="blog-grid" id="blogGrid"></div>
+            <div class="blog-list" id="blogList"></div>
         </div>
 
         <!-- CHAT TAB -->
         <div class="tab-content" id="tab-chat">
-            <div class="chat-section">
-                <div class="chat-header">
+            <div class="chat-box">
+                <div class="chat-head">
                     <h3>💬 CHAT MULTIMEDIA</h3>
-                    <span class="chat-online">● ONLINE</span>
+                    <span class="online">● ONLINE</span>
                 </div>
-
-                <!-- RECORDING INDICATOR -->
-                <div class="recording-indicator" id="recordingIndicator">🔴 MERAKAM...</div>
-
-                <div class="chat-messages" id="chatMessages"></div>
-
-                <!-- CHAT INPUT ROW -->
+                <div class="recording-bar" id="recBar">🔴 MERAKAM...</div>
+                <div class="chat-log" id="chatLog"></div>
                 <div class="chat-input-row">
-                    <input type="text" id="chatName" placeholder="NAMA" style="max-width:70px;">
-                    <input type="text" id="chatInput" placeholder="TULIS MESEJ..." onkeypress="if(event.key==='Enter')sendChat()">
-                    <button class="chat-attach-btn" onclick="document.getElementById('chatImageInput').click()" title="Hantar Gambar">📷</button>
-                    <button class="chat-attach-btn" id="recordBtn" onclick="toggleRecording()" title="Rakam Audio">🎤</button>
-                    <button onclick="sendChat()">HANTAR</button>
+                    <input type="text" id="chatName" placeholder="NAMA" style="max-width:65px;">
+                    <input type="text" id="chatInput" placeholder="Tulis mesej..." onkeypress="if(event.key==='Enter')sendText()">
+                    <button class="attach-btn" onclick="document.getElementById('chatImageInput').click()">📷</button>
+                    <button class="attach-btn" id="recordBtn" onclick="toggleRecord()">🎤</button>
+                    <button class="send-btn" onclick="sendText()">HANTAR</button>
                 </div>
                 <input type="file" id="chatImageInput" accept="image/*" onchange="sendImage(event)">
             </div>
@@ -856,20 +641,20 @@
 
         <!-- ARTICLE -->
         <div class="article-view" id="articleView">
-            <button class="back-to-blog" onclick="showHome()">← KEMBALI</button>
-            <div class="article-header"><h1 id="articleTitle"></h1></div>
-            <div class="article-image" id="articleImage"></div>
-            <div class="article-content" id="articleContent"></div>
+            <button class="back-btn" onclick="goHome()">← KEMBALI</button>
+            <div class="article-title" id="articleTitle"></div>
+            <div class="article-img" id="articleImg"></div>
+            <div class="article-body" id="articleBody"></div>
         </div>
 
         <!-- ADMIN -->
         <div class="admin-panel" id="adminPanel">
             <div class="admin-login" id="adminLogin">
                 <h2>🔐 LOGIN ADMIN</h2>
-                <input type="password" id="adminPassword" placeholder="KATA LALUAN" onkeypress="if(event.key === 'Enter') adminLogin()">
-                <button class="admin-btn-primary" onclick="adminLogin()">LOGIN</button>
+                <input type="password" id="adminPass" placeholder="KATA LALUAN" onkeypress="if(event.key==='Enter')doLogin()">
+                <button class="btn-primary" onclick="doLogin()">LOGIN</button>
             </div>
-            <div class="admin-dashboard" id="adminDashboard">
+            <div class="admin-dash" id="adminDash">
                 <h2>📝 PENGURUSAN ARTIKEL</h2>
                 <div class="admin-form">
                     <h3 id="formTitle">➕ TAMBAH ARTIKEL</h3>
@@ -881,599 +666,437 @@
                     <textarea id="postExcerpt" placeholder="RINGKASAN"></textarea>
                     <textarea id="postContent" placeholder="KANDUNGAN (HTML)"></textarea>
                     <div class="btn-row">
-                        <button class="admin-btn-primary" onclick="savePost()">💾 SIMPAN</button>
-                        <button class="admin-btn-danger" onclick="resetForm()">BATAL</button>
+                        <button class="btn-primary" onclick="savePost()">💾 SIMPAN</button>
+                        <button class="btn-danger" onclick="resetForm()">BATAL</button>
                     </div>
                 </div>
-                <div id="adminPostList"></div>
-                <button class="admin-btn-danger" onclick="adminLogout()" style="margin-top:10px;">🚪 LOGOUT</button>
+                <div id="adminList"></div>
+                <button class="btn-danger" onclick="doLogout()" style="margin-top:8px;">🚪 LOGOUT</button>
             </div>
         </div>
 
-    </main>
+    </div>
 
     <!-- FOOTER -->
-    <footer>
-        <p>© 2026 <span class="footer-glow">TRON BLOG</span> — CHAT MULTIMEDIA</p>
-    </footer>
+    <div class="footer">
+        <p>© 2026 <span class="glow">TRON BLOG</span> — DIGITAL CHRONICLES</p>
+    </div>
 
-    <!-- BUTTONS -->
-    <button class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</button>
-    <button class="fab" onclick="createBurstParticles(); showToast('Letupan Partikel! ✨', 'success')">✦</button>
+    <!-- FLOATING -->
+    <button class="back-top" id="backTop" onclick="scrollTop()">↑</button>
+    <button class="fab" onclick="burst(); toast('Letupan Partikel! ✨', 'success')">✦</button>
 
     <!-- FIREBASE -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
     <script>
-        // ===== FIREBASE =====
-        const firebaseConfig = {
+        // ===== CONFIG =====
+        const db = firebase.initializeApp({
             databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const ADMIN_PASSWORD = "admin123";
+        }).database();
+        const ADMIN_PASS = "admin123";
 
-        let isAdminLoggedIn = false;
-        let blogPosts = [];
-        let audioContext = null;
-        let mediaRecorder = null;
+        let isAdmin = false;
+        let posts = [];
+        let audioCtx = null;
+        let recorder = null;
         let audioChunks = [];
         let isRecording = false;
-        let recordingStartTime = 0;
-        let recordingTimer = null;
+        let recordStart = 0;
 
-        // ===== AUDIO (Sound Effects) =====
-        function initAudio() {
-            if (!audioContext) {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
-        }
+        // ===== HELPERS =====
+        const $ = id => document.getElementById(id);
+        const toast = (msg, type = 'info') => {
+            const wrap = $('toastWrap');
+            const t = document.createElement('div');
+            t.className = `toast toast-${type}`;
+            t.textContent = msg;
+            wrap.appendChild(t);
+            setTimeout(() => t.remove(), 2700);
+        };
 
-        function playSound(type) {
+        const sound = (type) => {
             try {
-                initAudio();
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                const now = audioContext.currentTime;
-
-                switch(type) {
-                    case 'click':
-                        osc.frequency.setValueAtTime(800, now);
-                        osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-                        gain.gain.setValueAtTime(0.3, now);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
-                        osc.start(now); osc.stop(now + 0.1);
-                        break;
-                    case 'success':
-                        osc.frequency.setValueAtTime(600, now);
-                        osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
-                        gain.gain.setValueAtTime(0.3, now);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
-                        osc.start(now); osc.stop(now + 0.2);
-                        break;
-                    case 'error':
-                        osc.type = 'sawtooth';
-                        osc.frequency.setValueAtTime(200, now);
-                        osc.frequency.exponentialRampToValueAtTime(100, now + 0.3);
-                        gain.gain.setValueAtTime(0.2, now);
-                        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-                        osc.start(now); osc.stop(now + 0.3);
-                        break;
-                }
+                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = audioCtx.createOscillator();
+                const g = audioCtx.createGain();
+                o.connect(g); g.connect(audioCtx.destination);
+                const t = audioCtx.currentTime;
+                const freqs = { click: [800, 400], success: [600, 1200], error: [200, 100] };
+                const [start, end] = freqs[type] || [600, 800];
+                o.frequency.setValueAtTime(start, t);
+                o.frequency.exponentialRampToValueAtTime(end, t + 0.15);
+                g.gain.setValueAtTime(0.25, t);
+                g.gain.exponentialRampToValueAtTime(0.01, t + 0.2);
+                if (type === 'error') o.type = 'sawtooth';
+                o.start(t); o.stop(t + 0.2);
             } catch(e) {}
-        }
+        };
 
         // ===== PARTICLES =====
-        function createParticles() {
-            const container = document.getElementById('particlesContainer');
+        (function createParticles() {
+            const wrap = $('particles');
             for (let i = 0; i < 20; i++) {
                 const p = document.createElement('div');
                 p.className = 'particle';
                 p.style.left = Math.random() * 100 + '%';
                 p.style.animationDuration = (Math.random() * 4 + 3) + 's';
                 p.style.animationDelay = Math.random() * 4 + 's';
-                p.style.width = (Math.random() * 3 + 2) + 'px';
-                p.style.height = p.style.width;
-                container.appendChild(p);
+                p.style.width = p.style.height = (Math.random() * 3 + 2) + 'px';
+                wrap.appendChild(p);
             }
-        }
+        })();
 
-        function createBurstParticles() {
-            playSound('success');
-            const burst = document.createElement('div');
-            burst.className = 'particle-burst';
-            burst.style.left = '50%';
-            burst.style.top = '50%';
-            document.body.appendChild(burst);
-            const colors = ['#00f0ff', '#ff00ff', '#ff6b00', '#00ff88', '#ffffff'];
+        function burst() {
+            sound('success');
+            const wrap = document.createElement('div');
+            wrap.style.cssText = 'position:fixed;left:50%;top:50%;z-index:999;pointer-events:none;';
+            document.body.appendChild(wrap);
+            const colors = ['#00f0ff', '#ff00ff', '#ff6b00', '#00ff88', '#fff'];
             for (let i = 0; i < 20; i++) {
                 const p = document.createElement('div');
-                p.className = 'burst-particle';
-                p.style.background = colors[Math.floor(Math.random() * colors.length)];
-                p.style.boxShadow = `0 0 10px ${p.style.background}`;
+                p.style.cssText = `position:absolute;width:6px;height:6px;border-radius:50%;background:${colors[i%5]};box-shadow:0 0 10px ${colors[i%5]};animation:burstFly 1s ease-out forwards;`;
                 const angle = (Math.PI * 2 * i) / 20;
                 const dist = Math.random() * 80 + 40;
                 p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
                 p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-                burst.appendChild(p);
+                wrap.appendChild(p);
             }
-            setTimeout(() => burst.remove(), 1000);
-        }
-
-        // ===== TOAST =====
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast toast-${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
+            setTimeout(() => wrap.remove(), 1000);
         }
 
         // ===== CLOCK =====
-        function updateClock() {
+        setInterval(() => {
             const now = new Date();
-            document.getElementById('clockTime').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
+            $('clockTime').textContent = now.toLocaleTimeString('ms-MY', { hour12: false });
+            $('clockDate').textContent = now.toLocaleDateString('ms-MY', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }, 1000);
 
-        // ===== READING PROGRESS =====
+        // ===== VISITORS =====
+        db.ref('visitors').transaction(c => (c || 0) + 1);
+        db.ref('visitors').on('value', s => $('visitors').textContent = '👁️ ' + (s.val() || 0));
+
+        // ===== SCROLL =====
         window.addEventListener('scroll', () => {
-            const scrollTop = window.scrollY;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            document.getElementById('readingProgress').style.width = (scrollTop / docHeight * 100) + '%';
-            document.getElementById('backToTop').style.display = scrollTop > 200 ? 'flex' : 'none';
+            const h = document.documentElement;
+            $('progress').style.width = (window.scrollY / (h.scrollHeight - innerHeight) * 100) + '%';
+            $('backTop').classList.toggle('show', window.scrollY > 200);
         });
-
-        // ===== VISITOR =====
-        function updateVisitor() {
-            database.ref('visitors').transaction((cur) => (cur || 0) + 1);
-            database.ref('visitors').on('value', (snap) => {
-                document.getElementById('visitorCount').textContent = '👁️ ' + (snap.val() || 0);
-            });
-        }
+        const scrollTop = () => { sound('click'); window.scrollTo({ top: 0, behavior: 'smooth' }); };
 
         // ===== TABS =====
-        function showTab(tabName, btn) {
-            playSound('click');
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        function switchTab(name, btn) {
+            sound('click');
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tabName).classList.add('active');
+            $('tab-' + name).classList.add('active');
             if (btn) btn.classList.add('active');
-            document.getElementById('articleView').classList.remove('active');
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('tabsContainer').style.display = 'flex';
+            $('articleView').classList.remove('active');
+            $('adminPanel').classList.remove('active');
+            $('tabsBar').style.display = 'flex';
+            $('heroArea').style.display = 'block';
+        }
+
+        function goHome() {
+            sound('click');
+            $('articleView').classList.remove('active');
+            $('adminPanel').classList.remove('active');
+            $('tabsBar').style.display = 'flex';
+            $('heroArea').style.display = 'block';
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            $('tab-blog').classList.add('active');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-btn')[0].classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===== BLOG =====
-        function loadPosts() {
-            database.ref('posts').on('value', (snapshot) => {
-                blogPosts = [];
-                if (snapshot.exists()) {
-                    snapshot.forEach((child) => blogPosts.push({ id: child.key, ...child.val() }));
-                }
-                renderBlog(blogPosts);
-                renderAdminPostList();
-            });
-        }
+        db.ref('posts').on('value', snap => {
+            posts = [];
+            if (snap.exists()) snap.forEach(c => posts.push({ id: c.key, ...c.val() }));
+            renderBlog(posts);
+            renderAdminList();
+        });
 
-        function renderBlog(posts) {
-            const grid = document.getElementById('blogGrid');
-            grid.innerHTML = '';
-            if (posts.length === 0) {
-                grid.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div>TIADA ARTIKEL<br><span style="font-size:9px;color:#444;">TAMBAH MELALUI ADMIN</span></div>`;
+        function renderBlog(list) {
+            const wrap = $('blogList');
+            if (!list.length) {
+                wrap.innerHTML = `<div class="empty"><div class="empty-icon">📝</div>TIADA ARTIKEL</div>`;
                 return;
             }
-            posts.forEach(post => {
-                const card = document.createElement('div');
-                card.className = 'blog-card';
-                card.onclick = () => { playSound('click'); openArticle(post.id); };
-                card.innerHTML = `
-                    <div class="blog-card-image">${post.icon || '📄'}</div>
-                    <div class="blog-card-content">
-                        <span class="blog-card-tag">${post.category || 'UMUM'}</span>
-                        <h2>${post.title}</h2>
-                        <p class="blog-card-excerpt">${post.excerpt || ''}</p>
-                        <div class="blog-card-meta">
-                            <span class="author">${post.author || 'Tanpa Nama'}</span>
-                            <span>${post.date || ''}</span>
+            wrap.innerHTML = list.map(p => `
+                <div class="blog-card" onclick="openArticle('${p.id}')">
+                    <div class="card-img">${p.icon || '📄'}</div>
+                    <div class="card-body">
+                        <span class="card-tag">${p.category || 'UMUM'}</span>
+                        <div class="card-title">${p.title}</div>
+                        <div class="card-excerpt">${p.excerpt || ''}</div>
+                        <div class="card-meta">
+                            <span class="author">${p.author || 'Tanpa Nama'}</span>
+                            <span>${p.date || ''}</span>
                         </div>
                     </div>
-                `;
-                grid.appendChild(card);
-            });
+                </div>
+            `).join('');
         }
 
-        function searchPosts(query) {
-            const filtered = blogPosts.filter(post => {
-                const text = (post.title + ' ' + post.excerpt + ' ' + post.category).toLowerCase();
-                return text.includes(query.toLowerCase());
-            });
+        function searchPosts(q) {
+            sound('click');
+            const filtered = posts.filter(p => (p.title + p.excerpt + p.category).toLowerCase().includes(q.toLowerCase()));
             renderBlog(filtered);
         }
 
         function openArticle(id) {
-            const post = blogPosts.find(p => p.id === id);
-            if (!post) return;
-            document.getElementById('articleView').classList.add('active');
-            document.getElementById('tab-blog').style.display = 'none';
-            document.getElementById('tabsContainer').style.display = 'none';
-            document.getElementById('articleTitle').textContent = post.title;
-            document.getElementById('articleImage').textContent = post.icon || '📄';
-            document.getElementById('articleContent').innerHTML = post.content || '<p>Tiada kandungan.</p>';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function showHome() {
-            playSound('click');
-            document.getElementById('articleView').classList.remove('active');
-            document.getElementById('adminPanel').classList.remove('active');
-            document.getElementById('tabsContainer').style.display = 'flex';
-            document.getElementById('tab-blog').style.display = 'block';
-            document.getElementById('tab-chat').style.display = 'block';
-            showTab('blog');
+            sound('click');
+            const p = posts.find(x => x.id === id);
+            if (!p) return;
+            $('articleView').classList.add('active');
+            $('tabsBar').style.display = 'none';
+            $('heroArea').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            $('articleTitle').textContent = p.title;
+            $('articleImg').textContent = p.icon || '📄';
+            $('articleBody').innerHTML = p.content || '<p>Tiada kandungan.</p>';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // ===== CHAT =====
-        function sendChat() {
-            const name = document.getElementById('chatName').value.trim() || 'Anonymous';
-            const msg = document.getElementById('chatInput').value.trim();
-            if (!msg) return;
-            playSound('success');
-            database.ref('chat').push({
-                type: 'text',
-                name: name,
-                text: msg,
-                time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
-            });
-            document.getElementById('chatInput').value = '';
+        db.ref('chat').limitToLast(50).on('value', snap => {
+            const log = $('chatLog');
+            const myName = $('chatName').value.trim() || 'Anonymous';
+            log.innerHTML = '';
+            if (snap.exists()) {
+                snap.forEach(c => {
+                    const d = c.val();
+                    const div = document.createElement('div');
+                    div.className = 'msg' + (d.name === myName ? ' own' : '');
+                    const name = document.createElement('div');
+                    name.className = 'msg-name';
+                    name.textContent = `${d.name} • ${d.time || ''}`;
+                    div.appendChild(name);
+                    if (d.type === 'text') {
+                        const t = document.createElement('div');
+                        t.className = 'msg-text';
+                        t.textContent = d.text;
+                        div.appendChild(t);
+                    } else if (d.type === 'image') {
+                        const img = document.createElement('img');
+                        img.className = 'msg-image';
+                        img.src = d.data;
+                        img.onclick = () => openLightbox(d.data);
+                        div.appendChild(img);
+                    } else if (d.type === 'audio') {
+                        const a = document.createElement('div');
+                        a.className = 'msg-audio';
+                        a.onclick = () => { new Audio(d.data).play(); };
+                        a.innerHTML = `<span class="audio-icon">▶</span><div class="audio-bar"></div><span class="audio-duration">${d.duration || 0}s</span>`;
+                        div.appendChild(a);
+                    }
+                    log.appendChild(div);
+                });
+            }
+            log.scrollTop = log.scrollHeight;
+        });
+
+        function sendText() {
+            const name = $('chatName').value.trim() || 'Anonymous';
+            const text = $('chatInput').value.trim();
+            if (!text) return;
+            sound('success');
+            db.ref('chat').push({ type: 'text', name, text, time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }) });
+            $('chatInput').value = '';
         }
 
-        function sendImage(event) {
-            const file = event.target.files[0];
+        function sendImage(e) {
+            const file = e.target.files[0];
             if (!file) return;
-            
-            if (file.size > 2 * 1024 * 1024) {
-                showToast('Saiz gambar terlalu besar (max 2MB)!', 'error');
-                return;
-            }
-
-            const name = document.getElementById('chatName').value.trim() || 'Anonymous';
+            if (file.size > 2 * 1024 * 1024) return toast('Saiz gambar terlalu besar!', 'error');
+            const name = $('chatName').value.trim() || 'Anonymous';
             const reader = new FileReader();
-            reader.onload = function(e) {
-                playSound('success');
-                database.ref('chat').push({
-                    type: 'image',
-                    name: name,
-                    data: e.target.result,
-                    time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
-                });
-                showToast('Gambar dihantar! 📷', 'success');
+            reader.onload = ev => {
+                sound('success');
+                db.ref('chat').push({ type: 'image', name, data: ev.target.result, time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }) });
+                toast('Gambar dihantar! 📷', 'success');
             };
             reader.readAsDataURL(file);
-            event.target.value = '';
+            e.target.value = '';
         }
 
-        // ===== AUDIO RECORDING =====
-        async function toggleRecording() {
-            const recordBtn = document.getElementById('recordBtn');
-            const indicator = document.getElementById('recordingIndicator');
-
+        async function toggleRecord() {
+            const btn = $('recordBtn');
+            const bar = $('recBar');
             if (isRecording) {
-                // Stop recording
                 isRecording = false;
-                recordBtn.classList.remove('recording');
-                indicator.classList.remove('active');
-                clearInterval(recordingTimer);
-                mediaRecorder.stop();
-                showToast('Rakaman dihentikan, menghantar...', 'info');
+                btn.classList.remove('recording');
+                bar.classList.remove('active');
+                recorder.stop();
                 return;
             }
-
-            // Start recording
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                recorder = new MediaRecorder(stream);
                 audioChunks = [];
-
-                mediaRecorder.ondataavailable = (e) => {
-                    audioChunks.push(e.data);
-                };
-
-                mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    stream.getTracks().forEach(track => track.stop());
-                    
-                    if (audioBlob.size > 500 * 1024) {
-                        showToast('Audio terlalu panjang (max 30 saat)!', 'error');
-                        return;
-                    }
-
+                recorder.ondataavailable = e => audioChunks.push(e.data);
+                recorder.onstop = () => {
+                    stream.getTracks().forEach(t => t.stop());
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
                     const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const duration = Math.round((Date.now() - recordingStartTime) / 1000);
-                        const name = document.getElementById('chatName').value.trim() || 'Anonymous';
-                        playSound('success');
-                        database.ref('chat').push({
-                            type: 'audio',
-                            name: name,
-                            data: e.target.result,
-                            duration: duration,
-                            time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
-                        });
-                        showToast('Audio dihantar! 🎤', 'success');
+                    reader.onload = ev => {
+                        const duration = Math.round((Date.now() - recordStart) / 1000);
+                        const name = $('chatName').value.trim() || 'Anonymous';
+                        sound('success');
+                        db.ref('chat').push({ type: 'audio', name, data: ev.target.result, duration, time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' }) });
+                        toast('Audio dihantar! 🎤', 'success');
                     };
-                    reader.readAsDataURL(audioBlob);
+                    reader.readAsDataURL(blob);
                 };
-
-                mediaRecorder.start();
+                recorder.start();
                 isRecording = true;
-                recordingStartTime = Date.now();
-                recordBtn.classList.add('recording');
-                indicator.classList.add('active');
-                playSound('click');
-
-                // Auto stop after 30 seconds
-                recordingTimer = setInterval(() => {
-                    const elapsed = (Date.now() - recordingStartTime) / 1000;
-                    if (elapsed >= 30 && isRecording) {
-                        toggleRecording();
-                    }
-                }, 1000);
-
-                showToast('Rakaman bermula...', 'info');
+                recordStart = Date.now();
+                btn.classList.add('recording');
+                bar.classList.add('active');
+                sound('click');
+                setTimeout(() => { if (isRecording) toggleRecord(); }, 30000);
             } catch(e) {
-                playSound('error');
-                showToast('Tidak dapat akses mikrofon!', 'error');
+                sound('error');
+                toast('Tidak dapat akses mikrofon!', 'error');
             }
         }
 
-        // ===== PLAY AUDIO MESSAGE =====
-        function playAudioMessage(audioData, duration) {
-            try {
-                const audio = new Audio(audioData);
-                audio.play();
-                showToast('Memainkan audio (' + duration + 's)...', 'info');
-            } catch(e) {
-                showToast('Tidak dapat main audio!', 'error');
-            }
+        // ===== LIGHTBOX =====
+        function openLightbox(src) {
+            $('lightboxImg').src = src;
+            $('lightbox').classList.add('active');
         }
-
-        // ===== IMAGE LIGHTBOX =====
-        function openImageLightbox(imageData) {
-            document.getElementById('lightboxImage').src = imageData;
-            document.getElementById('imageLightbox').classList.add('active');
-        }
-
-        function closeImageLightbox() {
-            document.getElementById('imageLightbox').classList.remove('active');
-        }
-
-        // ===== LOAD CHAT =====
-        function loadChat() {
-            database.ref('chat').limitToLast(50).on('value', (snapshot) => {
-                const container = document.getElementById('chatMessages');
-                container.innerHTML = '';
-                const currentName = document.getElementById('chatName').value.trim() || 'Anonymous';
-
-                if (snapshot.exists()) {
-                    snapshot.forEach((child) => {
-                        const data = child.val();
-                        const msgDiv = document.createElement('div');
-                        msgDiv.className = 'chat-msg';
-                        
-                        if (data.name === currentName) {
-                            msgDiv.classList.add('own');
-                        }
-
-                        const nameDisplay = document.createElement('div');
-                        nameDisplay.className = 'msg-name';
-                        nameDisplay.textContent = `${data.name} • ${data.time || ''}`;
-                        msgDiv.appendChild(nameDisplay);
-
-                        if (data.type === 'text') {
-                            const textDiv = document.createElement('div');
-                            textDiv.className = 'msg-text';
-                            textDiv.textContent = data.text;
-                            msgDiv.appendChild(textDiv);
-                        } else if (data.type === 'image') {
-                            const img = document.createElement('img');
-                            img.className = 'msg-image';
-                            img.src = data.data;
-                            img.onclick = () => openImageLightbox(data.data);
-                            msgDiv.appendChild(img);
-                        } else if (data.type === 'audio') {
-                            const audioDiv = document.createElement('div');
-                            audioDiv.className = 'msg-audio';
-                            audioDiv.onclick = () => playAudioMessage(data.data, data.duration);
-                            audioDiv.innerHTML = `
-                                <span class="audio-icon">▶</span>
-                                <div class="audio-bar"><div class="audio-bar-fill"></div></div>
-                                <span class="audio-duration">${data.duration || 0}s</span>
-                            `;
-                            msgDiv.appendChild(audioDiv);
-                        }
-
-                        container.appendChild(msgDiv);
-                    });
-                }
-                container.scrollTop = container.scrollHeight;
-            });
+        function closeLightbox() {
+            $('lightbox').classList.remove('active');
         }
 
         // ===== ADMIN =====
-        function showAdminPanel() {
-            playSound('click');
-            document.getElementById('tabsContainer').style.display = 'none';
-            document.getElementById('tab-blog').style.display = 'none';
-            document.getElementById('tab-chat').style.display = 'none';
-            document.getElementById('articleView').classList.remove('active');
-            document.getElementById('adminPanel').classList.add('active');
-            if (isAdminLoggedIn) {
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminDashboard').classList.add('active');
+        function openAdmin() {
+            sound('click');
+            $('tabsBar').style.display = 'none';
+            $('heroArea').style.display = 'none';
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            $('articleView').classList.remove('active');
+            $('adminPanel').classList.add('active');
+            $('adminLogin').style.display = isAdmin ? 'none' : 'block';
+            $('adminDash').classList.toggle('active', isAdmin);
+        }
+
+        function doLogin() {
+            if ($('adminPass').value === ADMIN_PASS) {
+                sound('success');
+                isAdmin = true;
+                $('adminLogin').style.display = 'none';
+                $('adminDash').classList.add('active');
+                $('adminPass').value = '';
+                toast('Login berjaya! ✅', 'success');
             } else {
-                document.getElementById('adminLogin').style.display = 'block';
-                document.getElementById('adminDashboard').classList.remove('active');
+                sound('error');
+                toast('Kata laluan salah! ❌', 'error');
             }
         }
 
-        function adminLogin() {
-            if (document.getElementById('adminPassword').value === ADMIN_PASSWORD) {
-                playSound('success');
-                isAdminLoggedIn = true;
-                document.getElementById('adminLogin').style.display = 'none';
-                document.getElementById('adminDashboard').classList.add('active');
-                document.getElementById('adminPassword').value = '';
-                showToast('Login berjaya! ✅', 'success');
-            } else {
-                playSound('error');
-                showToast('Kata laluan salah! ❌', 'error');
-            }
-        }
-
-        function adminLogout() {
-            isAdminLoggedIn = false;
-            document.getElementById('adminLogin').style.display = 'block';
-            document.getElementById('adminDashboard').classList.remove('active');
+        function doLogout() {
+            isAdmin = false;
+            $('adminLogin').style.display = 'block';
+            $('adminDash').classList.remove('active');
             resetForm();
         }
 
-        function renderAdminPostList() {
-            const list = document.getElementById('adminPostList');
-            list.innerHTML = '';
-            if (blogPosts.length === 0) {
-                list.innerHTML = '<p style="color:#444;text-align:center;padding:12px;">Tiada artikel.</p>';
+        function renderAdminList() {
+            const wrap = $('adminList');
+            if (!posts.length) {
+                wrap.innerHTML = '<p style="color:#555;text-align:center;padding:10px;">Tiada artikel.</p>';
                 return;
             }
-            blogPosts.forEach(post => {
-                const item = document.createElement('div');
-                item.className = 'admin-post-item';
-                item.innerHTML = `
-                    <div class="admin-post-info"><h4>${post.title}</h4><p>${post.category || 'UMUM'}</p></div>
-                    <div class="admin-post-actions">
-                        <button class="admin-btn-primary" onclick="editPost('${post.id}')">EDIT</button>
-                        <button class="admin-btn-danger" onclick="deletePost('${post.id}')">PADAM</button>
+            wrap.innerHTML = posts.map(p => `
+                <div class="admin-post">
+                    <div>
+                        <h4>${p.title}</h4>
+                        <p>${p.category || 'UMUM'}</p>
                     </div>
-                `;
-                list.appendChild(item);
-            });
+                    <div class="admin-post-actions">
+                        <button class="btn-primary" onclick="editPost('${p.id}')" style="padding:5px 10px;">EDIT</button>
+                        <button class="btn-danger" onclick="deletePost('${p.id}')" style="padding:5px 8px;">PADAM</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
         function savePost() {
-            playSound('success');
-            const id = document.getElementById('postId').value;
+            sound('success');
+            const id = $('postId').value;
             const data = {
-                title: document.getElementById('postTitle').value.trim(),
-                category: document.getElementById('postCategory').value.trim(),
-                icon: document.getElementById('postIcon').value.trim() || '📄',
-                author: document.getElementById('postAuthor').value.trim(),
-                excerpt: document.getElementById('postExcerpt').value.trim(),
-                content: document.getElementById('postContent').value.trim(),
+                title: $('postTitle').value.trim(),
+                category: $('postCategory').value.trim(),
+                icon: $('postIcon').value.trim() || '📄',
+                author: $('postAuthor').value.trim(),
+                excerpt: $('postExcerpt').value.trim(),
+                content: $('postContent').value.trim(),
                 date: new Date().toISOString().split('T')[0]
             };
-            if (!data.title || !data.category || !data.author) {
-                showToast('Sila isi ruangan wajib!', 'error');
-                return;
-            }
-            if (id) {
-                database.ref('posts/' + id).update(data).then(() => { showToast('Dikemaskini! ✅', 'success'); resetForm(); });
-            } else {
-                database.ref('posts').push(data).then(() => { showToast('Disimpan! ✅', 'success'); resetForm(); });
-            }
+            if (!data.title || !data.category || !data.author) return toast('Sila isi ruangan wajib!', 'error');
+            (id ? db.ref('posts/' + id).update(data) : db.ref('posts').push(data))
+                .then(() => { toast('Disimpan! ✅', 'success'); resetForm(); });
         }
 
         function editPost(id) {
-            const post = blogPosts.find(p => p.id === id);
-            if (!post) return;
-            document.getElementById('postId').value = post.id;
-            document.getElementById('postTitle').value = post.title || '';
-            document.getElementById('postCategory').value = post.category || '';
-            document.getElementById('postIcon').value = post.icon || '';
-            document.getElementById('postAuthor').value = post.author || '';
-            document.getElementById('postExcerpt').value = post.excerpt || '';
-            document.getElementById('postContent').value = post.content || '';
-            document.getElementById('formTitle').textContent = '✏️ EDIT ARTIKEL';
+            const p = posts.find(x => x.id === id);
+            if (!p) return;
+            $('postId').value = p.id;
+            $('postTitle').value = p.title || '';
+            $('postCategory').value = p.category || '';
+            $('postIcon').value = p.icon || '';
+            $('postAuthor').value = p.author || '';
+            $('postExcerpt').value = p.excerpt || '';
+            $('postContent').value = p.content || '';
+            $('formTitle').textContent = '✏️ EDIT ARTIKEL';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function deletePost(id) {
-            playSound('error');
+            sound('error');
             if (confirm('Padam artikel ini?')) {
-                database.ref('posts/' + id).remove().then(() => showToast('Dipadam! ✅', 'success'));
+                db.ref('posts/' + id).remove().then(() => toast('Dipadam! ✅', 'success'));
             }
         }
 
         function resetForm() {
-            ['postId','postTitle','postCategory','postIcon','postAuthor','postExcerpt','postContent'].forEach(id => document.getElementById(id).value = '');
-            document.getElementById('formTitle').textContent = '➕ TAMBAH ARTIKEL';
+            ['postId','postTitle','postCategory','postIcon','postAuthor','postExcerpt','postContent'].forEach(id => $(id).value = '');
+            $('formTitle').textContent = '➕ TAMBAH ARTIKEL';
         }
 
         // ===== MENU =====
         function toggleMenu() {
-            playSound('click');
-            document.getElementById('mobileMenu').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
+            sound('click');
+            $('sideMenu').classList.toggle('active');
+            $('menuOverlay').classList.toggle('active');
         }
 
-        function closeMenu() {
-            document.getElementById('mobileMenu').classList.remove('active');
-            document.getElementById('overlay').classList.remove('active');
-        }
-
-        // ===== SWIPE =====
-        let touchStartX = 0;
-        document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-        document.addEventListener('touchend', (e) => {
-            const diff = e.changedTouches[0].screenX - touchStartX;
-            if (diff > 80) toggleMenu();
-            else if (diff < -80) closeMenu();
-        }, { passive: true });
-
-        // ===== TAP PARTICLES =====
-        document.addEventListener('click', (e) => {
+        // ===== TAP BURST =====
+        document.addEventListener('click', e => {
             if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
-                createMiniBurst(e.clientX, e.clientY);
+                const wrap = document.createElement('div');
+                wrap.style.cssText = `position:fixed;left:${e.clientX}px;top:${e.clientY}px;z-index:999;pointer-events:none;`;
+                document.body.appendChild(wrap);
+                for (let i = 0; i < 8; i++) {
+                    const p = document.createElement('div');
+                    p.style.cssText = 'position:absolute;width:5px;height:5px;border-radius:50%;background:#00f0ff;box-shadow:0 0 8px #00f0ff;animation:burstFly 0.8s ease-out forwards;';
+                    const angle = (Math.PI * 2 * i) / 8;
+                    const dist = Math.random() * 25 + 10;
+                    p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+                    p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+                    wrap.appendChild(p);
+                }
+                setTimeout(() => wrap.remove(), 800);
             }
         });
 
-        function createMiniBurst(x, y) {
-            const burst = document.createElement('div');
-            burst.className = 'particle-burst';
-            burst.style.left = x + 'px';
-            burst.style.top = y + 'px';
-            document.body.appendChild(burst);
-            for (let i = 0; i < 8; i++) {
-                const p = document.createElement('div');
-                p.className = 'burst-particle';
-                p.style.background = '#00f0ff';
-                p.style.boxShadow = '0 0 8px #00f0ff';
-                const angle = (Math.PI * 2 * i) / 8;
-                const dist = Math.random() * 25 + 10;
-                p.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
-                p.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
-                burst.appendChild(p);
-            }
-            setTimeout(() => burst.remove(), 800);
-        }
-
-        // ===== BACK TO TOP =====
-        function scrollToTop() {
-            playSound('click');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         // ===== INIT =====
-        createParticles();
-        loadPosts();
-        loadChat();
-        updateVisitor();
-        document.addEventListener('dblclick', (e) => e.preventDefault(), { passive: false });
+        document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
     </script>
 
 </body>
