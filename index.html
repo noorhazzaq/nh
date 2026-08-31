@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Consult — Platform Konsultasi">
-    <title>ZACK Consult</title>
+    <meta name="description" content="ZACK Tube — Video Platform">
+    <title>ZACK Tube</title>
 
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Consult","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Tube","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
@@ -17,13 +17,12 @@
             --cyan: #00f0ff;
             --gold: #ffd700;
             --purple: #8a2be2;
-            --pink: #ff00ff;
             --bg: #000000;
             --white: #ffffff;
             --muted: #999999;
             --success: #00ff88;
             --border-glow: rgba(0,240,255,0.3);
-            --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff, #ffd700, #ff00ff);
+            --grad-text: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff, #ffd700);
             --grad-btn: linear-gradient(135deg, #ff0033, #ff4455, #00f0ff);
             --r-sm: 10px;
             --r-md: 16px;
@@ -55,18 +54,15 @@
         .aurora {
             position: fixed; inset: 0;
             background:
-                radial-gradient(circle at 20% 30%, rgba(255,0,51,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(0,240,255,0.15) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.1) 0%, transparent 60%),
-                radial-gradient(circle at 60% 20%, rgba(255,215,0,0.08) 0%, transparent 40%);
+                radial-gradient(circle at 20% 30%, rgba(255,0,51,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(0,240,255,0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(138,43,226,0.08) 0%, transparent 60%);
             z-index: 0;
             animation: auroraFloat 10s ease-in-out infinite;
         }
         @keyframes auroraFloat {
             0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(15px, -20px) scale(1.05); }
-            50% { transform: translate(-10px, 10px) scale(0.95); }
-            75% { transform: translate(-20px, -15px) scale(1.02); }
+            50% { transform: translate(-10px, 10px) scale(1.05); }
         }
 
         .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
@@ -80,46 +76,19 @@
             50% { opacity: 1; box-shadow: 0 0 8px var(--white); }
         }
 
-        .particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-        .particle {
-            position: absolute; width: 3px; height: 3px;
-            border-radius: 50%; animation: floatUp linear infinite;
-        }
-        .p-red { background: var(--red); box-shadow: 0 0 10px var(--red); }
-        .p-cyan { background: var(--cyan); box-shadow: 0 0 10px var(--cyan); }
-        .p-gold { background: var(--gold); box-shadow: 0 0 10px var(--gold); }
-        .p-purple { background: var(--purple); box-shadow: 0 0 10px var(--purple); }
-        @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
-        }
-
-        .grid-overlay {
-            position: fixed; inset: 0;
-            background-image:
-                linear-gradient(rgba(255,0,51,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,240,255,0.03) 1px, transparent 1px);
-            background-size: 35px 35px;
-            z-index: 0; pointer-events: none;
-            mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
-            -webkit-mask-image: radial-gradient(circle at 50% 50%, black 30%, transparent 90%);
-        }
-
         .header {
             position: fixed; top: 0; left: 0; right: 0; z-index: 100;
             padding: calc(12px + var(--safe-top)) 15px 12px;
             background: rgba(0,0,0,0.85);
             border-bottom: 1px solid var(--border-glow);
             backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 5px 40px rgba(0,240,255,0.15), 0 5px 40px rgba(255,0,51,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .logo {
             font-family: 'Orbitron', sans-serif;
             font-size: 20px; font-weight: 900; letter-spacing: 4px;
-            text-align: center;
             background: var(--grad-text);
             background-size: 400% 400%;
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -133,12 +102,11 @@
 
         .main {
             position: relative; z-index: 2;
-            padding: calc(55px + var(--safe-top)) 10px calc(15px + var(--safe-bottom));
+            padding: calc(55px + var(--safe-top)) 10px calc(70px + var(--safe-bottom));
             max-width: 600px; margin: 0 auto;
             height: 100dvh;
             display: flex;
             flex-direction: column;
-            gap: 10px;
         }
 
         .page { display: none; flex: 1; flex-direction: column; min-height: 0; }
@@ -150,7 +118,6 @@
             padding: 8px 10px calc(8px + var(--safe-bottom));
             background: rgba(0,0,0,0.95);
             border-top: 1px solid var(--border-glow);
-            backdrop-filter: blur(20px);
             display: flex;
             justify-content: space-around;
             max-width: 600px;
@@ -160,33 +127,87 @@
             display: flex; flex-direction: column; align-items: center; gap: 2px;
             padding: 8px 15px; border: none; background: none;
             color: #666; font-family: 'Orbitron', sans-serif; font-size: 7px;
-            letter-spacing: 1px; cursor: pointer;
-            border-radius: 10px;
+            cursor: pointer; border-radius: 10px;
         }
         .nav-btn .nav-icon { font-size: 18px; }
         .nav-btn.active { color: var(--cyan); text-shadow: 0 0 10px rgba(0,240,255,0.5); }
-        .nav-btn:active { transform: scale(0.9); }
 
-        .card {
+        .video-list { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        .video-card {
             border: 1px solid var(--border-glow);
             border-radius: var(--r-md);
             background: rgba(0,0,0,0.5);
-            padding: 15px;
-            backdrop-filter: blur(10px);
+            overflow: hidden;
+            cursor: pointer;
             animation: boxGlow 5s ease-in-out infinite;
         }
         @keyframes boxGlow {
-            0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.1), 0 0 30px rgba(0,240,255,0.08); }
-            50% { box-shadow: 0 0 35px rgba(255,0,51,0.2), 0 0 50px rgba(0,240,255,0.15); }
+            0%, 100% { box-shadow: 0 0 20px rgba(255,0,51,0.1); }
+            50% { box-shadow: 0 0 35px rgba(0,240,255,0.2); }
+        }
+        .video-thumb {
+            height: 160px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 50px;
+            background: linear-gradient(135deg, rgba(255,0,51,0.2), rgba(0,240,255,0.1));
+            border-bottom: 1px solid var(--border-glow);
+        }
+        .video-info { padding: 12px; }
+        .video-title {
+            font-family: 'Orbitron', sans-serif; font-size: 13px;
+            color: var(--white); margin-bottom: 5px;
+        }
+        .video-meta {
+            display: flex; justify-content: space-between;
+            font-size: 9px; color: var(--muted);
         }
 
-        .card h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            letter-spacing: 2px; color: var(--cyan);
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0,240,255,0.5);
+        .watch-container {
+            flex: 1; display: flex; flex-direction: column;
+            overflow-y: auto; gap: 12px;
         }
+        .video-player {
+            height: 200px;
+            display: flex; justify-content: center; align-items: center;
+            font-size: 70px;
+            background: linear-gradient(135deg, rgba(255,0,51,0.3), rgba(0,240,255,0.2));
+            border: 1px solid var(--border-glow);
+            border-radius: var(--r-md);
+            animation: boxGlow 5s ease-in-out infinite;
+        }
+        .video-title-lg {
+            font-family: 'Orbitron', sans-serif; font-size: 16px;
+            color: var(--white);
+        }
+        .video-actions { display: flex; gap: 10px; }
+        .action-btn {
+            padding: 8px 15px;
+            background: rgba(255,0,51,0.08);
+            border: 1px solid var(--border-glow);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif; font-size: 9px;
+            border-radius: var(--r-full); cursor: pointer;
+        }
+        .comment-list { display: flex; flex-direction: column; gap: 8px; }
+        .comment {
+            border: 1px solid var(--border-glow);
+            border-radius: var(--r-sm);
+            padding: 10px;
+            background: rgba(0,0,0,0.4);
+        }
+        .comment-name {
+            font-family: 'Orbitron', sans-serif; font-size: 8px;
+            color: var(--cyan); margin-bottom: 3px;
+        }
+        .comment-text { font-size: 11px; color: #ccc; }
 
+        .upload-card {
+            border: 1px solid var(--border-glow);
+            border-radius: var(--r-md);
+            background: rgba(0,0,0,0.5);
+            padding: 20px;
+            text-align: center;
+        }
         .input-field {
             width: 100%; padding: 11px 15px;
             background: rgba(0,0,0,0.7);
@@ -194,158 +215,15 @@
             color: var(--white);
             font-family: 'Rajdhani', sans-serif; font-size: 13px;
             border-radius: var(--r-full); outline: none;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
-        .input-field:focus {
-            border-color: var(--cyan);
-            box-shadow: 0 0 20px rgba(0,240,255,0.3);
-        }
-
         .btn-primary {
             width: 100%; padding: 12px;
             background: var(--grad-btn); color: var(--white);
             font-family: 'Orbitron', sans-serif; font-size: 10px; letter-spacing: 2px;
             border: none; border-radius: var(--r-full); font-weight: 700;
             cursor: pointer;
-            animation: sendGlow 2s ease-in-out infinite;
         }
-        @keyframes sendGlow {
-            0%, 100% { box-shadow: 0 0 15px rgba(255,0,51,0.3); }
-            50% { box-shadow: 0 0 35px rgba(255,0,51,0.5), 0 0 50px rgba(0,240,255,0.3); }
-        }
-
-        .chat-box {
-            display: flex; flex-direction: column; flex: 1;
-            border: 1px solid var(--border-glow);
-            border-radius: var(--r-md);
-            background: rgba(0,0,0,0.5);
-            overflow: hidden; min-height: 0;
-            animation: boxGlow 5s ease-in-out infinite;
-        }
-        .chat-head {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border-glow);
-            background: linear-gradient(135deg, rgba(255,0,51,0.08), rgba(0,240,255,0.05));
-            flex-shrink: 0;
-        }
-        .chat-head h3 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            color: var(--cyan); text-shadow: 0 0 10px rgba(0,240,255,0.5);
-        }
-        .chat-log {
-            flex: 1; overflow-y: auto;
-            padding: 12px; min-height: 0;
-            -webkit-overflow-scrolling: touch;
-        }
-        .msg { margin-bottom: 10px; animation: msgGlow 0.3s var(--ease); }
-        @keyframes msgGlow {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .msg.own { text-align: right; }
-        .msg-name {
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            color: var(--cyan); margin-bottom: 3px;
-        }
-        .msg.own .msg-name { color: var(--success); }
-        .msg-text {
-            display: inline-block; font-size: 12px; color: #ddd;
-            background: rgba(0,0,0,0.5); padding: 9px 12px;
-            border-radius: 12px; word-break: break-word;
-            text-align: left; max-width: 100%;
-            border: 1px solid rgba(0,240,255,0.1);
-        }
-        .msg.own .msg-text {
-            background: rgba(0,255,136,0.06);
-            border-color: rgba(0,255,136,0.15);
-        }
-        .chat-input-area {
-            padding: 10px 12px;
-            border-top: 1px solid var(--border-glow);
-            display: flex; gap: 6px; align-items: center;
-            flex-shrink: 0;
-            background: rgba(0,0,0,0.4);
-        }
-        .chat-input {
-            flex: 1; padding: 11px 15px;
-            background: rgba(0,0,0,0.7);
-            border: 1px solid var(--border-glow);
-            color: var(--white);
-            font-family: 'Rajdhani', sans-serif; font-size: 13px;
-            border-radius: var(--r-full); outline: none; min-width: 0;
-        }
-        .send-btn {
-            padding: 11px 15px;
-            background: var(--grad-btn); color: var(--white);
-            font-family: 'Orbitron', sans-serif; font-size: 9px;
-            border: none; border-radius: var(--r-full); font-weight: 700;
-            cursor: pointer; white-space: nowrap;
-        }
-
-        .expert-list { display: flex; flex-direction: column; gap: 10px; overflow-y: auto; }
-        .expert-card {
-            border: 1px solid var(--border-glow);
-            border-radius: var(--r-md);
-            background: rgba(0,0,0,0.5);
-            padding: 14px;
-            display: flex; align-items: center; gap: 12px;
-            cursor: pointer;
-            transition: all 0.3s var(--ease);
-        }
-        .expert-card:active {
-            border-color: var(--cyan);
-            box-shadow: 0 0 25px rgba(0,240,255,0.3);
-            transform: scale(0.97);
-        }
-        .expert-avatar {
-            width: 50px; height: 50px; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            font-size: 25px;
-            background: rgba(255,0,51,0.1);
-            border: 2px solid var(--cyan);
-            box-shadow: 0 0 20px rgba(0,240,255,0.3);
-            flex-shrink: 0;
-        }
-        .expert-info h4 {
-            font-family: 'Orbitron', sans-serif; font-size: 12px;
-            color: var(--white); margin-bottom: 3px;
-        }
-        .expert-info p {
-            font-size: 10px; color: var(--muted);
-            margin-bottom: 3px;
-        }
-        .expert-info .status {
-            font-size: 8px;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-        }
-        .status-online { color: var(--success); }
-        .status-offline { color: #555; }
-
-        .booking-card {
-            border: 1px solid var(--border-glow);
-            border-radius: var(--r-md);
-            background: rgba(0,0,0,0.5);
-            padding: 14px;
-            margin-bottom: 8px;
-        }
-        .booking-card h4 {
-            font-family: 'Orbitron', sans-serif; font-size: 11px;
-            color: var(--white); margin-bottom: 5px;
-        }
-        .booking-card p {
-            font-size: 10px; color: var(--muted);
-            margin-bottom: 3px;
-        }
-        .booking-status {
-            font-family: 'Orbitron', sans-serif; font-size: 8px;
-            letter-spacing: 1px; padding: 3px 8px;
-            border-radius: 10px; display: inline-block;
-        }
-        .bs-pending { background: rgba(255,215,0,0.15); color: var(--gold); border: 1px solid var(--gold); }
-        .bs-confirmed { background: rgba(0,255,136,0.15); color: var(--success); border: 1px solid var(--success); }
-        .bs-cancelled { background: rgba(255,0,51,0.15); color: var(--red); border: 1px solid var(--red); }
 
         .toast-wrap {
             position: fixed; top: calc(55px + var(--safe-top)); right: 12px; z-index: 300;
@@ -367,59 +245,34 @@
 
     <div class="aurora"></div>
     <div class="stars" id="stars"></div>
-    <div class="particles" id="particles"></div>
-    <div class="grid-overlay"></div>
 
     <div class="toast-wrap" id="toastWrap"></div>
 
     <div class="header">
-        <div class="logo">ZACK CONSULT</div>
+        <div class="logo">ZACK TUBE</div>
     </div>
 
     <div class="main">
 
         <!-- HOME -->
         <div class="page active" id="page-home">
-            <div class="card" style="text-align:center;">
-                <h3>👋 SELAMAT DATANG</h3>
-                <p style="font-size:12px;color:var(--muted);margin-bottom:12px;">
-                    Platform konsultasi profesional. Pilih pakar, tempah sesi, dan berbual terus.
-                </p>
-                <button class="btn-primary" onclick="showPage('experts')">🔍 CARI PAKAR</button>
-            </div>
+            <div class="video-list" id="videoList"></div>
         </div>
 
-        <!-- EXPERTS -->
-        <div class="page" id="page-experts">
-            <div class="expert-list" id="expertList"></div>
+        <!-- WATCH -->
+        <div class="page" id="page-watch">
+            <div class="watch-container" id="watchContainer"></div>
         </div>
 
-        <!-- BOOKINGS -->
-        <div class="page" id="page-bookings">
-            <div class="expert-list" id="bookingList"></div>
-        </div>
-
-        <!-- CHAT -->
-        <div class="page" id="page-chat">
-            <div class="chat-box">
-                <div class="chat-head">
-                    <h3 id="chatTitle">💬 CHAT</h3>
-                </div>
-                <div class="chat-log" id="chatLog"></div>
-                <div class="chat-input-area">
-                    <input type="text" id="chatInput" class="chat-input" placeholder="Tulis mesej...">
-                    <button class="send-btn" id="sendBtn">HANTAR</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- PROFILE -->
-        <div class="page" id="page-profile">
-            <div class="card">
-                <h3>👤 PROFIL ANDA</h3>
-                <input type="text" id="profileName" class="input-field" placeholder="NAMA ANDA" maxlength="20">
-                <input type="text" id="profileRole" class="input-field" placeholder="PERANAN (contoh: Doktor, Peguam, Guru)" maxlength="30">
-                <button class="btn-primary" onclick="saveProfile()">💾 SIMPAN PROFIL</button>
+        <!-- UPLOAD -->
+        <div class="page" id="page-upload">
+            <div class="upload-card">
+                <h3 style="font-family:'Orbitron',sans-serif;font-size:13px;color:var(--cyan);margin-bottom:15px;">📤 MUAT NAIK VIDEO</h3>
+                <input type="text" id="videoTitle" class="input-field" placeholder="TAJUK VIDEO" maxlength="100">
+                <input type="text" id="videoIcon" class="input-field" placeholder="IKON (EMOJI)" maxlength="5" value="🎬">
+                <input type="text" id="videoDesc" class="input-field" placeholder="DESKRIPSI" maxlength="200">
+                <input type="text" id="videoAuthor" class="input-field" placeholder="NAMA ANDA" maxlength="30">
+                <button class="btn-primary" onclick="uploadVideo()">🚀 TERBITKAN</button>
             </div>
         </div>
 
@@ -427,10 +280,9 @@
 
     <div class="bottom-nav">
         <button class="nav-btn active" onclick="showPage('home', this)"><span class="nav-icon">🏠</span>HOME</button>
-        <button class="nav-btn" onclick="showPage('experts', this)"><span class="nav-icon">👨‍⚕️</span>PAKAR</button>
-        <button class="nav-btn" onclick="showPage('bookings', this)"><span class="nav-icon">📅</span>TEMPAHAN</button>
-        <button class="nav-btn" onclick="showPage('chat', this)"><span class="nav-icon">💬</span>CHAT</button>
-        <button class="nav-btn" onclick="showPage('profile', this)"><span class="nav-icon">👤</span>PROFIL</button>
+        <button class="nav-btn" onclick="showPage('upload', this)"><span class="nav-icon">📤</span>UPLOAD</button>
+        <button class="nav-btn" onclick="showPage('home', this)"><span class="nav-icon">🔔</span>SUB</button>
+        <button class="nav-btn" onclick="showPage('home', this)"><span class="nav-icon">👤</span>SAYA</button>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -444,14 +296,6 @@
         };
 
         const db = firebase.initializeApp({ databaseURL: CONFIG.databaseURL }).database();
-
-        const EXPERTS = [
-            { id: 'exp1', name: 'Dr. Aminah', role: 'Pakar Kesihatan', icon: '👩‍⚕️', rate: 'RM50/sesi' },
-            { id: 'exp2', name: 'En. Rahman', role: 'Peguam', icon: '⚖️', rate: 'RM80/sesi' },
-            { id: 'exp3', name: 'Cik Sarah', role: 'Guru Matematik', icon: '📐', rate: 'RM30/sesi' },
-            { id: 'exp4', name: 'Dr. Lim', role: 'Pakar Psikologi', icon: '🧠', rate: 'RM60/sesi' },
-            { id: 'exp5', name: 'En. Kumar', role: 'Pakar IT', icon: '💻', rate: 'RM40/sesi' }
-        ];
 
         const $ = id => document.getElementById(id);
 
@@ -469,19 +313,7 @@
         }
 
         const safeText = str => { const d = document.createElement('div'); d.textContent = str; return d.textContent; };
-        const getTime = () => new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' });
         const getDate = () => new Date().toLocaleDateString('ms-MY', { day: 'numeric', month: 'long', year: 'numeric' });
-        const getName = () => localStorage.getItem('zack_name') || 'Anonymous';
-
-        function showPage(name, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            $(`page-${name}`).classList.add('active');
-            if (btn) btn.classList.add('active');
-            if (name === 'experts') renderExperts();
-            if (name === 'bookings') renderBookings();
-            if (name === 'chat') loadChat();
-        }
 
         function initStars() {
             const wrap = $('stars');
@@ -497,164 +329,160 @@
             wrap.appendChild(frag);
         }
 
-        function initParticles() {
-            const wrap = $('particles');
-            const colors = ['p-red', 'p-cyan', 'p-gold', 'p-purple'];
-            const frag = document.createDocumentFragment();
-            for (let i = 0; i < 15; i++) {
-                const p = document.createElement('div');
-                p.className = `particle ${colors[i % 4]}`;
-                p.style.left = Math.random() * 100 + '%';
-                p.style.animationDuration = (Math.random() * 6 + 4) + 's';
-                p.style.animationDelay = Math.random() * 5 + 's';
-                frag.appendChild(p);
-            }
-            wrap.appendChild(frag);
+        function showPage(name, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            $(`page-${name}`).classList.add('active');
+            if (btn) btn.classList.add('active');
+            if (name === 'home') renderVideos();
         }
 
-        function renderExperts() {
-            const list = $('expertList');
-            list.innerHTML = '';
-            const frag = document.createDocumentFragment();
-            EXPERTS.forEach(expert => {
-                const card = document.createElement('div');
-                card.className = 'expert-card';
-                card.innerHTML = `
-                    <div class="expert-avatar">${expert.icon}</div>
-                    <div class="expert-info">
-                        <h4>${expert.name}</h4>
-                        <p>${expert.role}</p>
-                        <p>${expert.rate}</p>
-                        <span class="status status-online">● ONLINE</span>
-                    </div>
-                `;
-                card.addEventListener('click', () => bookExpert(expert));
-                frag.appendChild(card);
-            });
-            list.appendChild(frag);
-        }
-
-        function bookExpert(expert) {
-            const booking = {
-                expertId: expert.id,
-                expertName: expert.name,
-                expertIcon: expert.icon,
-                expertRole: expert.role,
-                clientName: getName(),
-                date: getDate(),
-                time: getTime(),
-                status: 'pending'
-            };
-            db.ref('bookings').push(booking)
-                .then(() => {
-                    toast(`Tempahan dengan ${expert.name} dihantar!`, 'success');
-                    startChat(expert);
-                })
-                .catch(() => toast('Gagal tempah!', 'error'));
-        }
-
-        function renderBookings() {
-            const list = $('bookingList');
-            list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Memuat tempahan...</p>';
-            db.ref('bookings').orderByChild('clientName').equalTo(getName()).on('value', snap => {
+        function renderVideos() {
+            const list = $('videoList');
+            list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Memuat video...</p>';
+            db.ref('videos').limitToLast(50).on('value', snap => {
                 list.innerHTML = '';
                 if (!snap.exists()) {
-                    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Tiada tempahan.</p>';
+                    list.innerHTML = '<p style="color:var(--muted);text-align:center;padding:20px;">Tiada video. Jadilah yang pertama!</p>';
                     return;
                 }
                 const frag = document.createDocumentFragment();
-                snap.forEach(child => {
-                    const b = child.val();
+                const videos = [];
+                snap.forEach(child => videos.push({ key: child.key, ...child.val() }));
+                videos.reverse();
+                videos.forEach(v => {
                     const card = document.createElement('div');
-                    card.className = 'booking-card';
-                    const statusClass = b.status === 'pending' ? 'bs-pending' : b.status === 'confirmed' ? 'bs-confirmed' : 'bs-cancelled';
+                    card.className = 'video-card';
                     card.innerHTML = `
-                        <h4>${b.expertIcon} ${b.expertName}</h4>
-                        <p>${b.expertRole}</p>
-                        <p>📅 ${b.date} • ${b.time}</p>
-                        <span class="booking-status ${statusClass}">${b.status.toUpperCase()}</span>
+                        <div class="video-thumb">${v.icon || '🎬'}</div>
+                        <div class="video-info">
+                            <div class="video-title">${safeText(v.title)}</div>
+                            <div class="video-meta">
+                                <span>${safeText(v.author)}</span>
+                                <span>${safeText(v.views || 0)} tontonan • ${safeText(v.date)}</span>
+                            </div>
+                        </div>
                     `;
+                    card.addEventListener('click', () => watchVideo(v.key));
                     frag.appendChild(card);
                 });
                 list.appendChild(frag);
             });
         }
 
-        let currentChatExpert = null;
-
-        function startChat(expert) {
-            currentChatExpert = expert;
-            $('chatTitle').textContent = `💬 ${expert.icon} ${expert.name}`;
-            showPage('chat');
-            document.querySelectorAll('.nav-btn')[3].classList.add('active');
-            loadChat();
-        }
-
-        function loadChat() {
-            if (!currentChatExpert) {
-                $('chatLog').innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;">Pilih pakar untuk mula chat.</p>';
-                return;
-            }
-            const chatRef = db.ref('chats/' + currentChatExpert.id);
-            chatRef.limitToLast(50).on('value', snap => {
-                const log = $('chatLog');
-                log.innerHTML = '';
-                const frag = document.createDocumentFragment();
-                if (snap.exists()) {
-                    snap.forEach(child => {
-                        const d = child.val();
-                        const div = document.createElement('div');
-                        div.className = 'msg' + (d.name === getName() ? ' own' : '');
-                        const name = document.createElement('div');
-                        name.className = 'msg-name';
-                        name.textContent = `${safeText(d.name)} • ${d.time || ''}`;
-                        const text = document.createElement('div');
-                        text.className = 'msg-text';
-                        text.textContent = safeText(d.text);
-                        div.append(name, text);
-                        frag.appendChild(div);
-                    });
-                }
-                log.appendChild(frag);
-                log.scrollTop = log.scrollHeight;
+        function watchVideo(key) {
+            db.ref('videos/' + key).once('value', snap => {
+                if (!snap.exists()) return;
+                const v = snap.val();
+                const container = $('watchContainer');
+                container.innerHTML = `
+                    <div class="video-player">${v.icon || '🎬'}</div>
+                    <div class="video-title-lg">${safeText(v.title)}</div>
+                    <div class="video-meta">
+                        <span>${safeText(v.author)} • ${safeText(v.views || 0)} tontonan • ${safeText(v.date)}</span>
+                    </div>
+                    <div class="video-actions">
+                        <button class="action-btn" onclick="likeVideo('${key}')">👍 ${v.likes || 0}</button>
+                        <button class="action-btn" onclick="shareVideo('${key}')">📤 KONGSI</button>
+                    </div>
+                    <p style="font-size:11px;color:var(--muted);">${safeText(v.desc || '')}</p>
+                    <h3 style="font-family:'Orbitron',sans-serif;font-size:10px;color:var(--cyan);">💬 KOMEN</h3>
+                    <div class="comment-list" id="commentList"></div>
+                    <div style="display:flex;gap:6px;">
+                        <input type="text" id="commentInput" class="input-field" placeholder="Tulis komen..." style="margin-bottom:0;">
+                        <button class="btn-primary" style="width:auto;padding:11px 15px;" onclick="addComment('${key}')">HANTAR</button>
+                    </div>
+                `;
+                db.ref('videos/' + key).update({ views: (v.views || 0) + 1 });
+                loadComments(key);
+                showPage('watch');
+                document.querySelectorAll('.nav-btn')[0].classList.add('active');
             });
         }
 
-        function sendMessage() {
-            if (!currentChatExpert) { toast('Pilih pakar dulu!', 'error'); return; }
-            const input = $('chatInput');
+        function likeVideo(key) {
+            db.ref('videos/' + key).transaction(v => {
+                if (v) {
+                    v.likes = (v.likes || 0) + 1;
+                }
+                return v;
+            }).then(() => toast('Dilike! 👍', 'success'));
+        }
+
+        function shareVideo(key) {
+            if (navigator.share) {
+                navigator.share({ title: 'ZACK Tube', url: window.location.href }).catch(() => {});
+            } else {
+                toast('Pautan disalin!', 'info');
+            }
+        }
+
+        function loadComments(videoKey) {
+            db.ref('comments/' + videoKey).limitToLast(30).on('value', snap => {
+                const list = $('commentList');
+                list.innerHTML = '';
+                if (!snap.exists()) {
+                    list.innerHTML = '<p style="color:#555;font-size:10px;">Tiada komen.</p>';
+                    return;
+                }
+                const frag = document.createDocumentFragment();
+                snap.forEach(child => {
+                    const c = child.val();
+                    const div = document.createElement('div');
+                    div.className = 'comment';
+                    div.innerHTML = `
+                        <div class="comment-name">${safeText(c.name)}</div>
+                        <div class="comment-text">${safeText(c.text)}</div>
+                    `;
+                    frag.appendChild(div);
+                });
+                list.appendChild(frag);
+            });
+        }
+
+        function addComment(videoKey) {
+            const input = $('commentInput');
             const text = input.value.trim();
             if (!text) return;
-            db.ref('chats/' + currentChatExpert.id).push({
-                name: getName(),
+            const name = localStorage.getItem('zack_name') || 'Anonymous';
+            db.ref('comments/' + videoKey).push({
+                name: name,
                 text: text,
-                time: getTime(),
+                time: new Date().toLocaleTimeString('ms-MY', { hour: '2-digit', minute: '2-digit' })
+            }).then(() => {
+                input.value = '';
+                toast('Komen dihantar!', 'success');
+            });
+        }
+
+        function uploadVideo() {
+            const title = $('videoTitle').value.trim();
+            const icon = $('videoIcon').value.trim() || '🎬';
+            const desc = $('videoDesc').value.trim();
+            const author = $('videoAuthor').value.trim() || localStorage.getItem('zack_name') || 'Anonymous';
+            if (!title) { toast('Sila isi tajuk!', 'error'); return; }
+            if (!author) { toast('Sila isi nama!', 'error'); return; }
+            localStorage.setItem('zack_name', author);
+            db.ref('videos').push({
+                title: title,
+                icon: icon,
+                desc: desc,
+                author: author,
+                views: 0,
+                likes: 0,
+                date: getDate(),
                 timestamp: Date.now()
-            }).catch(() => toast('Gagal hantar!', 'error'));
-            input.value = '';
+            }).then(() => {
+                toast('Video diterbitkan! 🎉', 'success');
+                $('videoTitle').value = '';
+                $('videoDesc').value = '';
+                showPage('home');
+                document.querySelectorAll('.nav-btn')[0].classList.add('active');
+            }).catch(() => toast('Gagal terbit!', 'error'));
         }
-
-        function saveProfile() {
-            const name = $('profileName').value.trim();
-            const role = $('profileRole').value.trim();
-            if (!name) { toast('Sila isi nama!', 'error'); return; }
-            localStorage.setItem('zack_name', name);
-            localStorage.setItem('zack_role', role);
-            toast('Profil disimpan!', 'success');
-        }
-
-        $('profileName').value = localStorage.getItem('zack_name') || '';
-        $('profileRole').value = localStorage.getItem('zack_role') || '';
-        $('sendBtn').addEventListener('click', sendMessage);
-        $('chatInput').addEventListener('keydown', e => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
-            }
-        });
 
         initStars();
-        initParticles();
+        renderVideos();
     </script>
 
 </body>
