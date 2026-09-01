@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Hacker — Simulasi Hacker">
-    <title>ZACK Hacker</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Hacker","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
+    <meta name="description" content="ZACK — Laman Web Rasmi">
+    <title>ZACK — Laman Web</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
         :root{--r:#ff0033;--c:#00f0ff;--g:#ffd700;--b:#000;--w:#fff;--m:#999;--s:#00ff88;--br:rgba(0,240,255,.3);--gd:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff);--st:env(safe-area-inset-top,0);--sb:env(safe-area-inset-bottom,0)}
@@ -15,84 +15,88 @@
         ::-webkit-scrollbar{width:0;height:0}
         .aurora{position:fixed;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,0,51,.08),transparent 50%),radial-gradient(circle at 80% 70%,rgba(0,240,255,.08),transparent 50%);z-index:0;pointer-events:none}
         .header{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(12px + var(--st)) 15px;background:rgba(0,0,0,.9);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
-        .logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .logo{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .badge{font-size:7px;font-family:'Orbitron',sans-serif;padding:4px 8px;border-radius:10px;border:1px solid var(--s);color:var(--s)}
-        .badge.bahaya{border-color:var(--r);color:var(--r)}
         .main{position:relative;z-index:2;padding:calc(55px + var(--st)) 8px calc(60px + var(--sb));max-width:600px;margin:0 auto;height:100dvh;overflow-y:auto}
         .tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:6px 8px calc(6px + var(--sb));background:rgba(0,0,0,.95);border-top:1px solid var(--br);display:flex;justify-content:space-around;max-width:600px;margin:0 auto}
         .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:none;border:none;color:var(--m);font-family:'Orbitron',sans-serif;font-size:6px;cursor:pointer;border-radius:8px}
         .tab.aktif{color:var(--c)}.tab .ikon{font-size:16px}
         .halaman{display:none}.halaman.aktif{display:block;animation:f .3s}
         @keyframes f{from{opacity:0;transform:translateY(8px)}}
-        .kad{border:1px solid var(--br);border-radius:14px;background:rgba(0,0,0,.5);padding:10px;margin-bottom:6px}
-        .kad h3{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--c);margin-bottom:6px}
+        .kad{border:1px solid var(--br);border-radius:14px;background:rgba(0,0,0,.5);padding:15px;margin-bottom:8px;text-align:center}
+        .kad h2{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--c);margin-bottom:8px;letter-spacing:2px}
+        .kad h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--g);margin-bottom:8px;letter-spacing:2px}
+        .kad p{font-size:11px;color:var(--m);line-height:1.6}
+        .btn{display:inline-block;padding:12px 25px;background:var(--gd);color:var(--w);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;border:none;border-radius:25px;font-weight:700;cursor:pointer;text-decoration:none}
+        .btn-biru{border:1px solid var(--c);color:var(--c);background:transparent}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .ciri{border:1px solid var(--br);border-radius:12px;padding:15px 10px;text-align:center;background:rgba(0,0,0,.4)}
+        .ciri .ikon{font-size:30px;margin-bottom:8px}
+        .ciri .nama{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--c);letter-spacing:1px}
         .input{width:100%;padding:10px 15px;background:rgba(0,0,0,.7);border:1px solid var(--br);color:var(--w);font-family:'Rajdhani',sans-serif;font-size:13px;border-radius:25px;outline:none;margin-bottom:6px}
-        .grid-stat{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-        .kotak{background:rgba(0,0,0,.5);border:1px solid var(--br);border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer}
-        .kotak:active{border-color:var(--c)}
-        .label{font-size:7px;color:var(--m);font-family:'Orbitron',sans-serif}
-        .nilai{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;margin-top:3px}
-        .bar{height:4px;background:rgba(0,0,0,.5);border-radius:2px;overflow:hidden;margin-top:4px}
-        .isi{height:100%}.fh{background:var(--s)}.fk{background:var(--g)}.fm{background:var(--r)}
-        .butang{width:100%;padding:10px;background:var(--gd);color:var(--w);font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1px;border:none;border-radius:25px;font-weight:700;cursor:pointer;margin-bottom:3px}
-        .butang:disabled{opacity:.3}
-        .butang-k{width:100%;padding:7px 10px;background:rgba(255,0,51,.06);border:1px solid var(--br);color:var(--c);font-family:'Orbitron',sans-serif;font-size:7px;border-radius:15px;cursor:pointer;margin-bottom:3px;text-align:left}
-        .butang-k:disabled{opacity:.3}
-        .butang-modal{width:100%;padding:10px;background:rgba(0,0,0,.8);border:1px solid var(--g);color:var(--g);font-family:'Orbitron',sans-serif;font-size:9px;border-radius:15px;cursor:pointer;margin-bottom:4px;text-align:left}
-        .modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.9);display:none;justify-content:center;align-items:center;padding:20px}
-        .modal.aktif{display:flex}
-        .modal-kandungan{width:100%;max-width:400px;max-height:80dvh;overflow-y:auto;border:1px solid var(--br);border-radius:16px;background:var(--b);padding:15px}
-        .modal-kandungan h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--c);margin-bottom:10px}
-        .modal-tutup{width:100%;padding:10px;background:transparent;border:1px solid var(--r);color:var(--r);font-family:'Orbitron',sans-serif;font-size:8px;border-radius:25px;cursor:pointer;margin-top:10px}
-        .pil{border:1px solid var(--g);border-radius:10px;background:rgba(255,215,0,.08);padding:8px;margin-bottom:6px}
-        .pil-t{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--g);margin-bottom:4px}
-        .pil-d{font-size:9px;margin-bottom:6px}
         .log-v{height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;font-size:7px}
         .log{padding:5px 8px;border-radius:5px;background:rgba(0,0,0,.4);border-left:3px solid var(--c)}
-        .log.sistem{border-color:var(--m)}.log.tindakan{border-color:var(--c)}.log.amaran{border-color:var(--g)}.log.bahaya{border-color:var(--r)}.log.kematian{border-color:var(--r);background:rgba(255,0,51,.1)}
-        .log-meta{display:flex;justify-content:space-between;font-size:6px;color:var(--m);font-family:'Orbitron',sans-serif}
-        .pemain{display:flex;justify-content:space-between;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:10px;margin-bottom:3px;font-size:9px}
-        .pemain-nama{color:var(--c);font-family:'Orbitron',sans-serif}.pemain-bank{color:var(--s)}
-        .pemain-mati{opacity:.4;border-color:var(--r)}.pemain-mati .pemain-nama{color:var(--r);text-decoration:line-through}
     </style>
 </head>
 <body>
     <div class="aurora"></div>
-    <div class="header"><div class="logo">ZACK HACKER</div><span id="level" class="badge">LEVEL 1</span></div>
+    <div class="header"><div class="logo">ZACK</div><span class="badge">ONLINE</span></div>
     <div class="main">
-        <div class="halaman aktif" id="hal-login">
-            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA HACKER" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR</button></div>
-        </div>
-        <div class="halaman" id="hal-status">
+        <div class="halaman aktif" id="hal-utama">
             <div class="kad">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">💻 SISTEM</h3><span id="status" class="badge">AKTIF</span></div>
-                <div class="grid-stat" id="sg"></div>
-                <button class="butang" id="langkah" style="margin-top:8px">⚡ HACK SETERUSNYA</button>
+                <h2>ZACK WEBSITE</h2>
+                <p>Selamat datang ke laman web rasmi ZACK. Platform digital dengan pelbagai permainan & aplikasi.</p>
             </div>
-            <div id="ch"></div>
+            <div class="grid">
+                <div class="ciri" onclick="tukar('game')"><div class="ikon">🎮</div><div class="nama">GAME</div></div>
+                <div class="ciri" onclick="tukar('chat')"><div class="ikon">💬</div><div class="nama">CHAT</div></div>
+                <div class="ciri" onclick="tukar('bank')"><div class="ikon">🏦</div><div class="nama">BANK</div></div>
+                <div class="ciri" onclick="tukar('profil')"><div class="ikon">👤</div><div class="nama">PROFIL</div></div>
+            </div>
         </div>
-        <div class="halaman" id="hal-tindakan">
-            <div class="kad"><h3>🎯 OPERASI</h3><div id="tindakan"></div></div>
+        <div class="halaman" id="hal-game">
+            <div class="kad">
+                <h2>🎮 PERMAINAN</h2>
+                <div class="grid">
+                    <div class="ciri"><div class="ikon">🕵️</div><div class="nama">HACKER</div></div>
+                    <div class="ciri"><div class="ikon">🏢</div><div class="nama">TYCOON</div></div>
+                    <div class="ciri"><div class="ikon">🌍</div><div class="nama">LIVES</div></div>
+                    <div class="ciri"><div class="ikon">💰</div><div class="nama">EKONOMI</div></div>
+                </div>
+            </div>
         </div>
-        <div class="halaman" id="hal-pemain">
-            <div class="kad"><h3>👥 HACKER</h3><div id="senaraiPemain"></div></div>
+        <div class="halaman" id="hal-chat">
+            <div class="kad">
+                <h2>💬 CHAT</h2>
+                <div class="log-v" id="chatLog"><p style="color:var(--m);font-size:9px">Chat akan datang...</p></div>
+                <input type="text" id="chatInput" class="input" placeholder="TULIS MESEJ...">
+                <button class="btn" onclick="hantarChat()">HANTAR</button>
+            </div>
         </div>
-        <div class="halaman" id="hal-log">
-            <div class="kad"><h3>📜 LOG</h3><div class="log-v" id="log"></div></div>
+        <div class="halaman" id="hal-bank">
+            <div class="kad">
+                <h2>🏦 BANK</h2>
+                <p>Bank ZACK — Simpanan & transfer.</p>
+                <div class="grid" id="bankInfo">
+                    <div class="ciri"><div class="ikon">💰</div><div class="nama">BANK: $0</div></div>
+                    <div class="ciri"><div class="ikon">💳</div><div class="nama">SIMPANAN: $0</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="halaman" id="hal-profil">
+            <div class="kad">
+                <h2>👤 PROFIL</h2>
+                <input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA">
+                <button class="btn" onclick="simpanProfil()">SIMPAN</button>
+            </div>
         </div>
     </div>
-    <div class="tab-bar" id="tabBar" style="display:none">
-        <button class="tab aktif" onclick="tukar('status',this)"><span class="ikon">💻</span>SISTEM</button>
-        <button class="tab" onclick="tukar('tindakan',this)"><span class="ikon">🎯</span>OPERASI</button>
-        <button class="tab" onclick="tukar('pemain',this)"><span class="ikon">👥</span>HACKER</button>
-        <button class="tab" onclick="tukar('log',this)"><span class="ikon">📜</span>LOG</button>
-    </div>
-    <div class="modal" id="modal">
-        <div class="modal-kandungan">
-            <h3 id="modalTajuk">🎯 PILIHAN</h3>
-            <div id="modalIsi"></div>
-            <button class="modal-tutup" onclick="tutupModal()">✕ TUTUP</button>
-        </div>
+    <div class="tab-bar">
+        <button class="tab aktif" onclick="tukar('utama',this)"><span class="ikon">🏠</span>UTAMA</button>
+        <button class="tab" onclick="tukar('game',this)"><span class="ikon">🎮</span>GAME</button>
+        <button class="tab" onclick="tukar('chat',this)"><span class="ikon">💬</span>CHAT</button>
+        <button class="tab" onclick="tukar('bank',this)"><span class="ikon">🏦</span>BANK</button>
+        <button class="tab" onclick="tukar('profil',this)"><span class="ikon">👤</span>PROFIL</button>
     </div>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
@@ -100,34 +104,12 @@
     'use strict';
     const $=id=>document.getElementById(id),M=Math;
     const db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
-    let pengguna=null,s=null;
-    const A=[
-        {i:'a1',k:'💻 Hack',n:'Hack Bank',c:0,e:s=>{const u=M.random()>.4?M.floor(M.random()*5000)+1000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+5);return{teks:`Berjaya! +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+20);return{teks:'Gagal! +20%',aras:'bahaya'}}}},
-        {i:'a2',k:'💻 Hack',n:'Hack Kerajaan',c:0,e:s=>{const u=M.random()>.6?M.floor(M.random()*10000)+2000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+10);return{teks:`Berjaya! +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+30);return{teks:'Gagal! +30%',aras:'bahaya'}}}},
-        {i:'a3',k:'💻 Hack',n:'Curi Data',c:0,e:s=>{const u=M.random()>.5?M.floor(M.random()*3000)+500:0;if(u>0){s.wang+=u;return{teks:`+$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+15);return{teks:'Dikesan! +15%',aras:'bahaya'}}}},
-        {i:'a4',k:'🛠️ Alat',n:'Beli Perisian',c:500,e:s=>{if(s.wang<500)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=500;s.kemahiran=M.min(100,s.kemahiran+10);return{teks:'+10% kemahiran',aras:'tindakan'}}},
-        {i:'a5',k:'🛠️ Alat',n:'Beli VPN',c:1000,e:s=>{if(s.wang<1000)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=1000;s.risiko=M.max(0,s.risiko-20);return{teks:'-20% risiko',aras:'tindakan'}}},
-        {i:'a6',k:'🛠️ Alat',n:'Beli Firewall',c:2000,e:s=>{if(s.wang<2000)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=2000;s.perlindungan=M.min(100,s.perlindungan+15);return{teks:'+15% perlindungan',aras:'tindakan'}}},
-        {i:'a7',k:'🌐 Rangkaian',n:'Forum Hacker',c:100,e:s=>{if(s.wang<100)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=100;s.reputasi=M.min(100,s.reputasi+5);return{teks:'+5% reputasi',aras:'tindakan'}}},
-        {i:'a8',k:'🌐 Rangkaian',n:'Upah Hacker',c:500,e:s=>{if(s.wang<500)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=500;s.kemahiran=M.min(100,s.kemahiran+8);return{teks:'+8% kemahiran',aras:'tindakan'}}}
-    ];
-    const C=[
-        {n:'Misi Khas',d:'Hack pertahanan negara.',o:[{l:'Terima',v:()=>1,r:s=>{const u=M.random()>.7?20000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+20);return{teks:`+$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+40);return{teks:'Gagal! +40%',aras:'bahaya'}}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
-        {n:'Polis Siber',d:'Polis mengesan anda.',o:[{l:'Lari ($1000)',v:s=>s.wang>=1000,r:s=>{s.wang-=1000;s.risiko=M.max(0,s.risiko-30);return{teks:'Berjaya lari',aras:'tindakan'}}},{l:'Hadapi',v:()=>1,r:s=>{s.wang=M.max(0,s.wang-5000);s.risiko=M.min(100,s.risiko+20);return{teks:'Ditangkap! -$5000',aras:'bahaya'}}}]}
-    ];
-    window.tukar=function(n,b){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+n).classList.add('aktif');if(b)b.classList.add('aktif');if(n==='pemain')muatPemain()};
-    window.simpan=function(){if(pengguna)db.ref('profil/'+pengguna).set(s).catch(()=>{})};
-    window.muat=function(n){db.ref('profil/'+n).once('value').then(snap=>{s=snap.exists()?snap.val():{level:1,hidup:1,wang:1000,reputasi:10,risiko:0,kemahiran:20,perlindungan:10,ch:null};if(!snap.exists())db.ref('profil/'+n).set(s);s.ch=null;papar([])}).catch(()=>{})};
-    window.muatPemain=function(){db.ref('profil').on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{const d=c.val();l.push({n:c.key,w:d.wang||0,h:d.hidup!==0})});l.sort((a,b)=>b.w-a.w);$('senaraiPemain').innerHTML=l.map(p=>`<div class="pemain ${!p.h?'pemain-mati':''}"><span class="pemain-nama">${p.n}${p.n===pengguna?' (Anda)':''}${!p.h?' 💀':''}</span><span class="pemain-bank">${p.h?'$'+p.w:'Ditangkap'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada hacker</p>'})};
-    window.bukaModal=function(k){$('modalTajuk').textContent=k;$('modalIsi').innerHTML=A.filter(a=>a.k===k).map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}');tutupModal()">${a.n} ${a.c?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('');$('modal').classList.add('aktif')};
-    window.tutupModal=function(){$('modal').classList.remove('aktif')};
-    window.langkah=function(){if(!s.hidup||s.ch)return[];const L=[];s.level++;if(s.risiko>50&&M.random()<.2){s.risiko=M.min(100,s.risiko+20);L.push({id:0,nama:'POLIS',kategori:'Bahaya',teks:'Polis hampir!',aras:'bahaya'})}if(s.risiko>=100){s.hidup=0;L.push({id:0,nama:'DITANGKAP',kategori:'Sistem',teks:'Ditangkap!',aras:'kematian'});simpan();return L}if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];simpan();return L};
-    window.papar=function(L=[]){if(!s)return;$('level').textContent=`LEVEL ${s.level}`;$('status').textContent=s.hidup?'AKTIF':'DITANGKAP';$('status').className=`badge ${s.hidup?'':'bahaya'}`;$('langkah').disabled=!s.hidup||!!s.ch;const st=[{l:'WANG',v:'$'+s.wang.toFixed(0)},{l:'REPUTASI',v:s.reputasi+'%',b:s.reputasi,c:'fh'},{l:'RISIKO',v:s.risiko+'%',b:s.risiko,c:s.risiko>50?'fm':'fh'},{l:'KEMAHIRAN',v:s.kemahiran+'%',b:s.kemahiran,c:'fh'},{l:'PERLINDUNGAN',v:s.perlindungan+'%',b:s.perlindungan,c:'fh'}];$('sg').innerHTML=st.map(x=>`<div class="kotak"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');$('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';$('tindakan').innerHTML=[...new Set(A.map(a=>a.k))].map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>L${s.level}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}};
-    window.ea=function(id){const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.wang<a.c)return;const r=a.e(s);papar([{id:0,nama:a.n,kategori:'Hack',teks:r.teks,aras:r.aras}]);simpan()};
-    window.rc=function(i){if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Misi',teks:r.teks,aras:r.aras}]);simpan()};
-    $('btnDaftar').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama wujud',aras:'amaran'}]);return}db.ref('auth/'+n).set({password:k}).then(()=>{const p={level:1,hidup:1,wang:1000,reputasi:10,risiko:0,kemahiran:20,perlindungan:10,ch:null};db.ref('profil/'+n).set(p).then(()=>papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Berjaya!',aras:'tindakan'}]))}).catch(()=>{})})});
-    $('btnLogin').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(!snap.exists()){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Nama tiada',aras:'amaran'}]);return}if(snap.val().password!==k){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Salah',aras:'bahaya'}]);return}pengguna=n;$('hal-login').classList.remove('aktif');$('tabBar').style.display='flex';tukar('status');document.querySelectorAll('.tab')[0].classList.add('aktif');muat(n)}).catch(()=>{})});
-    $('langkah').addEventListener('click',()=>papar(langkah()));
+    window.tukar=function(n,b){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+n).classList.add('aktif');if(b)b.classList.add('aktif')};
+    window.hantarChat=function(){const t=$('chatInput').value.trim();if(!t)return;const n=localStorage.getItem('zack_nama')||'Anonymous';db.ref('chat').push({n,t}).then(()=>{$('chatInput').value='';muatChat()}).catch(()=>{})};
+    window.muatChat=function(){db.ref('chat').limitToLast(20).on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{l.push(c.val())});$('chatLog').innerHTML=l.map(m=>`<div class="log"><strong>${m.n}</strong> — ${m.t}</div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada mesej</p>'})};
+    window.simpanProfil=function(){const n=$('nama').value.trim();if(!n)return;localStorage.setItem('zack_nama',n);alert('Profil disimpan!')};
+    const n=localStorage.getItem('zack_nama');if(n)$('nama').value=n;
+    muatChat();
     </script>
 </body>
 </html>
