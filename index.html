@@ -4,166 +4,263 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0f">
-    <title>ZACK LIVES — Simulasi Kehidupan</title>
+    <title>ZACK LIVES — Multiplayer</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
-        :root{
-            --bg:#0a0a0f;
-            --panel:rgba(20,20,30,.92);
-            --glass:rgba(56,189,248,.08);
-            --border:rgba(56,189,248,.25);
-            --cyan:#38bdf8;
-            --orange:#f59e0b;
-            --red:#ef4444;
-            --green:#10b981;
-            --text:#f1f5f9;
-            --dim:#94a3b8;
-        }
+        :root{--bg:#0a0a0f;--panel:rgba(20,20,30,.92);--glass:rgba(56,189,248,.08);--border:rgba(56,189,248,.25);--cyan:#38bdf8;--orange:#f59e0b;--red:#ef4444;--green:#10b981;--text:#f1f5f9;--dim:#94a3b8}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         .viewport{max-width:520px;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);position:relative;display:flex;flex-direction:column}
-        .scanline{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none;z-index:50;max-width:520px;margin:0 auto}
-        .header{background:var(--panel);padding:16px;text-align:center;border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+        .header{background:var(--panel);padding:16px;text-align:center;border-bottom:1px solid var(--border)}
         .header h1{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,248,.5)}
-        .header span{font-size:10px;color:var(--dim);letter-spacing:2px}
+        .header span{font-size:10px;color:var(--dim)}
         .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border)}
-        .nav button{flex:1;padding:12px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s}
+        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;cursor:pointer}
         .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
         .main{flex:1;padding:14px;overflow-y:auto}
         .page{display:none}
         .page.aktif{display:block;animation:fadeIn .3s}
         @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
-        .card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;backdrop-filter:blur(5px)}
-        .card h2{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:10px;letter-spacing:2px}
+        .card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
+        .card h2{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--cyan);margin-bottom:10px}
         .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
         .stat{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
-        .stat .l{font-size:9px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+        .stat .l{font-size:9px;color:var(--dim);text-transform:uppercase}
         .stat .v{font-size:16px;font-weight:700;margin-top:4px}
         .stat .v.baik{color:var(--green)}
         .stat .v.buruk{color:var(--red)}
-        .stat .v.neutral{color:var(--orange)}
-        .bar{height:5px;background:rgba(0,0,0,.5);border-radius:3px;overflow:hidden;margin-top:6px}
-        .bar-fill{height:100%;border-radius:3px;transition:width .3s}
-        .bar-fill.baik{background:linear-gradient(90deg,#10b981,#34d399)}
-        .bar-fill.buruk{background:linear-gradient(90deg,#ef4444,#f87171)}
-        .bar-fill.neutral{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
-        .btn{width:100%;padding:13px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:6px}
-        .btn:active{transform:scale(.97);background:rgba(56,189,248,.2);border-color:var(--cyan)}
+        .btn{width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:6px;text-align:left}
+        .btn:active{transform:scale(.97);border-color:var(--cyan)}
         .log-v{height:150px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(0,0,0,.4)}
         .log-v p{font-size:11px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
         .log-v p b{color:var(--cyan)}
         .log-v p.baik{color:var(--green)}
         .log-v p.buruk{color:var(--red)}
-        .log-v p.neutral{color:var(--orange)}
-        .modal{position:fixed;inset:0;z-index:100;display:none;justify-content:center;align-items:center;padding:20px;background:rgba(0,0,0,.8)}
-        .modal.aktif{display:flex}
-        .modal-k{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:320px;width:100%;text-align:center}
-        .modal-k h3{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--orange);margin-bottom:8px}
-        .modal-k p{font-size:12px;color:var(--dim);margin-bottom:15px}
-        .btn-row{display:flex;gap:8px}
+        .input{width:100%;padding:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px}
+        .pemain{display:flex;justify-content:space-between;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:12px}
+        .online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}
     </style>
 </head>
 <body>
     <div class="viewport">
-        <div class="scanline"></div>
-        <div class="header"><h1>ZACK LIVES</h1><span>SIMULASI KEHIDUPAN</span></div>
+        <div class="header"><h1>ZACK LIVES</h1><span>MULTIPLAYER</span></div>
         <div class="nav">
             <button class="aktif" onclick="page('hidup',this)">KEHIDUPAN</button>
-            <button onclick="page('kerja',this)">KERJAYA</button>
-            <button onclick="page('kewangan',this)">KEWANGAN</button>
-            <button onclick="page('log',this)">SEJARAH</button>
+            <button onclick="page('pemain',this)">PEMAIN</button>
+            <button onclick="page('chat',this)">CHAT</button>
+            <button onclick="page('ekonomi',this)">EKONOMI</button>
+            <button onclick="page('sosial',this)">SOSIAL</button>
         </div>
         <div class="main">
             <div class="page aktif" id="pg-hidup">
                 <div class="card">
-                    <h2>STATUS KEHIDUPAN</h2>
+                    <h2>LOGIN</h2>
+                    <input class="input" id="namaLogin" placeholder="Nama pengguna">
+                    <button class="btn" id="btnLogin">MASUK</button>
+                </div>
+                <div class="card" id="hidupCard" style="display:none">
+                    <h2>STATUS</h2>
                     <div class="grid" id="statsHidup"></div>
                     <button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button>
                 </div>
             </div>
-            <div class="page" id="pg-kerja">
-                <div class="card"><h2>KERJAYA</h2><div id="kerjaList"></div></div>
+            <div class="page" id="pg-pemain">
+                <div class="card"><h2>SENARAI PEMAIN</h2><div id="senaraiPemain"></div></div>
             </div>
-            <div class="page" id="pg-kewangan">
-                <div class="card"><h2>KEWANGAN</h2><div id="kewanganList"></div></div>
+            <div class="page" id="pg-chat">
+                <div class="card">
+                    <h2>CHAT GLOBAL</h2>
+                    <div class="log-v" id="chatLog"></div>
+                    <input class="input" id="chatInput" placeholder="Tulis mesej...">
+                    <button class="btn" id="btnChat">HANTAR</button>
+                </div>
             </div>
-            <div class="page" id="pg-log">
-                <div class="card"><h2>SEJARAH</h2><div class="log-v" id="logHidup"></div></div>
+            <div class="page" id="pg-ekonomi">
+                <div class="card">
+                    <h2>TRANSFER WANG</h2>
+                    <input class="input" id="penerima" placeholder="Nama penerima">
+                    <input class="input" id="jumlah" placeholder="Jumlah">
+                    <button class="btn" id="btnTransfer">TRANSFER</button>
+                </div>
+                <div class="card">
+                    <h2>RANKING KEKAYAAN</h2>
+                    <div id="rankingKaya"></div>
+                </div>
+            </div>
+            <div class="page" id="pg-sosial">
+                <div class="card">
+                    <h2>KAHWIN PEMAIN</h2>
+                    <input class="input" id="pasangan" placeholder="Nama pasangan">
+                    <button class="btn" id="btnKahwin">KAHWIN</button>
+                </div>
+                <div class="card">
+                    <h2>HADIAH</h2>
+                    <input class="input" id="hadiahNama" placeholder="Nama penerima">
+                    <input class="input" id="hadiahJumlah" placeholder="Jumlah">
+                    <button class="btn" id="btnHadiah">HADIAH</button>
+                </div>
             </div>
         </div>
     </div>
-    <div class="modal" id="modal">
-        <div class="modal-k">
-            <h3 id="modalTitle">Sahkan</h3>
-            <p id="modalText">Laksanakan?</p>
-            <div class="btn-row">
-                <button class="btn" id="modalYa">Ya</button>
-                <button class="btn" id="modalTidak" style="text-align:center">Tidak</button>
-            </div>
-        </div>
-    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <script>
+    'use strict';
+    var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
+    var pengguna=null;
     var state={
         umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,
         wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,
-        pekerjaan:'Pelajar',berkahwin:false,anak:0,
-        tahun:1,hidup:true,actionTunggu:null
+        pekerjaan:'Pelajar',berkahwin:false,anak:0,tahun:1,hidup:true
     };
-    var kerja=[
-        {n:'Pelajar',gaji:0,syarat:'Umur 18-25'},
-        {n:'Pekerja Kilang',gaji:1800,syarat:'Tiada'},
-        {n:'Guru',gaji:2800,syarat:'Ijazah'},
-        {n:'Jurutera',gaji:5000,syarat:'Ijazah'},
-        {n:'Doktor',gaji:8000,syarat:'PhD'},
-        {n:'Peniaga',gaji:3500,syarat:'Modal'}
-    ];
-    var kewangan=[
-        {n:'Simpan $200',cost:200,effect:function(){state.wang-=200;state.simpanan+=200;return'Simpanan +$200'}},
-        {n:'Labur $500',cost:500,effect:function(){state.wang-=500;state.aset+=500;return'Aset +$500'}},
-        {n:'Bayar Hutang $300',cost:300,effect:function(){state.wang-=300;state.hutang=Math.max(0,state.hutang-300);return'Hutang -$300'}},
-        {n:'Pinjam $1000',cost:0,effect:function(){state.wang+=1000;state.hutang+=1000;return'Pinjaman +$1000'}}
-    ];
-    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='kerja')showKerja();if(n==='kewangan')showKewangan()}
-    function addLog(m,c){var d=document.getElementById('logHidup');d.innerHTML='<p class="'+(c||'')+'"><b>'+state.tahun+'</b> — '+m+'</p>'+d.innerHTML}
-    function showStats(){var k=state.kesihatan>=50?'baik':'buruk',me=state.mental>=50?'baik':'buruk',t=state.tenaga>=50?'baik':'buruk',h=state.kebahagiaan>=50?'baik':'buruk';document.getElementById('statsHidup').innerHTML=[
-        {l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},
-        {l:'KESIHATAN',v:state.kesihatan+'%',c:k,bar:state.kesihatan,cls:k},
-        {l:'MENTAL',v:state.mental+'%',c:me,bar:state.mental,cls:me},
-        {l:'TENAGA',v:state.tenaga+'%',c:t,bar:state.tenaga,cls:t},
-        {l:'KEBAHAGIAAN',v:state.kebahagiaan+'%',c:h,bar:state.kebahagiaan,cls:h},
-        {l:'WANG',v:'$'+state.wang},{l:'SIMPANAN',v:'$'+state.simpanan},
-        {l:'ASET',v:'$'+state.aset},{l:'HUTANG',v:'$'+state.hutang},
-        {l:'PEKERJAAN',v:state.pekerjaan},{l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'}
-    ].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div>'+(x.bar!==undefined?'<div class="bar"><div class="bar-fill '+(x.cls||'')+'" style="width:'+x.bar+'%"></div></div>':'')+'</div>'}).join('')}
-    function showKerja(){document.getElementById('kerjaList').innerHTML=kerja.map(function(k,i){return '<button class="btn" onclick="pilihKerja('+i+')">'+k.n+' — $'+k.gaji+' ('+k.syarat+')</button>'}).join('')}
-    function showKewangan(){document.getElementById('kewanganList').innerHTML=kewangan.map(function(k,i){return '<button class="btn" onclick="pilihKewangan('+i+')">'+k.n+'</button>'}).join('')}
-    function pilihKerja(i){var k=kerja[i];state.pekerjaan=k.n;state.gaji=k.gaji;addLog('Tukar kerja: '+k.n,'baik');showStats()}
-    function pilihKewangan(i){var k=kewangan[i];if(state.wang<k.cost){addLog('Wang tidak cukup!','buruk');return}var r=k.effect();addLog(r,'baik');showStats()}
+    function page(n,btn){
+        document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});
+        document.getElementById('pg-'+n).classList.add('aktif');
+        document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});
+        if(btn)btn.classList.add('aktif');
+        if(n==='pemain')muatPemain();
+        if(n==='chat')muatChat();
+        if(n==='ekonomi')muatRanking();
+    }
+    function simpan(){
+        if(!pengguna)return;
+        db.ref('profil/'+pengguna).set(state).catch(function(){});
+    }
+    function muat(nama){
+        db.ref('profil/'+nama).once('value').then(function(snap){
+            if(snap.exists()){
+                state=snap.val();
+            }else{
+                state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',berkahwin:false,anak:0,tahun:1,hidup:true};
+                simpan();
+            }
+            document.getElementById('hidupCard').style.display='block';
+            showStats();
+        });
+    }
+    function showStats(){
+        var k=state.kesihatan>=50?'baik':'buruk';
+        var me=state.mental>=50?'baik':'buruk';
+        var h=state.kebahagiaan>=50?'baik':'buruk';
+        document.getElementById('statsHidup').innerHTML=[
+            {l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},
+            {l:'KESIHATAN',v:state.kesihatan+'%',c:k},
+            {l:'MENTAL',v:state.mental+'%',c:me},
+            {l:'KEBAHAGIAAN',v:state.kebahagiaan+'%',c:h},
+            {l:'WANG',v:'$'+state.wang},
+            {l:'SIMPANAN',v:'$'+state.simpanan},
+            {l:'ASET',v:'$'+state.aset},
+            {l:'PEKERJAAN',v:state.pekerjaan},
+            {l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'}
+        ].map(function(x){
+            return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';
+        }).join('');
+    }
+    function muatPemain(){
+        db.ref('profil').on('value',function(snap){
+            var l=[];
+            if(snap.exists()){
+                snap.forEach(function(c){
+                    var d=c.val();
+                    l.push({n:c.key,w:d.wang||0,k:d.berkahwin?'Kahwin':'Bujang'});
+                });
+            }
+            document.getElementById('senaraiPemain').innerHTML=l.map(function(p){
+                return '<div class="pemain"><span>'+p.n+(p.n===pengguna?' (Anda)':'')+'</span><span>'+p.k+' • $'+p.w+'</span></div>';
+            }).join('')||'<p style="color:#94a3b8">Tiada pemain</p>';
+        });
+    }
+    function muatChat(){
+        db.ref('chat').limitToLast(30).on('value',function(snap){
+            var l=[];
+            if(snap.exists())snap.forEach(function(c){l.push(c.val())});
+            document.getElementById('chatLog').innerHTML=l.map(function(m){
+                return '<p><b>'+m.n+'</b> — '+m.t+'</p>';
+            }).join('')||'<p style="color:#94a3b8">Tiada mesej</p>';
+        });
+    }
+    function muatRanking(){
+        db.ref('profil').on('value',function(snap){
+            var l=[];
+            if(snap.exists())snap.forEach(function(c){l.push({n:c.key,w:c.val().wang||0})});
+            l.sort(function(a,b){return b.w-a.w});
+            document.getElementById('rankingKaya').innerHTML=l.map(function(p,i){
+                return '<div class="pemain"><span>'+(i+1)+'. '+p.n+'</span><span>$'+p.w+'</span></div>';
+            }).join('')||'<p style="color:#94a3b8">Tiada data</p>';
+        });
+    }
+    document.getElementById('btnLogin').addEventListener('click',function(){
+        var n=document.getElementById('namaLogin').value.trim();
+        if(!n)return;
+        pengguna=n;
+        muat(n);
+    });
     document.getElementById('btnTahun').addEventListener('click',function(){
         if(!state.hidup)return;
         state.tahun++;state.umur++;
         state.kesihatan=Math.max(0,state.kesihatan-Math.floor(Math.random()*5));
         state.mental=Math.max(0,state.mental-Math.floor(Math.random()*3));
-        state.tenaga=Math.max(0,state.tenaga-Math.floor(Math.random()*4));
-        state.kebahagiaan=Math.max(0,state.kebahagiaan-Math.floor(Math.random()*2));
         state.wang+=state.gaji;
         state.wang=Math.max(0,state.wang-Math.floor(500+state.umur*10));
-        state.kesihatan=Math.max(0,state.kesihatan-Math.floor(state.umur*0.3));
-        if(Math.random()<0.3){
-            var peristiwa=['Sakit','Kemalangan','Bonus','Kenaikan gaji','Rakan baru','Kehilangan'];
-            var p=peristiwa[Math.floor(Math.random()*peristiwa.length)];
-            if(p==='Sakit'){state.kesihatan=Math.max(0,state.kesihatan-15);addLog('Anda sakit!','buruk')}
-            if(p==='Kemalangan'){state.kesihatan=Math.max(0,state.kesihatan-20);addLog('Kemalangan!','buruk')}
-            if(p==='Bonus'){state.wang+=500;addLog('Bonus +$500!','baik')}
-            if(p==='Kenaikan gaji'){state.gaji+=200;addLog('Gaji naik +$200!','baik')}
-            if(p==='Rakan baru'){state.kebahagiaan=Math.min(100,state.kebahagiaan+10);addLog('Rakan baru!','baik')}
-            if(p==='Kehilangan'){state.kebahagiaan=Math.max(0,state.kebahagiaan-10);addLog('Kehilangan...','buruk')}
-        }
-        if(state.kesihatan<=0||state.umur>80){state.hidup=false;addLog('KEHIDUPAN TAMAT','buruk')}
+        if(state.kesihatan<=0||state.umur>80)state.hidup=false;
+        simpan();
         showStats();
     });
-    showStats();
+    document.getElementById('btnChat').addEventListener('click',function(){
+        var t=document.getElementById('chatInput').value.trim();
+        if(!t||!pengguna)return;
+        db.ref('chat').push({n:pengguna,t:t}).then(function(){
+            document.getElementById('chatInput').value='';
+            muatChat();
+        }).catch(function(){});
+    });
+    document.getElementById('btnTransfer').addEventListener('click',function(){
+        if(!pengguna)return;
+        var p=document.getElementById('penerima').value.trim();
+        var j=parseInt(document.getElementById('jumlah').value);
+        if(!p||!j||j<=0||p===pengguna)return;
+        if(state.wang<j){alert('Wang tidak cukup!');return}
+        db.ref('profil/'+p).once('value').then(function(snap){
+            if(!snap.exists()){alert('Penerima tidak wujud!');return}
+            var d=snap.val();
+            d.wang=(d.wang||0)+j;
+            state.wang-=j;
+            db.ref('profil/'+p).update({wang:d.wang}).catch(function(){});
+            simpan();
+            showStats();
+            alert('Transfer $'+j+' kepada '+p+' berjaya!');
+        });
+    });
+    document.getElementById('btnKahwin').addEventListener('click',function(){
+        if(!pengguna)return;
+        var p=document.getElementById('pasangan').value.trim();
+        if(!p||p===pengguna)return;
+        db.ref('profil/'+p).once('value').then(function(snap){
+            if(!snap.exists()){alert('Pemain tidak wujud!');return}
+            state.berkahwin=true;
+            simpan();
+            showStats();
+            alert('Berjaya berkahwin dengan '+p+'!');
+        });
+    });
+    document.getElementById('btnHadiah').addEventListener('click',function(){
+        if(!pengguna)return;
+        var p=document.getElementById('hadiahNama').value.trim();
+        var j=parseInt(document.getElementById('hadiahJumlah').value);
+        if(!p||!j||j<=0||p===pengguna)return;
+        if(state.wang<j){alert('Wang tidak cukup!');return}
+        db.ref('profil/'+p).once('value').then(function(snap){
+            if(!snap.exists()){alert('Penerima tidak wujud!');return}
+            var d=snap.val();
+            d.wang=(d.wang||0)+j;
+            state.wang-=j;
+            db.ref('profil/'+p).update({wang:d.wang}).catch(function(){});
+            simpan();
+            showStats();
+            alert('Hadiah $'+j+' kepada '+p+' berjaya!');
+        });
+    });
     </script>
 </body>
 </html>
