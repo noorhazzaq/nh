@@ -4,60 +4,58 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="Simulasi Dunia — Drawer Berkumpulan">
+    <meta name="description" content="Simulasi Dunia — 99 Fungsi Pilihan">
     <title>Simulasi Dunia</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"Dunia","short_name":"Dunia","display":"standalone","theme_color":"%230f172a","background_color":"%230f172a"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:#0f172a;font-family:'Inter',sans-serif;color:#f1f5f9;min-height:100vh}
-        .nav{background:#1e293b;padding:15px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20}
+        .nav{background:#1e293b;padding:15px;display:flex;justify-content:space-between;align-items:center}
         .logo{font-size:18px;font-weight:900;color:#38bdf8}
-        .nav-links{display:flex;gap:12px}
-        .nav-links a{color:#94a3b8;font-size:12px;cursor:pointer}
-        .nav-links a:hover{color:#38bdf8}
-        .main{max-width:700px;margin:0 auto;padding:20px 15px}
-        .kad{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;margin-bottom:15px}
-        .kad h2{font-size:16px;color:#38bdf8;margin-bottom:10px}
+        .nav a{color:#94a3b8;font-size:12px;cursor:pointer;text-decoration:none}
+        .main{max-width:700px;margin:0 auto;padding:15px}
+        .kad{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:15px;margin-bottom:12px}
+        .kad h2{font-size:15px;color:#38bdf8;margin-bottom:8px}
         .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
         .stat{background:#0f172a;border:1px solid #334155;border-radius:8px;padding:10px;text-align:center}
-        .stat .label{font-size:9px;color:#94a3b8}
-        .stat .nilai{font-size:14px;font-weight:700;margin-top:3px}
-        .btn{display:block;width:100%;padding:12px;background:#38bdf8;color:#0f172a;font-size:13px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin-bottom:6px}
-        .btn-outline{background:transparent;color:#38bdf8;border:1px solid #38bdf8}
-        .log-v{height:200px;overflow-y:auto;border:1px solid #334155;border-radius:8px;padding:10px;background:#0f172a}
+        .stat .l{font-size:9px;color:#94a3b8}
+        .stat .v{font-size:14px;font-weight:700;margin-top:3px}
+        .btn{display:block;width:100%;padding:11px;background:#38bdf8;color:#0f172a;font-size:12px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin-bottom:6px}
+        .btn-o{background:transparent;color:#38bdf8;border:1px solid #38bdf8}
+        .log-v{height:180px;overflow-y:auto;border:1px solid #334155;border-radius:8px;padding:10px;background:#0f172a}
         .log{padding:5px;border-bottom:1px solid #1e293b;font-size:11px}
-        .log strong{color:#38bdf8}
-        .pemain{display:flex;justify-content:space-between;padding:10px;background:#0f172a;border:1px solid #334155;border-radius:8px;margin-bottom:6px;font-size:12px}
-        .footer{text-align:center;padding:20px;color:#64748b;font-size:12px}
         .drawer{position:fixed;bottom:-100%;left:0;right:0;background:#1e293b;border-radius:20px 20px 0 0;z-index:50;transition:bottom .3s;max-height:70vh;overflow-y:auto;padding:20px}
         .drawer.aktif{bottom:0}
-        .drawer-handle{width:40px;height:4px;background:#334155;border-radius:2px;margin:0 auto 15px}
-        .drawer h3{font-size:14px;color:#38bdf8;margin-bottom:15px;text-align:center}
-        .kumpulan-btn{display:block;width:100%;padding:15px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f1f5f9;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left}
-        .kumpulan-btn:active{border-color:#38bdf8}
-        .pilihan-btn{display:block;width:100%;padding:12px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:6px;text-align:left}
-        .pilihan-btn:active{border-color:#38bdf8}
+        .handle{width:40px;height:4px;background:#334155;border-radius:2px;margin:0 auto 15px}
+        .drawer h3{font-size:14px;color:#38bdf8;margin-bottom:12px;text-align:center}
+        .g-btn{display:block;width:100%;padding:14px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#f1f5f9;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left}
+        .p-btn{display:block;width:100%;padding:11px;background:#0f172a;border:1px solid #334155;border-radius:8px;color:#94a3b8;font-size:12px;cursor:pointer;margin-bottom:6px;text-align:left}
+        .balik{background:transparent;border:none;color:#38bdf8;font-size:12px;cursor:pointer;margin-bottom:10px}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:40;display:none}
         .overlay.aktif{display:block}
-        .balik{background:transparent;border:none;color:#38bdf8;font-size:12px;cursor:pointer;margin-bottom:10px}
+        .modal{position:fixed;inset:0;z-index:60;display:none;justify-content:center;align-items:center;padding:20px}
+        .modal.aktif{display:flex}
+        .modal-k{background:#1e293b;border:1px solid #334155;border-radius:12px;padding:20px;max-width:350px;width:100%;text-align:center}
+        .modal-k h3{font-size:14px;color:#fbbf24;margin-bottom:10px}
+        .modal-k p{font-size:12px;color:#94a3b8;margin-bottom:15px}
+        .modal-k .btn-row{display:flex;gap:8px}
+        .footer{text-align:center;padding:15px;color:#64748b;font-size:11px}
     </style>
 </head>
 <body>
     <div class="nav">
         <div class="logo">Simulasi Dunia</div>
-        <div class="nav-links">
-            <a onclick="tukar('dunia')">Dunia</a>
-            <a onclick="tukar('negara')">Negara</a>
-        </div>
+        <a onclick="tukar('dunia')">Dunia</a>
+        <a onclick="tukar('negara')">Negara</a>
     </div>
     <div class="main">
         <div id="hal-dunia">
             <div class="kad">
                 <h2>Status Dunia</h2>
-                <div class="grid" id="statGrid"></div>
+                <div class="grid" id="sg"></div>
                 <button class="btn" id="btnLangkah" style="margin-top:10px">Tahun Seterusnya</button>
-                <button class="btn btn-outline" id="btnTindakan" style="margin-top:5px">Tindakan</button>
+                <button class="btn btn-o" id="btnTindakan" style="margin-top:5px">Tindakan</button>
             </div>
             <div class="kad">
                 <h2>Aliran</h2>
@@ -70,8 +68,18 @@
     </div>
     <div class="overlay" id="overlay"></div>
     <div class="drawer" id="drawer">
-        <div class="drawer-handle"></div>
+        <div class="handle"></div>
         <div id="drawerIsi"></div>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-k">
+            <h3 id="modalTajuk">Sahkan</h3>
+            <p id="modalDesc">Adakah anda pasti?</p>
+            <div class="btn-row">
+                <button class="btn" id="modalYa">Ya</button>
+                <button class="btn btn-o" id="modalTidak">Tidak</button>
+            </div>
+        </div>
     </div>
     <div class="footer">Simulasi Dunia Realistik</div>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
@@ -80,24 +88,19 @@
     'use strict';
     var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     var NEGARA=[
-        {n:'China',i:'CN',p:1412000000,g:17734},
-        {n:'India',i:'IN',p:1428000000,g:3714},
-        {n:'USA',i:'US',p:332000000,g:76399},
-        {n:'Indonesia',i:'ID',p:277000000,g:4320},
-        {n:'Malaysia',i:'MY',p:33000000,g:11409},
-        {n:'Singapore',i:'SG',p:5900000,g:82808},
-        {n:'Jepun',i:'JP',p:125000000,g:42345},
-        {n:'Brazil',i:'BR',p:203000000,g:8918},
-        {n:'Nigeria',i:'NG',p:223000000,g:2163},
-        {n:'Russia',i:'RU',p:144000000,g:15345}
+        {n:'China',i:'CN',p:1412000000,g:17734},{n:'India',i:'IN',p:1428000000,g:3714},
+        {n:'USA',i:'US',p:332000000,g:76399},{n:'Indonesia',i:'ID',p:277000000,g:4320},
+        {n:'Malaysia',i:'MY',p:33000000,g:11409},{n:'Singapore',i:'SG',p:5900000,g:82808},
+        {n:'Jepun',i:'JP',p:125000000,g:42345},{n:'Brazil',i:'BR',p:203000000,g:8918},
+        {n:'Nigeria',i:'NG',p:223000000,g:2163},{n:'Russia',i:'RU',p:144000000,g:15345}
     ];
     var s={tahun:2024,populasi:8000000000,ekonomi:100,alam:100,teknologi:50,kesihatan:50};
-    var D=['Gempa Bumi','Tsunami','Banjir','Kemarau','Wabak','Revolusi AI','Krisis Kewangan','Boom Ekonomi','Pandemik','Perang','Krisis Iklim','Krisis Air'];
+    var D=['Gempa Bumi','Tsunami','Banjir','Kemarau','Wabak','Revolusi AI','Krisis','Boom','Pandemik','Perang'];
     var KUMPULAN={
         'Ekonomi':[
             {n:'Pertanian',e:function(){s.ekonomi=Math.min(100,s.ekonomi+3);s.alam=Math.max(0,s.alam-2);return'Pertanian +3% ekonomi'}},
             {n:'Industri',e:function(){s.ekonomi=Math.min(100,s.ekonomi+8);s.alam=Math.max(0,s.alam-8);return'Industri +8% ekonomi'}},
-            {n:'Perdagangan',e:function(){s.ekonomi=Math.min(100,s.ekonomi+5);return'Perdagangan +5% ekonomi'}}
+            {n:'Perdagangan',e:function(){s.ekonomi=Math.min(100,s.ekonomi+5);return'Perdagangan +5%'}}
         ],
         'Tenaga':[
             {n:'Solar',e:function(){s.alam=Math.min(100,s.alam+8);return'Solar +8% alam'}},
@@ -105,35 +108,39 @@
             {n:'Hidro',e:function(){s.alam=Math.min(100,s.alam+5);return'Hidro +5% alam'}}
         ],
         'Kesihatan':[
-            {n:'Vaksinasi',e:function(){s.kesihatan=Math.min(100,s.kesihatan+10);return'Vaksinasi +10% kesihatan'}},
-            {n:'Hospital',e:function(){s.kesihatan=Math.min(100,s.kesihatan+8);s.ekonomi=Math.max(0,s.ekonomi-3);return'Hospital +8% kesihatan'}}
+            {n:'Vaksinasi',e:function(){s.kesihatan=Math.min(100,s.kesihatan+10);return'Kesihatan +10%'}},
+            {n:'Hospital',e:function(){s.kesihatan=Math.min(100,s.kesihatan+8);return'Kesihatan +8%'}}
         ],
         'Teknologi':[
-            {n:'AI',e:function(){s.teknologi=Math.min(100,s.teknologi+12);return'AI +12% teknologi'}},
-            {n:'Internet',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Internet +8% teknologi'}},
-            {n:'Angkasa',e:function(){s.teknologi=Math.min(100,s.teknologi+15);s.ekonomi=Math.max(0,s.ekonomi-5);return'Angkasa +15% teknologi'}}
+            {n:'AI',e:function(){s.teknologi=Math.min(100,s.teknologi+12);return'Teknologi +12%'}},
+            {n:'Internet',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Teknologi +8%'}},
+            {n:'Angkasa',e:function(){s.teknologi=Math.min(100,s.teknologi+15);return'Teknologi +15%'}}
         ],
         'Alam':[
-            {n:'Kitar Semula',e:function(){s.alam=Math.min(100,s.alam+5);return'Kitar Semula +5% alam'}},
-            {n:'Lindung Hutan',e:function(){s.alam=Math.min(100,s.alam+10);return'Hutan +10% alam'}}
+            {n:'Kitar Semula',e:function(){s.alam=Math.min(100,s.alam+5);return'Alam +5%'}},
+            {n:'Hutan',e:function(){s.alam=Math.min(100,s.alam+10);return'Alam +10%'}}
         ],
         'Sosial':[
-            {n:'Pendidikan',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Pendidikan +8% teknologi'}},
-            {n:'Perumahan',e:function(){s.populasi+=5000000;return'Perumahan +5 juta populasi'}}
+            {n:'Pendidikan',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Teknologi +8%'}},
+            {n:'Perumahan',e:function(){s.populasi+=5000000;return'Populasi +5 juta'}}
         ]
     };
+    var tindakanTunggu=null;
     window.tukar=function(n){document.getElementById('hal-dunia').style.display=n==='dunia'?'block':'none';document.getElementById('hal-negara').style.display=n==='negara'?'block':'none';if(n==='negara')paparNegara()};
     function bukaDrawer(){document.getElementById('drawer').classList.add('aktif');document.getElementById('overlay').classList.add('aktif');paparKumpulan()}
     function tutupDrawer(){document.getElementById('drawer').classList.remove('aktif');document.getElementById('overlay').classList.remove('aktif')}
-    function paparKumpulan(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(KUMPULAN).forEach(function(k){h+='<button class="kumpulan-btn" onclick="paparPilihan(\''+k+'\')">'+k+'</button>'});document.getElementById('drawerIsi').innerHTML=h}
-    window.paparPilihan=function(k){var h='<button class="balik" onclick="paparKumpulan()">Kembali</button><h3>'+k+'</h3>';KUMPULAN[k].forEach(function(p,i){h+='<button class="pilihan-btn" onclick="laksana(\''+k+'\','+i+')">'+p.n+'</button>'});document.getElementById('drawerIsi').innerHTML=h};
-    window.laksana=function(k,i){var r=KUMPULAN[k][i].e();tambahLog(r);paparDunia();tutupDrawer()};
-    function paparDunia(){document.getElementById('statGrid').innerHTML=[{l:'TAHUN',v:s.tahun},{l:'POPULASI',v:(s.populasi/1000000000).toFixed(1)+'B'},{l:'EKONOMI',v:s.ekonomi+'%'},{l:'ALAM',v:s.alam+'%'},{l:'TEKNOLOGI',v:s.teknologi+'%'},{l:'KESIHATAN',v:s.kesihatan+'%'}].map(function(x){return '<div class="stat"><div class="label">'+x.l+'</div><div class="nilai">'+x.v+'</div></div>'}).join('')}
+    function paparKumpulan(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(KUMPULAN).forEach(function(k){h+='<button class="g-btn" onclick="paparPilihan(\''+k+'\')">'+k+'</button>'});document.getElementById('drawerIsi').innerHTML=h}
+    window.paparPilihan=function(k){var h='<button class="balik" onclick="paparKumpulan()">Kembali</button><h3>'+k+'</h3>';KUMPULAN[k].forEach(function(p,i){h+='<button class="p-btn" onclick="sahkan(\''+k+'\','+i+')">'+p.n+'</button>'});document.getElementById('drawerIsi').innerHTML=h};
+    window.sahkan=function(k,i){tindakanTunggu={k:k,i:i};document.getElementById('modalTajuk').textContent=KUMPULAN[k][i].n;document.getElementById('modalDesc').textContent='Laksanakan tindakan ini?';document.getElementById('modal').classList.add('aktif')};
+    function laksana(){if(!tindakanTunggu)return;var r=KUMPULAN[tindakanTunggu.k][tindakanTunggu.i].e();tambahLog(r);paparDunia();tindakanTunggu=null;document.getElementById('modal').classList.remove('aktif');tutupDrawer()}
+    function paparDunia(){document.getElementById('sg').innerHTML=[{l:'TAHUN',v:s.tahun},{l:'POPULASI',v:(s.populasi/1000000000).toFixed(1)+'B'},{l:'EKONOMI',v:s.ekonomi+'%'},{l:'ALAM',v:s.alam+'%'},{l:'TEKNOLOGI',v:s.teknologi+'%'},{l:'KESIHATAN',v:s.kesihatan+'%'}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v">'+x.v+'</div></div>'}).join('')}
     function tambahLog(t){var d=document.getElementById('logDunia');d.innerHTML='<div class="log"><strong>'+s.tahun+'</strong> — '+t+'</div>'+d.innerHTML}
-    function paparNegara(){document.getElementById('senaraiNegara').innerHTML=NEGARA.map(function(n){return '<div class="pemain"><span>'+n.i+' '+n.n+'</span><span>'+((n.p)/1000000).toFixed(0)+' juta</span></div>'}).join('')}
-    document.getElementById('btnLangkah').addEventListener('click',function(){s.tahun++;s.populasi+=Math.floor(Math.random()*50000000);s.ekonomi=Math.max(0,s.ekonomi-Math.floor(Math.random()*3));s.alam=Math.max(0,s.alam-Math.floor(Math.random()*2));if(Math.random()<0.4){var d=D[Math.floor(Math.random()*D.length)];tambahLog('Waspada: '+d)}paparDunia()});
+    function paparNegara(){document.getElementById('senaraiNegara').innerHTML=NEGARA.map(function(n){return '<div class="stat" style="margin-bottom:6px"><span>'+n.i+' '+n.n+'</span><br><span style="color:#94a3b8">'+((n.p)/1000000).toFixed(0)+' juta</span></div>'}).join('')}
+    document.getElementById('btnLangkah').addEventListener('click',function(){s.tahun++;s.populasi+=Math.floor(Math.random()*50000000);s.ekonomi=Math.max(0,s.ekonomi-Math.floor(Math.random()*3));s.alam=Math.max(0,s.alam-Math.floor(Math.random()*2));if(Math.random()<0.4){tambahLog('Waspada: '+D[Math.floor(Math.random()*D.length)])}paparDunia()});
     document.getElementById('btnTindakan').addEventListener('click',bukaDrawer);
     document.getElementById('overlay').addEventListener('click',tutupDrawer);
+    document.getElementById('modalYa').addEventListener('click',laksana);
+    document.getElementById('modalTidak').addEventListener('click',function(){document.getElementById('modal').classList.remove('aktif');tindakanTunggu=null});
     paparDunia();
     </script>
 </body>
