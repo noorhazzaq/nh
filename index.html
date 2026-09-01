@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0f">
-    <title>ZACK LIVES — Multiplayer</title>
+    <title>ZACK LIVES — Lengkap</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
@@ -14,9 +14,8 @@
         .viewport{max-width:520px;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);position:relative;display:flex;flex-direction:column}
         .header{background:var(--panel);padding:16px;text-align:center;border-bottom:1px solid var(--border)}
         .header h1{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,248,.5)}
-        .header span{font-size:10px;color:var(--dim)}
-        .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border)}
-        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;cursor:pointer}
+        .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto}
+        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;cursor:pointer;white-space:nowrap}
         .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
         .main{flex:1;padding:14px;overflow-y:auto}
         .page{display:none}
@@ -35,71 +34,77 @@
         .log-v{height:150px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(0,0,0,.4)}
         .log-v p{font-size:11px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
         .log-v p b{color:var(--cyan)}
-        .log-v p.baik{color:var(--green)}
-        .log-v p.buruk{color:var(--red)}
         .input{width:100%;padding:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px}
         .pemain{display:flex;justify-content:space-between;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:12px}
-        .online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}
+        .badge{display:inline-block;padding:2px 8px;border-radius:8px;font-size:9px;font-weight:700;margin-right:4px}
+        .badge-emas{background:rgba(245,158,11,.2);color:var(--orange)}
+        .badge-perak{background:rgba(148,163,184,.2);color:var(--dim)}
+        .badge-gangsa{background:rgba(239,68,68,.2);color:var(--red)}
     </style>
 </head>
 <body>
     <div class="viewport">
-        <div class="header"><h1>ZACK LIVES</h1><span>MULTIPLAYER</span></div>
+        <div class="header"><h1>ZACK LIVES</h1><span>VERSI PALING LENGKAP</span></div>
         <div class="nav">
             <button class="aktif" onclick="page('hidup',this)">KEHIDUPAN</button>
+            <button onclick="page('kerjaya',this)">KERJAYA</button>
+            <button onclick="page('pendidikan',this)">PENDIDIKAN</button>
+            <button onclick="page('kewangan',this)">KEWANGAN</button>
+            <button onclick="page('kesihatan',this)">KESIHATAN</button>
+            <button onclick="page('sosial',this)">SOSIAL</button>
+            <button onclick="page('dunia',this)">DUNIA</button>
             <button onclick="page('pemain',this)">PEMAIN</button>
             <button onclick="page('chat',this)">CHAT</button>
-            <button onclick="page('ekonomi',this)">EKONOMI</button>
-            <button onclick="page('sosial',this)">SOSIAL</button>
+            <button onclick="page('ranking',this)">RANKING</button>
         </div>
         <div class="main">
             <div class="page aktif" id="pg-hidup">
-                <div class="card">
-                    <h2>LOGIN</h2>
-                    <input class="input" id="namaLogin" placeholder="Nama pengguna">
-                    <button class="btn" id="btnLogin">MASUK</button>
-                </div>
+                <div class="card"><h2>LOGIN</h2><input class="input" id="namaLogin" placeholder="Nama pengguna"><button class="btn" id="btnLogin">MASUK</button></div>
                 <div class="card" id="hidupCard" style="display:none">
                     <h2>STATUS</h2>
                     <div class="grid" id="statsHidup"></div>
                     <button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button>
                 </div>
             </div>
-            <div class="page" id="pg-pemain">
-                <div class="card"><h2>SENARAI PEMAIN</h2><div id="senaraiPemain"></div></div>
+            <div class="page" id="pg-kerjaya">
+                <div class="card"><h2>PEKERJAAN</h2><div id="kerjaList"></div></div>
+                <div class="card"><h2>NAIK PANGKAT</h2><button class="btn" id="btnPangkat">NAIK PANGKAT</button></div>
+                <div class="card"><h2>KERJA LEBIH MASA</h2><button class="btn" id="btnOT">KERJA OT (+$500)</button></div>
             </div>
-            <div class="page" id="pg-chat">
-                <div class="card">
-                    <h2>CHAT GLOBAL</h2>
-                    <div class="log-v" id="chatLog"></div>
-                    <input class="input" id="chatInput" placeholder="Tulis mesej...">
-                    <button class="btn" id="btnChat">HANTAR</button>
-                </div>
+            <div class="page" id="pg-pendidikan">
+                <div class="card"><h2>PENDIDIKAN</h2><div id="pendidikanList"></div></div>
             </div>
-            <div class="page" id="pg-ekonomi">
-                <div class="card">
-                    <h2>TRANSFER WANG</h2>
-                    <input class="input" id="penerima" placeholder="Nama penerima">
-                    <input class="input" id="jumlah" placeholder="Jumlah">
-                    <button class="btn" id="btnTransfer">TRANSFER</button>
-                </div>
-                <div class="card">
-                    <h2>RANKING KEKAYAAN</h2>
-                    <div id="rankingKaya"></div>
-                </div>
+            <div class="page" id="pg-kewangan">
+                <div class="card"><h2>SIMPAN</h2><input class="input" id="simpanJumlah" placeholder="Jumlah"><button class="btn" id="btnSimpan">SIMPAN</button></div>
+                <div class="card"><h2>LABUR</h2><input class="input" id="laburJumlah" placeholder="Jumlah"><button class="btn" id="btnLabur">LABUR</button></div>
+                <div class="card"><h2>BAYAR HUTANG</h2><input class="input" id="bayarJumlah" placeholder="Jumlah"><button class="btn" id="btnBayar">BAYAR</button></div>
+            </div>
+            <div class="page" id="pg-kesihatan">
+                <div class="card"><h2>RAWATAN</h2><button class="btn" id="btnRawat">RAWAT ($500)</button></div>
+                <div class="card"><h2>SENAMAN</h2><button class="btn" id="btnSenam">SENAM</button></div>
+                <div class="card"><h2>MEDITASI</h2><button class="btn" id="btnMeditasi">MEDITASI</button></div>
             </div>
             <div class="page" id="pg-sosial">
-                <div class="card">
-                    <h2>KAHWIN PEMAIN</h2>
-                    <input class="input" id="pasangan" placeholder="Nama pasangan">
-                    <button class="btn" id="btnKahwin">KAHWIN</button>
-                </div>
-                <div class="card">
-                    <h2>HADIAH</h2>
-                    <input class="input" id="hadiahNama" placeholder="Nama penerima">
-                    <input class="input" id="hadiahJumlah" placeholder="Jumlah">
-                    <button class="btn" id="btnHadiah">HADIAH</button>
-                </div>
+                <div class="card"><h2>KAHWIN</h2><input class="input" id="pasangan" placeholder="Nama pasangan"><button class="btn" id="btnKahwin">KAHWIN</button></div>
+                <div class="card"><h2>HADIAH</h2><input class="input" id="hadiahNama" placeholder="Nama"><input class="input" id="hadiahJumlah" placeholder="Jumlah"><button class="btn" id="btnHadiah">HADIAH</button></div>
+                <div class="card"><h2>PUJIAN</h2><input class="input" id="pujianNama" placeholder="Nama"><button class="btn" id="btnPujian">PUJI</button></div>
+                <div class="card"><h2>SEKAT</h2><input class="input" id="sekatNama" placeholder="Nama"><button class="btn" id="btnSekat">SEKAT</button></div>
+            </div>
+            <div class="page" id="pg-dunia">
+                <div class="card"><h2>STATUS DUNIA</h2><div class="grid" id="statsDunia"></div></div>
+            </div>
+            <div class="page" id="pg-pemain">
+                <div class="card"><h2>SENARAI</h2><div id="senaraiPemain"></div></div>
+                <div class="card"><h2>KAWAN</h2><input class="input" id="kawanNama" placeholder="Nama"><button class="btn" id="btnKawan">TAMBAH</button></div>
+                <div class="card"><h2>CARI</h2><input class="input" id="cariNama" placeholder="Nama"><button class="btn" id="btnCari">CARI</button></div>
+            </div>
+            <div class="page" id="pg-chat">
+                <div class="card"><h2>CHAT GLOBAL</h2><div class="log-v" id="chatLog"></div><input class="input" id="chatInput" placeholder="Mesej"><button class="btn" id="btnChat">HANTAR</button></div>
+            </div>
+            <div class="page" id="pg-ranking">
+                <div class="card"><h2>KEKAYAAN</h2><div id="rankingKaya"></div></div>
+                <div class="card"><h2>UMUR</h2><div id="rankingUmur"></div></div>
+                <div class="card"><h2>KEBAHAGIAAN</h2><div id="rankingBahagia"></div></div>
             </div>
         </div>
     </div>
@@ -109,158 +114,39 @@
     'use strict';
     var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     var pengguna=null;
-    var state={
-        umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,
-        wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,
-        pekerjaan:'Pelajar',berkahwin:false,anak:0,tahun:1,hidup:true
-    };
-    function page(n,btn){
-        document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});
-        document.getElementById('pg-'+n).classList.add('aktif');
-        document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});
-        if(btn)btn.classList.add('aktif');
-        if(n==='pemain')muatPemain();
-        if(n==='chat')muatChat();
-        if(n==='ekonomi')muatRanking();
-    }
-    function simpan(){
-        if(!pengguna)return;
-        db.ref('profil/'+pengguna).set(state).catch(function(){});
-    }
-    function muat(nama){
-        db.ref('profil/'+nama).once('value').then(function(snap){
-            if(snap.exists()){
-                state=snap.val();
-            }else{
-                state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',berkahwin:false,anak:0,tahun:1,hidup:true};
-                simpan();
-            }
-            document.getElementById('hidupCard').style.display='block';
-            showStats();
-        });
-    }
-    function showStats(){
-        var k=state.kesihatan>=50?'baik':'buruk';
-        var me=state.mental>=50?'baik':'buruk';
-        var h=state.kebahagiaan>=50?'baik':'buruk';
-        document.getElementById('statsHidup').innerHTML=[
-            {l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},
-            {l:'KESIHATAN',v:state.kesihatan+'%',c:k},
-            {l:'MENTAL',v:state.mental+'%',c:me},
-            {l:'KEBAHAGIAAN',v:state.kebahagiaan+'%',c:h},
-            {l:'WANG',v:'$'+state.wang},
-            {l:'SIMPANAN',v:'$'+state.simpanan},
-            {l:'ASET',v:'$'+state.aset},
-            {l:'PEKERJAAN',v:state.pekerjaan},
-            {l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'}
-        ].map(function(x){
-            return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';
-        }).join('');
-    }
-    function muatPemain(){
-        db.ref('profil').on('value',function(snap){
-            var l=[];
-            if(snap.exists()){
-                snap.forEach(function(c){
-                    var d=c.val();
-                    l.push({n:c.key,w:d.wang||0,k:d.berkahwin?'Kahwin':'Bujang'});
-                });
-            }
-            document.getElementById('senaraiPemain').innerHTML=l.map(function(p){
-                return '<div class="pemain"><span>'+p.n+(p.n===pengguna?' (Anda)':'')+'</span><span>'+p.k+' • $'+p.w+'</span></div>';
-            }).join('')||'<p style="color:#94a3b8">Tiada pemain</p>';
-        });
-    }
-    function muatChat(){
-        db.ref('chat').limitToLast(30).on('value',function(snap){
-            var l=[];
-            if(snap.exists())snap.forEach(function(c){l.push(c.val())});
-            document.getElementById('chatLog').innerHTML=l.map(function(m){
-                return '<p><b>'+m.n+'</b> — '+m.t+'</p>';
-            }).join('')||'<p style="color:#94a3b8">Tiada mesej</p>';
-        });
-    }
-    function muatRanking(){
-        db.ref('profil').on('value',function(snap){
-            var l=[];
-            if(snap.exists())snap.forEach(function(c){l.push({n:c.key,w:c.val().wang||0})});
-            l.sort(function(a,b){return b.w-a.w});
-            document.getElementById('rankingKaya').innerHTML=l.map(function(p,i){
-                return '<div class="pemain"><span>'+(i+1)+'. '+p.n+'</span><span>$'+p.w+'</span></div>';
-            }).join('')||'<p style="color:#94a3b8">Tiada data</p>';
-        });
-    }
-    document.getElementById('btnLogin').addEventListener('click',function(){
-        var n=document.getElementById('namaLogin').value.trim();
-        if(!n)return;
-        pengguna=n;
-        muat(n);
-    });
-    document.getElementById('btnTahun').addEventListener('click',function(){
-        if(!state.hidup)return;
-        state.tahun++;state.umur++;
-        state.kesihatan=Math.max(0,state.kesihatan-Math.floor(Math.random()*5));
-        state.mental=Math.max(0,state.mental-Math.floor(Math.random()*3));
-        state.wang+=state.gaji;
-        state.wang=Math.max(0,state.wang-Math.floor(500+state.umur*10));
-        if(state.kesihatan<=0||state.umur>80)state.hidup=false;
-        simpan();
-        showStats();
-    });
-    document.getElementById('btnChat').addEventListener('click',function(){
-        var t=document.getElementById('chatInput').value.trim();
-        if(!t||!pengguna)return;
-        db.ref('chat').push({n:pengguna,t:t}).then(function(){
-            document.getElementById('chatInput').value='';
-            muatChat();
-        }).catch(function(){});
-    });
-    document.getElementById('btnTransfer').addEventListener('click',function(){
-        if(!pengguna)return;
-        var p=document.getElementById('penerima').value.trim();
-        var j=parseInt(document.getElementById('jumlah').value);
-        if(!p||!j||j<=0||p===pengguna)return;
-        if(state.wang<j){alert('Wang tidak cukup!');return}
-        db.ref('profil/'+p).once('value').then(function(snap){
-            if(!snap.exists()){alert('Penerima tidak wujud!');return}
-            var d=snap.val();
-            d.wang=(d.wang||0)+j;
-            state.wang-=j;
-            db.ref('profil/'+p).update({wang:d.wang}).catch(function(){});
-            simpan();
-            showStats();
-            alert('Transfer $'+j+' kepada '+p+' berjaya!');
-        });
-    });
-    document.getElementById('btnKahwin').addEventListener('click',function(){
-        if(!pengguna)return;
-        var p=document.getElementById('pasangan').value.trim();
-        if(!p||p===pengguna)return;
-        db.ref('profil/'+p).once('value').then(function(snap){
-            if(!snap.exists()){alert('Pemain tidak wujud!');return}
-            state.berkahwin=true;
-            simpan();
-            showStats();
-            alert('Berjaya berkahwin dengan '+p+'!');
-        });
-    });
-    document.getElementById('btnHadiah').addEventListener('click',function(){
-        if(!pengguna)return;
-        var p=document.getElementById('hadiahNama').value.trim();
-        var j=parseInt(document.getElementById('hadiahJumlah').value);
-        if(!p||!j||j<=0||p===pengguna)return;
-        if(state.wang<j){alert('Wang tidak cukup!');return}
-        db.ref('profil/'+p).once('value').then(function(snap){
-            if(!snap.exists()){alert('Penerima tidak wujud!');return}
-            var d=snap.val();
-            d.wang=(d.wang||0)+j;
-            state.wang-=j;
-            db.ref('profil/'+p).update({wang:d.wang}).catch(function(){});
-            simpan();
-            showStats();
-            alert('Hadiah $'+j+' kepada '+p+' berjaya!');
-        });
-    });
+    var state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',pendidikan:'SPM',berkahwin:false,anak:0,tahun:1,hidup:true,kawan:[],disekat:[],dunia:{suhu:28,pencemaran:20,populasi:8000,bencana:0,ekonomi:50,teknologi:40}};
+    var kerja=[{n:'Pelajar',g:0,s:'Umur 18-25'},{n:'Pekerja Kilang',g:1800,s:'Tiada'},{n:'Guru',g:2800,s:'Ijazah'},{n:'Jurutera',g:5000,s:'Ijazah'},{n:'Doktor',g:8000,s:'PhD'},{n:'Peniaga',g:3500,s:'Modal'}];
+    var pendidikan=[{n:'SPM',c:0},{n:'Diploma',c:5000},{n:'Ijazah',c:15000},{n:'Sarjana',c:30000},{n:'PhD',c:50000}];
+    var bencana=['Gempa Bumi','Tsunami','Banjir','Kemarau','Wabak','Pandemik','Perang','Krisis Ekonomi','Boom Ekonomi','Revolusi AI','Perubahan Iklim','Krisis Air','Krisis Makanan','Krisis Tenaga','Kebakaran','Rusuhan'];
+    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='kerjaya')showKerja();if(n==='pendidikan')showPendidikan();if(n==='dunia')showDunia();if(n==='pemain')muatPemain();if(n==='chat')muatChat();if(n==='ranking')muatRanking();}
+    function simpan(){if(!pengguna)return;db.ref('profil/'+pengguna).set(state).catch(function(){})}
+    function muat(nama){db.ref('profil/'+nama).once('value').then(function(snap){if(snap.exists()){state=snap.val();}else{state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',pendidikan:'SPM',berkahwin:false,anak:0,tahun:1,hidup:true,kawan:[],disekat:[],dunia:{suhu:28,pencemaran:20,populasi:8000,bencana:0,ekonomi:50,teknologi:40}};simpan();}document.getElementById('hidupCard').style.display='block';showStats();});}
+    function showStats(){var k=state.kesihatan>=50?'baik':'buruk',me=state.mental>=50?'baik':'buruk',h=state.kebahagiaan>=50?'baik':'buruk';document.getElementById('statsHidup').innerHTML=[{l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},{l:'KESIHATAN',v:state.kesihatan+'%',c:k},{l:'MENTAL',v:state.mental+'%',c:me},{l:'TENAGA',v:state.tenaga+'%'},{l:'KEBAHAGIAAN',v:state.kebahagiaan+'%',c:h},{l:'WANG',v:'$'+state.wang},{l:'SIMPANAN',v:'$'+state.simpanan},{l:'ASET',v:'$'+state.aset},{l:'HUTANG',v:'$'+state.hutang},{l:'PEKERJAAN',v:state.pekerjaan},{l:'PENDIDIKAN',v:state.pendidikan},{l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'},{l:'KAWAN',v:state.kawan.length}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';}).join('');}
+    function showKerja(){document.getElementById('kerjaList').innerHTML=kerja.map(function(k,i){return '<button class="btn" onclick="pilihKerja('+i+')">'+k.n+' — $'+k.g+' ('+k.s+')</button>';}).join('');}
+    function showPendidikan(){document.getElementById('pendidikanList').innerHTML=pendidikan.map(function(p,i){return '<button class="btn" onclick="pilihPendidikan('+i+')">'+p.n+' — $'+p.c+'</button>';}).join('');}
+    function showDunia(){var d=state.dunia;document.getElementById('statsDunia').innerHTML=[{l:'SUHU',v:d.suhu+'°C'},{l:'PENCEMARAN',v:d.pencemaran+'%'},{l:'POPULASI',v:d.populasi+' juta'},{l:'BENCANA',v:d.bencana},{l:'EKONOMI',v:d.ekonomi+'%'},{l:'TEKNOLOGI',v:d.teknologi+'%'}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v">'+x.v+'</div></div>';}).join('');}
+    function muatPemain(){db.ref('profil').on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){var d=c.val();if(state.disekat.indexOf(c.key)===-1)l.push({n:c.key,w:d.wang||0,k:d.berkahwin?'Kahwin':'Bujang'});});document.getElementById('senaraiPemain').innerHTML=l.map(function(p){return '<div class="pemain"><span>'+p.n+(p.n===pengguna?' (Anda)':'')+'</span><span>'+p.k+' • $'+p.w+'</span></div>';}).join('')||'<p style="color:#94a3b8">Tiada pemain</p>';});}
+    function muatChat(){db.ref('chat').limitToLast(30).on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push(c.val())});document.getElementById('chatLog').innerHTML=l.map(function(m){return '<p><b>'+m.n+'</b> — '+m.t+'</p>';}).join('')||'<p style="color:#94a3b8">Tiada mesej</p>';});}
+    function muatRanking(){db.ref('profil').on('value',function(snap){var k=[],u=[],b=[];if(snap.exists())snap.forEach(function(c){var d=c.val();k.push({n:c.key,w:d.wang||0});u.push({n:c.key,u:d.umur||0});b.push({n:c.key,b:d.kebahagiaan||0});});k.sort(function(a,b){return b.w-a.w});u.sort(function(a,b){return b.u-a.u});b.sort(function(a,b){return b.b-a.b});document.getElementById('rankingKaya').innerHTML=k.map(function(p,i){return '<div class="pemain"><span>'+(i+1)+'. '+p.n+'</span><span>$'+p.w+'</span></div>';}).join('')||'<p style="color:#94a3b8">Tiada</p>';document.getElementById('rankingUmur').innerHTML=u.map(function(p,i){return '<div class="pemain"><span>'+(i+1)+'. '+p.n+'</span><span>'+p.u+' thn</span></div>';}).join('')||'<p style="color:#94a3b8">Tiada</p>';document.getElementById('rankingBahagia').innerHTML=b.map(function(p,i){return '<div class="pemain"><span>'+(i+1)+'. '+p.n+'</span><span>'+p.b+'%</span></div>';}).join('')||'<p style="color:#94a3b8">Tiada</p>';});}
+    function pilihKerja(i){var k=kerja[i];state.pekerjaan=k.n;state.gaji=k.g;simpan();showStats();}
+    function pilihPendidikan(i){var p=pendidikan[i];if(state.wang<p.c){alert('Wang tidak cukup!');return}state.wang-=p.c;state.pendidikan=p.n;simpan();showStats();}
+    document.getElementById('btnLogin').addEventListener('click',function(){var n=document.getElementById('namaLogin').value.trim();if(!n)return;pengguna=n;muat(n);});
+    document.getElementById('btnTahun').addEventListener('click',function(){if(!state.hidup)return;state.tahun++;state.umur++;state.kesihatan=Math.max(0,state.kesihatan-Math.floor(Math.random()*5));state.mental=Math.max(0,state.mental-Math.floor(Math.random()*3));state.tenaga=Math.max(0,state.tenaga-Math.floor(Math.random()*4));state.wang+=state.gaji;state.wang=Math.max(0,state.wang-Math.floor(500+state.umur*10));if(Math.random()<0.4){var b=bencana[Math.floor(Math.random()*bencana.length)];state.dunia.bencana++;if(b==='Gempa Bumi'){state.kesihatan=Math.max(0,state.kesihatan-20);state.aset=Math.max(0,state.aset-2000)}if(b==='Boom Ekonomi'){state.wang+=2000}if(b==='Krisis Ekonomi'){state.wang=Math.floor(state.wang*.5)}if(b==='Revolusi AI'){state.gaji+=500}}if(state.kesihatan<=0||state.umur>80)state.hidup=false;simpan();showStats();});
+    document.getElementById('btnPangkat').addEventListener('click',function(){if(!pengguna)return;state.gaji+=500;simpan();showStats();alert('Naik pangkat! Gaji +$500');});
+    document.getElementById('btnOT').addEventListener('click',function(){if(!pengguna)return;state.wang+=500;state.tenaga=Math.max(0,state.tenaga-15);simpan();showStats();alert('OT +$500, tenaga -15%');});
+    document.getElementById('btnSimpan').addEventListener('click',function(){var j=parseInt(document.getElementById('simpanJumlah').value);if(!j||j<=0)return;if(state.wang<j){alert('Wang tidak cukup!');return}state.wang-=j;state.simpanan+=j;simpan();showStats();alert('Simpanan +$'+j);});
+    document.getElementById('btnLabur').addEventListener('click',function(){var j=parseInt(document.getElementById('laburJumlah').value);if(!j||j<=0)return;if(state.wang<j){alert('Wang tidak cukup!');return}state.wang-=j;state.aset+=j;simpan();showStats();alert('Labur +$'+j);});
+    document.getElementById('btnBayar').addEventListener('click',function(){var j=parseInt(document.getElementById('bayarJumlah').value);if(!j||j<=0)return;if(state.wang<j){alert('Wang tidak cukup!');return}state.wang-=j;state.hutang=Math.max(0,state.hutang-j);simpan();showStats();alert('Hutang -$'+j);});
+    document.getElementById('btnRawat').addEventListener('click',function(){if(state.wang<500){alert('Wang tidak cukup!');return}state.wang-=500;state.kesihatan=Math.min(100,state.kesihatan+20);simpan();showStats();alert('Kesihatan +20%');});
+    document.getElementById('btnSenam').addEventListener('click',function(){state.kesihatan=Math.min(100,state.kesihatan+10);state.tenaga=Math.min(100,state.tenaga+10);simpan();showStats();});
+    document.getElementById('btnMeditasi').addEventListener('click',function(){state.mental=Math.min(100,state.mental+10);simpan();showStats();});
+    document.getElementById('btnKahwin').addEventListener('click',function(){var p=document.getElementById('pasangan').value.trim();if(!p||p===pengguna)return;db.ref('profil/'+p).once('value').then(function(snap){if(!snap.exists()){alert('Pemain tidak wujud!');return}state.berkahwin=true;simpan();showStats();alert('Berjaya berkahwin!');});});
+    document.getElementById('btnHadiah').addEventListener('click',function(){var p=document.getElementById('hadiahNama').value.trim();var j=parseInt(document.getElementById('hadiahJumlah').value);if(!p||!j||j<=0)return;if(state.wang<j){alert('Wang tidak cukup!');return}db.ref('profil/'+p).once('value').then(function(snap){if(!snap.exists()){alert('Penerima tidak wujud!');return}var d=snap.val();d.wang=(d.wang||0)+j;state.wang-=j;db.ref('profil/'+p).update({wang:d.wang});simpan();showStats();alert('Hadiah berjaya!');});});
+    document.getElementById('btnPujian').addEventListener('click',function(){var p=document.getElementById('pujianNama').value.trim();if(!p||p===pengguna)return;db.ref('profil/'+p).once('value').then(function(snap){if(!snap.exists()){alert('Pemain tidak wujud!');return}var d=snap.val();d.kebahagiaan=Math.min(100,(d.kebahagiaan||70)+5);db.ref('profil/'+p).update({kebahagiaan:d.kebahagiaan});alert('Pujian diberikan!');});});
+    document.getElementById('btnSekat').addEventListener('click',function(){var p=document.getElementById('sekatNama').value.trim();if(!p||p===pengguna)return;if(state.disekat.indexOf(p)===-1){state.disekat.push(p);simpan();alert('Pemain disekat!');}});
+    document.getElementById('btnKawan').addEventListener('click',function(){var p=document.getElementById('kawanNama').value.trim();if(!p||p===pengguna)return;db.ref('profil/'+p).once('value').then(function(snap){if(!snap.exists()){alert('Pemain tidak wujud!');return}if(state.kawan.indexOf(p)===-1){state.kawan.push(p);simpan();showStats();alert('Kawan ditambah!');}});});
+    document.getElementById('btnCari').addEventListener('click',function(){var n=document.getElementById('cariNama').value.trim();if(!n)return;db.ref('profil/'+n).once('value').then(function(snap){if(snap.exists()){var d=snap.val();alert('Ditemui: '+n+' — $'+(d.wang||0));}else{alert('Tidak ditemui!');}});});
+    document.getElementById('btnChat').addEventListener('click',function(){var t=document.getElementById('chatInput').value.trim();if(!t||!pengguna)return;db.ref('chat').push({n:pengguna,t:t}).then(function(){document.getElementById('chatInput').value='';muatChat();});});
     </script>
 </body>
 </html>
