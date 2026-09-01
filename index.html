@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="Simulasi Dunia">
+    <meta name="description" content="Simulasi Dunia - Gameplay & Multiplayer">
     <title>Simulasi Dunia</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"Dunia","short_name":"Dunia","display":"standalone","theme_color":"%230f172a","background_color":"%230f172a"}'>
     <style>
@@ -12,12 +12,12 @@
         :root{--bg:#0f172a;--kad:#1e293b;--garis:#334155;--teks:#f1f5f9;--teks2:#94a3b8;--utama:#38bdf8;--baik:#10b981;--amaran:#fbbf24;--buruk:#ef4444}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--teks);min-height:100vh;-webkit-tap-highlight-color:transparent}
-        .nav{background:var(--kad);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--garis)}
-        .logo{font-size:17px;font-weight:900;color:var(--utama)}
-        .nav-links{display:flex;gap:14px}
-        .nav-links a{color:var(--teks2);font-size:12px;font-weight:600;cursor:pointer;padding:4px 0}
+        .nav{background:var(--kad);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--garis)}
+        .logo{font-size:16px;font-weight:900;color:var(--utama)}
+        .nav-links{display:flex;gap:12px}
+        .nav-links a{color:var(--teks2);font-size:11px;font-weight:600;cursor:pointer;padding:4px 0}
         .nav-links a.aktif{color:var(--utama);border-bottom:2px solid var(--utama)}
-        .main{max-width:500px;margin:0 auto;padding:14px 10px}
+        .main{max-width:500px;margin:0 auto;padding:12px 10px}
         .kad{background:var(--kad);border:1px solid var(--garis);border-radius:14px;padding:14px;margin-bottom:10px}
         .kad h2{font-size:14px;font-weight:700;color:var(--utama);margin-bottom:10px}
         .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -29,7 +29,7 @@
         .btn{display:block;width:100%;padding:13px;background:var(--utama);color:var(--bg);font-size:12px;font-weight:700;border:none;border-radius:10px;cursor:pointer;margin-bottom:6px;transition:transform .15s}
         .btn:active{transform:scale(.97)}
         .btn-o{background:transparent;color:var(--utama);border:1px solid var(--utama)}
-        .log-v{height:180px;overflow-y:auto;border:1px solid var(--garis);border-radius:10px;padding:10px;background:var(--bg)}
+        .log-v{height:150px;overflow-y:auto;border:1px solid var(--garis);border-radius:10px;padding:10px;background:var(--bg)}
         .log{padding:7px 4px;border-bottom:1px solid var(--kad);font-size:11px;color:var(--teks2)}
         .log strong{color:var(--utama)}
         .log.waspada{color:var(--amaran)}
@@ -52,6 +52,8 @@
         .modal-k p{font-size:12px;color:var(--teks2);margin-bottom:15px}
         .btn-row{display:flex;gap:8px}
         .pemain{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;margin-bottom:6px;font-size:12px}
+        .input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;color:var(--teks);font-size:12px;outline:none;margin-bottom:8px}
+        .chat-v{height:150px;overflow-y:auto;border:1px solid var(--garis);border-radius:10px;padding:10px;background:var(--bg);margin-bottom:8px}
         .footer{text-align:center;padding:16px;color:var(--teks2);font-size:11px;border-top:1px solid var(--garis)}
     </style>
 </head>
@@ -61,6 +63,8 @@
         <div class="nav-links">
             <a class="aktif" onclick="tukar('dunia',this)">Dunia</a>
             <a onclick="tukar('negara',this)">Negara</a>
+            <a onclick="tukar('chat',this)">Chat</a>
+            <a onclick="tukar('pemain',this)">Pemain</a>
         </div>
     </div>
     <div class="main">
@@ -78,6 +82,18 @@
         </div>
         <div id="hal-negara" style="display:none">
             <div class="kad"><h2>Negara</h2><div id="senaraiNegara"></div></div>
+        </div>
+        <div id="hal-chat" style="display:none">
+            <div class="kad">
+                <h2>Chat Dunia</h2>
+                <div class="chat-v" id="chatLog"></div>
+                <input type="text" id="chatNama" class="input" placeholder="Nama">
+                <input type="text" id="chatInput" class="input" placeholder="Tulis mesej...">
+                <button class="btn" id="btnChat">Hantar</button>
+            </div>
+        </div>
+        <div id="hal-pemain" style="display:none">
+            <div class="kad"><h2>Pemain</h2><div id="senaraiPemain"></div></div>
         </div>
     </div>
     <div class="overlay" id="overlay"></div>
@@ -140,7 +156,7 @@
         ]
     };
     var tindakanTunggu=null;
-    window.tukar=function(n,btn){document.getElementById('hal-dunia').style.display=n==='dunia'?'block':'none';document.getElementById('hal-negara').style.display=n==='negara'?'block':'none';document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='negara')paparNegara()};
+    window.tukar=function(n,btn){document.getElementById('hal-dunia').style.display=n==='dunia'?'block':'none';document.getElementById('hal-negara').style.display=n==='negara'?'block':'none';document.getElementById('hal-chat').style.display=n==='chat'?'block':'none';document.getElementById('hal-pemain').style.display=n==='pemain'?'block':'none';document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='negara')paparNegara();if(n==='pemain')muatPemain()};
     function bukaDrawer(){document.getElementById('drawer').classList.add('aktif');document.getElementById('overlay').classList.add('aktif');paparKumpulan()}
     function tutupDrawer(){document.getElementById('drawer').classList.remove('aktif');document.getElementById('overlay').classList.remove('aktif')}
     function paparKumpulan(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(KUMPULAN).forEach(function(k){h+='<button class="g-btn" onclick="paparPilihan(\''+k+'\')">'+k+'</button>'});document.getElementById('drawerIsi').innerHTML=h}
@@ -150,11 +166,15 @@
     function paparDunia(){var ek=s.ekonomi>=50?'baik':'buruk',al=s.alam>=50?'baik':'buruk';document.getElementById('sg').innerHTML=[{l:'TAHUN',v:s.tahun},{l:'POPULASI',v:(s.populasi/1000000000).toFixed(1)+'B'},{l:'EKONOMI',v:s.ekonomi+'%',c:ek},{l:'ALAM',v:s.alam+'%',c:al},{l:'TEKNOLOGI',v:s.teknologi+'%',c:s.teknologi>=50?'baik':'buruk'},{l:'KESIHATAN',v:s.kesihatan+'%',c:s.kesihatan>=50?'baik':'buruk'}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>'}).join('')}
     function tambahLog(t,j){var d=document.getElementById('logDunia');d.innerHTML='<div class="log '+j+'"><strong>'+s.tahun+'</strong> — '+t+'</div>'+d.innerHTML}
     function paparNegara(){document.getElementById('senaraiNegara').innerHTML=NEGARA.map(function(n){return '<div class="pemain"><span>'+n.i+' '+n.n+'</span><span>'+((n.p)/1000000).toFixed(0)+' juta</span></div>'}).join('')}
+    function muatChat(){db.ref('chat').limitToLast(30).on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push(c.val())});document.getElementById('chatLog').innerHTML=l.map(function(m){return '<div class="log"><strong>'+m.n+'</strong> — '+m.t+'</div>'}).join('')||'<p style="color:#64748b;font-size:11px">Tiada mesej</p>'})}
+    document.getElementById('btnChat').addEventListener('click',function(){var n=document.getElementById('chatNama').value.trim()||'Anonymous',t=document.getElementById('chatInput').value.trim();if(!t)return;db.ref('chat').push({n:n,t:t}).then(function(){document.getElementById('chatInput').value='';muatChat()}).catch(function(){})});
+    function muatPemain(){db.ref('profil').on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push({n:c.key})});document.getElementById('senaraiPemain').innerHTML=l.map(function(p){return '<div class="pemain"><span>'+p.n+'</span></div>'}).join('')||'<p style="color:#64748b;font-size:11px">Tiada pemain</p>'})}
     document.getElementById('btnLangkah').addEventListener('click',function(){s.tahun++;s.populasi+=Math.floor(Math.random()*50000000);s.ekonomi=Math.max(0,s.ekonomi-Math.floor(Math.random()*3));s.alam=Math.max(0,s.alam-Math.floor(Math.random()*2));if(Math.random()<0.4){tambahLog(D[Math.floor(Math.random()*D.length)],'waspada')}paparDunia()});
     document.getElementById('btnTindakan').addEventListener('click',bukaDrawer);
     document.getElementById('overlay').addEventListener('click',tutupDrawer);
     document.getElementById('modalYa').addEventListener('click',laksana);
     document.getElementById('modalTidak').addEventListener('click',function(){document.getElementById('modal').classList.remove('aktif');tindakanTunggu=null});
+    muatChat();
     paparDunia();
     </script>
 </body>
