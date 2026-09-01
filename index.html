@@ -3,1545 +3,790 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>President Simulator - 999 Systems</title>
+    <title>President Simulator - Playable Game</title>
     <style>
         :root {
             --bg: #0a0a1a;
             --card: #1a1a2e;
             --accent: #e94560;
             --gold: #ffd700;
+            --green: #4ade80;
+            --red: #ef4444;
+            --blue: #3b82f6;
             --text: #eee;
             --muted: #aaa;
             --border: #2a2a4a;
-            --section-bg: #16213e;
         }
         
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        
+        #gameContainer {
+            width: 100%;
+            max-width: 800px;
+            background: var(--card);
+            border-radius: 20px;
             padding: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            border: 2px solid var(--border);
         }
         
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 30px;
+        #startScreen, #gameScreen, #endScreen {
+            display: none;
+        }
+        
+        #startScreen.active, #gameScreen.active, #endScreen.active {
+            display: block;
+        }
+        
+        .title {
             text-align: center;
+            color: var(--accent);
+            font-size: 2em;
             margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
         }
         
-        .header h1 {
-            font-size: 2.5em;
-            color: var(--accent);
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .stat {
+            background: #0f0f1f;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+        
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+        
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .stat-value.good { color: var(--green); }
+        .stat-value.bad { color: var(--red); }
+        .stat-value.neutral { color: var(--gold); }
+        
+        .event-card {
+            background: #0f0f1f;
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .event-title {
+            color: var(--gold);
+            font-size: 1.2em;
             margin-bottom: 10px;
         }
         
-        .header .subtitle {
-            color: var(--muted);
-            font-size: 1.1em;
-        }
-        
-        .header .count {
-            color: var(--gold);
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-        
-        .search-bar {
-            margin: 20px auto;
-            max-width: 600px;
-        }
-        
-        .search-bar input {
-            width: 100%;
-            padding: 15px;
-            background: #1a1a2e;
-            border: 2px solid var(--border);
-            border-radius: 30px;
+        .event-description {
             color: var(--text);
-            font-size: 1.1em;
-            transition: border-color 0.3s;
-        }
-        
-        .search-bar input:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-        
-        .category-nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-        }
-        
-        .category-btn {
-            padding: 10px 20px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 25px;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9em;
-        }
-        
-        .category-btn:hover,
-        .category-btn.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            transform: translateY(-2px);
-        }
-        
-        .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-        
-        .system-card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 18px;
-            transition: all 0.3s;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .system-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(233, 69, 96, 0.3);
-            border-color: var(--accent);
-        }
-        
-        .system-card .number {
-            color: var(--gold);
-            font-weight: bold;
-            font-size: 0.85em;
-            margin-bottom: 8px;
-        }
-        
-        .system-card .title {
-            font-weight: 700;
-            font-size: 1.05em;
-            margin-bottom: 6px;
-            color: #fff;
-        }
-        
-        .system-card .description {
-            color: var(--muted);
-            font-size: 0.85em;
-            line-height: 1.4;
-        }
-        
-        .system-card .category-tag {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(233, 69, 96, 0.2);
-            color: var(--accent);
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 0.7em;
-            font-weight: 600;
-        }
-        
-        .section-header {
-            grid-column: 1 / -1;
-            text-align: center;
-            padding: 30px 0 15px;
-            font-size: 2em;
-            color: var(--accent);
-            font-weight: bold;
-        }
-        
-        .section-header .emoji {
-            font-size: 1.2em;
-        }
-        
-        .save-section {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 25px;
-            margin: 30px auto;
-            max-width: 600px;
-            text-align: center;
-        }
-        
-        .save-section h2 {
-            color: var(--gold);
             margin-bottom: 15px;
+            line-height: 1.5;
         }
         
-        .save-btn {
+        .choices {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .choice-btn {
+            padding: 15px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+            font-size: 1em;
+        }
+        
+        .choice-btn:hover {
+            border-color: var(--accent);
+            background: #2a1a2e;
+            transform: translateX(5px);
+        }
+        
+        .choice-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .btn {
             padding: 15px 30px;
             background: var(--accent);
             color: white;
             border: none;
-            border-radius: 30px;
-            font-size: 1.1em;
-            font-weight: 700;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            margin: 5px;
+            width: 100%;
+            margin-top: 10px;
         }
         
-        .save-btn:hover {
+        .btn:hover {
             background: #d63851;
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(233, 69, 96, 0.4);
         }
         
-        .save-btn.secondary {
+        .btn.secondary {
             background: #333;
         }
         
-        .save-btn.secondary:hover {
-            background: #444;
-        }
-        
-        .status {
-            margin-top: 15px;
+        .log {
+            background: #0f0f1f;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             padding: 10px;
-            border-radius: 8px;
-            display: none;
-            font-weight: 600;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
         }
         
-        .status.success {
-            display: block;
-            background: rgba(74, 222, 128, 0.2);
-            color: #4ade80;
+        .log-entry {
+            padding: 5px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9em;
         }
         
-        .status.error {
-            display: block;
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
+        .log-entry.good { color: var(--green); }
+        .log-entry.bad { color: var(--red); }
+        .log-entry.info { color: var(--blue); }
+        
+        .term-info {
+            text-align: center;
+            margin: 10px 0;
+            color: var(--muted);
         }
         
-        .status.loading {
-            display: block;
-            background: rgba(59, 130, 246, 0.2);
-            color: #3b82f6;
+        .result-icon {
+            text-align: center;
+            font-size: 4em;
+            margin: 20px 0;
         }
         
-        .hidden {
-            display: none !important;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .category-btn {
-                padding: 8px 15px;
-                font-size: 0.8em;
+        @media (max-width: 600px) {
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🏛️ President Simulator</h1>
-        <p class="subtitle">Complete 999 Systems, Mechanics & Gameplay Framework</p>
-        <div class="count">999 Total Systems</div>
-    </div>
-    
-    <div class="search-bar">
-        <input type="text" id="searchInput" placeholder="🔍 Search systems..." oninput="filterSystems()">
-    </div>
-    
-    <div class="category-nav" id="categoryNav">
-        <button class="category-btn active" onclick="filterCategory('all')">All Systems</button>
-        <button class="category-btn" onclick="filterCategory('core')">🏛️ Core Government</button>
-        <button class="category-btn" onclick="filterCategory('gameplay')">🎮 Gameplay</button>
-        <button class="category-btn" onclick="filterCategory('world')">🌍 World Systems</button>
-        <button class="category-btn" onclick="filterCategory('character')">🎭 Characters</button>
-        <button class="category-btn" onclick="filterCategory('institution')">🏢 Institutions</button>
-        <button class="category-btn" onclick="filterCategory('policy')">💼 Policies</button>
-        <button class="category-btn" onclick="filterCategory('action')">🎯 Actions</button>
-        <button class="category-btn" onclick="filterCategory('consequence')">📊 Consequences</button>
-        <button class="category-btn" onclick="filterCategory('dynamic')">🔄 Dynamic</button>
-        <button class="category-btn" onclick="filterCategory('advanced')">🎲 Advanced</button>
-        <button class="category-btn" onclick="filterCategory('special')">🌟 Special</button>
-        <button class="category-btn" onclick="filterCategory('ultimate')">🏆 Ultimate</button>
-    </div>
-    
-    <div class="container" id="systemsContainer"></div>
-    
-    <div class="save-section">
-        <h2>💾 Save Settings</h2>
-        <p style="color: var(--muted); margin-bottom: 15px;">Save your progress and preferences</p>
-        <button class="save-btn" onclick="saveSettings()">💾 Save Settings</button>
-        <button class="save-btn secondary" onclick="loadSettings()">📂 Load Settings</button>
-        <button class="save-btn secondary" onclick="exportSettings()">📤 Export JSON</button>
-        <button class="save-btn secondary" onclick="importSettings()">📥 Import JSON</button>
-        <div id="status" class="status"></div>
+    <div id="gameContainer">
+        <!-- Start Screen -->
+        <div id="startScreen" class="active">
+            <div class="title">🏛️ President Simulator</div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p style="color: var(--muted); font-size: 1.2em;">Can you survive 4 years as President?</p>
+                <p style="color: var(--gold); margin-top: 10px;">Make decisions, manage crises, and keep your approval rating high!</p>
+            </div>
+            <button class="btn" onclick="startGame()">Start Your Presidency</button>
+        </div>
+        
+        <!-- Game Screen -->
+        <div id="gameScreen">
+            <div class="term-info">
+                <h2>📅 Term <span id="currentTerm">1</span> | Week <span id="currentWeek">1</span> of 52</h2>
+            </div>
+            
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-label">📊 Approval</div>
+                    <div class="stat-value" id="approvalStat">50%</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">💰 Economy</div>
+                    <div class="stat-value" id="economyStat">50%</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">🛡️ Security</div>
+                    <div class="stat-value" id="securityStat">50%</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">😊 Public Health</div>
+                    <div class="stat-value" id="healthStat">50%</div>
+                </div>
+            </div>
+            
+            <div class="event-card">
+                <div class="event-title" id="eventTitle">Event</div>
+                <div class="event-description" id="eventDescription">Description</div>
+                <div class="choices" id="choicesContainer"></div>
+            </div>
+            
+            <div class="log" id="gameLog">
+                <div class="log-entry info">Welcome to your presidency! Make wise decisions...</div>
+            </div>
+        </div>
+        
+        <!-- End Screen -->
+        <div id="endScreen">
+            <div class="result-icon" id="resultIcon">🏆</div>
+            <div class="title" id="resultTitle">Game Over</div>
+            <div class="event-card">
+                <div class="event-description" id="resultDescription"></div>
+            </div>
+            <div class="stats-bar">
+                <div class="stat">
+                    <div class="stat-label">Final Approval</div>
+                    <div class="stat-value" id="finalApproval">50%</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-label">Weeks Survived</div>
+                    <div class="stat-value" id="weeksSurvived">0</div>
+                </div>
+            </div>
+            <button class="btn" onclick="restartGame()">Run Again</button>
+        </div>
     </div>
     
     <script>
-        const systems = [
-            // 🏛️ CORE GOVERNMENT SYSTEMS (1-100)
-            { id: 1, category: 'core', title: 'Executive Order System', desc: 'Issue decrees with varying legality' },
-            { id: 2, category: 'core', title: 'Veto Power', desc: 'Reject or approve congressional bills' },
-            { id: 3, category: 'core', title: 'Pardon System', desc: 'Grant clemency to criminals' },
-            { id: 4, category: 'core', title: 'Treaty Negotiation', desc: 'International agreements' },
-            { id: 5, category: 'core', title: 'War Powers', desc: 'Military action authorization' },
-            { id: 6, category: 'core', title: 'Cabinet Management', desc: 'Appoint or fire secretaries' },
-            { id: 7, category: 'core', title: 'Supreme Court Nomination', desc: 'Judge appointments' },
-            { id: 8, category: 'core', title: 'State of Emergency', desc: 'Crisis powers activation' },
-            { id: 9, category: 'core', title: 'Press Conference System', desc: 'Address the nation' },
-            { id: 10, category: 'core', title: 'Budget Proposal', desc: 'Annual fiscal planning' },
-            { id: 11, category: 'core', title: 'Congress Approval Rating', desc: 'Legislative success rate' },
-            { id: 12, category: 'core', title: 'Party Whip System', desc: 'Influence party members' },
-            { id: 13, category: 'core', title: 'Bipartisan Negotiation', desc: 'Cross-party deals' },
-            { id: 14, category: 'core', title: 'Filibuster Management', desc: 'Senate procedure handling' },
-            { id: 15, category: 'core', title: 'Committee Assignment', desc: 'Legislative priorities' },
-            { id: 16, category: 'core', title: 'Lobbying Management', desc: 'Interest group relations' },
-            { id: 17, category: 'core', title: 'Bill Drafting System', desc: 'Create legislation' },
-            { id: 18, category: 'core', title: 'Amendment Process', desc: 'Modify existing laws' },
-            { id: 19, category: 'core', title: 'Congressional Oversight', desc: 'Investigation handling' },
-            { id: 20, category: 'core', title: 'Impeachment Defense', desc: 'Political survival' },
-            { id: 21, category: 'core', title: 'Court Case Management', desc: 'Legal challenges' },
-            { id: 22, category: 'core', title: 'Constitutional Review', desc: 'Law validation' },
-            { id: 23, category: 'core', title: 'Justice Department Control', desc: 'Law enforcement' },
-            { id: 24, category: 'core', title: 'FBI Investigation System', desc: 'Federal cases' },
-            { id: 25, category: 'core', title: 'Attorney General Relations', desc: 'Legal counsel' },
-            { id: 26, category: 'core', title: 'Judicial Appointment Strategy', desc: 'Court packing' },
-            { id: 27, category: 'core', title: 'Legal Precedent System', desc: 'Case law effects' },
-            { id: 28, category: 'core', title: 'Constitutional Amendment', desc: 'Fundamental changes' },
-            { id: 29, category: 'core', title: 'Federal vs State Law', desc: 'Jurisdiction conflicts' },
-            { id: 30, category: 'core', title: 'Judicial Review Defense', desc: 'Policy protection' },
-            { id: 31, category: 'core', title: 'CIA Operations', desc: 'Intelligence activities' },
-            { id: 32, category: 'core', title: 'NSA Surveillance', desc: 'Security monitoring' },
-            { id: 33, category: 'core', title: 'FEMA Management', desc: 'Disaster response' },
-            { id: 34, category: 'core', title: 'EPA Enforcement', desc: 'Environmental protection' },
-            { id: 35, category: 'core', title: 'FDA Regulation', desc: 'Health safety' },
-            { id: 36, category: 'core', title: 'FCC Control', desc: 'Communication oversight' },
-            { id: 37, category: 'core', title: 'SEC Investigation', desc: 'Financial crimes' },
-            { id: 38, category: 'core', title: 'IRS Enforcement', desc: 'Tax collection' },
-            { id: 39, category: 'core', title: 'Homeland Security', desc: 'Domestic protection' },
-            { id: 40, category: 'core', title: 'DEA Operations', desc: 'Drug enforcement' },
-            { id: 41, category: 'core', title: 'Governor Negotiation', desc: 'State cooperation' },
-            { id: 42, category: 'core', title: 'Federal Fund Distribution', desc: 'Resource allocation' },
-            { id: 43, category: 'core', title: 'State Rights Balance', desc: 'Autonomy management' },
-            { id: 44, category: 'core', title: 'National Guard Control', desc: 'Military support' },
-            { id: 45, category: 'core', title: 'Interstate Commerce', desc: 'Trade regulation' },
-            { id: 46, category: 'core', title: 'State Emergency Response', desc: 'Local crisis' },
-            { id: 47, category: 'core', title: 'Election Coordination', desc: 'Voting systems' },
-            { id: 48, category: 'core', title: 'State Law Preemption', desc: 'Federal override' },
-            { id: 49, category: 'core', title: 'Regional Development', desc: 'Economic zones' },
-            { id: 50, category: 'core', title: 'State-Federal Partnership', desc: 'Joint programs' },
-            { id: 51, category: 'core', title: 'Joint Chiefs Relations', desc: 'Military advice' },
-            { id: 52, category: 'core', title: 'Nuclear Launch Authority', desc: 'Strategic weapons' },
-            { id: 53, category: 'core', title: 'Military Deployment', desc: 'Troop positioning' },
-            { id: 54, category: 'core', title: 'Defense Budget Control', desc: 'Military spending' },
-            { id: 55, category: 'core', title: 'Base Management', desc: 'Facility operations' },
-            { id: 56, category: 'core', title: 'Special Operations Command', desc: 'Covert missions' },
-            { id: 57, category: 'core', title: 'Cyber Warfare', desc: 'Digital attacks' },
-            { id: 58, category: 'core', title: 'Space Force Control', desc: 'Orbital operations' },
-            { id: 59, category: 'core', title: 'Military Intelligence', desc: 'Battlefield information' },
-            { id: 60, category: 'core', title: 'Veterans Affairs', desc: 'Soldier welfare' },
-            { id: 61, category: 'core', title: 'Federal Reserve Relations', desc: 'Monetary policy' },
-            { id: 62, category: 'core', title: 'Tax Policy Management', desc: 'Revenue collection' },
-            { id: 63, category: 'core', title: 'Trade Deal Negotiation', desc: 'International commerce' },
-            { id: 64, category: 'core', title: 'Economic Stimulus', desc: 'Recovery programs' },
-            { id: 65, category: 'core', title: 'Market Regulation', desc: 'Wall Street oversight' },
-            { id: 66, category: 'core', title: 'Small Business Support', desc: 'Entrepreneurship' },
-            { id: 67, category: 'core', title: 'Corporate Tax Strategy', desc: 'Business taxation' },
-            { id: 68, category: 'core', title: 'Job Creation Programs', desc: 'Employment initiatives' },
-            { id: 69, category: 'core', title: 'Inflation Control', desc: 'Price stability' },
-            { id: 70, category: 'core', title: 'GDP Growth Management', desc: 'Economic expansion' },
-            { id: 71, category: 'core', title: 'Ambassador Appointment', desc: 'Foreign representation' },
-            { id: 72, category: 'core', title: 'Summit Organization', desc: 'Leader meetings' },
-            { id: 73, category: 'core', title: 'Sanction Implementation', desc: 'Economic pressure' },
-            { id: 74, category: 'core', title: 'Foreign Aid Distribution', desc: 'International support' },
-            { id: 75, category: 'core', title: 'Alliance Management', desc: 'NATO, UN relations' },
-            { id: 76, category: 'core', title: 'Diplomatic Recognition', desc: 'Nation legitimacy' },
-            { id: 77, category: 'core', title: 'Trade Agreement System', desc: 'Economic partnerships' },
-            { id: 78, category: 'core', title: 'Cultural Exchange', desc: 'Soft power' },
-            { id: 79, category: 'core', title: 'Intelligence Sharing', desc: 'Allied cooperation' },
-            { id: 80, category: 'core', title: 'Conflict Resolution', desc: 'Peace negotiations' },
-            { id: 81, category: 'core', title: 'Healthcare Reform', desc: 'Medical system' },
-            { id: 82, category: 'core', title: 'Education Policy', desc: 'School standards' },
-            { id: 83, category: 'core', title: 'Infrastructure Development', desc: 'Public works' },
-            { id: 84, category: 'core', title: 'Social Security Management', desc: 'Retirement system' },
-            { id: 85, category: 'core', title: 'Medicare/Medicaid', desc: 'Health insurance' },
-            { id: 86, category: 'core', title: 'Immigration Policy', desc: 'Border control' },
-            { id: 87, category: 'core', title: 'Criminal Justice Reform', desc: 'Law enforcement' },
-            { id: 88, category: 'core', title: 'Drug Policy', desc: 'Substance regulation' },
-            { id: 89, category: 'core', title: 'Housing Programs', desc: 'Affordable living' },
-            { id: 90, category: 'core', title: 'Environmental Protection', desc: 'Climate action' },
-            { id: 91, category: 'core', title: 'Approval Rating System', desc: 'Public opinion' },
-            { id: 92, category: 'core', title: 'Media Relations', desc: 'Press management' },
-            { id: 93, category: 'core', title: 'Campaign Management', desc: 'Election strategy' },
-            { id: 94, category: 'core', title: 'Party Leadership', desc: 'Political organization' },
-            { id: 95, category: 'core', title: 'Donor Relations', desc: 'Fundraising' },
-            { id: 96, category: 'core', title: 'Public Speaking System', desc: 'Address effectiveness' },
-            { id: 97, category: 'core', title: 'Scandal Management', desc: 'Crisis PR' },
-            { id: 98, category: 'core', title: 'Legacy Building', desc: 'Historical impact' },
-            { id: 99, category: 'core', title: 'Re-election Campaign', desc: 'Second term bid' },
-            { id: 100, category: 'core', title: 'Political Capital System', desc: 'Influence currency' },
-            
-            // 🎮 GAMEPLAY MECHANICS (101-200)
-            { id: 101, category: 'gameplay', title: 'Political Capital', desc: 'Influence spending' },
-            { id: 102, category: 'gameplay', title: 'Public Trust', desc: 'Credibility metric' },
-            { id: 103, category: 'gameplay', title: 'Time Management', desc: 'Daily schedule' },
-            { id: 104, category: 'gameplay', title: 'Staff Morale', desc: 'Team effectiveness' },
-            { id: 105, category: 'gameplay', title: 'Budget Allocation', desc: 'Financial resources' },
-            { id: 106, category: 'gameplay', title: 'Media Coverage', desc: 'News attention' },
-            { id: 107, category: 'gameplay', title: 'International Standing', desc: 'Global respect' },
-            { id: 108, category: 'gameplay', title: 'Party Unity', desc: 'Internal support' },
-            { id: 109, category: 'gameplay', title: 'Public Health', desc: 'National wellness' },
-            { id: 110, category: 'gameplay', title: 'National Security', desc: 'Safety level' },
-            { id: 111, category: 'gameplay', title: 'Crisis Response System', desc: 'Emergency choices' },
-            { id: 112, category: 'gameplay', title: 'Policy Priority Setting', desc: 'Agenda management' },
-            { id: 113, category: 'gameplay', title: 'Risk Assessment', desc: 'Consequence prediction' },
-            { id: 114, category: 'gameplay', title: 'Expert Consultation', desc: 'Advisor input' },
-            { id: 115, category: 'gameplay', title: 'Public Opinion Polling', desc: 'Decision feedback' },
-            { id: 116, category: 'gameplay', title: 'Historical Precedent', desc: 'Past examples' },
-            { id: 117, category: 'gameplay', title: 'Cost-Benefit Analysis', desc: 'Policy evaluation' },
-            { id: 118, category: 'gameplay', title: 'Coalition Building', desc: 'Support gathering' },
-            { id: 119, category: 'gameplay', title: 'Compromise System', desc: 'Deal making' },
-            { id: 120, category: 'gameplay', title: 'Long-term Planning', desc: 'Strategic vision' },
-            { id: 121, category: 'gameplay', title: 'Population Simulation', desc: 'Citizen behavior' },
-            { id: 122, category: 'gameplay', title: 'Economic Model', desc: 'Market dynamics' },
-            { id: 123, category: 'gameplay', title: 'Political Landscape', desc: 'Party evolution' },
-            { id: 124, category: 'gameplay', title: 'International Relations', desc: 'Global events' },
-            { id: 125, category: 'gameplay', title: 'Media Cycle', desc: 'News generation' },
-            { id: 126, category: 'gameplay', title: 'Random Events', desc: 'Unexpected crises' },
-            { id: 127, category: 'gameplay', title: 'Historical Events', desc: 'Real-world scenarios' },
-            { id: 128, category: 'gameplay', title: 'Social Movement System', desc: 'Public protests' },
-            { id: 129, category: 'gameplay', title: 'Technology Evolution', desc: 'Innovation effects' },
-            { id: 130, category: 'gameplay', title: 'Cultural Shifts', desc: 'Value changes' },
-            { id: 131, category: 'gameplay', title: 'Experience Levels', desc: 'Skill development' },
-            { id: 132, category: 'gameplay', title: 'Achievement System', desc: 'Milestone rewards' },
-            { id: 133, category: 'gameplay', title: 'Legacy Points', desc: 'Historical rating' },
-            { id: 134, category: 'gameplay', title: 'Policy Tree', desc: 'Unlockable options' },
-            { id: 135, category: 'gameplay', title: 'Staff Development', desc: 'Team improvement' },
-            { id: 136, category: 'gameplay', title: 'Reputation System', desc: 'Character growth' },
-            { id: 137, category: 'gameplay', title: 'Term Progression', desc: 'Time advancement' },
-            { id: 138, category: 'gameplay', title: 'Historical Ranking', desc: 'Performance comparison' },
-            { id: 139, category: 'gameplay', title: 'Memorial System', desc: 'Achievement record' },
-            { id: 140, category: 'gameplay', title: 'Endgame Scoring', desc: 'Final evaluation' },
-            { id: 141, category: 'gameplay', title: 'Daily Challenges', desc: 'Regular objectives' },
-            { id: 142, category: 'gameplay', title: 'Historical Scenarios', desc: 'Real situations' },
-            { id: 143, category: 'gameplay', title: 'Custom Scenarios', desc: 'Player creation' },
-            { id: 144, category: 'gameplay', title: 'Hard Mode', desc: 'Increased difficulty' },
-            { id: 145, category: 'gameplay', title: 'Iron Man Mode', desc: 'No reloads' },
-            { id: 146, category: 'gameplay', title: 'Time Attack', desc: 'Speed running' },
-            { id: 147, category: 'gameplay', title: 'Score Attack', desc: 'Point maximization' },
-            { id: 148, category: 'gameplay', title: 'Survival Mode', desc: 'Extended terms' },
-            { id: 149, category: 'gameplay', title: 'Chaos Mode', desc: 'Random disasters' },
-            { id: 150, category: 'gameplay', title: 'Peaceful Mode', desc: 'No conflicts' },
-            { id: 151, category: 'gameplay', title: 'Achievement System', desc: 'Milestone rewards' },
-            { id: 152, category: 'gameplay', title: 'Progression System', desc: 'Level advancement' },
-            { id: 153, category: 'gameplay', title: 'Skill Tree', desc: 'Ability development' },
-            { id: 154, category: 'gameplay', title: 'Resource Management', desc: 'Asset allocation' },
-            { id: 155, category: 'gameplay', title: 'Decision Tree', desc: 'Choice branching' },
-            { id: 156, category: 'gameplay', title: 'Event Chain', desc: 'Cascading effects' },
-            { id: 157, category: 'gameplay', title: 'Relationship System', desc: 'Character bonds' },
-            { id: 158, category: 'gameplay', title: 'Faction System', desc: 'Group dynamics' },
-            { id: 159, category: 'gameplay', title: 'Economy Simulation', desc: 'Market behavior' },
-            { id: 160, category: 'gameplay', title: 'Weather System', desc: 'Environmental effects' },
-            { id: 161, category: 'gameplay', title: 'Time System', desc: 'Calendar management' },
-            { id: 162, category: 'gameplay', title: 'Save System', desc: 'Progress preservation' },
-            { id: 163, category: 'gameplay', title: 'Load System', desc: 'Game restoration' },
-            { id: 164, category: 'gameplay', title: 'Auto-save', desc: 'Automatic backup' },
-            { id: 165, category: 'gameplay', title: 'Quick Save', desc: 'Fast preservation' },
-            { id: 166, category: 'gameplay', title: 'Cloud Save', desc: 'Online backup' },
-            { id: 167, category: 'gameplay', title: 'Multiple Saves', desc: 'Save management' },
-            { id: 168, category: 'gameplay', title: 'Checkpoint System', desc: 'Progress points' },
-            { id: 169, category: 'gameplay', title: 'Session System', desc: 'Play sessions' },
-            { id: 170, category: 'gameplay', title: 'Resume System', desc: 'Continue playing' },
-            { id: 171, category: 'gameplay', title: 'Difficulty Scaling', desc: 'Progressive challenge' },
-            { id: 172, category: 'gameplay', title: 'Random Challenges', desc: 'Unexpected tests' },
-            { id: 173, category: 'gameplay', title: 'Time Challenges', desc: 'Speed requirements' },
-            { id: 174, category: 'gameplay', title: 'Resource Challenges', desc: 'Limited assets' },
-            { id: 175, category: 'gameplay', title: 'Political Challenges', desc: 'Opposition tests' },
-            { id: 176, category: 'gameplay', title: 'Crisis Challenges', desc: 'Emergency management' },
-            { id: 177, category: 'gameplay', title: 'Diplomatic Challenges', desc: 'Foreign relations' },
-            { id: 178, category: 'gameplay', title: 'Economic Challenges', desc: 'Financial management' },
-            { id: 179, category: 'gameplay', title: 'Moral Challenges', desc: 'Ethical decisions' },
-            { id: 180, category: 'gameplay', title: 'Legacy Challenges', desc: 'Historical tests' },
-            { id: 181, category: 'gameplay', title: 'Feedback System', desc: 'Performance review' },
-            { id: 182, category: 'gameplay', title: 'Scoring System', desc: 'Performance evaluation' },
-            { id: 183, category: 'gameplay', title: 'Ranking System', desc: 'Performance comparison' },
-            { id: 184, category: 'gameplay', title: 'Statistics System', desc: 'Data tracking' },
-            { id: 185, category: 'gameplay', title: 'Analytics System', desc: 'Performance analysis' },
-            { id: 186, category: 'gameplay', title: 'Reporting System', desc: 'Status updates' },
-            { id: 187, category: 'gameplay', title: 'Notification System', desc: 'Alerts and updates' },
-            { id: 188, category: 'gameplay', title: 'Message System', desc: 'Communication' },
-            { id: 189, category: 'gameplay', title: 'Log System', desc: 'Action record' },
-            { id: 190, category: 'gameplay', title: 'History System', desc: 'Past events' },
-            { id: 191, category: 'gameplay', title: 'Tutorial System', desc: 'Learning guide' },
-            { id: 192, category: 'gameplay', title: 'Help System', desc: 'Reference material' },
-            { id: 193, category: 'gameplay', title: 'Hint System', desc: 'Guidance' },
-            { id: 194, category: 'gameplay', title: 'Guide System', desc: 'Strategy tips' },
-            { id: 195, category: 'gameplay', title: 'Mentor System', desc: 'In-game guidance' },
-            { id: 196, category: 'gameplay', title: 'Training System', desc: 'Skill development' },
-            { id: 197, category: 'gameplay', title: 'Practice Mode', desc: 'Safe environment' },
-            { id: 198, category: 'gameplay', title: 'Simulation Mode', desc: 'Testing ground' },
-            { id: 199, category: 'gameplay', title: 'Sandbox Mode', desc: 'Free experimentation' },
-            { id: 200, category: 'gameplay', title: 'Creative Mode', desc: 'Unlimited resources' },
-            
-            // 🌍 WORLD SYSTEMS (201-300)
-            { id: 201, category: 'world', title: 'UN Security Council', desc: 'Global governance' },
-            { id: 202, category: 'world', title: 'NATO Alliance', desc: 'Military cooperation' },
-            { id: 203, category: 'world', title: 'G7/G20 Summits', desc: 'Economic coordination' },
-            { id: 204, category: 'world', title: 'World Bank Relations', desc: 'Development funding' },
-            { id: 205, category: 'world', title: 'IMF Negotiations', desc: 'Financial stability' },
-            { id: 206, category: 'world', title: 'WTO Disputes', desc: 'Trade conflicts' },
-            { id: 207, category: 'world', title: 'Climate Accords', desc: 'Environmental treaties' },
-            { id: 208, category: 'world', title: 'Nuclear Non-Proliferation', desc: 'Weapons control' },
-            { id: 209, category: 'world', title: 'Human Rights Council', desc: 'Ethics enforcement' },
-            { id: 210, category: 'world', title: 'Peacekeeping Operations', desc: 'Conflict resolution' },
-            { id: 211, category: 'world', title: 'Middle East Peace', desc: 'Israel-Palestine' },
-            { id: 212, category: 'world', title: 'Korean Peninsula', desc: 'North-South relations' },
-            { id: 213, category: 'world', title: 'Taiwan Strait', desc: 'China tensions' },
-            { id: 214, category: 'world', title: 'Ukraine Crisis', desc: 'Russia conflict' },
-            { id: 215, category: 'world', title: 'South China Sea', desc: 'Territory disputes' },
-            { id: 216, category: 'world', title: 'Iran Nuclear Deal', desc: 'Weapons program' },
-            { id: 217, category: 'world', title: 'Venezuela Crisis', desc: 'Political instability' },
-            { id: 218, category: 'world', title: 'African Development', desc: 'Continental growth' },
-            { id: 219, category: 'world', title: 'Arctic Resources', desc: 'Territory claims' },
-            { id: 220, category: 'world', title: 'Cyber Warfare', desc: 'Digital attacks' },
-            { id: 221, category: 'world', title: 'Currency Exchange', desc: 'Forex markets' },
-            { id: 222, category: 'world', title: 'Oil Price Management', desc: 'Energy costs' },
-            { id: 223, category: 'world', title: 'Global Supply Chain', desc: 'Trade logistics' },
-            { id: 224, category: 'world', title: 'International Banking', desc: 'Financial system' },
-            { id: 225, category: 'world', title: 'Emerging Markets', desc: 'Developing economies' },
-            { id: 226, category: 'world', title: 'Trade Wars', desc: 'Economic conflicts' },
-            { id: 227, category: 'world', title: 'Global Recession', desc: 'Economic crisis' },
-            { id: 228, category: 'world', title: 'Currency Manipulation', desc: 'Exchange control' },
-            { id: 229, category: 'world', title: 'Sovereign Debt', desc: 'National borrowing' },
-            { id: 230, category: 'world', title: 'Digital Currency', desc: 'Cryptocurrency regulation' },
-            { id: 231, category: 'world', title: 'Climate Change', desc: 'Global warming' },
-            { id: 232, category: 'world', title: 'Natural Disasters', desc: 'Emergency response' },
-            { id: 233, category: 'world', title: 'Resource Depletion', desc: 'Sustainability' },
-            { id: 234, category: 'world', title: 'Pollution Control', desc: 'Environmental protection' },
-            { id: 235, category: 'world', title: 'Wildlife Conservation', desc: 'Biodiversity' },
-            { id: 236, category: 'world', title: 'Ocean Management', desc: 'Marine protection' },
-            { id: 237, category: 'world', title: 'Forest Preservation', desc: 'Deforestation' },
-            { id: 238, category: 'world', title: 'Renewable Energy', desc: 'Green transition' },
-            { id: 239, category: 'world', title: 'Carbon Emissions', desc: 'Pollution reduction' },
-            { id: 240, category: 'world', title: 'Environmental Treaties', desc: 'Global cooperation' },
-            { id: 241, category: 'world', title: 'Pandemic Response', desc: 'Disease control' },
-            { id: 242, category: 'world', title: 'WHO Relations', desc: 'Health cooperation' },
-            { id: 243, category: 'world', title: 'Vaccine Distribution', desc: 'Immunization' },
-            { id: 244, category: 'world', title: 'Global Health Security', desc: 'Disease prevention' },
-            { id: 245, category: 'world', title: 'Medical Research', desc: 'Treatment development' },
-            { id: 246, category: 'world', title: 'Healthcare Access', desc: 'Medical availability' },
-            { id: 247, category: 'world', title: 'Disease Eradication', desc: 'Health campaigns' },
-            { id: 248, category: 'world', title: 'Mental Health', desc: 'Psychological support' },
-            { id: 249, category: 'world', title: 'Nutrition Programs', desc: 'Food security' },
-            { id: 250, category: 'world', title: 'Water Sanitation', desc: 'Clean water access' },
-            { id: 251, category: 'world', title: 'Space Exploration', desc: 'Orbital missions' },
-            { id: 252, category: 'world', title: 'Arctic Council', desc: 'Polar cooperation' },
-            { id: 253, category: 'world', title: 'Antarctic Treaty', desc: 'Southern continent' },
-            { id: 254, category: 'world', title: 'Deep Sea Mining', desc: 'Ocean resources' },
-            { id: 255, category: 'world', title: 'Satellite Management', desc: 'Orbital assets' },
-            { id: 256, category: 'world', title: 'Space Debris', desc: 'Orbital cleanup' },
-            { id: 257, category: 'world', title: 'Mars Mission', desc: 'Interplanetary travel' },
-            { id: 258, category: 'world', title: 'Lunar Base', desc: 'Moon colonization' },
-            { id: 259, category: 'world', title: 'Asteroid Mining', desc: 'Space resources' },
-            { id: 260, category: 'world', title: 'Space Tourism', desc: 'Commercial spaceflight' },
-            { id: 261, category: 'world', title: 'Artificial Intelligence', desc: 'AI development' },
-            { id: 262, category: 'world', title: 'Robotics Revolution', desc: 'Automation' },
-            { id: 263, category: 'world', title: 'Quantum Computing', desc: 'Advanced processing' },
-            { id: 264, category: 'world', title: 'Biotechnology', desc: 'Genetic engineering' },
-            { id: 265, category: 'world', title: 'Nanotechnology', desc: 'Molecular manufacturing' },
-            { id: 266, category: 'world', title: 'Virtual Reality', desc: 'Immersive technology' },
-            { id: 267, category: 'world', title: 'Augmented Reality', desc: 'Enhanced reality' },
-            { id: 268, category: 'world', title: 'Internet of Things', desc: 'Connected devices' },
-            { id: 269, category: 'world', title: '5G/6G Networks', desc: 'Communication infrastructure' },
-            { id: 270, category: 'world', title: 'Blockchain Technology', desc: 'Distributed ledger' },
-            { id: 271, category: 'world', title: 'Energy Crisis', desc: 'Resource shortage' },
-            { id: 272, category: 'world', title: 'Water Scarcity', desc: 'Resource management' },
-            { id: 273, category: 'world', title: 'Food Shortage', desc: 'Supply management' },
-            { id: 274, category: 'world', title: 'Overpopulation', desc: 'Demographic pressure' },
-            { id: 275, category: 'world', title: 'Urbanization', desc: 'City development' },
-            { id: 276, category: 'world', title: 'Migration Crisis', desc: 'Population movement' },
-            { id: 277, category: 'world', title: 'Refugee Management', desc: 'Displaced persons' },
-            { id: 278, category: 'world', title: 'Brain Drain', desc: 'Talent migration' },
-            { id: 279, category: 'world', title: 'Cultural Preservation', desc: 'Heritage protection' },
-            { id: 280, category: 'world', title: 'Language Preservation', desc: 'Linguistic diversity' },
-            { id: 281, category: 'world', title: 'Terrorism', desc: 'Security threat' },
-            { id: 282, category: 'world', title: 'Organized Crime', desc: 'Criminal networks' },
-            { id: 283, category: 'world', title: 'Drug Trafficking', desc: 'Illegal trade' },
-            { id: 284, category: 'world', title: 'Human Trafficking', desc: 'Modern slavery' },
-            { id: 285, category: 'world', title: 'Arms Trade', desc: 'Weapons commerce' },
-            { id: 286, category: 'world', title: 'Money Laundering', desc: 'Financial crime' },
-            { id: 287, category: 'world', title: 'Cyber Crime', desc: 'Digital threats' },
-            { id: 288, category: 'world', title: 'Piracy', desc: 'Maritime crime' },
-            { id: 289, category: 'world', title: 'Corruption', desc: 'Abuse of power' },
-            { id: 290, category: 'world', title: 'Espionage', desc: 'Intelligence gathering' },
-            { id: 291, category: 'world', title: 'Global Warming', desc: 'Climate crisis' },
-            { id: 292, category: 'world', title: 'Sea Level Rise', desc: 'Coastal flooding' },
-            { id: 293, category: 'world', title: 'Extreme Weather', desc: 'Climate events' },
-            { id: 294, category: 'world', title: 'Biodiversity Loss', desc: 'Species extinction' },
-            { id: 295, category: 'world', title: 'Ocean Acidification', desc: 'Marine chemistry' },
-            { id: 296, category: 'world', title: 'Desertification', desc: 'Land degradation' },
-            { id: 297, category: 'world', title: 'Glacier Melting', desc: 'Ice loss' },
-            { id: 298, category: 'world', title: 'Coral Bleaching', desc: 'Reef destruction' },
-            { id: 299, category: 'world', title: 'Air Pollution', desc: 'Atmospheric contamination' },
-            { id: 300, category: 'world', title: 'Water Pollution', desc: 'Aquatic contamination' },
-            
-            // Continue with more systems...
-            { id: 301, category: 'character', title: 'Personality Traits', desc: 'Behavioral tendencies' },
-            { id: 302, category: 'character', title: 'Moral Compass', desc: 'Ethical decisions' },
-            { id: 303, category: 'character', title: 'Leadership Style', desc: 'Management approach' },
-            { id: 304, category: 'character', title: 'Public Speaking', desc: 'Communication skill' },
-            { id: 305, category: 'character', title: 'Political Experience', desc: 'Background' },
-            { id: 306, category: 'character', title: 'Education Level', desc: 'Knowledge base' },
-            { id: 307, category: 'character', title: 'Family Life', desc: 'Personal relations' },
-            { id: 308, category: 'character', title: 'Health Status', desc: 'Physical condition' },
-            { id: 309, category: 'character', title: 'Stress Level', desc: 'Mental pressure' },
-            { id: 310, category: 'character', title: 'Personal Wealth', desc: 'Financial status' },
-            { id: 311, category: 'character', title: 'Secretary of State', desc: 'Foreign affairs' },
-            { id: 312, category: 'character', title: 'Secretary of Defense', desc: 'Military' },
-            { id: 313, category: 'character', title: 'Treasury Secretary', desc: 'Economy' },
-            { id: 314, category: 'character', title: 'Attorney General', desc: 'Justice' },
-            { id: 315, category: 'character', title: 'Homeland Security', desc: 'Protection' },
-            { id: 316, category: 'character', title: 'Health Secretary', desc: 'Medical' },
-            { id: 317, category: 'character', title: 'Education Secretary', desc: 'Schools' },
-            { id: 318, category: 'character', title: 'Energy Secretary', desc: 'Resources' },
-            { id: 319, category: 'character', title: 'Labor Secretary', desc: 'Employment' },
-            { id: 320, category: 'character', title: 'Commerce Secretary', desc: 'Business' },
-            { id: 321, category: 'character', title: 'Chief of Staff', desc: 'Management' },
-            { id: 322, category: 'character', title: 'National Security Advisor', desc: 'Intelligence' },
-            { id: 323, category: 'character', title: 'Economic Advisor', desc: 'Financial' },
-            { id: 324, category: 'character', title: 'Political Advisor', desc: 'Strategy' },
-            { id: 325, category: 'character', title: 'Press Secretary', desc: 'Media' },
-            { id: 326, category: 'character', title: 'Legal Counsel', desc: 'Law' },
-            { id: 327, category: 'character', title: 'Science Advisor', desc: 'Technology' },
-            { id: 328, category: 'character', title: 'Environmental Advisor', desc: 'Climate' },
-            { id: 329, category: 'character', title: 'Military Advisor', desc: 'Defense' },
-            { id: 330, category: 'character', title: 'Intelligence Advisor', desc: 'Security' },
-            { id: 331, category: 'character', title: 'Senate Majority Leader', desc: 'Legislative' },
-            { id: 332, category: 'character', title: 'House Speaker', desc: 'Congressional' },
-            { id: 333, category: 'character', title: 'Opposition Leader', desc: 'Political rival' },
-            { id: 334, category: 'character', title: 'Party Chairperson', desc: 'Organization' },
-            { id: 335, category: 'character', title: 'Supreme Court Chief Justice', desc: 'Judicial' },
-            { id: 336, category: 'character', title: 'Federal Reserve Chair', desc: 'Monetary' },
-            { id: 337, category: 'character', title: 'UN Ambassador', desc: 'International' },
-            { id: 338, category: 'character', title: 'Joint Chiefs Chairman', desc: 'Military' },
-            { id: 339, category: 'character', title: 'Intelligence Director', desc: 'Security' },
-            { id: 340, category: 'character', title: 'Campaign Manager', desc: 'Elections' },
-            { id: 341, category: 'character', title: 'Foreign Leaders', desc: 'International' },
-            { id: 342, category: 'character', title: 'Business Leaders', desc: 'Corporate' },
-            { id: 343, category: 'character', title: 'Religious Leaders', desc: 'Faith' },
-            { id: 344, category: 'character', title: 'Celebrity Activists', desc: 'Influence' },
-            { id: 345, category: 'character', title: 'Journalists', desc: 'Media' },
-            { id: 346, category: 'character', title: 'Lobbyists', desc: 'Special interests' },
-            { id: 347, category: 'character', title: 'Whistleblowers', desc: 'Information' },
-            { id: 348, category: 'character', title: 'Terrorists', desc: 'Threats' },
-            { id: 349, category: 'character', title: 'Diplomats', desc: 'Negotiation' },
-            { id: 350, category: 'character', title: 'Generals', desc: 'Military command' },
-            
-            { id: 351, category: 'institution', title: 'Oval Office Management', desc: 'Daily operations' },
-            { id: 352, category: 'institution', title: 'Situation Room', desc: 'Crisis management' },
-            { id: 353, category: 'institution', title: 'Press Room', desc: 'Media briefings' },
-            { id: 354, category: 'institution', title: 'Cabinet Room', desc: 'Meetings' },
-            { id: 355, category: 'institution', title: 'Executive Residence', desc: 'Personal life' },
-            { id: 356, category: 'institution', title: 'West Wing Staff', desc: 'Administration' },
-            { id: 357, category: 'institution', title: 'Secret Service', desc: 'Protection' },
-            { id: 358, category: 'institution', title: 'Communications Office', desc: 'Messaging' },
-            { id: 359, category: 'institution', title: 'Legislative Affairs', desc: 'Congress liaison' },
-            { id: 360, category: 'institution', title: 'Political Affairs', desc: 'Party relations' },
-            { id: 361, category: 'institution', title: 'Department of State', desc: 'Diplomacy' },
-            { id: 362, category: 'institution', title: 'Department of Defense', desc: 'Military' },
-            { id: 363, category: 'institution', title: 'Department of Treasury', desc: 'Finance' },
-            { id: 364, category: 'institution', title: 'Department of Justice', desc: 'Law' },
-            { id: 365, category: 'institution', title: 'Department of Interior', desc: 'Public lands' },
-            { id: 366, category: 'institution', title: 'Department of Agriculture', desc: 'Farming' },
-            { id: 367, category: 'institution', title: 'Department of Commerce', desc: 'Trade' },
-            { id: 368, category: 'institution', title: 'Department of Labor', desc: 'Employment' },
-            { id: 369, category: 'institution', title: 'Department of Health', desc: 'Medical' },
-            { id: 370, category: 'institution', title: 'Department of Education', desc: 'Schools' },
-            { id: 371, category: 'institution', title: 'CIA', desc: 'Human intelligence' },
-            { id: 372, category: 'institution', title: 'NSA', desc: 'Signal intelligence' },
-            { id: 373, category: 'institution', title: 'FBI', desc: 'Domestic security' },
-            { id: 374, category: 'institution', title: 'DIA', desc: 'Military intelligence' },
-            { id: 375, category: 'institution', title: 'NRO', desc: 'Satellite reconnaissance' },
-            { id: 376, category: 'institution', title: 'NGA', desc: 'Geospatial intelligence' },
-            { id: 377, category: 'institution', title: 'DHS Intelligence', desc: 'Homeland security' },
-            { id: 378, category: 'institution', title: 'Treasury Intelligence', desc: 'Financial tracking' },
-            { id: 379, category: 'institution', title: 'DEA Intelligence', desc: 'Drug enforcement' },
-            { id: 380, category: 'institution', title: 'Energy Intelligence', desc: 'Nuclear security' },
-            { id: 381, category: 'institution', title: 'SEC', desc: 'Securities regulation' },
-            { id: 382, category: 'institution', title: 'FCC', desc: 'Communications' },
-            { id: 383, category: 'institution', title: 'FDA', desc: 'Drug safety' },
-            { id: 384, category: 'institution', title: 'EPA', desc: 'Environmental' },
-            { id: 385, category: 'institution', title: 'OSHA', desc: 'Workplace safety' },
-            { id: 386, category: 'institution', title: 'FTC', desc: 'Trade regulation' },
-            { id: 387, category: 'institution', title: 'NLRB', desc: 'Labor relations' },
-            { id: 388, category: 'institution', title: 'FEC', desc: 'Election regulation' },
-            { id: 389, category: 'institution', title: 'CFPB', desc: 'Consumer protection' },
-            { id: 390, category: 'institution', title: 'NTSB', desc: 'Transportation safety' },
-            { id: 391, category: 'institution', title: 'United Nations', desc: 'Global governance' },
-            { id: 392, category: 'institution', title: 'World Bank', desc: 'Development' },
-            { id: 393, category: 'institution', title: 'IMF', desc: 'Monetary cooperation' },
-            { id: 394, category: 'institution', title: 'WHO', desc: 'Health' },
-            { id: 395, category: 'institution', title: 'UNESCO', desc: 'Culture/education' },
-            { id: 396, category: 'institution', title: 'UNICEF', desc: "Children's welfare" },
-            { id: 397, category: 'institution', title: 'ILO', desc: 'Labor standards' },
-            { id: 398, category: 'institution', title: 'FAO', desc: 'Food/agriculture' },
-            { id: 399, category: 'institution', title: 'WIPO', desc: 'Intellectual property' },
-            { id: 400, category: 'institution', title: 'UNHCR', desc: 'Refugees' },
-            
-            { id: 401, category: 'policy', title: 'Tax Reform', desc: 'Revenue system' },
-            { id: 402, category: 'policy', title: 'Trade Policy', desc: 'International commerce' },
-            { id: 403, category: 'policy', title: 'Monetary Policy', desc: 'Money supply' },
-            { id: 404, category: 'policy', title: 'Fiscal Policy', desc: 'Government spending' },
-            { id: 405, category: 'policy', title: 'Labor Policy', desc: 'Employment rules' },
-            { id: 406, category: 'policy', title: 'Industrial Policy', desc: 'Manufacturing' },
-            { id: 407, category: 'policy', title: 'Agricultural Policy', desc: 'Farming support' },
-            { id: 408, category: 'policy', title: 'Energy Policy', desc: 'Power generation' },
-            { id: 409, category: 'policy', title: 'Technology Policy', desc: 'Innovation' },
-            { id: 410, category: 'policy', title: 'Infrastructure Policy', desc: 'Public works' },
-            { id: 411, category: 'policy', title: 'Healthcare Policy', desc: 'Medical system' },
-            { id: 412, category: 'policy', title: 'Education Policy', desc: 'School system' },
-            { id: 413, category: 'policy', title: 'Welfare Policy', desc: 'Social safety net' },
-            { id: 414, category: 'policy', title: 'Housing Policy', desc: 'Living standards' },
-            { id: 415, category: 'policy', title: 'Criminal Justice Policy', desc: 'Law enforcement' },
-            { id: 416, category: 'policy', title: 'Immigration Policy', desc: 'Border management' },
-            { id: 417, category: 'policy', title: 'Civil Rights Policy', desc: 'Equality' },
-            { id: 418, category: 'policy', title: 'Veterans Policy', desc: 'Military support' },
-            { id: 419, category: 'policy', title: 'Disability Policy', desc: 'Accessibility' },
-            { id: 420, category: 'policy', title: 'Family Policy', desc: 'Social support' },
-            { id: 421, category: 'policy', title: 'Defense Policy', desc: 'Military strategy' },
-            { id: 422, category: 'policy', title: 'Diplomatic Policy', desc: 'International relations' },
-            { id: 423, category: 'policy', title: 'Aid Policy', desc: 'Foreign assistance' },
-            { id: 424, category: 'policy', title: 'Sanctions Policy', desc: 'Economic pressure' },
-            { id: 425, category: 'policy', title: 'Alliance Policy', desc: 'Partnerships' },
-            { id: 426, category: 'policy', title: 'Intelligence Policy', desc: 'Information gathering' },
-            { id: 427, category: 'policy', title: 'Cyber Policy', desc: 'Digital security' },
-            { id: 428, category: 'policy', title: 'Space Policy', desc: 'Orbital operations' },
-            { id: 429, category: 'policy', title: 'Climate Policy', desc: 'Environmental action' },
-            { id: 430, category: 'policy', title: 'Energy Independence', desc: 'Resource security' },
-            { id: 431, category: 'policy', title: 'Gun Control', desc: 'Firearm regulation' },
-            { id: 432, category: 'policy', title: 'Drug Policy', desc: 'Substance control' },
-            { id: 433, category: 'policy', title: 'Abortion Policy', desc: 'Reproductive rights' },
-            { id: 434, category: 'policy', title: 'Religious Freedom', desc: 'Faith protection' },
-            { id: 435, category: 'policy', title: 'Free Speech', desc: 'Expression rights' },
-            { id: 436, category: 'policy', title: 'Privacy Policy', desc: 'Data protection' },
-            { id: 437, category: 'policy', title: 'Police Reform', desc: 'Law enforcement' },
-            { id: 438, category: 'policy', title: 'Prison Reform', desc: 'Incarceration' },
-            { id: 439, category: 'policy', title: 'Mental Health Policy', desc: 'Psychological care' },
-            { id: 440, category: 'policy', title: 'Veterans Benefits', desc: 'Military benefits' },
-            { id: 441, category: 'policy', title: 'Disaster Response', desc: 'Crisis management' },
-            { id: 442, category: 'policy', title: 'Pandemic Policy', desc: 'Disease control' },
-            { id: 443, category: 'policy', title: 'Terrorism Response', desc: 'Security measures' },
-            { id: 444, category: 'policy', title: 'Economic Crisis Policy', desc: 'Financial stability' },
-            { id: 445, category: 'policy', title: 'Natural Disaster Policy', desc: 'Emergency relief' },
-            { id: 446, category: 'policy', title: 'Cyber Attack Policy', desc: 'Digital defense' },
-            { id: 447, category: 'policy', title: 'Nuclear Crisis Policy', desc: 'Weapons response' },
-            { id: 448, category: 'policy', title: 'Civil Unrest Policy', desc: 'Public order' },
-            { id: 449, category: 'policy', title: 'Infrastructure Failure', desc: 'System recovery' },
-            { id: 450, category: 'policy', title: 'Environmental Disaster', desc: 'Ecological response' },
-            
-            { id: 451, category: 'action', title: 'Sign Executive Order', desc: 'Immediate action' },
-            { id: 452, category: 'action', title: 'Veto Legislation', desc: 'Block bills' },
-            { id: 453, category: 'action', title: 'Issue Pardon', desc: 'Grant clemency' },
-            { id: 454, category: 'action', title: 'Deploy Troops', desc: 'Military action' },
-            { id: 455, category: 'action', title: 'Declare Emergency', desc: 'Crisis powers' },
-            { id: 456, category: 'action', title: 'Nominate Judge', desc: 'Court appointment' },
-            { id: 457, category: 'action', title: 'Fire Cabinet Member', desc: 'Staff removal' },
-            { id: 458, category: 'action', title: 'Create Commission', desc: 'Investigation' },
-            { id: 459, category: 'action', title: 'Grant Clemency', desc: 'Sentence reduction' },
-            { id: 460, category: 'action', title: 'Recognize Nation', desc: 'Diplomatic action' },
-            { id: 461, category: 'action', title: 'Propose Bill', desc: 'Create legislation' },
-            { id: 462, category: 'action', title: 'Support Amendment', desc: 'Modify law' },
-            { id: 463, category: 'action', title: 'Lobby Congress', desc: 'Influence votes' },
-            { id: 464, category: 'action', title: 'Call Special Session', desc: 'Emergency meeting' },
-            { id: 465, category: 'action', title: 'Sign Treaty', desc: 'International agreement' },
-            { id: 466, category: 'action', title: 'Submit Budget', desc: 'Fiscal proposal' },
-            { id: 467, category: 'action', title: 'Request Declaration', desc: 'War authorization' },
-            { id: 468, category: 'action', title: 'Recommend Legislation', desc: 'Policy suggestion' },
-            { id: 469, category: 'action', title: 'Threaten Veto', desc: 'Legislative pressure' },
-            { id: 470, category: 'action', title: 'Negotiate Compromise', desc: 'Deal making' },
-            { id: 471, category: 'action', title: 'File Lawsuit', desc: 'Legal challenge' },
-            { id: 472, category: 'action', title: 'Appeal Decision', desc: 'Court review' },
-            { id: 473, category: 'action', title: 'Enforce Ruling', desc: 'Legal compliance' },
-            { id: 474, category: 'action', title: 'Grant Immunity', desc: 'Legal protection' },
-            { id: 475, category: 'action', title: 'Prosecute Crime', desc: 'Law enforcement' },
-            { id: 476, category: 'action', title: 'Settle Case', desc: 'Legal agreement' },
-            { id: 477, category: 'action', title: 'Request Opinion', desc: 'Legal advice' },
-            { id: 478, category: 'action', title: 'Challenge Law', desc: 'Constitutional test' },
-            { id: 479, category: 'action', title: 'Implement Ruling', desc: 'Policy change' },
-            { id: 480, category: 'action', title: 'Defend Policy', desc: 'Legal justification' },
-            { id: 481, category: 'action', title: 'Launch Strike', desc: 'Military attack' },
-            { id: 482, category: 'action', title: 'Deploy Forces', desc: 'Troop movement' },
-            { id: 483, category: 'action', title: 'Authorize Operation', desc: 'Mission approval' },
-            { id: 484, category: 'action', title: 'Call Ceasefire', desc: 'Stop fighting' },
-            { id: 485, category: 'action', title: 'Negotiate Surrender', desc: 'End conflict' },
-            { id: 486, category: 'action', title: 'Provide Support', desc: 'Military aid' },
-            { id: 487, category: 'action', title: 'Establish Base', desc: 'Facility creation' },
-            { id: 488, category: 'action', title: 'Conduct Exercise', desc: 'Military training' },
-            { id: 489, category: 'action', title: 'Share Intelligence', desc: 'Information exchange' },
-            { id: 490, category: 'action', title: 'Develop Weapon', desc: 'Arms program' },
-            { id: 491, category: 'action', title: 'Meet Leader', desc: 'Summit' },
-            { id: 492, category: 'action', title: 'Sign Agreement', desc: 'Treaty' },
-            { id: 493, category: 'action', title: 'Impose Sanctions', desc: 'Economic pressure' },
-            { id: 494, category: 'action', title: 'Lift Embargo', desc: 'Trade resumption' },
-            { id: 495, category: 'action', title: 'Expel Diplomat', desc: 'Personnel action' },
-            { id: 496, category: 'action', title: 'Grant Asylum', desc: 'Refugee protection' },
-            { id: 497, category: 'action', title: 'Mediate Conflict', desc: 'Peace negotiation' },
-            { id: 498, category: 'action', title: 'Form Alliance', desc: 'Partnership' },
-            { id: 499, category: 'action', title: 'Withdraw from Treaty', desc: 'Agreement exit' },
-            { id: 500, category: 'action', title: 'Recognize Government', desc: 'Legitimacy' },
-            
-            { id: 501, category: 'consequence', title: 'Approval Rating Change', desc: 'Public opinion' },
-            { id: 502, category: 'consequence', title: 'Party Support Shift', desc: 'Political backing' },
-            { id: 503, category: 'consequence', title: 'Re-election Chance', desc: 'Electoral impact' },
-            { id: 504, category: 'consequence', title: 'Historical Legacy', desc: 'Long-term reputation' },
-            { id: 505, category: 'consequence', title: 'Media Coverage', desc: 'News attention' },
-            { id: 506, category: 'consequence', title: 'Scandal Risk', desc: 'Reputation damage' },
-            { id: 507, category: 'consequence', title: 'Donor Reaction', desc: 'Financial support' },
-            { id: 508, category: 'consequence', title: 'Lobbyist Response', desc: 'Interest groups' },
-            { id: 509, category: 'consequence', title: 'International Reputation', desc: 'Global standing' },
-            { id: 510, category: 'consequence', title: 'Political Capital Change', desc: 'Influence level' },
-            { id: 511, category: 'consequence', title: 'Market Reaction', desc: 'Stock changes' },
-            { id: 512, category: 'consequence', title: 'Unemployment Change', desc: 'Job effects' },
-            { id: 513, category: 'consequence', title: 'Inflation Impact', desc: 'Price changes' },
-            { id: 514, category: 'consequence', title: 'GDP Growth', desc: 'Economic performance' },
-            { id: 515, category: 'consequence', title: 'Currency Value', desc: 'Exchange rates' },
-            { id: 516, category: 'consequence', title: 'Trade Balance', desc: 'Import/export' },
-            { id: 517, category: 'consequence', title: 'National Debt', desc: 'Government borrowing' },
-            { id: 518, category: 'consequence', title: 'Consumer Confidence', desc: 'Public spending' },
-            { id: 519, category: 'consequence', title: 'Business Investment', desc: 'Corporate action' },
-            { id: 520, category: 'consequence', title: 'Income Inequality', desc: 'Wealth distribution' },
-            { id: 521, category: 'consequence', title: 'Public Health Change', desc: 'Wellness effects' },
-            { id: 522, category: 'consequence', title: 'Education Quality', desc: 'School impact' },
-            { id: 523, category: 'consequence', title: 'Crime Rate Change', desc: 'Safety effects' },
-            { id: 524, category: 'consequence', title: 'Poverty Level', desc: 'Economic hardship' },
-            { id: 525, category: 'consequence', title: 'Social Mobility', desc: 'Opportunity access' },
-            { id: 526, category: 'consequence', title: 'Community Cohesion', desc: 'Social unity' },
-            { id: 527, category: 'consequence', title: 'Cultural Impact', desc: 'Value changes' },
-            { id: 528, category: 'consequence', title: 'Demographic Shift', desc: 'Population changes' },
-            { id: 529, category: 'consequence', title: 'Quality of Life', desc: 'Living standards' },
-            { id: 530, category: 'consequence', title: 'Happiness Index', desc: 'Public satisfaction' },
-            { id: 531, category: 'consequence', title: 'Terrorist Threat', desc: 'Attack risk' },
-            { id: 532, category: 'consequence', title: 'Military Readiness', desc: 'Defense capability' },
-            { id: 533, category: 'consequence', title: 'Intelligence Capability', desc: 'Information access' },
-            { id: 534, category: 'consequence', title: 'Border Security', desc: 'Entry control' },
-            { id: 535, category: 'consequence', title: 'Cyber Security', desc: 'Digital protection' },
-            { id: 536, category: 'consequence', title: 'Nuclear Security', desc: 'Weapons safety' },
-            { id: 537, category: 'consequence', title: 'Domestic Security', desc: 'Internal threats' },
-            { id: 538, category: 'consequence', title: 'Allied Security', desc: 'Partnership strength' },
-            { id: 539, category: 'consequence', title: 'Energy Security', desc: 'Resource access' },
-            { id: 540, category: 'consequence', title: 'Food Security', desc: 'Supply stability' },
-            { id: 541, category: 'consequence', title: 'Carbon Emissions', desc: 'Climate impact' },
-            { id: 542, category: 'consequence', title: 'Air Quality', desc: 'Pollution levels' },
-            { id: 543, category: 'consequence', title: 'Water Quality', desc: 'Resource cleanliness' },
-            { id: 544, category: 'consequence', title: 'Biodiversity', desc: 'Species protection' },
-            { id: 545, category: 'consequence', title: 'Deforestation', desc: 'Forest coverage' },
-            { id: 546, category: 'consequence', title: 'Ocean Health', desc: 'Marine ecosystem' },
-            { id: 547, category: 'consequence', title: 'Renewable Energy', desc: 'Green transition' },
-            { id: 548, category: 'consequence', title: 'Waste Management', desc: 'Pollution control' },
-            { id: 549, category: 'consequence', title: 'Climate Resilience', desc: 'Adaptation ability' },
-            { id: 550, category: 'consequence', title: 'Environmental Justice', desc: 'Fair distribution' },
-            { id: 551, category: 'consequence', title: 'Court Challenges', desc: 'Legal opposition' },
-            { id: 552, category: 'consequence', title: 'Constitutional Review', desc: 'Legal validation' },
-            { id: 553, category: 'consequence', title: 'Criminal Investigation', desc: 'Legal scrutiny' },
-            { id: 554, category: 'consequence', title: 'Civil Lawsuit', desc: 'Legal liability' },
-            { id: 555, category: 'consequence', title: 'Impeachment Risk', desc: 'Political survival' },
-            { id: 556, category: 'consequence', title: 'International Law', desc: 'Global compliance' },
-            { id: 557, category: 'consequence', title: 'Treaty Violation', desc: 'Agreement breach' },
-            { id: 558, category: 'consequence', title: 'Human Rights Record', desc: 'Ethics evaluation' },
-            { id: 559, category: 'consequence', title: 'Judicial Precedent', desc: 'Legal history' },
-            { id: 560, category: 'consequence', title: 'Regulatory Compliance', desc: 'Rule following' },
-            { id: 561, category: 'consequence', title: 'Stress Level', desc: 'Mental health' },
-            { id: 562, category: 'consequence', title: 'Family Relations', desc: 'Personal life' },
-            { id: 563, category: 'consequence', title: 'Health Status', desc: 'Physical condition' },
-            { id: 564, category: 'consequence', title: 'Personal Wealth', desc: 'Financial situation' },
-            { id: 565, category: 'consequence', title: 'Public Scrutiny', desc: 'Media attention' },
-            { id: 566, category: 'consequence', title: 'Privacy Level', desc: 'Personal space' },
-            { id: 567, category: 'consequence', title: 'Friend Relations', desc: 'Social connections' },
-            { id: 568, category: 'consequence', title: 'Personal Security', desc: 'Safety level' },
-            { id: 569, category: 'consequence', title: 'Mental Health', desc: 'Psychological state' },
-            { id: 570, category: 'consequence', title: 'Work-Life Balance', desc: 'Time management' },
-            { id: 571, category: 'consequence', title: 'Alliance Strength', desc: 'Partnership quality' },
-            { id: 572, category: 'consequence', title: 'Enemy Hostility', desc: 'Threat level' },
-            { id: 573, category: 'consequence', title: 'Trade Relations', desc: 'Economic ties' },
-            { id: 574, category: 'consequence', title: 'Diplomatic Standing', desc: 'Global respect' },
-            { id: 575, category: 'consequence', title: 'Military Deterrence', desc: 'Defense capability' },
-            { id: 576, category: 'consequence', title: 'Soft Power', desc: 'Cultural influence' },
-            { id: 577, category: 'consequence', title: 'Intelligence Sharing', desc: 'Information access' },
-            { id: 578, category: 'consequence', title: 'Treaty Compliance', desc: 'Agreement adherence' },
-            { id: 579, category: 'consequence', title: 'Global Leadership', desc: 'World influence' },
-            { id: 580, category: 'consequence', title: 'Regional Stability', desc: 'Area peace' },
-            { id: 581, category: 'consequence', title: 'Agency Morale', desc: 'Staff satisfaction' },
-            { id: 582, category: 'consequence', title: 'Bureaucratic Efficiency', desc: 'Government function' },
-            { id: 583, category: 'consequence', title: 'Corruption Level', desc: 'Integrity measure' },
-            { id: 584, category: 'consequence', title: 'Institutional Trust', desc: 'Public confidence' },
-            { id: 585, category: 'consequence', title: 'Government Transparency', desc: 'Openness level' },
-            { id: 586, category: 'consequence', title: 'Administrative Capacity', desc: 'Management ability' },
-            { id: 587, category: 'consequence', title: 'Inter-agency Cooperation', desc: 'Coordination' },
-            { id: 588, category: 'consequence', title: 'Policy Implementation', desc: 'Execution success' },
-            { id: 589, category: 'consequence', title: 'Service Quality', desc: 'Public services' },
-            { id: 590, category: 'consequence', title: 'Innovation Capacity', desc: 'Adaptation ability' },
-            { id: 591, category: 'consequence', title: 'Historical Impact', desc: 'Legacy effect' },
-            { id: 592, category: 'consequence', title: 'Party Future', desc: 'Political alignment' },
-            { id: 593, category: 'consequence', title: 'National Direction', desc: 'Country trajectory' },
-            { id: 594, category: 'consequence', title: 'Global Order', desc: 'World system' },
-            { id: 595, category: 'consequence', title: 'Technological Development', desc: 'Innovation path' },
-            { id: 596, category: 'consequence', title: 'Social Evolution', desc: 'Cultural change' },
-            { id: 597, category: 'consequence', title: 'Economic Structure', desc: 'System change' },
-            { id: 598, category: 'consequence', title: 'Environmental Future', desc: 'Climate path' },
-            { id: 599, category: 'consequence', title: 'Democratic Health', desc: 'System integrity' },
-            { id: 600, category: 'consequence', title: 'Generational Impact', desc: 'Future effects' },
-            
-            { id: 601, category: 'dynamic', title: 'Natural Disaster', desc: 'Earthquake, hurricane' },
-            { id: 602, category: 'dynamic', title: 'Economic Crash', desc: 'Market collapse' },
-            { id: 603, category: 'dynamic', title: 'Terrorist Attack', desc: 'Security crisis' },
-            { id: 604, category: 'dynamic', title: 'Political Scandal', desc: 'Reputation damage' },
-            { id: 605, category: 'dynamic', title: 'Diplomatic Crisis', desc: 'International conflict' },
-            { id: 606, category: 'dynamic', title: 'Health Emergency', desc: 'Pandemic outbreak' },
-            { id: 607, category: 'dynamic', title: 'Technological Failure', desc: 'System breakdown' },
-            { id: 608, category: 'dynamic', title: 'Social Movement', desc: 'Public protest' },
-            { id: 609, category: 'dynamic', title: 'Military Conflict', desc: 'War outbreak' },
-            { id: 610, category: 'dynamic', title: 'Environmental Crisis', desc: 'Climate disaster' },
-            { id: 611, category: 'dynamic', title: 'Economic Trend', desc: 'Market direction' },
-            { id: 612, category: 'dynamic', title: 'Social Trend', desc: 'Cultural shift' },
-            { id: 613, category: 'dynamic', title: 'Political Trend', desc: 'Party alignment' },
-            { id: 614, category: 'dynamic', title: 'Technological Trend', desc: 'Innovation path' },
-            { id: 615, category: 'dynamic', title: 'Environmental Trend', desc: 'Climate direction' },
-            { id: 616, category: 'dynamic', title: 'Demographic Trend', desc: 'Population change' },
-            { id: 617, category: 'dynamic', title: 'Media Trend', desc: 'News focus' },
-            { id: 618, category: 'dynamic', title: 'International Trend', desc: 'Global direction' },
-            { id: 619, category: 'dynamic', title: 'Security Trend', desc: 'Threat evolution' },
-            { id: 620, category: 'dynamic', title: 'Health Trend', desc: 'Wellness direction' },
-            { id: 621, category: 'dynamic', title: 'Crisis Detection', desc: 'Early warning' },
-            { id: 622, category: 'dynamic', title: 'Crisis Assessment', desc: 'Situation analysis' },
-            { id: 623, category: 'dynamic', title: 'Crisis Response', desc: 'Action plan' },
-            { id: 624, category: 'dynamic', title: 'Crisis Communication', desc: 'Public updates' },
-            { id: 625, category: 'dynamic', title: 'Resource Mobilization', desc: 'Emergency funds' },
-            { id: 626, category: 'dynamic', title: 'Stakeholder Management', desc: 'Group coordination' },
-            { id: 627, category: 'dynamic', title: 'Recovery Planning', desc: 'Restoration' },
-            { id: 628, category: 'dynamic', title: 'Lesson Learning', desc: 'Improvement' },
-            { id: 629, category: 'dynamic', title: 'Prevention System', desc: 'Risk reduction' },
-            { id: 630, category: 'dynamic', title: 'Simulation Training', desc: 'Preparation' },
-            { id: 631, category: 'dynamic', title: 'Policy Adjustment', desc: 'Rule changes' },
-            { id: 632, category: 'dynamic', title: 'Strategy Revision', desc: 'Plan updates' },
-            { id: 633, category: 'dynamic', title: 'Resource Reallocation', desc: 'Budget shifts' },
-            { id: 634, category: 'dynamic', title: 'Staff Reorganization', desc: 'Team changes' },
-            { id: 635, category: 'dynamic', title: 'Priority Reset', desc: 'Goal changes' },
-            { id: 636, category: 'dynamic', title: 'Alliance Restructuring', desc: 'Partnership updates' },
-            { id: 637, category: 'dynamic', title: 'Communication Update', desc: 'Message changes' },
-            { id: 638, category: 'dynamic', title: 'Operational Change', desc: 'Process updates' },
-            { id: 639, category: 'dynamic', title: 'Structural Reform', desc: 'System changes' },
-            { id: 640, category: 'dynamic', title: 'Cultural Shift', desc: 'Value changes' },
-            { id: 641, category: 'dynamic', title: 'Political Evolution', desc: 'System development' },
-            { id: 642, category: 'dynamic', title: 'Economic Evolution', desc: 'Market changes' },
-            { id: 643, category: 'dynamic', title: 'Social Evolution', desc: 'Cultural development' },
-            { id: 644, category: 'dynamic', title: 'Technological Evolution', desc: 'Innovation' },
-            { id: 645, category: 'dynamic', title: 'Institutional Evolution', desc: 'Organization growth' },
-            { id: 646, category: 'dynamic', title: 'International Evolution', desc: 'Global changes' },
-            { id: 647, category: 'dynamic', title: 'Environmental Evolution', desc: 'Climate adaptation' },
-            { id: 648, category: 'dynamic', title: 'Security Evolution', desc: 'Threat adaptation' },
-            { id: 649, category: 'dynamic', title: 'Legal Evolution', desc: 'Law development' },
-            { id: 650, category: 'dynamic', title: 'Moral Evolution', desc: 'Ethics changes' },
-            { id: 651, category: 'dynamic', title: 'Character Interaction', desc: 'Personal relations' },
-            { id: 652, category: 'dynamic', title: 'Group Interaction', desc: 'Organization dynamics' },
-            { id: 653, category: 'dynamic', title: 'Media Interaction', desc: 'Press relations' },
-            { id: 654, category: 'dynamic', title: 'Public Interaction', desc: 'Citizen engagement' },
-            { id: 655, category: 'dynamic', title: 'International Interaction', desc: 'Foreign relations' },
-            { id: 656, category: 'dynamic', title: 'Staff Interaction', desc: 'Team dynamics' },
-            { id: 657, category: 'dynamic', title: 'Party Interaction', desc: 'Political relations' },
-            { id: 658, category: 'dynamic', title: 'Agency Interaction', desc: 'Bureaucratic relations' },
-            { id: 659, category: 'dynamic', title: 'Expert Interaction', desc: 'Advisor consultations' },
-            { id: 660, category: 'dynamic', title: 'Crisis Interaction', desc: 'Emergency coordination' },
-            { id: 661, category: 'dynamic', title: 'Public Feedback', desc: 'Citizen opinions' },
-            { id: 662, category: 'dynamic', title: 'Media Feedback', desc: 'News coverage' },
-            { id: 663, category: 'dynamic', title: 'Expert Feedback', desc: 'Professional analysis' },
-            { id: 664, category: 'dynamic', title: 'Staff Feedback', desc: 'Team input' },
-            { id: 665, category: 'dynamic', title: 'International Feedback', desc: 'Global response' },
-            { id: 666, category: 'dynamic', title: 'Market Feedback', desc: 'Economic reaction' },
-            { id: 667, category: 'dynamic', title: 'Poll Feedback', desc: 'Survey results' },
-            { id: 668, category: 'dynamic', title: 'Social Media Feedback', desc: 'Online response' },
-            { id: 669, category: 'dynamic', title: 'Congressional Feedback', desc: 'Legislative response' },
-            { id: 670, category: 'dynamic', title: 'Historical Feedback', desc: 'Legacy evaluation' },
-            { id: 671, category: 'dynamic', title: 'Power Balance', desc: 'Branch relations' },
-            { id: 672, category: 'dynamic', title: 'Budget Balance', desc: 'Fiscal management' },
-            { id: 673, category: 'dynamic', title: 'Time Balance', desc: 'Schedule management' },
-            { id: 674, category: 'dynamic', title: 'Policy Balance', desc: 'Issue coverage' },
-            { id: 675, category: 'dynamic', title: 'Alliance Balance', desc: 'International relations' },
-            { id: 676, category: 'dynamic', title: 'Staff Balance', desc: 'Team composition' },
-            { id: 677, category: 'dynamic', title: 'Media Balance', desc: 'Coverage management' },
-            { id: 678, category: 'dynamic', title: 'Public Balance', desc: 'Opinion management' },
-            { id: 679, category: 'dynamic', title: 'Security Balance', desc: 'Threat management' },
-            { id: 680, category: 'dynamic', title: 'Legacy Balance', desc: 'Historical impact' },
-            { id: 681, category: 'dynamic', title: 'Level Progression', desc: 'Experience growth' },
-            { id: 682, category: 'dynamic', title: 'Skill Development', desc: 'Ability improvement' },
-            { id: 683, category: 'dynamic', title: 'Knowledge Accumulation', desc: 'Information gathering' },
-            { id: 684, category: 'dynamic', title: 'Relationship Building', desc: 'Connection development' },
-            { id: 685, category: 'dynamic', title: 'Resource Accumulation', desc: 'Asset gathering' },
-            { id: 686, category: 'dynamic', title: 'Achievement Unlocking', desc: 'Goal completion' },
-            { id: 687, category: 'dynamic', title: 'Rank Advancement', desc: 'Status improvement' },
-            { id: 688, category: 'dynamic', title: 'Ability Enhancement', desc: 'Capability growth' },
-            { id: 689, category: 'dynamic', title: 'Network Expansion', desc: 'Contact building' },
-            { id: 690, category: 'dynamic', title: 'Legacy Development', desc: 'Historical impact' },
-            { id: 691, category: 'dynamic', title: 'Difficulty Scaling', desc: 'Progressive challenge' },
-            { id: 692, category: 'dynamic', title: 'Random Challenges', desc: 'Unexpected tests' },
-            { id: 693, category: 'dynamic', title: 'Time Challenges', desc: 'Speed requirements' },
-            { id: 694, category: 'dynamic', title: 'Resource Challenges', desc: 'Limited assets' },
-            { id: 695, category: 'dynamic', title: 'Political Challenges', desc: 'Opposition tests' },
-            { id: 696, category: 'dynamic', title: 'Crisis Challenges', desc: 'Emergency management' },
-            { id: 697, category: 'dynamic', title: 'Diplomatic Challenges', desc: 'Foreign relations' },
-            { id: 698, category: 'dynamic', title: 'Economic Challenges', desc: 'Financial management' },
-            { id: 699, category: 'dynamic', title: 'Moral Challenges', desc: 'Ethical decisions' },
-            { id: 700, category: 'dynamic', title: 'Legacy Challenges', desc: 'Historical tests' },
-            
-            // Advanced Systems
-            { id: 701, category: 'advanced', title: 'Long-term Planning', desc: 'Future preparation' },
-            { id: 702, category: 'advanced', title: 'Short-term Tactics', desc: 'Immediate actions' },
-            { id: 703, category: 'advanced', title: 'Resource Strategy', desc: 'Asset management' },
-            { id: 704, category: 'advanced', title: 'Alliance Strategy', desc: 'Partnership building' },
-            { id: 705, category: 'advanced', title: 'Communication Strategy', desc: 'Message control' },
-            { id: 706, category: 'advanced', title: 'Crisis Strategy', desc: 'Emergency planning' },
-            { id: 707, category: 'advanced', title: 'Legacy Strategy', desc: 'Historical impact' },
-            { id: 708, category: 'advanced', title: 'Election Strategy', desc: 'Campaign planning' },
-            { id: 709, category: 'advanced', title: 'Policy Strategy', desc: 'Reform planning' },
-            { id: 710, category: 'advanced', title: 'International Strategy', desc: 'Global positioning' },
-            { id: 711, category: 'advanced', title: 'Weather Simulation', desc: 'Climate patterns' },
-            { id: 712, category: 'advanced', title: 'Population Simulation', desc: 'Demographics' },
-            { id: 713, category: 'advanced', title: 'Economic Simulation', desc: 'Market behavior' },
-            { id: 714, category: 'advanced', title: 'Political Simulation', desc: 'Party dynamics' },
-            { id: 715, category: 'advanced', title: 'Military Simulation', desc: 'Conflict outcomes' },
-            { id: 716, category: 'advanced', title: 'Social Simulation', desc: 'Public behavior' },
-            { id: 717, category: 'advanced', title: 'Media Simulation', desc: 'News cycles' },
-            { id: 718, category: 'advanced', title: 'International Simulation', desc: 'Global events' },
-            { id: 719, category: 'advanced', title: 'Environmental Simulation', desc: 'Ecosystem changes' },
-            { id: 720, category: 'advanced', title: 'Health Simulation', desc: 'Disease spread' },
-            { id: 721, category: 'advanced', title: 'Priority System', desc: 'Issue importance' },
-            { id: 722, category: 'advanced', title: 'Risk Assessment', desc: 'Danger evaluation' },
-            { id: 723, category: 'advanced', title: 'Cost-Benefit Analysis', desc: 'Option evaluation' },
-            { id: 724, category: 'advanced', title: 'Ethical Framework', desc: 'Moral decisions' },
-            { id: 725, category: 'advanced', title: 'Strategic Thinking', desc: 'Long-term planning' },
-            { id: 726, category: 'advanced', title: 'Tactical Response', desc: 'Immediate action' },
-            { id: 727, category: 'advanced', title: 'Consensus Building', desc: 'Agreement seeking' },
-            { id: 728, category: 'advanced', title: 'Crisis Decision', desc: 'Emergency choices' },
-            { id: 729, category: 'advanced', title: 'Policy Choice', desc: 'Reform options' },
-            { id: 730, category: 'advanced', title: 'Personal Decision', desc: 'Individual choices' },
-            { id: 731, category: 'advanced', title: 'Trust Building', desc: 'Confidence development' },
-            { id: 732, category: 'advanced', title: 'Alliance Formation', desc: 'Partnership creation' },
-            { id: 733, category: 'advanced', title: 'Rivalry Management', desc: 'Competition handling' },
-            { id: 734, category: 'advanced', title: 'Friendship Development', desc: 'Personal bonds' },
-            { id: 735, category: 'advanced', title: 'Professional Relations', desc: 'Work connections' },
-            { id: 736, category: 'advanced', title: 'Family Relations', desc: 'Personal life' },
-            { id: 737, category: 'advanced', title: 'Party Relations', desc: 'Political connections' },
-            { id: 738, category: 'advanced', title: 'Media Relations', desc: 'Press contacts' },
-            { id: 739, category: 'advanced', title: 'International Relations', desc: 'Global connections' },
-            { id: 740, category: 'advanced', title: 'Staff Relations', desc: 'Team dynamics' },
-            { id: 741, category: 'advanced', title: 'Milestone Achievement', desc: 'Major goals' },
-            { id: 742, category: 'advanced', title: 'Daily Achievement', desc: 'Regular tasks' },
-            { id: 743, category: 'advanced', title: 'Hidden Achievement', desc: 'Secret goals' },
-            { id: 744, category: 'advanced', title: 'Challenge Achievement', desc: 'Difficult tasks' },
-            { id: 745, category: 'advanced', title: 'Collection Achievement', desc: 'Gathering items' },
-            { id: 746, category: 'advanced', title: 'Progression Achievement', desc: 'Development goals' },
-            { id: 747, category: 'advanced', title: 'Social Achievement', desc: 'Relationship goals' },
-            { id: 748, category: 'advanced', title: 'Skill Achievement', desc: 'Ability development' },
-            { id: 749, category: 'advanced', title: 'Legacy Achievement', desc: 'Historical impact' },
-            { id: 750, category: 'advanced', title: 'Special Achievement', desc: 'Unique goals' },
-            { id: 751, category: 'advanced', title: 'Approval Score', desc: 'Public opinion' },
-            { id: 752, category: 'advanced', title: 'Economic Score', desc: 'Financial performance' },
-            { id: 753, category: 'advanced', title: 'Security Score', desc: 'Safety level' },
-            { id: 754, category: 'advanced', title: 'Social Score', desc: 'Quality of life' },
-            { id: 755, category: 'advanced', title: 'Environmental Score', desc: 'Climate action' },
-            { id: 756, category: 'advanced', title: 'International Score', desc: 'Global standing' },
-            { id: 757, category: 'advanced', title: 'Legacy Score', desc: 'Historical impact' },
-            { id: 758, category: 'advanced', title: 'Achievement Score', desc: 'Goal completion' },
-            { id: 759, category: 'advanced', title: 'Policy Score', desc: 'Reform success' },
-            { id: 760, category: 'advanced', title: 'Overall Score', desc: 'Total performance' },
-            { id: 761, category: 'advanced', title: 'Easy Mode', desc: 'Casual experience' },
-            { id: 762, category: 'advanced', title: 'Normal Mode', desc: 'Standard challenge' },
-            { id: 763, category: 'advanced', title: 'Hard Mode', desc: 'Increased difficulty' },
-            { id: 764, category: 'advanced', title: 'Expert Mode', desc: 'Maximum challenge' },
-            { id: 765, category: 'advanced', title: 'Custom Mode', desc: 'Player settings' },
-            { id: 766, category: 'advanced', title: 'Iron Man Mode', desc: 'Permanent choices' },
-            { id: 767, category: 'advanced', title: 'Random Mode', desc: 'Unpredictable events' },
-            { id: 768, category: 'advanced', title: 'Historical Mode', desc: 'Real events' },
-            { id: 769, category: 'advanced', title: 'Fantasy Mode', desc: 'Fictional scenarios' },
-            { id: 770, category: 'advanced', title: 'Challenge Mode', desc: 'Specific tests' },
-            { id: 771, category: 'advanced', title: 'Daily Cycle', desc: '24-hour period' },
-            { id: 772, category: 'advanced', title: 'Weekly Cycle', desc: '7-day period' },
-            { id: 773, category: 'advanced', title: 'Monthly Cycle', desc: '30-day period' },
-            { id: 774, category: 'advanced', title: 'Yearly Cycle', desc: '365-day period' },
-            { id: 775, category: 'advanced', title: 'Term Cycle', desc: '4-year period' },
-            { id: 776, category: 'advanced', title: 'Historical Era', desc: 'Time periods' },
-            { id: 777, category: 'advanced', title: 'Event Timing', desc: 'Scheduled actions' },
-            { id: 778, category: 'advanced', title: 'Crisis Timing', desc: 'Emergency response' },
-            { id: 779, category: 'advanced', title: 'Election Cycle', desc: 'Campaign periods' },
-            { id: 780, category: 'advanced', title: 'Legacy Period', desc: 'Historical evaluation' },
-            { id: 781, category: 'advanced', title: 'Money Management', desc: 'Financial resources' },
-            { id: 782, category: 'advanced', title: 'Time Management', desc: 'Schedule control' },
-            { id: 783, category: 'advanced', title: 'Staff Management', desc: 'Human resources' },
-            { id: 784, category: 'advanced', title: 'Information Management', desc: 'Knowledge access' },
-            { id: 785, category: 'advanced', title: 'Influence Management', desc: 'Political power' },
-            { id: 786, category: 'advanced', title: 'Media Management', desc: 'Coverage control' },
-            { id: 787, category: 'advanced', title: 'Military Resources', desc: 'Defense assets' },
-            { id: 788, category: 'advanced', title: 'Diplomatic Resources', desc: 'International capital' },
-            { id: 789, category: 'advanced', title: 'Emergency Resources', desc: 'Crisis assets' },
-            { id: 790, category: 'advanced', title: 'Legacy Resources', desc: 'Historical capital' },
-            { id: 791, category: 'advanced', title: 'Message Development', desc: 'Content creation' },
-            { id: 792, category: 'advanced', title: 'Channel Selection', desc: 'Media choice' },
-            { id: 793, category: 'advanced', title: 'Audience Targeting', desc: 'Group focus' },
-            { id: 794, category: 'advanced', title: 'Timing Strategy', desc: 'Schedule planning' },
-            { id: 795, category: 'advanced', title: 'Response Management', desc: 'Reaction control' },
-            { id: 796, category: 'advanced', title: 'Crisis Communication', desc: 'Emergency messaging' },
-            { id: 797, category: 'advanced', title: 'Social Media Strategy', desc: 'Online presence' },
-            { id: 798, category: 'advanced', title: 'Press Relations', desc: 'Media management' },
-            { id: 799, category: 'advanced', title: 'Public Speaking', desc: 'Speech delivery' },
-            { id: 800, category: 'advanced', title: 'Communication Feedback', desc: 'Response evaluation' },
-            
-            // Special Systems
-            { id: 801, category: 'special', title: 'Cold War Scenario', desc: 'Historical conflict' },
-            { id: 802, category: 'special', title: 'World War Scenario', desc: 'Global conflict' },
-            { id: 803, category: 'special', title: 'Economic Depression', desc: 'Financial crisis' },
-            { id: 804, category: 'special', title: 'Pandemic Scenario', desc: 'Health crisis' },
-            { id: 805, category: 'special', title: 'Civil War Scenario', desc: 'Internal conflict' },
-            { id: 806, category: 'special', title: 'Alien Contact', desc: 'Sci-fi scenario' },
-            { id: 807, category: 'special', title: 'Climate Catastrophe', desc: 'Environmental crisis' },
-            { id: 808, category: 'special', title: 'Cyber Apocalypse', desc: 'Digital collapse' },
-            { id: 809, category: 'special', title: 'Nuclear Crisis', desc: 'Weapons threat' },
-            { id: 810, category: 'special', title: 'Utopia Building', desc: 'Perfect society' },
-            { id: 811, category: 'special', title: 'Custom Policies', desc: 'Player creation' },
-            { id: 812, category: 'special', title: 'Custom Events', desc: 'Scenario design' },
-            { id: 813, category: 'special', title: 'Custom Characters', desc: 'NPC creation' },
-            { id: 814, category: 'special', title: 'Custom Nations', desc: 'Country design' },
-            { id: 815, category: 'special', title: 'Custom Challenges', desc: 'Test creation' },
-            { id: 816, category: 'special', title: 'Custom Scenarios', desc: 'Story design' },
-            { id: 817, category: 'special', title: 'Custom Rules', desc: 'Gameplay modification' },
-            { id: 818, category: 'special', title: 'Custom Interface', desc: 'UI changes' },
-            { id: 819, category: 'special', title: 'Custom Content', desc: 'Asset addition' },
-            { id: 820, category: 'special', title: 'Custom Campaigns', desc: 'Story creation' },
-            { id: 821, category: 'special', title: 'Cooperative Mode', desc: 'Team play' },
-            { id: 822, category: 'special', title: 'Competitive Mode', desc: 'Player vs player' },
-            { id: 823, category: 'special', title: 'Asynchronous Play', desc: 'Turn-based' },
-            { id: 824, category: 'special', title: 'Leaderboards', desc: 'Ranking system' },
-            { id: 825, category: 'special', title: 'Achievements Sharing', desc: 'Social features' },
-            { id: 826, category: 'special', title: 'Scenario Sharing', desc: 'Content exchange' },
-            { id: 827, category: 'special', title: 'Challenge Trading', desc: 'Task exchange' },
-            { id: 828, category: 'special', title: 'Alliance System', desc: 'Team formation' },
-            { id: 829, category: 'special', title: 'Trade System', desc: 'Resource exchange' },
-            { id: 830, category: 'special', title: 'Communication System', desc: 'Player interaction' },
-            { id: 831, category: 'special', title: 'NPC Decision Making', desc: 'Character AI' },
-            { id: 832, category: 'special', title: 'Public Opinion AI', desc: 'Population behavior' },
-            { id: 833, category: 'special', title: 'Media AI', desc: 'News generation' },
-            { id: 834, category: 'special', title: 'Economic AI', desc: 'Market simulation' },
-            { id: 835, category: 'special', title: 'Political AI', desc: 'Opposition behavior' },
-            { id: 836, category: 'special', title: 'International AI', desc: 'Foreign leaders' },
-            { id: 837, category: 'special', title: 'Crisis AI', desc: 'Emergency events' },
-            { id: 838, category: 'special', title: 'Advisor AI', desc: 'Suggestion system' },
-            { id: 839, category: 'special', title: 'Random Event AI', desc: 'Surprise generation' },
-            { id: 840, category: 'special', title: 'Adaptation AI', desc: 'Learning system' },
-            { id: 841, category: 'special', title: 'Basic Tutorial', desc: 'Core mechanics' },
-            { id: 842, category: 'special', title: 'Advanced Tutorial', desc: 'Complex systems' },
-            { id: 843, category: 'special', title: 'Strategy Guide', desc: 'Tips and tricks' },
-            { id: 844, category: 'special', title: 'Scenario Tutorial', desc: 'Specific situations' },
-            { id: 845, category: 'special', title: 'Video Tutorial', desc: 'Visual learning' },
-            { id: 846, category: 'special', title: 'Interactive Guide', desc: 'Hands-on learning' },
-            { id: 847, category: 'special', title: 'Mentor System', desc: 'In-game guidance' },
-            { id: 848, category: 'special', title: 'Help System', desc: 'Reference material' },
-            { id: 849, category: 'special', title: 'FAQ System', desc: 'Common questions' },
-            { id: 850, category: 'special', title: 'Community Guide', desc: 'Player wisdom' },
-            { id: 851, category: 'special', title: 'Color Blind Mode', desc: 'Visual accessibility' },
-            { id: 852, category: 'special', title: 'Text Size Adjustment', desc: 'Reading accessibility' },
-            { id: 853, category: 'special', title: 'Audio Cues', desc: 'Hearing accessibility' },
-            { id: 854, category: 'special', title: 'Subtitle System', desc: 'Caption support' },
-            { id: 855, category: 'special', title: 'Difficulty Adjustment', desc: 'Skill accessibility' },
-            { id: 856, category: 'special', title: 'Control Customization', desc: 'Input accessibility' },
-            { id: 857, category: 'special', title: 'Interface Scaling', desc: 'Visual adjustment' },
-            { id: 858, category: 'special', title: 'Language Support', desc: 'Translation' },
-            { id: 859, category: 'special', title: 'Tutorial Adjustment', desc: 'Learning support' },
-            { id: 860, category: 'special', title: 'Pace Control', desc: 'Speed adjustment' },
-            { id: 861, category: 'special', title: 'Save System', desc: 'Progress preservation' },
-            { id: 862, category: 'special', title: 'Load System', desc: 'Game restoration' },
-            { id: 863, category: 'special', title: 'Auto-save', desc: 'Automatic backup' },
-            { id: 864, category: 'special', title: 'Quick Save', desc: 'Fast preservation' },
-            { id: 865, category: 'special', title: 'Cloud Save', desc: 'Online backup' },
-            { id: 866, category: 'special', title: 'Multiple Saves', desc: 'Save management' },
-            { id: 867, category: 'special', title: 'Iron Man Save', desc: 'Permanent choices' },
-            { id: 868, category: 'special', title: 'Checkpoint System', desc: 'Progress points' },
-            { id: 869, category: 'special', title: 'Session System', desc: 'Play sessions' },
-            { id: 870, category: 'special', title: 'Resume System', desc: 'Continue playing' },
-            { id: 871, category: 'special', title: 'Policy Statistics', desc: 'Decision tracking' },
-            { id: 872, category: 'special', title: 'Economic Statistics', desc: 'Financial data' },
-            { id: 873, category: 'special', title: 'Social Statistics', desc: 'Population data' },
-            { id: 874, category: 'special', title: 'Military Statistics', desc: 'Defense data' },
-            { id: 875, category: 'special', title: 'Diplomatic Statistics', desc: 'Foreign relations' },
-            { id: 876, category: 'special', title: 'Environmental Statistics', desc: 'Climate data' },
-            { id: 877, category: 'special', title: 'Health Statistics', desc: 'Medical data' },
-            { id: 878, category: 'special', title: 'Education Statistics', desc: 'School data' },
-            { id: 879, category: 'special', title: 'Crime Statistics', desc: 'Safety data' },
-            { id: 880, category: 'special', title: 'Legacy Statistics', desc: 'Historical data' },
-            { id: 881, category: 'special', title: 'Achievement Rewards', desc: 'Goal prizes' },
-            { id: 882, category: 'special', title: 'Progression Rewards', desc: 'Level prizes' },
-            { id: 883, category: 'special', title: 'Challenge Rewards', desc: 'Task prizes' },
-            { id: 884, category: 'special', title: 'Daily Rewards', desc: 'Regular prizes' },
-            { id: 885, category: 'special', title: 'Special Rewards', desc: 'Event prizes' },
-            { id: 886, category: 'special', title: 'Collection Rewards', desc: 'Gathering prizes' },
-            { id: 887, category: 'special', title: 'Milestone Rewards', desc: 'Major prizes' },
-            { id: 888, category: 'special', title: 'Legacy Rewards', desc: 'Historical prizes' },
-            { id: 889, category: 'special', title: 'Social Rewards', desc: 'Community prizes' },
-            { id: 890, category: 'special', title: 'Hidden Rewards', desc: 'Secret prizes' },
-            { id: 891, category: 'special', title: 'Character Customization', desc: 'Appearance options' },
-            { id: 892, category: 'special', title: 'Office Customization', desc: 'Workspace design' },
-            { id: 893, category: 'special', title: 'Policy Customization', desc: 'Rule creation' },
-            { id: 894, category: 'special', title: 'Interface Customization', desc: 'UI design' },
-            { id: 895, category: 'special', title: 'Difficulty Customization', desc: 'Challenge settings' },
-            { id: 896, category: 'special', title: 'Scenario Customization', desc: 'Story design' },
-            { id: 897, category: 'special', title: 'Campaign Customization', desc: 'Game mode' },
-            { id: 898, category: 'special', title: 'Achievement Customization', desc: 'Goal setting' },
-            { id: 899, category: 'special', title: 'Mod Support', desc: 'Content modification' },
-            { id: 900, category: 'special', title: 'Theme Customization', desc: 'Visual style' },
-            
-            // Ultimate Systems
-            { id: 901, category: 'ultimate', title: 'Master Difficulty', desc: 'Ultimate challenge' },
-            { id: 902, category: 'ultimate', title: 'Master Scenario', desc: 'Complex simulation' },
-            { id: 903, category: 'ultimate', title: 'Master Campaign', desc: 'Extended gameplay' },
-            { id: 904, category: 'ultimate', title: 'Master Achievement', desc: 'Ultimate goal' },
-            { id: 905, category: 'ultimate', title: 'Master Legacy', desc: 'Perfect score' },
-            { id: 906, category: 'ultimate', title: 'Master Strategy', desc: 'Optimal play' },
-            { id: 907, category: 'ultimate', title: 'Master Policy', desc: 'Perfect governance' },
-            { id: 908, category: 'ultimate', title: 'Master Diplomacy', desc: 'Global peace' },
-            { id: 909, category: 'ultimate', title: 'Master Economy', desc: 'Perfect markets' },
-            { id: 910, category: 'ultimate', title: 'Master Society', desc: 'Utopia creation' },
-            { id: 911, category: 'ultimate', title: 'Perfect Term', desc: 'Flawless presidency' },
-            { id: 912, category: 'ultimate', title: 'World Peace', desc: 'Global harmony' },
-            { id: 913, category: 'ultimate', title: 'Economic Utopia', desc: 'Perfect markets' },
-            { id: 914, category: 'ultimate', title: 'Social Paradise', desc: 'Ideal society' },
-            { id: 915, category: 'ultimate', title: 'Environmental Eden', desc: 'Perfect climate' },
-            { id: 916, category: 'ultimate', title: 'Political Mastery', desc: 'Total control' },
-            { id: 917, category: 'ultimate', title: 'Diplomatic Genius', desc: 'Perfect relations' },
-            { id: 918, category: 'ultimate', title: 'Military Victory', desc: 'Total defense' },
-            { id: 919, category: 'ultimate', title: 'Legacy Immortality', desc: 'Eternal impact' },
-            { id: 920, category: 'ultimate', title: 'Historical Greatness', desc: 'Best president' },
-            { id: 921, category: 'ultimate', title: 'Retirement Planning', desc: 'Post-presidency' },
-            { id: 922, category: 'ultimate', title: 'Legacy Building', desc: 'Historical impact' },
-            { id: 923, category: 'ultimate', title: 'Memoir Writing', desc: 'Story creation' },
-            { id: 924, category: 'ultimate', title: 'Foundation Creation', desc: 'Charity work' },
-            { id: 925, category: 'ultimate', title: 'Speaking Career', desc: 'Public influence' },
-            { id: 926, category: 'ultimate', title: 'Political Dynasty', desc: 'Family legacy' },
-            { id: 927, category: 'ultimate', title: 'Historical Ranking', desc: 'Performance evaluation' },
-            { id: 928, category: 'ultimate', title: 'Presidential Library', desc: 'Legacy preservation' },
-            { id: 929, category: 'ultimate', title: 'Global Impact', desc: 'World influence' },
-            { id: 930, category: 'ultimate', title: 'Eternal Legacy', desc: 'Historical immortality' },
-            { id: 931, category: 'ultimate', title: 'God Mode', desc: 'Unlimited power' },
-            { id: 932, category: 'ultimate', title: 'Sandbox Mode', desc: 'Free play' },
-            { id: 933, category: 'ultimate', title: 'Story Mode', desc: 'Narrative gameplay' },
-            { id: 934, category: 'ultimate', title: 'Challenge Mode', desc: 'Specific tests' },
-            { id: 935, category: 'ultimate', title: 'Survival Mode', desc: 'Extended play' },
-            { id: 936, category: 'ultimate', title: 'Speed Run Mode', desc: 'Fast completion' },
-            { id: 937, category: 'ultimate', title: 'Score Attack', desc: 'Point maximization' },
-            { id: 938, category: 'ultimate', title: 'Random Mode', desc: 'Unpredictable play' },
-            { id: 939, category: 'ultimate', title: 'Historical Mode', desc: 'Real events' },
-            { id: 940, category: 'ultimate', title: 'Custom Mode', desc: 'Player design' },
-            { id: 941, category: 'ultimate', title: 'Hidden Achievements', desc: 'Secret goals' },
-            { id: 942, category: 'ultimate', title: 'Easter Eggs', desc: 'Hidden content' },
-            { id: 943, category: 'ultimate', title: 'Secret Scenarios', desc: 'Special events' },
-            { id: 944, category: 'ultimate', title: 'Hidden Characters', desc: 'Secret NPCs' },
-            { id: 945, category: 'ultimate', title: 'Secret Policies', desc: 'Special options' },
-            { id: 946, category: 'ultimate', title: 'Hidden Endings', desc: 'Special conclusions' },
-            { id: 947, category: 'ultimate', title: 'Secret Areas', desc: 'Hidden locations' },
-            { id: 948, category: 'ultimate', title: 'Hidden Features', desc: 'Special mechanics' },
-            { id: 949, category: 'ultimate', title: 'Secret Codes', desc: 'Cheat system' },
-            { id: 950, category: 'ultimate', title: 'Hidden Modes', desc: 'Special gameplay' },
-            { id: 951, category: 'ultimate', title: 'Historical Impact', desc: 'Long-term effects' },
-            { id: 952, category: 'ultimate', title: 'Cultural Influence', desc: 'Social change' },
-            { id: 953, category: 'ultimate', title: 'Political Legacy', desc: 'System change' },
-            { id: 954, category: 'ultimate', title: 'Economic Legacy', desc: 'Market impact' },
-            { id: 955, category: 'ultimate', title: 'Social Legacy', desc: 'Society change' },
-            { id: 956, category: 'ultimate', title: 'Environmental Legacy', desc: 'Climate impact' },
-            { id: 957, category: 'ultimate', title: 'International Legacy', desc: 'Global change' },
-            { id: 958, category: 'ultimate', title: 'Personal Legacy', desc: 'Individual impact' },
-            { id: 959, category: 'ultimate', title: 'Family Legacy', desc: 'Generational effect' },
-            { id: 960, category: 'ultimate', title: 'National Legacy', desc: 'Country change' },
-            { id: 961, category: 'ultimate', title: 'Perfect Approval', desc: '100% support' },
-            { id: 962, category: 'ultimate', title: 'Perfect Economy', desc: 'Ideal markets' },
-            { id: 963, category: 'ultimate', title: 'Perfect Security', desc: 'Total safety' },
-            { id: 964, category: 'ultimate', title: 'Perfect Society', desc: 'Ideal community' },
-            { id: 965, category: 'ultimate', title: 'Perfect Environment', desc: 'Clean planet' },
-            { id: 966, category: 'ultimate', title: 'Perfect Diplomacy', desc: 'Global peace' },
-            { id: 967, category: 'ultimate', title: 'Perfect Legacy', desc: 'Historical greatness' },
-            { id: 968, category: 'ultimate', title: 'Perfect Score', desc: 'Maximum points' },
-            { id: 969, category: 'ultimate', title: 'Perfect Term', desc: 'Flawless presidency' },
-            { id: 970, category: 'ultimate', title: 'Perfect Game', desc: 'Complete mastery' },
-            { id: 971, category: 'ultimate', title: 'Game Completion', desc: 'Full finish' },
-            { id: 972, category: 'ultimate', title: '100% Achievement', desc: 'All goals' },
-            { id: 973, category: 'ultimate', title: 'Perfect Legacy', desc: 'Best ending' },
-            { id: 974, category: 'ultimate', title: 'Ultimate Challenge', desc: 'Hardest test' },
-            { id: 975, category: 'ultimate', title: 'Final Boss', desc: 'Greatest crisis' },
-            { id: 976, category: 'ultimate', title: 'Endgame Content', desc: 'Post-game play' },
-            { id: 977, category: 'ultimate', title: 'New Game Plus', desc: 'Extended play' },
-            { id: 978, category: 'ultimate', title: 'Secret Ending', desc: 'Special finish' },
-            { id: 979, category: 'ultimate', title: 'True Ending', desc: 'Canon conclusion' },
-            { id: 980, category: 'ultimate', title: 'Eternal Play', desc: 'Infinite gameplay' },
-            { id: 981, category: 'ultimate', title: 'Presidential Medal', desc: 'Highest honor' },
-            { id: 982, category: 'ultimate', title: 'Nobel Prize', desc: 'Global recognition' },
-            { id: 983, category: 'ultimate', title: 'Historical Monument', desc: 'Legacy building' },
-            { id: 984, category: 'ultimate', title: 'Eternal Fame', desc: 'Immortal reputation' },
-            { id: 985, category: 'ultimate', title: 'Global Peace Prize', desc: 'World harmony' },
-            { id: 986, category: 'ultimate', title: 'Perfect Legacy Award', desc: 'Historical greatness' },
-            { id: 987, category: 'ultimate', title: 'Ultimate Achievement', desc: 'Complete mastery' },
-            { id: 988, category: 'ultimate', title: 'Legendary Status', desc: 'Mythical reputation' },
-            { id: 989, category: 'ultimate', title: 'Divine Recognition', desc: 'God-like status' },
-            { id: 990, category: 'ultimate', title: 'Immortal Legacy', desc: 'Eternal impact' },
-            { id: 991, category: 'ultimate', title: 'The Truth', desc: 'Hidden knowledge' },
-            { id: 992, category: 'ultimate', title: 'The Purpose', desc: 'Game meaning' },
-            { id: 993, category: 'ultimate', title: 'The Secret', desc: 'Hidden message' },
-            { id: 994, category: 'ultimate', title: 'The Answer', desc: 'Ultimate solution' },
-            { id: 995, category: 'ultimate', title: 'The Path', desc: 'True way' },
-            { id: 996, category: 'ultimate', title: 'The Light', desc: 'Enlightenment' },
-            { id: 997, category: 'ultimate', title: 'The End', desc: 'Final conclusion' },
-            { id: 998, category: 'ultimate', title: 'The Beginning', desc: 'New start' },
-            { id: 999, category: 'ultimate', title: 'The Infinite', desc: 'Eternal gameplay' }
+        // Game State
+        let gameState = {
+            term: 1,
+            week: 1,
+            maxWeeks: 52,
+            approval: 50,
+            economy: 50,
+            security: 50,
+            health: 50,
+            politicalCapital: 50,
+            gameOver: false,
+            decisionsMade: 0,
+            crisesHandled: 0,
+            log: []
+        };
+        
+        // Event Pool
+        const events = [
+            {
+                title: "🏥 Healthcare Crisis",
+                description: "A new epidemic is spreading rapidly. Hospitals are overwhelmed and citizens are panicking.",
+                choices: [
+                    {
+                        text: "Declare national emergency and allocate $10B to healthcare",
+                        effects: { approval: 5, economy: -3, security: 0, health: 15, capital: -5 },
+                        log: "You declared a health emergency and funded hospitals."
+                    },
+                    {
+                        text: "Implement mandatory vaccinations and quarantine measures",
+                        effects: { approval: 3, economy: -5, security: 5, health: 10, capital: 0 },
+                        log: "You implemented strict health measures."
+                    },
+                    {
+                        text: "Let states handle it independently",
+                        effects: { approval: -10, economy: 0, security: 0, health: -15, capital: -10 },
+                        log: "You delegated to states, but the crisis worsened."
+                    }
+                ]
+            },
+            {
+                title: "💰 Economic Recession",
+                description: "The stock market is crashing and unemployment is rising. Economists predict a deep recession.",
+                choices: [
+                    {
+                        text: "Pass a $1T stimulus package",
+                        effects: { approval: 5, economy: 15, security: 0, health: 0, capital: -10 },
+                        log: "You passed a massive stimulus bill."
+                    },
+                    {
+                        text: "Cut taxes for corporations",
+                        effects: { approval: -5, economy: 10, security: 0, health: -5, capital: 5 },
+                        log: "You cut corporate taxes to stimulate growth."
+                    },
+                    {
+                        text: "Do nothing and let markets correct",
+                        effects: { approval: -10, economy: -10, security: 0, health: -5, capital: -5 },
+                        log: "You chose austerity. The economy suffered."
+                    }
+                ]
+            },
+            {
+                title: "🛡️ Terrorist Threat",
+                description: "Intelligence agencies have detected a potential terrorist plot against a major city.",
+                choices: [
+                    {
+                        text: "Increase security and conduct surveillance",
+                        effects: { approval: 5, economy: -3, security: 15, health: 0, capital: -5 },
+                        log: "You increased security measures nationwide."
+                    },
+                    {
+                        text: "Launch preemptive strikes on terrorist camps",
+                        effects: { approval: 0, economy: -5, security: 10, health: 0, capital: -10 },
+                        log: "You ordered military strikes."
+                    },
+                    {
+                        text: "Share intelligence with allies",
+                        effects: { approval: 3, economy: 0, security: 5, health: 0, capital: 5 },
+                        log: "You coordinated with international allies."
+                    }
+                ]
+            },
+            {
+                title: "🌍 Climate Summit",
+                description: "World leaders are gathering for a climate summit. They're asking for your commitment to reduce emissions.",
+                choices: [
+                    {
+                        text: "Sign aggressive climate accords",
+                        effects: { approval: 5, economy: -5, security: 0, health: 10, capital: 5 },
+                        log: "You committed to aggressive climate action."
+                    },
+                    {
+                        text: "Pursue moderate environmental policies",
+                        effects: { approval: 0, economy: 0, security: 0, health: 5, capital: 0 },
+                        log: "You took a balanced approach on climate."
+                    },
+                    {
+                        text: "Reject climate accords to protect jobs",
+                        effects: { approval: -5, economy: 5, security: 0, health: -5, capital: -5 },
+                        log: "You prioritized jobs over climate action."
+                    }
+                ]
+            },
+            {
+                title: "📚 Education Reform",
+                description: "Students are falling behind internationally. Teachers are demanding better pay and resources.",
+                choices: [
+                    {
+                        text: "Increase education funding by 50%",
+                        effects: { approval: 5, economy: 5, security: 0, health: 5, capital: -5 },
+                        log: "You invested heavily in education."
+                    },
+                    {
+                        text: "Implement school choice and vouchers",
+                        effects: { approval: 0, economy: 5, security: 0, health: 0, capital: -5 },
+                        log: "You introduced school choice programs."
+                    },
+                    {
+                        text: "Leave education to local governments",
+                        effects: { approval: -5, economy: 0, security: 0, health: -5, capital: 0 },
+                        log: "You avoided federal education reform."
+                    }
+                ]
+            },
+            {
+                title: "⚔️ International Conflict",
+                description: "A hostile nation has invaded its neighbor. Allies are asking for military intervention.",
+                choices: [
+                    {
+                        text: "Send troops to support allies",
+                        effects: { approval: 5, economy: -10, security: 10, health: 0, capital: -10 },
+                        log: "You committed troops to the conflict."
+                    },
+                    {
+                        text: "Impose economic sanctions",
+                        effects: { approval: 0, economy: -5, security: 5, health: 0, capital: 0 },
+                        log: "You imposed sanctions on the aggressor."
+                    },
+                    {
+                        text: "Stay neutral and focus domestically",
+                        effects: { approval: -5, economy: 5, security: -5, health: 0, capital: 5 },
+                        log: "You chose isolationism."
+                    }
+                ]
+            },
+            {
+                title: "🏗️ Infrastructure Failure",
+                description: "A major bridge has collapsed, revealing crumbling infrastructure across the country.",
+                choices: [
+                    {
+                        text: "Pass a $2T infrastructure bill",
+                        effects: { approval: 10, economy: 10, security: 5, health: 5, capital: -10 },
+                        log: "You passed a historic infrastructure bill."
+                    },
+                    {
+                        text: "Fund only critical repairs",
+                        effects: { approval: 0, economy: 5, security: 0, health: 0, capital: 0 },
+                        log: "You funded emergency repairs."
+                    },
+                    {
+                        text: "Blame local governments",
+                        effects: { approval: -10, economy: -5, security: -5, health: 0, capital: -5 },
+                        log: "You shifted blame and avoided responsibility."
+                    }
+                ]
+            },
+            {
+                title: "🤖 Automation Crisis",
+                description: "Rapid automation is eliminating millions of jobs across manufacturing and service sectors.",
+                choices: [
+                    {
+                        text: "Implement universal basic income",
+                        effects: { approval: 5, economy: -5, security: 0, health: 10, capital: -10 },
+                        log: "You pioneered UBI for displaced workers."
+                    },
+                    {
+                        text: "Create retraining programs",
+                        effects: { approval: 5, economy: 5, security: 0, health: 5, capital: -5 },
+                        log: "You funded job retraining programs."
+                    },
+                    {
+                        text: "Let the market adapt naturally",
+                        effects: { approval: -10, economy: 5, security: 0, health: -5, capital: 0 },
+                        log: "You chose free market adaptation."
+                    }
+                ]
+            },
+            {
+                title: "🌊 Natural Disaster",
+                description: "A catastrophic hurricane has devastated coastal cities. Millions are displaced.",
+                choices: [
+                    {
+                        text: "Deploy FEMA and military for rescue",
+                        effects: { approval: 10, economy: -5, security: 5, health: 5, capital: -5 },
+                        log: "You launched a massive rescue operation."
+                    },
+                    {
+                        text: "Provide limited federal aid",
+                        effects: { approval: -5, economy: -3, security: 0, health: 0, capital: 0 },
+                        log: "You provided minimal federal assistance."
+                    },
+                    {
+                        text: "Encourage private charity",
+                        effects: { approval: -10, economy: 0, security: 0, health: -5, capital: 5 },
+                        log: "You relied on private sector response."
+                    }
+                ]
+            },
+            {
+                title: "🔬 Scientific Breakthrough",
+                description: "Scientists have developed a revolutionary clean energy technology that could end fossil fuel dependence.",
+                choices: [
+                    {
+                        text: "Fund massive deployment",
+                        effects: { approval: 10, economy: 10, security: 5, health: 10, capital: -5 },
+                        log: "You championed clean energy revolution."
+                    },
+                    {
+                        text: "Partner with private sector",
+                        effects: { approval: 5, economy: 10, security: 0, health: 5, capital: 5 },
+                        log: "You created public-private partnerships."
+                    },
+                    {
+                        text: "Protect existing energy jobs",
+                        effects: { approval: -5, economy: 5, security: 0, health: -5, capital: -5 },
+                        log: "You protected traditional energy sector."
+                    }
+                ]
+            },
+            {
+                title: "🏛️ Corruption Scandal",
+                description: "A prominent cabinet member has been accused of accepting bribes from foreign governments.",
+                choices: [
+                    {
+                        text: "Fire them immediately and investigate",
+                        effects: { approval: 10, economy: 0, security: 5, health: 0, capital: 5 },
+                        log: "You took swift action against corruption."
+                    },
+                    {
+                        text: "Defend them publicly",
+                        effects: { approval: -10, economy: 0, security: -5, health: 0, capital: -10 },
+                        log: "You defended the accused, looking guilty."
+                    },
+                    {
+                        text: "Quietly ask for their resignation",
+                        effects: { approval: 0, economy: 0, security: 0, health: 0, capital: 0 },
+                        log: "You handled it quietly."
+                    }
+                ]
+            },
+            {
+                title: "🚀 Space Race",
+                description: "A rival nation has landed on Mars. Your country's space program is falling behind.",
+                choices: [
+                    {
+                        text: "Double NASA budget",
+                        effects: { approval: 5, economy: 5, security: 5, health: 0, capital: -5 },
+                        log: "You committed to winning the space race."
+                    },
+                    {
+                        text: "Partner with private space companies",
+                        effects: { approval: 5, economy: 10, security: 5, health: 0, capital: 5 },
+                        log: "You partnered with SpaceX and others."
+                    },
+                    {
+                        text: "Focus on Earth problems instead",
+                        effects: { approval: -5, economy: 5, security: 0, health: 5, capital: 5 },
+                        log: "You prioritized Earth over space."
+                    }
+                ]
+            }
         ];
         
-        const container = document.getElementById('systemsContainer');
-        let currentCategory = 'all';
-        let searchTerm = '';
+        // Random Crisis Events
+        const crises = [
+            {
+                title: "🚨 National Emergency!",
+                description: "A cyber attack has shut down the power grid across multiple states!",
+                choices: [
+                    {
+                        text: "Deploy National Guard and cyber response teams",
+                        effects: { approval: 5, economy: -5, security: 15, health: -5, capital: -5 },
+                        log: "You responded decisively to the cyber attack."
+                    },
+                    {
+                        text: "Negotiate with the attackers",
+                        effects: { approval: -10, economy: -10, security: -10, health: 0, capital: -10 },
+                        log: "Negotiating made you look weak."
+                    }
+                ]
+            },
+            {
+                title: "💥 Stock Market Crash!",
+                description: "The stock market has dropped 30% in one day! Panic is spreading.",
+                choices: [
+                    {
+                        text: "Hold emergency press conference to calm markets",
+                        effects: { approval: 5, economy: 10, security: 0, health: 0, capital: 5 },
+                        log: "Your calm demeanor steadied the markets."
+                    },
+                    {
+                        text: "Inject emergency liquidity",
+                        effects: { approval: 0, economy: 15, security: 0, health: 0, capital: -10 },
+                        log: "You stabilized the financial system."
+                    }
+                ]
+            },
+            {
+                title: "🏥 Pandemic Outbreak!",
+                description: "A deadly new virus is spreading across the globe!",
+                choices: [
+                    {
+                        text: "Close borders and implement lockdowns",
+                        effects: { approval: 5, economy: -15, security: 10, health: 15, capital: -5 },
+                        log: "You took aggressive action against the pandemic."
+                    },
+                    {
+                        text: "Trust citizens to social distance voluntarily",
+                        effects: { approval: -10, economy: 0, security: 0, health: -15, capital: -5 },
+                        log: "Voluntary measures failed."
+                    }
+                ]
+            }
+        ];
         
-        function renderSystems() {
-            container.innerHTML = '';
+        function startGame() {
+            gameState = {
+                term: 1,
+                week: 1,
+                maxWeeks: 52,
+                approval: 50,
+                economy: 50,
+                security: 50,
+                health: 50,
+                politicalCapital: 50,
+                gameOver: false,
+                decisionsMade: 0,
+                crisesHandled: 0,
+                log: []
+            };
             
-            const filtered = systems.filter(system => {
-                const matchesCategory = currentCategory === 'all' || system.category === currentCategory;
-                const matchesSearch = system.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                    system.desc.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                    system.id.toString().includes(searchTerm);
-                return matchesCategory && matchesSearch;
-            });
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('gameScreen').classList.add('active');
+            document.getElementById('endScreen').classList.remove('active');
             
-            if (filtered.length === 0) {
-                container.innerHTML = '<div class="section-header">No systems found</div>';
+            updateStats();
+            generateEvent();
+        }
+        
+        function generateEvent() {
+            if (gameState.gameOver || gameState.week > gameState.maxWeeks) {
+                endGame();
                 return;
             }
             
-            // Group by category for better organization
-            const categories = {};
-            filtered.forEach(system => {
-                if (!categories[system.category]) {
-                    categories[system.category] = [];
-                }
-                categories[system.category].push(system);
-            });
-            
-            const categoryNames = {
-                'core': '🏛️ Core Government Systems',
-                'gameplay': '🎮 Gameplay Mechanics',
-                'world': '🌍 World Systems',
-                'character': '🎭 Character Systems',
-                'institution': '🏢 Institution Systems',
-                'policy': '💼 Policy Systems',
-                'action': '🎯 Action Systems',
-                'consequence': '📊 Consequence Systems',
-                'dynamic': '🔄 Dynamic Systems',
-                'advanced': '🎲 Advanced Systems',
-                'special': '🌟 Special Systems',
-                'ultimate': '🏆 Ultimate Systems'
-            };
-            
-            Object.keys(categories).forEach(category => {
-                if (currentCategory === 'all') {
-                    const header = document.createElement('div');
-                    header.className = 'section-header';
-                    header.innerHTML = `<span class="emoji">${categoryNames[category].split(' ')[0]}</span> ${categoryNames[category].split(' ').slice(1).join(' ')}`;
-                    container.appendChild(header);
-                }
-                
-                categories[category].forEach(system => {
-                    const card = document.createElement('div');
-                    card.className = 'system-card';
-                    card.innerHTML = `
-                        <div class="category-tag">${categoryNames[system.category].split(' ')[0]}</div>
-                        <div class="number">#${system.id}</div>
-                        <div class="title">${system.title}</div>
-                        <div class="description">${system.desc}</div>
-                    `;
-                    card.onclick = () => showSystemDetail(system);
-                    container.appendChild(card);
-                });
-            });
-        }
-        
-        function filterCategory(category) {
-            currentCategory = category;
-            document.querySelectorAll('.category-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            renderSystems();
-        }
-        
-        function filterSystems() {
-            searchTerm = document.getElementById('searchInput').value;
-            renderSystems();
-        }
-        
-        function showSystemDetail(system) {
-            alert(`System #${system.id}\n\n${system.title}\n\n${system.desc}`);
-        }
-        
-        function saveSettings() {
-            const status = document.getElementById('status');
-            status.className = 'status loading';
-            status.textContent = 'Saving settings...';
-            
-            const settings = {
-                currentCategory,
-                searchTerm,
-                timestamp: new Date().toISOString(),
-                totalSystems: systems.length,
-                savedAt: Date.now()
-            };
-            
-            // Save to localStorage
-            localStorage.setItem('presidentSimulatorSettings', JSON.stringify(settings));
-            
-            // Save to Firebase if available
-            const firebaseUrl = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-            fetch(`${firebaseUrl}/settings.json`, {
-                method: 'PUT',
-                body: JSON.stringify(settings),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.ok) {
-                    status.className = 'status success';
-                    status.textContent = '✅ Settings saved successfully to localStorage and Firebase!';
-                } else {
-                    status.className = 'status success';
-                    status.textContent = '✅ Settings saved to localStorage (Firebase sync pending)';
-                }
-            })
-            .catch(error => {
-                status.className = 'status success';
-                status.textContent = '✅ Settings saved to localStorage';
-            });
-            
-            setTimeout(() => {
-                status.style.display = 'none';
-            }, 3000);
-        }
-        
-        function loadSettings() {
-            const status = document.getElementById('status');
-            const saved = localStorage.getItem('presidentSimulatorSettings');
-            
-            if (saved) {
-                const settings = JSON.parse(saved);
-                currentCategory = settings.currentCategory || 'all';
-                searchTerm = settings.searchTerm || '';
-                document.getElementById('searchInput').value = searchTerm;
-                
-                document.querySelectorAll('.category-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                    if (btn.textContent.toLowerCase().includes(currentCategory)) {
-                        btn.classList.add('active');
-                    }
-                });
-                
-                renderSystems();
-                
-                status.className = 'status success';
-                status.textContent = '✅ Settings loaded successfully!';
+            // 20% chance of crisis
+            if (Math.random() < 0.2) {
+                const crisis = crises[Math.floor(Math.random() * crises.length)];
+                displayEvent(crisis);
             } else {
-                status.className = 'status error';
-                status.textContent = '❌ No saved settings found';
+                const event = events[Math.floor(Math.random() * events.length)];
+                displayEvent(event);
+            }
+        }
+        
+        function displayEvent(event) {
+            document.getElementById('eventTitle').textContent = event.title;
+            document.getElementById('eventDescription').textContent = event.description;
+            
+            const choicesContainer = document.getElementById('choicesContainer');
+            choicesContainer.innerHTML = '';
+            
+            event.choices.forEach((choice, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.textContent = choice.text;
+                btn.onclick = () => makeChoice(choice);
+                choicesContainer.appendChild(btn);
+            });
+        }
+        
+        function makeChoice(choice) {
+            if (gameState.gameOver) return;
+            
+            // Apply effects
+            gameState.approval += choice.effects.approval;
+            gameState.economy += choice.effects.economy;
+            gameState.security += choice.effects.security;
+            gameState.health += choice.effects.health;
+            gameState.politicalCapital += choice.effects.capital;
+            gameState.decisionsMade++;
+            
+            // Clamp values
+            gameState.approval = Math.max(0, Math.min(100, gameState.approval));
+            gameState.economy = Math.max(0, Math.min(100, gameState.economy));
+            gameState.security = Math.max(0, Math.min(100, gameState.security));
+            gameState.health = Math.max(0, Math.min(100, gameState.health));
+            gameState.politicalCapital = Math.max(0, Math.min(100, gameState.politicalCapital));
+            
+            // Add log entry
+            addLog(choice.log, choice.effects.approval >= 0);
+            
+            // Check for game over
+            if (gameState.approval <= 0) {
+                endGame('Your approval rating hit zero! The public has lost all faith in you.');
+                return;
             }
             
-            setTimeout(() => {
-                status.style.display = 'none';
-            }, 3000);
-        }
-        
-        function exportSettings() {
-            const settings = {
-                version: '1.0',
-                game: 'President Simulator',
-                totalSystems: systems.length,
-                systems: systems,
-                savedAt: new Date().toISOString()
-            };
+            if (gameState.economy <= 0) {
+                endGame('The economy has completely collapsed! You\'re blamed for the disaster.');
+                return;
+            }
             
-            const blob = new Blob([JSON.stringify(settings, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'president-simulator-settings.json';
-            a.click();
-            URL.revokeObjectURL(url);
+            if (gameState.security <= 0) {
+                endGame('National security has completely failed! The country is in chaos.');
+                return;
+            }
             
-            const status = document.getElementById('status');
-            status.className = 'status success';
-            status.textContent = '📤 Settings exported as JSON file!';
+            if (gameState.health <= 0) {
+                endGame('Public health has collapsed! The healthcare system has failed.');
+                return;
+            }
+            
+            // Advance week
+            gameState.week++;
+            document.getElementById('currentWeek').textContent = gameState.week;
+            document.getElementById('currentTerm').textContent = gameState.term;
+            
+            // Random approval drift
+            gameState.approval += Math.floor(Math.random() * 5) - 2;
+            gameState.approval = Math.max(0, Math.min(100, gameState.approval));
+            
+            updateStats();
+            
+            // Check if term is complete
+            if (gameState.week > gameState.maxWeeks) {
+                endGame('You completed your 4-year term!');
+                return;
+            }
+            
+            // Generate next event
             setTimeout(() => {
-                status.style.display = 'none';
-            }, 3000);
+                generateEvent();
+            }, 500);
         }
         
-        function importSettings() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.json';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    try {
-                        const settings = JSON.parse(event.target.result);
-                        const status = document.getElementById('status');
-                        status.className = 'status success';
-                        status.textContent = `📥 Imported ${settings.totalSystems || settings.systems?.length || 0} systems successfully!`;
-                        setTimeout(() => {
-                            status.style.display = 'none';
-                        }, 3000);
-                    } catch (error) {
-                        const status = document.getElementById('status');
-                        status.className = 'status error';
-                        status.textContent = '❌ Invalid JSON file';
-                        setTimeout(() => {
-                            status.style.display = 'none';
-                        }, 3000);
-                    }
-                };
-                reader.readAsText(file);
-            };
-            input.click();
+        function updateStats() {
+            const approvalEl = document.getElementById('approvalStat');
+            const economyEl = document.getElementById('economyStat');
+            const securityEl = document.getElementById('securityStat');
+            const healthEl = document.getElementById('healthStat');
+            
+            approvalEl.textContent = gameState.approval + '%';
+            economyEl.textContent = gameState.economy + '%';
+            securityEl.textContent = gameState.security + '%';
+            healthEl.textContent = gameState.health + '%';
+            
+            // Color coding
+            approvalEl.className = 'stat-value ' + (gameState.approval >= 50 ? 'good' : gameState.approval >= 30 ? 'neutral' : 'bad');
+            economyEl.className = 'stat-value ' + (gameState.economy >= 50 ? 'good' : gameState.economy >= 30 ? 'neutral' : 'bad');
+            securityEl.className = 'stat-value ' + (gameState.security >= 50 ? 'good' : gameState.security >= 30 ? 'neutral' : 'bad');
+            healthEl.className = 'stat-value ' + (gameState.health >= 50 ? 'good' : gameState.health >= 30 ? 'neutral' : 'bad');
         }
         
-        // Initialize
-        renderSystems();
-        console.log('President Simulator - 999 Systems Loaded');
-        console.log('Total Systems:', systems.length);
+        function addLog(message, isGood) {
+            const logContainer = document.getElementById('gameLog');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry ' + (isGood ? 'good' : 'bad');
+            entry.textContent = `Week ${gameState.week}: ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+        
+        function endGame(reason) {
+            gameState.gameOver = true;
+            
+            document.getElementById('gameScreen').classList.remove('active');
+            document.getElementById('endScreen').classList.add('active');
+            
+            // Calculate final score
+            const finalScore = Math.round((gameState.approval + gameState.economy + gameState.security + gameState.health) / 4);
+            
+            let resultIcon, resultTitle, resultDesc;
+            
+            if (finalScore >= 75) {
+                resultIcon = '🏆';
+                resultTitle = 'Legendary President!';
+                resultDesc = `Outstanding leadership! Your final score of ${finalScore}% places you among history's greatest leaders. You'll be remembered for generations.`;
+            } else if (finalScore >= 60) {
+                resultIcon = '🎖️';
+                resultTitle = 'Great President!';
+                resultDesc = `Strong performance! Your final score of ${finalScore}% shows excellent leadership. History will remember you fondly.`;
+            } else if (finalScore >= 45) {
+                resultIcon = '📊';
+                resultTitle = 'Average President';
+                resultDesc = `Mixed results. Your final score of ${finalScore}% shows some successes and failures. A forgettable presidency.`;
+            } else if (finalScore >= 30) {
+                resultIcon = '⚠️';
+                resultTitle = 'Poor President';
+                resultDesc = `Below average performance. Your final score of ${finalScore}% disappoints the nation. Many will be glad to see you go.`;
+            } else {
+                resultIcon = '💀';
+                resultTitle = 'Disaster!';
+                resultDesc = `Your presidency was a complete failure with a score of ${finalScore}%. You'll go down in history as one of the worst.`;
+            }
+            
+            if (gameState.week > gameState.maxWeeks) {
+                resultDesc += ` You survived all ${gameState.maxWeeks} weeks!`;
+            } else {
+                resultDesc += ` You only lasted ${gameState.week} weeks.`;
+            }
+            
+            document.getElementById('resultIcon').textContent = resultIcon;
+            document.getElementById('resultTitle').textContent = resultTitle;
+            document.getElementById('resultDescription').textContent = resultDesc;
+            document.getElementById('finalApproval').textContent = finalScore + '%';
+            document.getElementById('weeksSurvived').textContent = gameState.week;
+        }
+        
+        function restartGame() {
+            startGame();
+        }
     </script>
 </body>
 </html>
