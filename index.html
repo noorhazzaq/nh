@@ -4,176 +4,145 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
-    <meta name="description" content="Simulasi Dunia - Gameplay & Multiplayer">
     <title>Simulasi Dunia</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"Dunia","short_name":"Dunia","display":"standalone","theme_color":"%230f172a","background_color":"%230f172a"}'>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');
-        :root{--bg:#0f172a;--kad:#1e293b;--garis:#334155;--teks:#f1f5f9;--teks2:#94a3b8;--utama:#38bdf8;--baik:#10b981;--amaran:#fbbf24;--buruk:#ef4444}
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--teks);min-height:100vh;-webkit-tap-highlight-color:transparent}
-        .nav{background:var(--kad);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:20;border-bottom:1px solid var(--garis)}
-        .logo{font-size:15px;font-weight:900;color:var(--utama)}
-        .nav-links{display:flex;gap:10px}
-        .nav-links a{color:var(--teks2);font-size:10px;font-weight:600;cursor:pointer;padding:4px 0}
-        .nav-links a.aktif{color:var(--utama);border-bottom:2px solid var(--utama)}
-        .main{max-width:500px;margin:0 auto;padding:12px 10px}
-        .kad{background:var(--kad);border:1px solid var(--garis);border-radius:14px;padding:14px;margin-bottom:10px}
-        .kad h2{font-size:14px;font-weight:700;color:var(--utama);margin-bottom:10px}
+        body{background:#0f172a;font-family:'Inter',sans-serif;color:#f1f5f9;min-height:100vh}
+        .nav{background:#1e293b;padding:14px;display:flex;justify-content:space-between;align-items:center}
+        .logo{font-size:16px;font-weight:900;color:#38bdf8}
+        .nav a{color:#94a3b8;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;margin-left:10px}
+        .nav a.on{color:#38bdf8}
+        .main{max-width:500px;margin:0 auto;padding:12px}
+        .card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;margin-bottom:10px}
+        .card h2{font-size:14px;color:#38bdf8;margin-bottom:10px}
         .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .stat{background:var(--bg);border:1px solid var(--garis);border-radius:10px;padding:12px 8px;text-align:center}
-        .stat .l{font-size:9px;font-weight:600;color:var(--teks2);text-transform:uppercase}
-        .stat .v{font-size:15px;font-weight:700;margin-top:4px}
-        .stat .v.baik{color:var(--baik)}
-        .stat .v.buruk{color:var(--buruk)}
-        .btn{display:block;width:100%;padding:13px;background:var(--utama);color:var(--bg);font-size:12px;font-weight:700;border:none;border-radius:10px;cursor:pointer;margin-bottom:6px}
+        .box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;text-align:center}
+        .box .l{font-size:9px;color:#94a3b8;text-transform:uppercase}
+        .box .v{font-size:15px;font-weight:700;margin-top:4px}
+        .box .v.good{color:#10b981}
+        .box .v.bad{color:#ef4444}
+        .btn{width:100%;padding:13px;background:#38bdf8;color:#0f172a;font-size:12px;font-weight:700;border:none;border-radius:10px;cursor:pointer;margin-top:8px}
         .btn:active{transform:scale(.97)}
-        .btn-o{background:transparent;color:var(--utama);border:1px solid var(--utama)}
-        .log-v{height:140px;overflow-y:auto;border:1px solid var(--garis);border-radius:10px;padding:10px;background:var(--bg)}
-        .log{padding:6px 4px;border-bottom:1px solid var(--kad);font-size:11px;color:var(--teks2)}
-        .log strong{color:var(--utama)}
-        .log.waspada{color:var(--amaran)}
-        .log.berjaya{color:var(--baik)}
-        .drawer{position:fixed;bottom:-100%;left:0;right:0;background:var(--kad);border-radius:20px 20px 0 0;z-index:50;transition:bottom .3s;max-height:70vh;overflow-y:auto;padding:20px;border-top:1px solid var(--garis)}
-        .drawer.aktif{bottom:0}
-        .handle{width:40px;height:4px;background:var(--garis);border-radius:2px;margin:0 auto 15px}
-        .drawer h3{font-size:13px;font-weight:700;color:var(--utama);margin-bottom:12px;text-align:center}
-        .g-btn{display:block;width:100%;padding:14px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;color:var(--teks);font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left}
-        .p-btn{display:block;width:100%;padding:12px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;color:var(--teks2);font-size:12px;cursor:pointer;margin-bottom:6px;text-align:left}
-        .balik{background:transparent;border:none;color:var(--utama);font-size:12px;font-weight:600;cursor:pointer;margin-bottom:10px}
+        .btn.alt{background:transparent;color:#38bdf8;border:1px solid #38bdf8}
+        .log{height:160px;overflow-y:auto;border:1px solid #334155;border-radius:10px;padding:10px;background:#0f172a;margin-top:10px}
+        .log p{font-size:11px;color:#94a3b8;padding:4px 0;border-bottom:1px solid #1e293b}
+        .log p b{color:#38bdf8}
+        .log p.warn{color:#fbbf24}
+        .log p.ok{color:#10b981}
+        .sheet{position:fixed;bottom:-100%;left:0;right:0;background:#1e293b;border-radius:20px 20px 0 0;z-index:50;transition:bottom .3s;max-height:70vh;overflow-y:auto;padding:20px}
+        .sheet.on{bottom:0}
+        .handle{width:40px;height:4px;background:#334155;border-radius:2px;margin:0 auto 15px}
+        .sheet h3{font-size:13px;color:#38bdf8;text-align:center;margin-bottom:12px}
+        .opt{width:100%;padding:14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f1f5f9;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left}
+        .opt.alt{color:#94a3b8;font-weight:400}
+        .back{background:none;border:none;color:#38bdf8;font-size:12px;cursor:pointer;margin-bottom:10px}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:40;display:none}
-        .overlay.aktif{display:block}
+        .overlay.on{display:block}
         .modal{position:fixed;inset:0;z-index:60;display:none;justify-content:center;align-items:center;padding:20px}
-        .modal.aktif{display:flex}
-        .modal-k{background:var(--kad);border:1px solid var(--garis);border-radius:14px;padding:20px;max-width:320px;width:100%;text-align:center}
-        .modal-k h3{font-size:13px;font-weight:700;color:var(--amaran);margin-bottom:8px}
-        .modal-k p{font-size:12px;color:var(--teks2);margin-bottom:15px}
-        .btn-row{display:flex;gap:8px}
-        .pemain{display:flex;justify-content:space-between;padding:12px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;margin-bottom:6px;font-size:12px}
-        .input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--garis);border-radius:10px;color:var(--teks);font-size:12px;outline:none;margin-bottom:8px}
-        .chat-v{height:140px;overflow-y:auto;border:1px solid var(--garis);border-radius:10px;padding:10px;background:var(--bg);margin-bottom:8px}
-        .footer{text-align:center;padding:16px;color:var(--teks2);font-size:11px;border-top:1px solid var(--garis)}
+        .modal.on{display:flex}
+        .modal-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;max-width:320px;width:100%;text-align:center}
+        .modal-box h3{font-size:13px;color:#fbbf24;margin-bottom:8px}
+        .modal-box p{font-size:12px;color:#94a3b8;margin-bottom:15px}
+        .row{display:flex;gap:8px}
+        .list{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:6px;display:flex;justify-content:space-between;font-size:12px}
+        .input{width:100%;padding:12px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f1f5f9;font-size:12px;outline:none;margin-bottom:8px}
+        .footer{text-align:center;padding:15px;color:#64748b;font-size:11px}
     </style>
 </head>
 <body>
     <div class="nav">
-        <div class="logo">Simulasi Dunia</div>
-        <div class="nav-links">
-            <a class="aktif" onclick="tukar('dunia',this)">Dunia</a>
-            <a onclick="tukar('negara',this)">Negara</a>
-            <a onclick="tukar('chat',this)">Chat</a>
-            <a onclick="tukar('pemain',this)">Pemain</a>
+        <div class="logo">Dunia</div>
+        <div>
+            <a class="on" onclick="page('home',this)">Utama</a>
+            <a onclick="page('country',this)">Negara</a>
+            <a onclick="page('chat',this)">Chat</a>
+            <a onclick="page('player',this)">Pemain</a>
         </div>
     </div>
     <div class="main">
-        <div id="hal-dunia">
-            <div class="kad">
+        <div id="pg-home">
+            <div class="card">
                 <h2>Status Dunia</h2>
-                <div class="grid" id="sg"></div>
-                <button class="btn" id="btnLangkah" style="margin-top:10px">Tahun Seterusnya</button>
-                <button class="btn btn-o" id="btnTindakan" style="margin-top:5px">Tindakan</button>
-            </div>
-            <div class="kad">
-                <h2>Aliran</h2>
-                <div class="log-v" id="logDunia"></div>
+                <div class="grid" id="stats"></div>
+                <button class="btn" id="btnYear">Tahun Seterusnya</button>
+                <button class="btn alt" id="btnAct">Tindakan</button>
+                <div class="log" id="log"></div>
             </div>
         </div>
-        <div id="hal-negara" style="display:none">
-            <div class="kad"><h2>Negara</h2><div id="senaraiNegara"></div></div>
+        <div id="pg-country" style="display:none">
+            <div class="card"><h2>Negara</h2><div id="countryList"></div></div>
         </div>
-        <div id="hal-chat" style="display:none">
-            <div class="kad">
-                <h2>Chat Dunia</h2>
-                <div class="chat-v" id="chatLog"></div>
-                <input type="text" id="chatNama" class="input" placeholder="Nama">
-                <input type="text" id="chatInput" class="input" placeholder="Tulis mesej...">
+        <div id="pg-chat" style="display:none">
+            <div class="card">
+                <h2>Chat</h2>
+                <div class="log" id="chatLog"></div>
+                <input class="input" id="chatName" placeholder="Nama">
+                <input class="input" id="chatText" placeholder="Mesej">
                 <button class="btn" id="btnChat">Hantar</button>
             </div>
         </div>
-        <div id="hal-pemain" style="display:none">
-            <div class="kad"><h2>Pemain</h2><div id="senaraiPemain"></div></div>
+        <div id="pg-player" style="display:none">
+            <div class="card"><h2>Pemain</h2><div id="playerList"></div></div>
         </div>
     </div>
     <div class="overlay" id="overlay"></div>
-    <div class="drawer" id="drawer">
+    <div class="sheet" id="sheet">
         <div class="handle"></div>
-        <div id="drawerIsi"></div>
+        <div id="sheetContent"></div>
     </div>
     <div class="modal" id="modal">
-        <div class="modal-k">
-            <h3 id="modalTajuk">Sahkan</h3>
-            <p id="modalDesc">Laksanakan tindakan ini?</p>
-            <div class="btn-row">
-                <button class="btn" id="modalYa">Ya</button>
-                <button class="btn btn-o" id="modalTidak">Tidak</button>
+        <div class="modal-box">
+            <h3 id="modalTitle">Sahkan</h3>
+            <p id="modalText">Laksanakan?</p>
+            <div class="row">
+                <button class="btn" id="modalYes">Ya</button>
+                <button class="btn alt" id="modalNo">Tidak</button>
             </div>
         </div>
     </div>
-    <div class="footer">Simulasi Dunia Realistik</div>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <div class="footer">Simulasi Dunia</div>
     <script>
-    'use strict';
-    var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
-    var NEGARA=[
-        {n:'China',i:'CN',p:1412000000,g:17734},{n:'India',i:'IN',p:1428000000,g:3714},
-        {n:'USA',i:'US',p:332000000,g:76399},{n:'Indonesia',i:'ID',p:277000000,g:4320},
-        {n:'Malaysia',i:'MY',p:33000000,g:11409},{n:'Singapore',i:'SG',p:5900000,g:82808},
-        {n:'Jepun',i:'JP',p:125000000,g:42345},{n:'Brazil',i:'BR',p:203000000,g:8918},
-        {n:'Nigeria',i:'NG',p:223000000,g:2163},{n:'Russia',i:'RU',p:144000000,g:15345}
-    ];
-    var s={tahun:2024,populasi:8000000000,ekonomi:100,alam:100,teknologi:50,kesihatan:50};
-    var D=['Gempa Bumi','Tsunami','Banjir','Kemarau','Wabak','Revolusi AI','Krisis','Boom','Pandemik','Perang'];
-    var KUMPULAN={
+    var s={year:2024,pop:8000000000,eco:100,env:100,tech:50,health:50};
+    var disasters=['Gempa','Tsunami','Banjir','Kemarau','Wabak','Krisis','Perang','Pandemik'];
+    var groups={
         'Ekonomi':[
-            {n:'Pertanian',e:function(){s.ekonomi=Math.min(100,s.ekonomi+3);s.alam=Math.max(0,s.alam-2);return'Pertanian +3% ekonomi'}},
-            {n:'Industri',e:function(){s.ekonomi=Math.min(100,s.ekonomi+8);s.alam=Math.max(0,s.alam-8);return'Industri +8% ekonomi'}},
-            {n:'Perdagangan',e:function(){s.ekonomi=Math.min(100,s.ekonomi+5);return'Perdagangan +5%'}}
-        ],
-        'Tenaga':[
-            {n:'Solar',e:function(){s.alam=Math.min(100,s.alam+8);return'Solar +8% alam'}},
-            {n:'Angin',e:function(){s.alam=Math.min(100,s.alam+6);return'Angin +6% alam'}},
-            {n:'Hidro',e:function(){s.alam=Math.min(100,s.alam+5);return'Hidro +5% alam'}}
-        ],
-        'Kesihatan':[
-            {n:'Vaksinasi',e:function(){s.kesihatan=Math.min(100,s.kesihatan+10);return'Kesihatan +10%'}},
-            {n:'Hospital',e:function(){s.kesihatan=Math.min(100,s.kesihatan+8);return'Kesihatan +8%'}}
-        ],
-        'Teknologi':[
-            {n:'AI',e:function(){s.teknologi=Math.min(100,s.teknologi+12);return'Teknologi +12%'}},
-            {n:'Internet',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Teknologi +8%'}},
-            {n:'Angkasa',e:function(){s.teknologi=Math.min(100,s.teknologi+15);return'Teknologi +15%'}}
+            {n:'Pertanian',f:function(){s.eco=Math.min(100,s.eco+3);s.env=Math.max(0,s.env-2);return'Ekonomi +3%'}},
+            {n:'Industri',f:function(){s.eco=Math.min(100,s.eco+8);s.env=Math.max(0,s.env-8);return'Ekonomi +8%'}}
         ],
         'Alam':[
-            {n:'Kitar Semula',e:function(){s.alam=Math.min(100,s.alam+5);return'Alam +5%'}},
-            {n:'Hutan',e:function(){s.alam=Math.min(100,s.alam+10);return'Alam +10%'}}
+            {n:'Solar',f:function(){s.env=Math.min(100,s.env+8);return'Alam +8%'}},
+            {n:'Hutan',f:function(){s.env=Math.min(100,s.env+10);return'Alam +10%'}}
         ],
         'Sosial':[
-            {n:'Pendidikan',e:function(){s.teknologi=Math.min(100,s.teknologi+8);return'Teknologi +8%'}},
-            {n:'Perumahan',e:function(){s.populasi+=5000000;return'Populasi +5 juta'}}
+            {n:'Pendidikan',f:function(){s.tech=Math.min(100,s.tech+8);return'Teknologi +8%'}},
+            {n:'Hospital',f:function(){s.health=Math.min(100,s.health+10);return'Kesihatan +10%'}}
         ]
     };
-    var tindakanTunggu=null;
-    window.tukar=function(n,btn){document.getElementById('hal-dunia').style.display=n==='dunia'?'block':'none';document.getElementById('hal-negara').style.display=n==='negara'?'block':'none';document.getElementById('hal-chat').style.display=n==='chat'?'block':'none';document.getElementById('hal-pemain').style.display=n==='pemain'?'block':'none';document.querySelectorAll('.nav-links a').forEach(function(a){a.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='negara')paparNegara();if(n==='pemain')muatPemain()};
-    function bukaDrawer(){document.getElementById('drawer').classList.add('aktif');document.getElementById('overlay').classList.add('aktif');paparKumpulan()}
-    function tutupDrawer(){document.getElementById('drawer').classList.remove('aktif');document.getElementById('overlay').classList.remove('aktif')}
-    function paparKumpulan(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(KUMPULAN).forEach(function(k){h+='<button class="g-btn" onclick="paparPilihan(\''+k+'\')">'+k+'</button>'});document.getElementById('drawerIsi').innerHTML=h}
-    window.paparPilihan=function(k){var h='<button class="balik" onclick="paparKumpulan()">Kembali</button><h3>'+k+'</h3>';KUMPULAN[k].forEach(function(p,i){h+='<button class="p-btn" onclick="sahkan(\''+k+'\','+i+')">'+p.n+'</button>'});document.getElementById('drawerIsi').innerHTML=h};
-    window.sahkan=function(k,i){tindakanTunggu={k:k,i:i};document.getElementById('modalTajuk').textContent=KUMPULAN[k][i].n;document.getElementById('modalDesc').textContent='Laksanakan tindakan ini?';document.getElementById('modal').classList.add('aktif')};
-    function laksana(){if(!tindakanTunggu)return;var r=KUMPULAN[tindakanTunggu.k][tindakanTunggu.i].e();tambahLog(r,'berjaya');paparDunia();tindakanTunggu=null;document.getElementById('modal').classList.remove('aktif');tutupDrawer()}
-    function paparDunia(){var ek=s.ekonomi>=50?'baik':'buruk',al=s.alam>=50?'baik':'buruk';document.getElementById('sg').innerHTML=[{l:'TAHUN',v:s.tahun},{l:'POPULASI',v:(s.populasi/1000000000).toFixed(1)+'B'},{l:'EKONOMI',v:s.ekonomi+'%',c:ek},{l:'ALAM',v:s.alam+'%',c:al},{l:'TEKNOLOGI',v:s.teknologi+'%',c:s.teknologi>=50?'baik':'buruk'},{l:'KESIHATAN',v:s.kesihatan+'%',c:s.kesihatan>=50?'baik':'buruk'}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>'}).join('')}
-    function tambahLog(t,j){var d=document.getElementById('logDunia');d.innerHTML='<div class="log '+j+'"><strong>'+s.tahun+'</strong> — '+t+'</div>'+d.innerHTML}
-    function paparNegara(){document.getElementById('senaraiNegara').innerHTML=NEGARA.map(function(n){return '<div class="pemain"><span>'+n.i+' '+n.n+'</span><span>'+((n.p)/1000000).toFixed(0)+' juta</span></div>'}).join('')}
-    function muatChat(){db.ref('chat').limitToLast(30).on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push(c.val())});document.getElementById('chatLog').innerHTML=l.map(function(m){return '<div class="log"><strong>'+m.n+'</strong> — '+m.t+'</div>'}).join('')||'<p style="color:#64748b;font-size:11px">Tiada mesej</p>'})}
-    document.getElementById('btnChat').addEventListener('click',function(){var n=document.getElementById('chatNama').value.trim()||'Anonymous',t=document.getElementById('chatInput').value.trim();if(!t)return;db.ref('chat').push({n:n,t:t}).then(function(){document.getElementById('chatInput').value='';muatChat()}).catch(function(){})});
-    function muatPemain(){db.ref('profil').on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push({n:c.key})});document.getElementById('senaraiPemain').innerHTML=l.map(function(p){return '<div class="pemain"><span>'+p.n+'</span></div>'}).join('')||'<p style="color:#64748b;font-size:11px">Tiada pemain</p>'})}
-    document.getElementById('btnLangkah').addEventListener('click',function(){s.tahun++;s.populasi+=Math.floor(Math.random()*50000000);s.ekonomi=Math.max(0,s.ekonomi-Math.floor(Math.random()*3));s.alam=Math.max(0,s.alam-Math.floor(Math.random()*2));if(Math.random()<0.4){tambahLog(D[Math.floor(Math.random()*D.length)],'waspada')}paparDunia()});
-    document.getElementById('btnTindakan').addEventListener('click',bukaDrawer);
-    document.getElementById('overlay').addEventListener('click',tutupDrawer);
-    document.getElementById('modalYa').addEventListener('click',laksana);
-    document.getElementById('modalTidak').addEventListener('click',function(){document.getElementById('modal').classList.remove('aktif');tindakanTunggu=null});
-    muatChat();
-    paparDunia();
+    var pending=null;
+    function page(n,btn){document.querySelectorAll('[id^=pg-]').forEach(function(e){e.style.display='none'});document.getElementById('pg-'+n).style.display='block';document.querySelectorAll('.nav a').forEach(function(a){a.classList.remove('on')});if(btn)btn.classList.add('on');if(n==='country')showCountry();if(n==='player')showPlayer()}
+    function showStats(){var e=s.eco>=50?'good':'bad',v=s.env>=50?'good':'bad';document.getElementById('stats').innerHTML=[
+        {l:'Tahun',v:s.year},{l:'Populasi',v:(s.pop/1000000000).toFixed(1)+'B'},
+        {l:'Ekonomi',v:s.eco+'%',c:e},{l:'Alam',v:s.env+'%',c:v},
+        {l:'Teknologi',v:s.tech+'%',c:s.tech>=50?'good':'bad'},
+        {l:'Kesihatan',v:s.health+'%',c:s.health>=50?'good':'bad'}
+    ].map(function(x){return '<div class="box"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>'}).join('')}
+    function addLog(t,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'"><b>'+s.year+'</b> — '+t+'</p>'+d.innerHTML}
+    function openSheet(){document.getElementById('sheet').classList.add('on');document.getElementById('overlay').classList.add('on');showGroups()}
+    function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('overlay').classList.remove('on')}
+    function showGroups(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(groups).forEach(function(k){h+='<button class="opt" onclick="showOptions(\''+k+'\')">'+k+'</button>'});document.getElementById('sheetContent').innerHTML=h}
+    function showOptions(k){var h='<button class="back" onclick="showGroups()">Kembali</button><h3>'+k+'</h3>';groups[k].forEach(function(o,i){h+='<button class="opt alt" onclick="confirm(\''+k+'\','+i+')">'+o.n+'</button>'});document.getElementById('sheetContent').innerHTML=h}
+    function confirm(k,i){pending={k:k,i:i};document.getElementById('modalTitle').textContent=groups[k][i].n;document.getElementById('modal').classList.add('on')}
+    function doAction(){if(!pending)return;var r=groups[pending.k][pending.i].f();addLog(r,'ok');pending=null;document.getElementById('modal').classList.remove('on');closeSheet();showStats()}
+    var countries=[{n:'China',c:'CN',p:1412000000},{n:'India',c:'IN',p:1428000000},{n:'USA',c:'US',p:332000000},{n:'Malaysia',c:'MY',p:33000000},{n:'Singapore',c:'SG',p:5900000}];
+    function showCountry(){document.getElementById('countryList').innerHTML=countries.map(function(c){return '<div class="list"><span>'+c.c+' '+c.n+'</span><span>'+(c.p/1000000).toFixed(0)+' juta</span></div>'}).join('')}
+    function showPlayer(){document.getElementById('playerList').innerHTML='<div class="list"><span>Pemain 1</span></div><div class="list"><span>Pemain 2</span></div>'}
+    document.getElementById('btnYear').addEventListener('click',function(){s.year++;s.pop+=Math.floor(Math.random()*50000000);s.eco=Math.max(0,s.eco-Math.floor(Math.random()*3));s.env=Math.max(0,s.env-Math.floor(Math.random()*2));if(Math.random()<0.4)addLog(disasters[Math.floor(Math.random()*disasters.length)],'warn');showStats()});
+    document.getElementById('btnAct').addEventListener('click',openSheet);
+    document.getElementById('overlay').addEventListener('click',closeSheet);
+    document.getElementById('modalYes').addEventListener('click',doAction);
+    document.getElementById('modalNo').addEventListener('click',function(){document.getElementById('modal').classList.remove('on');pending=null});
+    showStats();
     </script>
 </body>
 </html>
