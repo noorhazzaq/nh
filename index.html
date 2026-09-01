@@ -3,86 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0f172a">
-    <title>ZACK FIGHTER</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Fighter","short_name":"ZACK","display":"standalone","theme_color":"%230f172a","background_color":"%230f172a"}'>
+    <meta name="theme-color" content="#0a0a0f">
+    <title>ZACK FIGHTER — UE4</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Fighter","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
+        :root{
+            --bg:#0a0a0f;
+            --panel:rgba(20,20,30,.92);
+            --glass:rgba(56,189,248,.08);
+            --border:rgba(56,189,248,.25);
+            --cyan:#38bdf8;
+            --orange:#f59e0b;
+            --red:#ef4444;
+            --green:#10b981;
+            --text:#f1f5f9;
+            --dim:#94a3b8;
+        }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0f172a;font-family:'Inter',sans-serif;color:#f1f5f9;min-height:100vh;display:flex;flex-direction:column;align-items:center;-webkit-tap-highlight-color:transparent}
-        .header{width:100%;background:#1e293b;padding:14px;text-align:center;border-bottom:1px solid #334155}
-        .header h1{font-size:18px;font-weight:900;color:#ef4444;letter-spacing:1px}
-        .arena{width:100%;max-width:500px;height:280px;background:linear-gradient(180deg,#1e293b,#0f172a);position:relative;overflow:hidden;border-bottom:2px solid #334155}
-        .fighter{position:absolute;bottom:20px;width:60px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:left .2s,transform .2s}
-        .fighter .body{width:40px;height:70px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px}
-        .fighter .name{font-size:9px;font-weight:700;margin-top:4px;text-align:center}
-        .fighter .hp-bar{width:60px;height:6px;background:#334155;border-radius:3px;overflow:hidden;margin-bottom:4px}
-        .fighter .hp{height:100%;border-radius:3px;transition:width .3s}
-        #player{left:60px}
-        #player .body{background:#1e40af}
-        #player .hp{background:#10b981}
-        #enemy{right:60px}
-        #enemy .body{background:#991b1b}
-        #enemy .hp{background:#ef4444}
-        .controls{width:100%;max-width:500px;padding:15px;display:flex;flex-direction:column;gap:8px}
+        body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+        .viewport{width:100%;max-width:520px;min-height:100vh;background:radial-gradient(ellipse at 50% 30%,#1a1a2e 0%,#0a0a0f 70%);position:relative;overflow:hidden;display:flex;flex-direction:column}
+        .scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:5}
+        .header{background:var(--panel);padding:16px;text-align:center;border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
+        .header h1{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,248,.5)}
+        .header span{font-size:10px;color:var(--dim);letter-spacing:2px}
+        .hud{display:flex;justify-content:space-between;padding:10px 16px;font-size:11px;color:var(--dim)}
+        .hud span{font-family:'Orbitron',sans-serif;letter-spacing:1px}
+        .arena{flex:1;position:relative;overflow:hidden;min-height:300px}
+        .grid-floor{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent,rgba(56,189,248,.1));border-top:1px solid var(--border)}
+        .grid-floor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 48px,rgba(56,189,248,.15) 48px,rgba(56,189,248,.15) 50px)}
+        .fighter{position:absolute;bottom:60px;width:80px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;transition:left .2s cubic-bezier(.4,0,.2,1),transform .2s}
+        .fighter .body{width:55px;height:85px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:38px;transition:transform .15s;box-shadow:0 0 30px rgba(0,0,0,.5)}
+        .fighter .name{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;margin-top:5px;letter-spacing:1px}
+        .fighter .hp-wrap{width:80px;height:8px;background:rgba(0,0,0,.7);border-radius:4px;overflow:hidden;margin-bottom:5px;border:1px solid var(--border)}
+        .fighter .hp{height:100%;border-radius:4px;transition:width .3s}
+        .fighter .rage-wrap{width:80px;height:4px;background:rgba(0,0,0,.7);border-radius:2px;overflow:hidden;margin-bottom:4px;border:1px solid rgba(245,158,11,.3)}
+        .fighter .rage{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:2px;transition:width .3s}
+        #player{left:40px}
+        #player .body{background:linear-gradient(135deg,#1e40af,#38bdf8)}
+        #player .hp{background:linear-gradient(90deg,#10b981,#34d399)}
+        #enemy{right:40px}
+        #enemy .body{background:linear-gradient(135deg,#991b1b,#ef4444)}
+        #enemy .hp{background:linear-gradient(90deg,#ef4444,#f87171)}
+        .particle{position:absolute;width:12px;height:12px;border-radius:50%;pointer-events:none;z-index:10;animation:particle .6s forwards}
+        @keyframes particle{from{opacity:1;transform:translate(0,0)scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy))scale(0)}}
+        .controls{padding:14px;display:flex;flex-direction:column;gap:8px}
         .row{display:flex;gap:8px}
-        .ctrl{flex:1;padding:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;color:#f1f5f9;font-size:14px;font-weight:700;cursor:pointer;text-align:center;transition:transform .1s}
-        .ctrl:active{transform:scale(.93);background:#334155}
-        .ctrl.special{background:#7c2d12;border-color:#ea580c;color:#fdba74}
-        .ctrl.special:active{background:#9a3412}
-        .hud{width:100%;max-width:500px;padding:10px 15px;display:flex;justify-content:space-between;font-size:11px;color:#94a3b8}
-        .log-box{width:100%;max-width:500px;height:80px;overflow-y:auto;padding:10px;background:#1e293b;border-radius:10px;margin:0 15px 15px}
-        .log-box p{font-size:10px;color:#94a3b8;padding:2px 0}
-        .log-box p.hit{color:#ef4444}
-        .log-box p.kritis{color:#fbbf24}
-        .log-box p.ko{color:#ef4444;font-weight:900;font-size:14px;text-align:center}
+        .btn{flex:1;padding:14px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-align:center;transition:all .15s;backdrop-filter:blur(5px)}
+        .btn:active{transform:scale(.94);background:rgba(56,189,248,.2);border-color:var(--cyan)}
+        .btn.special{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--orange)}
+        .btn.special:active{background:rgba(245,158,11,.25)}
+        .btn.rage{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:var(--red)}
+        .btn.rage:active{background:rgba(239,68,68,.25)}
+        .btn.reset{background:transparent;border-color:var(--dim);color:var(--dim)}
+        .log-box{height:90px;overflow-y:auto;padding:10px 14px;background:var(--panel);border-top:1px solid var(--border)}
+        .log-box p{font-size:11px;color:var(--dim);padding:2px 0}
+        .log-box p.hit{color:var(--red)}
+        .log-box p.kritis{color:var(--orange)}
+        .log-box p.ko{color:var(--red);font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;text-align:center;letter-spacing:2px}
+        .log-box p.info{color:var(--cyan)}
     </style>
 </head>
 <body>
-    <div class="header"><h1>ZACK FIGHTER</h1></div>
-    <div class="hud">
-        <span id="turnText">Giliran: Anda</span>
-        <span id="roundText">Pusingan 1</span>
+    <div class="viewport">
+        <div class="scanline"></div>
+        <div class="header"><h1>ZACK FIGHTER</h1><span>UNREAL ENGINE 4 STYLE</span></div>
+        <div class="hud">
+            <span id="turnText">GILIRAN: ANDA</span>
+            <span id="roundText">PUSINGAN 1</span>
+            <span id="scoreText">MENANG: 0</span>
+        </div>
+        <div class="arena">
+            <div class="grid-floor"></div>
+            <div class="fighter" id="player">
+                <div class="hp-wrap"><div class="hp" id="playerHp" style="width:100%"></div></div>
+                <div class="rage-wrap"><div class="rage" id="playerRage" style="width:0%"></div></div>
+                <div class="body" id="playerBody">KARATE</div>
+                <div class="name">ANDA</div>
+            </div>
+            <div class="fighter" id="enemy">
+                <div class="hp-wrap"><div class="hp" id="enemyHp" style="width:100%"></div></div>
+                <div class="rage-wrap"><div class="rage" id="enemyRage" style="width:0%"></div></div>
+                <div class="body" id="enemyBody">NINJA</div>
+                <div class="name">MUSUH</div>
+            </div>
+        </div>
+        <div class="controls">
+            <div class="row">
+                <button class="btn" onclick="attack('light')">PUKULAN RINGAN</button>
+                <button class="btn" onclick="attack('heavy')">PUKULAN KUAT</button>
+                <button class="btn" onclick="attack('combo')">KOMBINASI</button>
+            </div>
+            <div class="row">
+                <button class="btn" onclick="block()">BERTAHAN</button>
+                <button class="btn special" onclick="special()">SERANGAN KHAS</button>
+                <button class="btn" onclick="heal()">PULIH</button>
+            </div>
+            <div class="row">
+                <button class="btn rage" onclick="rageMode()">MOD RAGE</button>
+                <button class="btn reset" onclick="resetGame()">MULA SEMULA</button>
+            </div>
+        </div>
+        <div class="log-box" id="log"></div>
     </div>
-    <div class="arena">
-        <div class="fighter" id="player">
-            <div class="hp-bar"><div class="hp" id="playerHp" style="width:100%"></div></div>
-            <div class="body">👊</div>
-            <div class="name">ANDA</div>
-        </div>
-        <div class="fighter" id="enemy">
-            <div class="hp-bar"><div class="hp" id="enemyHp" style="width:100%"></div></div>
-            <div class="body">🥋</div>
-            <div class="name">MUSUH</div>
-        </div>
-    </div>
-    <div class="controls">
-        <div class="row">
-            <button class="ctrl" onclick="attack('light')">Pukulan Ringan</button>
-            <button class="ctrl" onclick="attack('heavy')">Pukulan Kuat</button>
-        </div>
-        <div class="row">
-            <button class="ctrl" onclick="block()">Bertahan</button>
-            <button class="ctrl special" onclick="special()">Serangan Khas</button>
-        </div>
-        <div class="row">
-            <button class="ctrl" onclick="heal()">Pulih</button>
-            <button class="ctrl" onclick="resetGame()">Mula Semula</button>
-        </div>
-    </div>
-    <div class="log-box" id="log"></div>
     <script>
-    var state={playerHp:100,enemyHp:100,round:1,turn:'player',playerBlock:false,enemyBlock:false};
-    function addLog(m,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'">'+m+'</p>'+d.innerHTML;if(d.children.length>30)d.lastChild.remove()}
-    function updateHud(){document.getElementById('playerHp').style.width=state.playerHp+'%';document.getElementById('enemyHp').style.width=state.enemyHp+'%';document.getElementById('roundText').textContent='Pusingan '+state.round;document.getElementById('turnText').textContent='Giliran: '+(state.turn==='player'?'Anda':'Musuh')}
-    function attack(type){if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;var dmg=type==='light'?Math.floor(Math.random()*10)+5:Math.floor(Math.random()*20)+10;var crit=Math.random()<0.15;if(crit)dmg=Math.floor(dmg*2);if(state.enemyBlock){dmg=Math.floor(dmg*.3);addLog('Musuh bertahan! Kerosakan -' + dmg,'hit');state.enemyBlock=false}else{state.enemyHp=Math.max(0,state.enemyHp-dmg);addLog((crit?'KRITIKAL! ':'')+'Anda serang! -'+dmg+(crit?' (Kritikal)':''),crit?'kritis':'hit')}updateHud();if(state.enemyHp<=0)return win();state.turn='enemy';setTimeout(enemyTurn,800)}
-    function block(){if(state.turn!=='player')return;state.playerBlock=true;addLog('Anda bertahan!');state.turn='enemy';setTimeout(enemyTurn,800)}
-    function special(){if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;var dmg=Math.floor(Math.random()*30)+15;if(state.enemyBlock){dmg=Math.floor(dmg*.3);addLog('Musuh bertahan! Kerosakan -'+dmg,'hit');state.enemyBlock=false}else{state.enemyHp=Math.max(0,state.enemyHp-dmg);addLog('SERANGAN KHAS! -'+dmg,'kritis')}updateHud();if(state.enemyHp<=0)return win();state.turn='enemy';setTimeout(enemyTurn,800)}
-    function heal(){if(state.turn!=='player'||state.playerHp<=0)return;var h=Math.floor(Math.random()*15)+5;state.playerHp=Math.min(100,state.playerHp+h);addLog('Anda pulih +'+h,'ok');updateHud();state.turn='enemy';setTimeout(enemyTurn,800)}
-    function enemyTurn(){if(state.enemyHp<=0||state.playerHp<=0)return;var act=Math.random();if(act<.3){state.enemyBlock=true;addLog('Musuh bertahan!')}else if(act<.7){var dmg=Math.floor(Math.random()*12)+5;if(state.playerBlock){dmg=Math.floor(dmg*.3);addLog('Anda bertahan! -'+dmg,'hit');state.playerBlock=false}else{state.playerHp=Math.max(0,state.playerHp-dmg);addLog('Musuh serang! -'+dmg,'hit')}}else{var h=Math.floor(Math.random()*10)+5;state.enemyHp=Math.min(100,state.enemyHp+h);addLog('Musuh pulih +'+h)}updateHud();if(state.playerHp<=0)return lose();state.turn='player'}
-    function win(){addLog('ANDA MENANG!','ko');state.round++;setTimeout(function(){state.playerHp=100;state.enemyHp=100;state.turn='player';updateHud()},1500)}
-    function lose(){addLog('ANDA KALAH!','ko');setTimeout(resetGame,1500)}
-    function resetGame(){state={playerHp:100,enemyHp:100,round:1,turn:'player',playerBlock:false,enemyBlock:false};document.getElementById('log').innerHTML='';addLog('Permainan baru!');updateHud()}
+    var state={
+        playerHp:100,enemyHp:100,
+        playerRage:0,enemyRage:0,
+        round:1,wins:0,
+        turn:'player',
+        playerBlock:false,enemyBlock:false,
+        playerRageActive:false,enemyRageActive:false,
+        combo:0
+    };
+    function addLog(m,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'">'+m+'</p>'+d.innerHTML;if(d.children.length>35)d.lastChild.remove()}
+    function updateHud(){
+        document.getElementById('playerHp').style.width=state.playerHp+'%';
+        document.getElementById('enemyHp').style.width=state.enemyHp+'%';
+        document.getElementById('playerRage').style.width=state.playerRage+'%';
+        document.getElementById('enemyRage').style.width=state.enemyRage+'%';
+        document.getElementById('roundText').textContent='PUSINGAN '+state.round;
+        document.getElementById('turnText').textContent='GILIRAN: '+(state.turn==='player'?'ANDA':'MUSUH');
+        document.getElementById('scoreText').textContent='MENANG: '+state.wins;
+    }
+    function spawnParticle(x,y,color){
+        var arena=document.querySelector('.arena');
+        for(var i=0;i<5;i++){
+            var p=document.createElement('div');
+            p.className='particle';
+            p.style.left=x+'px';
+            p.style.top=y+'px';
+            p.style.background=color;
+            p.style.setProperty('--dx',(Math.random()*100-50)+'px');
+            p.style.setProperty('--dy',(Math.random()*100-50)+'px');
+            arena.appendChild(p);
+            setTimeout(function(){p.remove()},600);
+        }
+    }
+    function moveFighter(id,dist){
+        var f=document.getElementById(id);
+        f.style.transform='translateX('+dist+'px)';
+        setTimeout(function(){f.style.transform='none'},200);
+    }
+    function attack(type){
+        if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;
+        var dmg=0,hits=1;
+        if(type==='light'){dmg=Math.floor(Math.random()*8)+5}
+        else if(type==='heavy'){dmg=Math.floor(Math.random()*18)+12}
+        else if(type==='combo'){dmg=Math.floor(Math.random()*12)+8;hits=3}
+        var total=0;
+        for(var i=0;i<hits;i++){
+            var d=dmg;
+            var crit=Math.random()<.2;
+            if(crit)d=Math.floor(d*2);
+            if(state.playerRageActive)d=Math.floor(d*1.5);
+            if(state.enemyBlock){d=Math.floor(d*.2);state.enemyBlock=false}
+            state.enemyHp=Math.max(0,state.enemyHp-d);
+            total+=d;
+            state.playerRage=Math.min(100,state.playerRage+3);
+        }
+        state.combo+=hits;
+        if(total>0){
+            addLog('ANDA SERANG ('+type.toUpperCase()+')! -'+total+(state.playerRageActive?' (RAGE!)':'')+(crit?' (KRITIKAL!)':''),total>30?'kritis':'hit');
+            spawnParticle(200,150,'#38bdf8');
+        }
+        moveFighter('player',25);
+        updateHud();
+        if(state.enemyHp<=0)return win();
+        state.turn='enemy';
+        setTimeout(enemyTurn,900);
+    }
+    function block(){
+        if(state.turn!=='player')return;
+        state.playerBlock=true;
+        addLog('ANDA BERTAHAN!','info');
+        state.turn='enemy';
+        setTimeout(enemyTurn,900);
+    }
+    function special(){
+        if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;
+        if(state.playerRage<50){addLog('RAGE TIDAK CUKUP! PERLU 50%','info');return}
+        state.playerRage-=50;
+        var dmg=Math.floor(Math.random()*35)+25;
+        if(state.enemyBlock){dmg=Math.floor(dmg*.2);state.enemyBlock=false}
+        state.enemyHp=Math.max(0,state.enemyHp-dmg);
+        addLog('SERANGAN KHAS! -'+dmg,'kritis');
+        spawnParticle(250,150,'#f59e0b');
+        moveFighter('player',50);
+        updateHud();
+        if(state.enemyHp<=0)return win();
+        state.turn='enemy';
+        setTimeout(enemyTurn,900);
+    }
+    function rageMode(){
+        if(state.turn!=='player')return;
+        if(state.playerRage<100){addLog('RAGE PENUH DIPERLUKAN!','info');return}
+        state.playerRage=0;
+        state.playerRageActive=true;
+        addLog('MOD RAGE AKTIF! SERANGAN x1.5','kritis');
+        state.turn='enemy';
+        setTimeout(enemyTurn,900);
+    }
+    function heal(){
+        if(state.turn!=='player'||state.playerHp<=0)return;
+        var h=Math.floor(Math.random()*10)+5;
+        state.playerHp=Math.min(100,state.playerHp+h);
+        addLog('ANDA PULIH +'+h,'info');
+        updateHud();
+        state.turn='enemy';
+        setTimeout(enemyTurn,900);
+    }
+    function enemyTurn(){
+        if(state.enemyHp<=0||state.playerHp<=0)return;
+        var act=Math.random();
+        if(act<.2){
+            state.enemyBlock=true;
+            addLog('MUSUH BERTAHAN!','info');
+        }else if(act<.5){
+            var dmg=Math.floor(Math.random()*10)+4;
+            if(state.enemyRageActive)dmg=Math.floor(dmg*1.5);
+            if(state.playerBlock){dmg=Math.floor(dmg*.2);addLog('ANDA BERTAHAN! -'+dmg,'hit');state.playerBlock=false}
+            else{state.playerHp=Math.max(0,state.playerHp-dmg);addLog('MUSUH SERANG! -'+dmg,'hit')}
+            state.enemyRage=Math.min(100,state.enemyRage+2);
+        }else if(act<.7){
+            var h=Math.floor(Math.random()*8)+5;
+            state.enemyHp=Math.min(100,state.enemyHp+h);
+            addLog('MUSUH PULIH +'+h);
+        }else if(act<.8&&state.enemyRage>=100){
+            state.enemyRage=0;
+            state.enemyRageActive=true;
+            addLog('MUSUH GUNA RAGE!','kritis');
+        }else if(act<.9&&state.enemyRage>=50){
+            state.enemyRage-=50;
+            var d2=Math.floor(Math.random()*30)+20;
+            if(state.playerBlock){d2=Math.floor(d2*.2);state.playerBlock=false}
+            state.playerHp=Math.max(0,state.playerHp-d2);
+            addLog('MUSUH SERANGAN KHAS! -'+d2,'kritis');
+            spawnParticle(200,150,'#ef4444');
+        }else{
+            var d3=Math.floor(Math.random()*15)+8;
+            if(state.playerBlock){d3=Math.floor(d3*.2);state.playerBlock=false}
+            state.playerHp=Math.max(0,state.playerHp-d3);
+            addLog('MUSUH KOMBINASI! -'+d3,'hit');
+        }
+        updateHud();
+        if(state.playerHp<=0)return lose();
+        state.turn='player';
+    }
+    function win(){
+        addLog('ANDA MENANG!','ko');
+        state.wins++;
+        state.round++;
+        setTimeout(function(){
+            state.playerHp=100;
+            state.enemyHp=100;
+            state.playerRage=0;
+            state.enemyRage=0;
+            state.playerRageActive=false;
+            state.enemyRageActive=false;
+            state.turn='player';
+            updateHud();
+        },1500);
+    }
+    function lose(){
+        addLog('ANDA KALAH!','ko');
+        setTimeout(resetGame,2000);
+    }
+    function resetGame(){
+        state={playerHp:100,enemyHp:100,playerRage:0,enemyRage:0,round:1,wins:0,turn:'player',playerBlock:false,enemyBlock:false,playerRageActive:false,enemyRageActive:false,combo:0};
+        document.getElementById('log').innerHTML='';
+        addLog('PERMAINAN BARU!','info');
+        updateHud();
+    }
     updateHud();
     </script>
 </body>
