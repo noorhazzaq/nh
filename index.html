@@ -14,7 +14,7 @@
         .header{background:var(--panel);padding:14px;text-align:center;border-bottom:1px solid var(--border)}
         .header h1{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:2px}
         .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto}
-        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;cursor:pointer;white-space:nowrap}
+        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;cursor:pointer;white-space:nowrap}
         .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
         .main{flex:1;padding:12px;overflow-y:auto}
         .page{display:none}
@@ -30,13 +30,11 @@
         .stat .v.neutral{color:var(--orange)}
         .btn{width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;cursor:pointer;margin-bottom:5px;text-align:left}
         .btn:active{transform:scale(.97);border-color:var(--cyan)}
-        .input{width:100%;padding:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none;margin-bottom:6px}
         .log-v{height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(0,0,0,.4)}
         .log-v p{font-size:10px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
         .log-v p b{color:var(--cyan)}
         .log-v p.baik{color:var(--green)}
         .log-v p.buruk{color:var(--red)}
-        .log-v p.neutral{color:var(--orange)}
         .toast{position:fixed;top:60px;right:15px;z-index:100;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:10px;animation:toastIn .3s;max-width:260px}
         @keyframes toastIn{from{transform:translateX(100%);opacity:0}}
     </style>
@@ -49,65 +47,75 @@
             <button onclick="page('ekonomi',this)">EKONOMI</button>
             <button onclick="page('rakyat',this)">RAKYAT</button>
             <button onclick="page('dasar',this)">DASAR</button>
+            <button onclick="page('tentera',this)">TENTERA</button>
+            <button onclick="page('diplomasi',this)">DIPLOMASI</button>
+            <button onclick="page('pencapaian',this)">PENCAPAIAN</button>
             <button onclick="page('log',this)">LOG</button>
         </div>
         <div class="main">
             <div class="page aktif" id="pg-negara">
                 <div class="card"><h2>PILIH NEGARA</h2><div id="negaraList"></div></div>
-                <div class="card" id="negaraCard" style="display:none">
-                    <h2>STATUS NEGARA</h2>
-                    <div class="grid" id="statsNegara"></div>
-                    <button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button>
-                </div>
+                <div class="card" id="negaraCard" style="display:none"><h2>STATUS</h2><div class="grid" id="statsNegara"></div><button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button></div>
             </div>
-            <div class="page" id="pg-ekonomi">
-                <div class="card"><h2>EKONOMI</h2><div id="ekonomiList"></div></div>
-            </div>
-            <div class="page" id="pg-rakyat">
-                <div class="card"><h2>RAKYAT</h2><div id="rakyatList"></div></div>
-            </div>
-            <div class="page" id="pg-dasar">
-                <div class="card"><h2>DASAR</h2><div id="dasarList"></div></div>
-            </div>
-            <div class="page" id="pg-log">
-                <div class="card"><h2>LOG</h2><div class="log-v" id="logNegara"></div></div>
-            </div>
+            <div class="page" id="pg-ekonomi"><div class="card"><h2>EKONOMI</h2><div id="ekonomiList"></div></div></div>
+            <div class="page" id="pg-rakyat"><div class="card"><h2>RAKYAT</h2><div id="rakyatList"></div></div></div>
+            <div class="page" id="pg-dasar"><div class="card"><h2>DASAR SOSIAL</h2><div id="dasarList"></div></div></div>
+            <div class="page" id="pg-tentera"><div class="card"><h2>TENTERA</h2><div id="tenteraList"></div></div></div>
+            <div class="page" id="pg-diplomasi"><div class="card"><h2>DIPLOMASI</h2><div id="diplomasiList"></div></div></div>
+            <div class="page" id="pg-pencapaian"><div class="card"><h2>PENCAPAIAN</h2><div id="pencapaianList"></div></div></div>
+            <div class="page" id="pg-log"><div class="card"><h2>LOG</h2><div class="log-v" id="logNegara"></div></div></div>
         </div>
     </div>
     <script>
     'use strict';
     var NEGARA=[
-        {n:'Malaysia',c:'MY',p:33000000,gdp:11409,inflasi:2.5,pengangguran:3.5,kemiskinan:5.6,kesihatan:75,pendidikan:80,kestabilan:85},
-        {n:'Indonesia',c:'ID',p:277000000,gdp:4320,inflasi:3.5,pengangguran:5.2,kemiskinan:9.4,kesihatan:60,pendidikan:65,kestabilan:70},
-        {n:'Singapura',c:'SG',p:5900000,gdp:82808,inflasi:1.5,pengangguran:2.1,kemiskinan:0.5,kesihatan:95,pendidikan:95,kestabilan:98},
-        {n:'Jepun',c:'JP',p:125000000,gdp:42345,inflasi:0.8,pengangguran:2.4,kemiskinan:15.7,kesihatan:90,pendidikan:90,kestabilan:92},
-        {n:'USA',c:'US',p:332000000,gdp:76399,inflasi:3.2,pengangguran:3.8,kemiskinan:11.6,kesihatan:70,pendidikan:85,kestabilan:75},
-        {n:'Nigeria',c:'NG',p:223000000,gdp:2163,inflasi:18.8,pengangguran:33.3,kemiskinan:40.1,kesihatan:35,pendidikan:45,kestabilan:50},
-        {n:'India',c:'IN',p:1428000000,gdp:3714,inflasi:5.5,pengangguran:8.1,kemiskinan:21.9,kesihatan:55,pendidikan:60,kestabilan:65},
-        {n:'Brazil',c:'BR',p:203000000,gdp:8918,inflasi:4.6,pengangguran:8.3,kemiskinan:29.4,kesihatan:65,pendidikan:70,kestabilan:60}
+        {n:'Malaysia',c:'MY',p:33,gdp:11409,inflasi:2.5,pengangguran:3.5,kemiskinan:5.6,kesihatan:75,pendidikan:80,kestabilan:85,tentera:50,hubungan:60},
+        {n:'Indonesia',c:'ID',p:277,gdp:4320,inflasi:3.5,pengangguran:5.2,kemiskinan:9.4,kesihatan:60,pendidikan:65,kestabilan:70,tentera:55,hubungan:50},
+        {n:'Singapura',c:'SG',p:5.9,gdp:82808,inflasi:1.5,pengangguran:2.1,kemiskinan:0.5,kesihatan:95,pendidikan:95,kestabilan:98,tentera:70,hubungan:90},
+        {n:'Jepun',c:'JP',p:125,gdp:42345,inflasi:0.8,pengangguran:2.4,kemiskinan:15.7,kesihatan:90,pendidikan:90,kestabilan:92,tentera:40,hubungan:80},
+        {n:'USA',c:'US',p:332,gdp:76399,inflasi:3.2,pengangguran:3.8,kemiskinan:11.6,kesihatan:70,pendidikan:85,kestabilan:75,tentera:100,hubungan:85},
+        {n:'Nigeria',c:'NG',p:223,gdp:2163,inflasi:18.8,pengangguran:33.3,kemiskinan:40.1,kesihatan:35,pendidikan:45,kestabilan:50,tentera:35,hubungan:40},
+        {n:'India',c:'IN',p:1428,gdp:3714,inflasi:5.5,pengangguran:8.1,kemiskinan:21.9,kesihatan:55,pendidikan:60,kestabilan:65,tentera:75,hubungan:55},
+        {n:'Brazil',c:'BR',p:203,gdp:8918,inflasi:4.6,pengangguran:8.3,kemiskinan:29.4,kesihatan:65,pendidikan:70,kestabilan:60,tentera:45,hubungan:50}
     ];
-    var s=null;
+    var s=null,pencapaian=[];
     var dasarEkonomi=[
-        {n:'Kurangkan Cukai',e:function(){s.gdp=Math.min(100000,s.gdp+500);s.kestabilan=Math.max(0,s.kestabilan-3);return'GDP +$500, Kestabilan -3%'}},
-        {n:'Naikkan Cukai',e:function(){s.gdp=Math.max(100,s.gdp-300);s.kestabilan=Math.min(100,s.kestabilan+3);return'GDP -$300, Kestabilan +3%'}},
-        {n:'Subsidi Makanan',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-3);s.kestabilan=Math.min(100,s.kestabilan+5);return'Kemiskinan -3%, Kestabilan +5%'}},
-        {n:'Labur Infrastruktur',e:function(){s.gdp=Math.min(100000,s.gdp+800);s.pengangguran=Math.max(0,s.pengangguran-1);return'GDP +$800, Pengangguran -1%'}}
+        {n:'Kurangkan Cukai',e:function(){s.gdp+=500;s.kestabilan-=3;return'GDP +$500'}},
+        {n:'Naikkan Cukai',e:function(){s.gdp-=300;s.kestabilan+=3;return'Kestabilan +3%'}},
+        {n:'Subsidi Makanan',e:function(){s.kemiskinan-=3;s.kestabilan+=5;return'Kemiskinan -3%'}},
+        {n:'Labur Infrastruktur',e:function(){s.gdp+=800;s.pengangguran-=1;return'GDP +$800'}},
+        {n:'Buka Zon Perdagangan',e:function(){s.gdp+=1000;s.hubungan+=5;return'GDP +$1000'}}
     ];
     var dasarRakyat=[
-        {n:'Kesihatan Percuma',e:function(){s.kesihatan=Math.min(100,s.kesihatan+5);s.kestabilan=Math.min(100,s.kestabilan+5);return'Kesihatan +5%, Kestabilan +5%'}},
-        {n:'Pendidikan Percuma',e:function(){s.pendidikan=Math.min(100,s.pendidikan+5);s.pengangguran=Math.max(0,s.pengangguran-1);return'Pendidikan +5%, Pengangguran -1%'}},
-        {n:'Bantuan Rakyat',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-5);s.kestabilan=Math.min(100,s.kestabilan+8);return'Kemiskinan -5%, Kestabilan +8%'}}
+        {n:'Kesihatan Percuma',e:function(){s.kesihatan+=5;s.kestabilan+=5;return'Kesihatan +5%'}},
+        {n:'Pendidikan Percuma',e:function(){s.pendidikan+=5;s.pengangguran-=1;return'Pendidikan +5%'}},
+        {n:'Bantuan Rakyat',e:function(){s.kemiskinan-=5;s.kestabilan+=8;return'Kemiskinan -5%'}},
+        {n:'Program Kerja',e:function(){s.pengangguran-=3;s.kestabilan+=4;return'Pengangguran -3%'}}
     ];
     var dasarSosial=[
-        {n:'Kurangkan Jenayah',e:function(){s.kestabilan=Math.min(100,s.kestabilan+5);return'Kestabilan +5%'}},
-        {n:'Tingkatkan Gaji Minimum',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-4);s.gdp=Math.max(100,s.gdp-200);return'Kemiskinan -4%, GDP -$200'}},
-        {n:'Program Perumahan',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-3);s.kestabilan=Math.min(100,s.kestabilan+4);return'Kemiskinan -3%, Kestabilan +4%'}}
+        {n:'Kurangkan Jenayah',e:function(){s.kestabilan+=5;return'Kestabilan +5%'}},
+        {n:'Gaji Minimum Naik',e:function(){s.kemiskinan-=4;s.gdp-=200;return'Kemiskinan -4%'}},
+        {n:'Program Perumahan',e:function(){s.kemiskinan-=3;s.kestabilan+=4;return'Kemiskinan -3%'}},
+        {n:'Kebebasan Media',e:function(){s.kestabilan+=3;s.hubungan+=3;return'Hubungan +3%'}}
+    ];
+    var dasarTentera=[
+        {n:'Tambah Anggota',e:function(){s.tentera+=10;s.gdp-=500;return'Tentera +10, GDP -$500'}},
+        {n:'Beli Peralatan',e:function(){s.tentera+=15;s.gdp-=1000;return'Tentera +15, GDP -$1000'}},
+        {n:'Latihan Tentera',e:function(){s.tentera+=5;s.gdp-=200;return'Tentera +5'}},
+        {n:'Kurangkan Tentera',e:function(){s.tentera=Math.max(0,s.tentera-10);s.gdp+=500;return'Tentera -10, GDP +$500'}}
+    ];
+    var dasarDiplomasi=[
+        {n:'Perjanjian Damai',e:function(){s.hubungan+=10;s.kestabilan+=5;return'Hubungan +10'}},
+        {n:'Perjanjian Dagang',e:function(){s.gdp+=500;s.hubungan+=5;return'GDP +$500'}},
+        {n:'Hantar Bantuan',e:function(){s.gdp-=300;s.hubungan+=15;return'Hubungan +15'}},
+        {n:'Sekatan Ekonomi',e:function(){s.hubungan-=10;s.gdp-=200;return'Hubungan -10'}}
     ];
     function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2500)}
     function addLog(m,c){var d=document.getElementById('logNegara');d.innerHTML='<p class="'+(c||'')+'"><b>'+s.tahun+'</b> — '+m+'</p>'+d.innerHTML}
-    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='ekonomi')showEkonomi();if(n==='rakyat')showRakyat();if(n==='dasar')showDasar();}
-    function pilihNegara(i){var n=NEGARA[i];s={tahun:2024,gdp:n.gdp,populasi:n.p,inflasi:n.inflasi,pengangguran:n.pengangguran,kemiskinan:n.kemiskinan,kesihatan:n.kesihatan,pendidikan:n.pendidikan,kestabilan:n.kestabilan,nama:n.n};document.getElementById('negaraCard').style.display='block';showStats();addLog('Dipilih '+n.n,'baik');toast('Anda jadi Presiden '+n.n)}
-    function showNegara(){document.getElementById('negaraList').innerHTML=NEGARA.map(function(n,i){return '<button class="btn" onclick="pilihNegara('+i+')">'+n.c+' '+n.n+' — GDP $'+n.gdp+'</button>';}).join('');}
+    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='ekonomi')showList(dasarEkonomi,'ekonomiList','laksanaEkonomi');if(n==='rakyat')showList(dasarRakyat,'rakyatList','laksanaRakyat');if(n==='dasar')showList(dasarSosial,'dasarList','laksanaSosial');if(n==='tentera')showList(dasarTentera,'tenteraList','laksanaTentera');if(n==='diplomasi')showList(dasarDiplomasi,'diplomasiList','laksanaDiplomasi');if(n==='pencapaian')showPencapaian();}
+    function showList(arr,id,fn){document.getElementById(id).innerHTML=arr.map(function(d,i){return '<button class="btn" onclick="'+fn+'('+i+')">'+d.n+'</button>';}).join('');}
+    function pilihNegara(i){var n=NEGARA[i];s={tahun:2024,gdp:n.gdp,populasi:n.p,inflasi:n.inflasi,pengangguran:n.pengangguran,kemiskinan:n.kemiskinan,kesihatan:n.kesihatan,pendidikan:n.pendidikan,kestabilan:n.kestabilan,tentera:n.tentera,hubungan:n.hubungan,nama:n.n};pencapaian=[];document.getElementById('negaraCard').style.display='block';showStats();addLog('Presiden '+n.n,'baik');toast('Anda Presiden '+n.n)}
+    function showNegara(){document.getElementById('negaraList').innerHTML=NEGARA.map(function(n,i){return '<button class="btn" onclick="pilihNegara('+i+')">'+n.c+' '+n.n+'</button>';}).join('');}
     function showStats(){
         document.getElementById('statsNegara').innerHTML=[
             {l:'NEGARA',v:s.nama},{l:'TAHUN',v:s.tahun},
@@ -117,24 +125,44 @@
             {l:'KEMISKINAN',v:s.kemiskinan+'%',c:s.kemiskinan>20?'buruk':'baik'},
             {l:'KESIHATAN',v:s.kesihatan+'%',c:s.kesihatan>=50?'baik':'buruk'},
             {l:'PENDIDIKAN',v:s.pendidikan+'%',c:s.pendidikan>=50?'baik':'buruk'},
-            {l:'KESTABILAN',v:s.kestabilan+'%',c:s.kestabilan>=50?'baik':'buruk'}
+            {l:'KESTABILAN',v:s.kestabilan+'%',c:s.kestabilan>=50?'baik':'buruk'},
+            {l:'TENTERA',v:s.tentera+'%'},
+            {l:'HUBUNGAN',v:s.hubungan+'%'}
         ].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';}).join('');
     }
-    function showEkonomi(){document.getElementById('ekonomiList').innerHTML=dasarEkonomi.map(function(d,i){return '<button class="btn" onclick="laksanaEkonomi('+i+')">'+d.n+'</button>';}).join('');}
-    function showRakyat(){document.getElementById('rakyatList').innerHTML=dasarRakyat.map(function(d,i){return '<button class="btn" onclick="laksanaRakyat('+i+')">'+d.n+'</button>';}).join('');}
-    function showDasar(){document.getElementById('dasarList').innerHTML=dasarSosial.map(function(d,i){return '<button class="btn" onclick="laksanaSosial('+i+')">'+d.n+'</button>';}).join('');}
-    function laksanaEkonomi(i){if(!s)return;var r=dasarEkonomi[i].e();addLog(r,'baik');showStats()}
-    function laksanaRakyat(i){if(!s)return;var r=dasarRakyat[i].e();addLog(r,'baik');showStats()}
-    function laksanaSosial(i){if(!s)return;var r=dasarSosial[i].e();addLog(r,'baik');showStats()}
+    function showPencapaian(){document.getElementById('pencapaianList').innerHTML=pencapaian.length?pencapaian.map(function(p){return '<div class="stat"><div class="l">PENCAPAIAN</div><div class="v baik">'+p+'</div></div>';}).join(''):'<p style="color:#94a3b8;text-align:center">Tiada pencapaian</p>';}
+    function semakPencapaian(){
+        if(s.gdp>=50000&&pencapaian.indexOf('Ekonomi Kuat')===-1){pencapaian.push('Ekonomi Kuat');toast('Pencapaian: Ekonomi Kuat!')}
+        if(s.kemiskinan<=5&&pencapaian.indexOf('Bebas Kemiskinan')===-1){pencapaian.push('Bebas Kemiskinan');toast('Pencapaian: Bebas Kemiskinan!')}
+        if(s.kestabilan>=90&&pencapaian.indexOf('Negara Stabil')===-1){pencapaian.push('Negara Stabil');toast('Pencapaian: Negara Stabil!')}
+        if(s.pengangguran<=2&&pencapaian.indexOf('Guna Tenaga Penuh')===-1){pencapaian.push('Guna Tenaga Penuh');toast('Pencapaian: Guna Tenaga Penuh!')}
+    }
+    function laksana(arr,i){if(!s)return;var r=arr[i].e();s.gdp=Math.max(100,s.gdp);s.kestabilan=Math.max(0,Math.min(100,s.kestabilan));s.kemiskinan=Math.max(0,Math.min(100,s.kemiskinan));s.pengangguran=Math.max(0,Math.min(50,s.pengangguran));s.kesihatan=Math.max(0,Math.min(100,s.kesihatan));s.pendidikan=Math.max(0,Math.min(100,s.pendidikan));s.tentera=Math.max(0,Math.min(100,s.tentera));s.hubungan=Math.max(0,Math.min(100,s.hubungan));addLog(r,'baik');semakPencapaian();showStats()}
+    function laksanaEkonomi(i){laksana(dasarEkonomi,i)}
+    function laksanaRakyat(i){laksana(dasarRakyat,i)}
+    function laksanaSosial(i){laksana(dasarSosial,i)}
+    function laksanaTentera(i){laksana(dasarTentera,i)}
+    function laksanaDiplomasi(i){laksana(dasarDiplomasi,i)}
     document.getElementById('btnTahun').addEventListener('click',function(){
         if(!s)return;
         s.tahun++;
         s.gdp=Math.max(100,Math.floor(s.gdp*(1+s.inflasi/100)));
         s.pengangguran=Math.max(0,Math.min(50,s.pengangguran+Math.floor(Math.random()*3)-1));
-        s.kemiskinan=Math.max(0,Math.min(80,s.kemiskinan+Math.floor(Math.random()*3)-1));
+        s.kemiskinan=Math.max(0,Math.min(100,s.kemiskinan+Math.floor(Math.random()*3)-1));
         s.kestabilan=Math.max(0,Math.min(100,s.kestabilan+Math.floor(Math.random()*5)-2));
-        if(Math.random()<0.3){var krisis=['Krisis Ekonomi','Bencana Alam','Protes','Skandal Politik','Boom Ekonomi'];var k=krisis[Math.floor(Math.random()*krisis.length)];if(k==='Krisis Ekonomi'){s.gdp=Math.floor(s.gdp*.8);addLog(k,'buruk')}if(k==='Bencana Alam'){s.kestabilan=Math.max(0,s.kestabilan-15);addLog(k,'buruk')}if(k==='Protes'){s.kestabilan=Math.max(0,s.kestabilan-10);addLog(k,'buruk')}if(k==='Skandal Politik'){s.kestabilan=Math.max(0,s.kestabilan-20);addLog(k,'buruk')}if(k==='Boom Ekonomi'){s.gdp=Math.floor(s.gdp*1.2);addLog(k,'baik')}}
-        showStats();
+        if(Math.random()<0.35){
+            var krisis=['Krisis Ekonomi','Bencana Alam','Protes','Skandal Politik','Boom Ekonomi','Perang','Wabak','Krisis Tenaga'];
+            var k=krisis[Math.floor(Math.random()*krisis.length)];
+            if(k==='Krisis Ekonomi'){s.gdp=Math.floor(s.gdp*.8);addLog(k,'buruk')}
+            if(k==='Bencana Alam'){s.kestabilan=Math.max(0,s.kestabilan-15);addLog(k,'buruk')}
+            if(k==='Protes'){s.kestabilan=Math.max(0,s.kestabilan-10);addLog(k,'buruk')}
+            if(k==='Skandal Politik'){s.kestabilan=Math.max(0,s.kestabilan-20);addLog(k,'buruk')}
+            if(k==='Boom Ekonomi'){s.gdp=Math.floor(s.gdp*1.2);addLog(k,'baik')}
+            if(k==='Perang'){s.tentera=Math.max(0,s.tentera-15);s.gdp=Math.floor(s.gdp*.7);addLog(k,'buruk')}
+            if(k==='Wabak'){s.kesihatan=Math.max(0,s.kesihatan-15);addLog(k,'buruk')}
+            if(k==='Krisis Tenaga'){s.gdp=Math.floor(s.gdp*.9);addLog(k,'buruk')}
+        }
+        semakPencapaian();showStats();
     });
     showNegara();
     </script>
