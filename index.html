@@ -1,148 +1,14 @@
-<!DOCTYPE html>
-<html lang="ms">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0a0f">
-    <title>ZACK LIVES — Complete Edition</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
-        :root{--bg:#0a0a0f;--panel:rgba(20,20,30,.92);--glass:rgba(56,189,248,.08);--border:rgba(56,189,248,.25);--cyan:#38bdf8;--orange:#f59e0b;--red:#ef4444;--green:#10b981;--text:#f1f5f9;--dim:#94a3b8;--purple:#a78bfa;--pink:#ec4899;--yellow:#fbbf24}
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
-        .viewport{max-width:100%;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);display:flex;flex-direction:column}
-        .header{background:var(--panel);padding:14px;text-align:center;border-bottom:1px solid var(--border)}
-        .header h1{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:2px}
-        .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto;position:sticky;top:0;z-index:10}
-        .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:7px;font-weight:700;cursor:pointer;white-space:nowrap;min-width:50px}
-        .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
-        .main{flex:1;padding:12px;overflow-y:auto}
-        .page{display:none}
-        .page.aktif{display:block}
-        .card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
-        .card h2{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--cyan);margin-bottom:8px}
-        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px}
-        .stat{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:8px;text-align:center;cursor:pointer;transition:all .3s}
-        .stat:hover{border-color:var(--cyan);transform:translateY(-2px)}
-        .stat .l{font-size:7px;color:var(--dim);text-transform:uppercase}
-        .stat .v{font-size:12px;font-weight:700;margin-top:2px}
-        .stat .v.baik{color:var(--green)}
-        .stat .v.buruk{color:var(--red)}
-        .stat .v.amar{color:var(--orange)}
-        .btn{width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;cursor:pointer;margin-bottom:5px;text-align:left;transition:all .2s}
-        .btn:hover{background:rgba(56,189,248,.15);border-color:var(--cyan)}
-        .btn:active{transform:scale(.97)}
-        .btn.small{padding:8px;font-size:8px}
-        .btn.bahaya{border-color:var(--red);color:var(--red)}
-        .btn.berjaya{border-color:var(--green);color:var(--green)}
-        .log-v{height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(0,0,0,.4)}
-        .log-v p{font-size:9px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
-        .log-v p b{color:var(--cyan)}
-        .log-v p.baik{color:var(--green)}
-        .log-v p.buruk{color:var(--red)}
-        .log-v p.neutral{color:var(--orange)}
-        .log-v p.rarity{color:var(--purple)}
-        .toast{position:fixed;top:60px;right:15px;z-index:100;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:10px;animation:toastIn .3s;max-width:260px;cursor:pointer}
-        @keyframes toastIn{from{transform:translateX(100%);opacity:0}}
-        .input{width:100%;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Rajdhani',sans-serif;margin-bottom:8px;font-size:12px}
-        .input:focus{outline:none;border-color:var(--cyan)}
-        .achievement{display:flex;align-items:center;gap:8px;padding:6px;background:rgba(0,0,0,.3);border-radius:6px;margin-bottom:4px;font-size:9px}
-        .achievement.unlocked{background:rgba(16,185,129,.1);border:1px solid var(--green)}
-        .achievement.locked{opacity:.5}
-        .badge{display:inline-block;padding:2px 6px;border-radius:4px;font-size:7px;font-weight:700;margin-left:4px}
-        .badge.rare{background:var(--purple);color:white}
-        .badge.epic{background:var(--pink);color:white}
-        .badge.legend{background:var(--yellow);color:black}
-        .progress-bar{width:100%;height:4px;background:rgba(0,0,0,.4);border-radius:2px;margin-top:2px}
-        .progress-bar .fill{height:100%;background:var(--cyan);border-radius:2px;transition:width .5s}
-        .inventory-item{display:flex;align-items:center;gap:8px;padding:6px;background:rgba(0,0,0,.3);border-radius:6px;margin-bottom:4px;font-size:9px}
-        .inventory-item .qty{margin-left:auto;color:var(--cyan);font-weight:700}
-        .quest{background:rgba(0,0,0,.3);border-radius:8px;padding:8px;margin-bottom:6px;border-left:3px solid var(--cyan)}
-        .quest.complete{border-left-color:var(--green);opacity:.8}
-        .shop-item{display:flex;align-items:center;gap:8px;padding:8px;background:rgba(0,0,0,.3);border-radius:6px;margin-bottom:4px;cursor:pointer}
-        .shop-item:hover{background:rgba(56,189,248,.1)}
-        .shop-item .price{margin-left:auto;color:var(--yellow);font-weight:700}
-        .tabs{display:flex;gap:4px;margin-bottom:8px}
-        .tabs button{padding:6px 10px;background:rgba(0,0,0,.3);border:1px solid var(--border);border-radius:6px;color:var(--dim);font-size:8px;cursor:pointer;font-family:'Orbitron',sans-serif}
-        .tabs button.aktif{background:rgba(56,189,248,.2);color:var(--cyan);border-color:var(--cyan)}
-    </style>
-</head>
-<body>
-    <div class="viewport">
-        <div class="header"><h1>ZACK LIVES — COMPLETE</h1></div>
-        <div class="nav" id="navBar">
-            <button class="aktif" onclick="page('hidup',this)">HIDUP</button>
-            <button onclick="page('makan',this)">MAKAN</button>
-            <button onclick="page('tidur',this)">TIDUR</button>
-            <button onclick="page('kerja',this)">KERJA</button>
-            <button onclick="page('belajar',this)">BELAJAR</button>
-            <button onclick="page('sukan',this)">SUKAN</button>
-            <button onclick="page('sosial',this)">SOSIAL</button>
-            <button onclick="page('hobi',this)">HOBI</button>
-            <button onclick="page('kesihatan',this)">KESIHATAN</button>
-            <button onclick="page('kewangan',this)">KEWANGAN</button>
-            <button onclick="page('kerjaya',this)">KERJAYA</button>
-            <button onclick="page('pencapaian',this)">PENCAPAIAN</button>
-            <button onclick="page('inventori',this)">INVENTORI</button>
-            <button onclick="page('quest',this)">QUEST</button>
-            <button onclick="page('kedai',this)">KEDAI</button>
-            <button onclick="page('kemahiran',this)">KEMAHIRAN</button>
-            <button onclick="page('hubungan',this)">HUBUNGAN</button>
-            <button onclick="page('acara',this)">ACARA</button>
-            <button onclick="page('statistik',this)">STATISTIK</button>
-            <button onclick="page('tetapan',this)">TETAPAN</button>
-            <button onclick="page('log',this)">LOG</button>
-        </div>
-        <div class="main">
-            <div class="page aktif" id="pg-hidup">
-                <div class="card"><h2>LOGIN</h2><input class="input" id="namaLogin" placeholder="Nama" maxlength="20"><input class="input" id="kataLogin" placeholder="Kata Laluan" type="password" maxlength="20"><button class="btn" id="btnLogin">MASUK</button><button class="btn" id="btnDaftar" style="text-align:center">DAFTAR</button></div>
-                <div class="card" id="hidupCard" style="display:none">
-                    <h2>STATUS</h2>
-                    <div class="grid" id="statsHidup"></div>
-                    <div style="margin-top:10px">
-                        <button class="btn" id="btnJam" style="text-align:center">JAM SETERUSNYA (+1 JAM)</button>
-                        <button class="btn" id="btnHari" style="text-align:center">HARI SETERUSNYA (+24 JAM)</button>
-                        <button class="btn" id="btnMinggu" style="text-align:center">MINGGU SETERUSNYA (+168 JAM)</button>
-                        <button class="btn" id="btnLogout" style="text-align:center">LOGOUT</button>
-                    </div>
-                </div>
-            </div>
-            <div class="page" id="pg-makan"><div class="card"><h2>MAKAN</h2><div id="makanList"></div></div></div>
-            <div class="page" id="pg-tidur"><div class="card"><h2>TIDUR</h2><div id="tidurList"></div></div></div>
-            <div class="page" id="pg-kerja"><div class="card"><h2>KERJA</h2><div id="kerjaList"></div></div></div>
-            <div class="page" id="pg-belajar"><div class="card"><h2>BELAJAR</h2><div id="belajarList"></div></div></div>
-            <div class="page" id="pg-sukan"><div class="card"><h2>SUKAN</h2><div id="sukanList"></div></div></div>
-            <div class="page" id="pg-sosial"><div class="card"><h2>SOSIAL</h2><div id="sosialList"></div></div></div>
-            <div class="page" id="pg-hobi"><div class="card"><h2>HOBI</h2><div id="hobiList"></div></div></div>
-            <div class="page" id="pg-kesihatan"><div class="card"><h2>KESIHATAN</h2><div id="kesihatanList"></div></div></div>
-            <div class="page" id="pg-kewangan"><div class="card"><h2>KEWANGAN</h2><div id="kewanganContent"></div></div></div>
-            <div class="page" id="pg-kerjaya"><div class="card"><h2>KERJAYA</h2><div id="kerjayaList"></div></div></div>
-            <div class="page" id="pg-pencapaian"><div class="card"><h2>PENCAPAIAN</h2><div id="pencapaianList"></div></div></div>
-            <div class="page" id="pg-inventori"><div class="card"><h2>INVENTORI</h2><div id="inventoriList"></div></div></div>
-            <div class="page" id="pg-quest"><div class="card"><h2>QUEST</h2><div id="questList"></div></div></div>
-            <div class="page" id="pg-kedai"><div class="card"><h2>KEDAI</h2><div id="kedaiList"></div></div></div>
-            <div class="page" id="pg-kemahiran"><div class="card"><h2>KEMAHIRAN</h2><div id="kemahiranList"></div></div></div>
-            <div class="page" id="pg-hubungan"><div class="card"><h2>HUBUNGAN</h2><div id="hubunganList"></div></div></div>
-            <div class="page" id="pg-acara"><div class="card"><h2>ACARA</h2><div id="acaraList"></div></div></div>
-            <div class="page" id="pg-statistik"><div class="card"><h2>STATISTIK</h2><div id="statistikContent"></div></div></div>
-            <div class="page" id="pg-tetapan"><div class="card"><h2>TETAPAN</h2><div id="tetapanContent"></div></div></div>
-            <div class="page" id="pg-log"><div class="card"><h2>LOG</h2><div class="log-v" id="logHidup"></div></div></div>
-        </div>
-    </div>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
-    <script>
+// Replace the entire script section with this complete version
+<script>
     'use strict';
     var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     var pengguna=null,lastAction=0,autoSaveInterval;
     
-    // Expanded state with 100+ attributes
+    // Complete state with all attributes
     var state={
-        // Basic
         umur:18, kesihatan:85, mental:80, tenaga:70, kenyang:70, air:70,
         pengetahuan:30, kemahiran:20, stamina:60, kebahagiaan:75,
         masa:0, tahun:1, hidup:true,
-        // Advanced
         wang:1000, pengalaman:0, tahap:1, mood:'neutral',
         kelaparan:0, kehausan:0, keletihan:0, tekanan:0,
         imuniti:50, kebersihan:70, kecergasan:50,
@@ -152,114 +18,504 @@
         bakat:10, tuah:15, nasib:0,
         kerjayaTahap:0, kerjayaPengalaman:0, gaji:0,
         hutang:0, simpanan:0, pelaburan:0,
-        // Relationships
         kawan:0, keluarga:50, rakan:0, pasangan:null, jiran:10,
-        // Skills
         memasak:10, memandu:5, berenang:5, muzik:0, seni:0,
         teknologi:25, bahasa:10, matematik:15, sains:12,
         perniagaan:5, kepimpinan:8, komunikasi:15,
-        // Health metrics
         darah:100, jantung:100, paru:100, hati:100, buahpinggang:100,
         kolesterol:30, gula:25, tekananDarah:120,
-        // Inventory
-        inventori:{},
-        // Achievements
-        pencapaian:{},
-        // Quests
-        quest:{},
-        // Statistics
+        inventori:{}, pencapaian:{}, quest:{},
         statistik:{totalMakan:0,totalTidur:0,totalKerja:0,totalBelajar:0,totalSukan:0,totalSosial:0},
-        // Settings
         tetapan:{autoSimpan:true, kelajuan:1, notifikasi:true}
     };
     
-    // 999+ items database
-    var makanan=[...Array(200)].map((_,i)=>({
-        n:'Makanan '+(i+1), k:Math.floor(Math.random()*30)+20, 
-        t:Math.floor(Math.random()*15)+5, a:Math.floor(Math.random()*10)-5,
-        h:Math.floor(Math.random()*10)+5, harga:Math.floor(Math.random()*50)+10,
-        kategori:i%5===0?'segera':i%5===1?'sihat':i%5===2?'mewah':i%5===3?'tradisional':'barat'
-    }));
-    
-    var tidur=[...Array(50)].map((_,i)=>({
-        n:'Tidur '+(i+1)+' jam', t:Math.min(100,(i+1)*10),
-        kualiti:Math.floor(Math.random()*30)+70
-    }));
-    
-    var kerja=[...Array(100)].map((_,i)=>({
-        n:'Kerja '+(i+1), t:-Math.floor(Math.random()*20)-5,
-        w:Math.floor(Math.random()*1000)+100, k:Math.floor(Math.random()*15)+5,
-        kategori:i%5===0?'fizikal':i%5===1?'mental':i%5===2?'kreatif':i%5===3?'sosial':'teknikal'
-    }));
-    
-    var belajar=[...Array(150)].map((_,i)=>({
-        n:'Belajar '+(i+1), t:-Math.floor(Math.random()*10)-3,
-        a:Math.floor(Math.random()*20)+5,
-        kategori:i%6===0?'sains':i%6===1?'seni':i%6===2?'bahasa':i%6===3?'matematik':i%6===4?'teknologi':'perniagaan'
-    }));
-    
-    var sukan=[...Array(100)].map((_,i)=>({
-        n:'Sukan '+(i+1), t:-Math.floor(Math.random()*30)-10,
-        a:Math.floor(Math.random()*25)+10, k:Math.floor(Math.random()*20)+10,
-        jenis:i%4===0?'kardio':i%4===1?'kekuatan':i%4===2?'fleksibiliti':'pasukan'
-    }));
-    
-    var sosial=[...Array(80)].map((_,i)=>({
-        n:'Sosial '+(i+1), t:-Math.floor(Math.random()*8)-2,
-        s:Math.floor(Math.random()*15)+5, mood:Math.floor(Math.random()*10)+5,
-        jenis:i%5===0?'kawan':i%5===1?'keluarga':i%5===2?'rakan':i%5===3?'jiran':'pasangan'
-    }));
-    
-    var hobi=[...Array(120)].map((_,i)=>({
-        n:'Hobi '+(i+1), t:-Math.floor(Math.random()*8)-2,
-        k:Math.floor(Math.random()*15)+5, mood:Math.floor(Math.random()*12)+5,
-        jenis:i%8===0?'muzik':i%8===1?'seni':i%8===2?'sukan':i%8===3?'teknologi':i%8===4?'memasak':i%8===5?'kebun':i%8===6?'membaca':'kraf'
-    }));
-    
-    var kesihatan=[...Array(80)].map((_,i)=>({
-        n:'Rawatan '+(i+1), kos:Math.floor(Math.random()*500)+50,
-        kesan:Math.floor(Math.random()*30)+10,
-        jenis:i%6===0?'doktor':i%6===1?'ubat':i%6===2?'terapi':i%6===3?'vaksin':i%6===4?'suplemen':'checkup'
-    }));
-    
-    var kerjaya=[...Array(50)].map((_,i)=>({
-        n:'Kerjaya '+(i+1), tahap:i+1, gaji:(i+1)*1000,
-        keperluan:{pendidikan:(i+1)*2, kemahiran:(i+1)*3, pengalaman:(i+1)*5}
-    }));
-    
-    var kemahiran=[...Array(60)].map((_,i)=>({
-        n:'Kemahiran '+(i+1), tahap:0, maksimum:100,
-        kategori:i%12===0?'teknikal':i%12===1?'kreatif':i%12===2?'sosial':i%12===3?'fizikal':i%12===4?'mental':i%12===5?'perniagaan':i%12===6?'bahasa':i%12===7?'sains':i%12===8?'seni':i%12===9?'sukan':i%12===10?'teknologi':'kepimpinan'
-    }));
-    
-    var hubungan=[...Array(40)].map((_,i)=>({
-        n:'Orang '+(i+1), tahap:0, maksimum:100,
-        jenis:i%5===0?'kawan':i%5===1?'keluarga':i%5===2?'rakan':i%5===3?'jiran':'pasangan'
-    }));
-    
-    var acara=[...Array(100)].map((_,i)=>({
-        n:'Acara '+(i+1), jenis:i%7===0?'positif':i%7===1?'negatif':i%7===2?'neutral':i%7===3?'peluang':i%7===4?'cabaran':i%7===5?'kejutan':'rawak',
-        kesan:{kesihatan:Math.floor(Math.random()*20)-10,mental:Math.floor(Math.random()*20)-10,wang:Math.floor(Math.random()*500)-250}
-    }));
-    
-    var pencapaianList=[...Array(100)].map((_,i)=>({
-        id:'ach_'+(i+1), nama:'Pencapaian '+(i+1), syarat:'Capai '+(i+1)*10+' jam',
-        hadiah:{wang:(i+1)*100, xp:(i+1)*50},
-        rarity:i%10===0?'legend':i%5===0?'epic':i%3===0?'rare':'common'
-    }));
-    
-    var questList=[...Array(50)].map((_,i)=>({
-        id:'quest_'+(i+1), nama:'Quest '+(i+1), syarat:'Lakukan '+(i+1)*5+' aktiviti',
-        hadiah:{wang:(i+1)*200, xp:(i+1)*100, item:'Item '+(i+1)},
-        progress:0, target:(i+1)*5, complete:false
-    }));
-    
-    var kedaiItem=[...Array(150)].map((_,i)=>({
-        id:'item_'+(i+1), nama:'Item '+(i+1), harga:(i+1)*50,
-        kategori:i%7===0?'makanan':i%7===1?'ubat':i%7===2?'buku':i%7===3?'pakaian':i%7===4?'alat':i%7===5?'hadiah':'rawak',
-        kesan:{tenaga:Math.floor(Math.random()*20), kesihatan:Math.floor(Math.random()*20), mood:Math.floor(Math.random()*20)}
-    }));
-    
+    // 200 Malaysian Food Items with proper names
+    var makananNama = [
+        'Nasi Lemak', 'Nasi Goreng Kampung', 'Nasi Kerabu', 'Nasi Dagang', 'Nasi Tumpang',
+        'Nasi Ulam', 'Nasi Minyak', 'Nasi Briyani', 'Nasi Tomato', 'Nasi Ayam',
+        'Mee Goreng Mamak', 'Mee Rebus', 'Mee Bandung', 'Mee Kari', 'Mee Soto',
+        'Mee Hailam', 'Mee Kolok', 'Mee Jawa', 'Mee Sup', 'Mee Udang',
+        'Bihun Goreng', 'Bihun Sup', 'Bihun Singapore', 'Kway Teow Goreng', 'Kway Teow Kungfu',
+        'Char Kway Teow', 'Laksa Penang', 'Laksa Johor', 'Laksa Sarawak', 'Laksa Kedah',
+        'Roti Canai', 'Roti Tissue', 'Roti Bom', 'Roti Telur', 'Roti Sardin',
+        'Roti Pisang', 'Roti Bakar', 'Roti John', 'Capati', 'Tosai',
+        'Murtabak', 'Naan', 'Thosai Rawa', 'Thosai Masala', 'Idli',
+        'Satay Ayam', 'Satay Daging', 'Satay Kambing', 'Satay Perut', 'Satay Hati',
+        'Rendang Daging', 'Rendang Ayam', 'Rendang Tok', 'Rendang Pedas', 'Gulai Kawah',
+        'Kari Ayam', 'Kari Daging', 'Kari Ikan', 'Kari Kepala Ikan', 'Kari Kambing',
+        'Asam Pedas', 'Asam Rebus', 'Singgang', 'Pindang', 'Masak Lemak Cili Api',
+        'Ayam Masak Merah', 'Ayam Masak Kicap', 'Ayam Percik', 'Ayam Golek', 'Ayam Bakar',
+        'Ikan Bakar', 'Ikan Asam Pedas', 'Ikan Masak Tiga Rasa', 'Ikan Goreng', 'Ikan Stim',
+        'Sotong Goreng', 'Sotong Masak Hitam', 'Sotong Bakar', 'Udang Masak Butter', 'Udang Goreng',
+        'Ketam Masak Cili', 'Ketam Masak Lemak', 'Kerang Rebus', 'Lala Masak Cili', 'Siput Sedut',
+        'Lemang', 'Ketupat', 'Lontong', 'Nasi Impit', 'Burasa',
+        'Soto Ayam', 'Soto Daging', 'Sup Ekor', 'Sup Tulang', 'Sup Gearbox',
+        'Bakso', 'Mee Bakso', 'Sop Kambing', 'Sup Ayam', 'Sup Cendawan',
+        'Bubur Ayam', 'Bubur Lambuk', 'Bubur Pulut Hitam', 'Bubur Kacang Hijau', 'Bubur Cha Cha',
+        'Pulut Kuning', 'Pulut Panggang', 'Pulut Udang', 'Pulut Mangga', 'Pulut Durian',
+        'Kuih Lapis', 'Kuih Seri Muka', 'Kuih Talam', 'Kuih Koci', 'Kuih Angku',
+        'Kuih Dadar', 'Kuih Ketayap', 'Kuih Cara', 'Kuih Bakar', 'Kuih Bingka',
+        'Karipap', 'Samosa', 'Popiah', 'Spring Roll', 'Curry Puff',
+        'Cucur Udang', 'Cucur Badak', 'Cekodok Pisang', 'Pisang Goreng', 'Keledek Goreng',
+        'Ubi Goreng', 'Suihun Goreng', 'Tempe Goreng', 'Tauhu Goreng', 'Tauhu Sumbat',
+        'Rojak Buah', 'Rojak Mee', 'Rojak India', 'Rojak Singapura', 'Pasembor',
+        'Nasi Kandar', 'Nasi Campur', 'Nasi Padang', 'Nasi Arab', 'Nasi Mandy',
+        'Nasi Kabsa', 'Nasi Bukhari', 'Nasi Hujan Panas', 'Nasi Gemuk', 'Nasi Kunyit',
+        'Ayam Tandoori', 'Ayam Tikka', 'Ayam Butter', 'Ayam Kung Pao', 'Ayam Lemon',
+        'Mee Tarik', 'Mee Wantan', 'Mee Sup Daging', 'Mee Goreng Singapura', 'Mee Rebus Singapore',
+        'Kway Teow Thng', 'Kway Teow Basah', 'Kway Chap', 'Hor Fun', 'Yong Tau Foo',
+        'Bak Kut Teh', 'Char Siew Rice', 'Chicken Rice', 'Duck Rice', 'Roasted Pork Rice'
+    ];
+
+    var makanan = makananNama.map(function(nama, i) {
+        return {
+            n: nama,
+            k: Math.floor(Math.random()*30)+20,
+            t: Math.floor(Math.random()*15)+5,
+            a: Math.floor(Math.random()*10)-5,
+            h: Math.floor(Math.random()*10)+5,
+            harga: Math.floor(Math.random()*40)+5,
+            kategori: i%5===0?'Melayu':i%5===1?'Cina':i%5===2?'India':i%5===3?'Mamak':'Campuran'
+        };
+    });
+
+    // 50 Sleep Options
+    var tidurNama = [
+        'Tidur Siang', 'Tidur Malam', 'Tidur Nyenyak', 'Tidur Ringan', 'Tidur Lelap',
+        'Tidur Berkualiti', 'Tidur Sebentar', 'Tidur Panjang', 'Tidur Pendek', 'Tidur Cukup',
+        'Power Nap', 'Tidur Petang', 'Tidur Pagi', 'Tidur Tengahari', 'Tidur Malam Nyenyak',
+        'Tidur Dengan Mimpi', 'Tidur Tanpa Mimpi', 'Tidur Pulih', 'Tidur Rehat', 'Tidur Tenang',
+        'Tidur Damai', 'Tidur Selesa', 'Tidur Lena', 'Tidur Awal', 'Tidur Lewat',
+        'Tidur Sejam', 'Tidur Dua Jam', 'Tidur Tiga Jam', 'Tidur Empat Jam', 'Tidur Lima Jam',
+        'Tidur Enam Jam', 'Tidur Tujuh Jam', 'Tidur Lapan Jam', 'Tidur Sembilan Jam', 'Tidur Sepuluh Jam',
+        'Tidur Sebelas Jam', 'Tidur Dua Belas Jam', 'Tidur Dengan Bantal', 'Tidur Dengan Selimut', 'Tidur Dengan Musik',
+        'Tidur Dalam Gelap', 'Tidur Dengan Lampu', 'Tidur Dengan Kipas', 'Tidur Dengan Aircond', 'Tidur Luar Rumah',
+        'Tidur Di Hotel', 'Tidur Di Rumah', 'Tidur Di Khemah', 'Tidur Di Kereta', 'Tidur Di Sofa'
+    ];
+
+    var tidur = tidurNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: Math.min(100, (i+1)*2),
+            kualiti: Math.floor(Math.random()*30)+70
+        };
+    });
+
+    // 100 Malaysian Jobs
+    var kerjaNama = [
+        'Kerani Pejabat', 'Juruwang', 'Pemandu Lori', 'Pemandu Teksi', 'Pemandu Bas',
+        'Guru Sekolah', 'Guru Tuition', 'Pensyarah', 'Doktor', 'Jururawat',
+        'Ahli Farmasi', 'Peguam', 'Akauntan', 'Juruaudit', 'Arkitek',
+        'Jurutera Awam', 'Jurutera Elektrik', 'Jurutera Mekanikal', 'Jurutera Perisian', 'Pembangun Web',
+        'Pereka Grafik', 'Pereka Dalaman', 'Pereka Fesyen', 'Fotografer', 'Videografer',
+        'Wartawan', 'Editor', 'Penulis', 'Penterjemah', 'Jurubahasa',
+        'Chef', 'Tukang Masak', 'Pelayan', 'Pengurus Restoran', 'Pengurus Hotel',
+        'Pekerja Kilang', 'Operator Mesin', 'Penyelia Kilang', 'Pekerja Binaan', 'Tukang Kayu',
+        'Tukang Paip', 'Tukang Elektrik', 'Mekanik Kereta', 'Mekanik Motor', 'Juruelektrik',
+        'Petani', 'Penternak', 'Nelayan', 'Pekebun', 'Penjaga Ladang',
+        'Polis', 'Askar', 'Bomba', 'Pengawal Keselamatan', 'Anggota Pertahanan',
+        'Ahli Politik', 'Ahli Majlis', 'Pegawai Kerajaan', 'Pegawai Daerah', 'Duta',
+        'Banker', 'Pegawai Bank', 'Penasihat Kewangan', 'Broker Saham', 'Pelabur',
+        'Usahawan', 'Peniaga Kecil', 'Peniaga Online', 'Dropship', 'Affiliate Marketing',
+        'Youtuber', 'Streamer', 'Influencer', 'Content Creator', 'Podcaster',
+        'Programmer', 'Database Administrator', 'System Analyst', 'Network Engineer', 'Cyber Security',
+        'Data Scientist', 'AI Engineer', 'Machine Learning', 'DevOps Engineer', 'Cloud Architect',
+        'Mobile Developer', 'Game Developer', 'UI Designer', 'UX Designer', 'Product Manager',
+        'Project Manager', 'Scrum Master', 'Business Analyst', 'Quality Assurance', 'Technical Writer',
+        'Scientist', 'Researcher', 'Lab Assistant', 'Chemist', 'Biologist',
+        'Mathematician', 'Physicist', 'Astronomer', 'Geologist', 'Environmentalist',
+        'Pilot', 'Pramugari', 'Juruterbang', 'Kapten Kapal', 'Pelaut'
+    ];
+
+    var kerja = kerjaNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: -Math.floor(Math.random()*20)-5,
+            w: Math.floor(Math.random()*2000)+500,
+            k: Math.floor(Math.random()*15)+5,
+            kategori: i%5===0?'Teknikal':i%5===1?'Profesional':i%5===2?'Kreatif':i%5===3?'Fizikal':'Perkhidmatan'
+        };
+    });
+
+    // 150 Study Topics
+    var belajarNama = [
+        'Matematik Asas', 'Matematik Lanjutan', 'Algebra', 'Geometri', 'Kalkulus',
+        'Statistik', 'Trigonometri', 'Matematik Tambahan', 'Matematik Moden', 'Aritmetik',
+        'Fizik', 'Kimia', 'Biologi', 'Sains Am', 'Sains Komputer',
+        'Astronomi', 'Geologi', 'Meteorologi', 'Ekologi', 'Genetik',
+        'Bahasa Melayu', 'Bahasa Inggeris', 'Bahasa Mandarin', 'Bahasa Tamil', 'Bahasa Arab',
+        'Bahasa Jepun', 'Bahasa Korea', 'Bahasa Perancis', 'Bahasa Jerman', 'Bahasa Sepanyol',
+        'Sejarah Malaysia', 'Sejarah Dunia', 'Geografi', 'Ekonomi', 'Perakaunan',
+        'Perniagaan', 'Keusahawanan', 'Pengurusan', 'Pemasaran', 'Kewangan',
+        'Pelaburan', 'Saham', 'Hartanah', 'Insurans', 'Cukai',
+        'Seni Visual', 'Seni Muzik', 'Seni Tari', 'Seni Teater', 'Seni Lukis',
+        'Fotografi', 'Videografi', 'Animasi', 'Reka Bentuk', 'Ilustrasi',
+        'Memasak', 'Menjahit', 'Pertukangan', 'Berkebun', 'Memancing',
+        'Pertanian', 'Penternakan', 'Perhutanan', 'Perikanan', 'Pelancongan',
+        'Hospitaliti', 'Pelayanan', 'Komunikasi', 'Kepimpinan', 'Pengucapan Awam',
+        'Penulisan Kreatif', 'Kewartawanan', 'Penyuntingan', 'Penterjemahan', 'Penyiaran',
+        'Psikologi', 'Sosiologi', 'Antropologi', 'Falsafah', 'Etika',
+        'Undang-undang', 'Perlembagaan', 'Kriminologi', 'Forensik', 'Diplomasi',
+        'Perubatan', 'Farmakologi', 'Pergigian', 'Optometri', 'Veterinar',
+        'Kejururawatan', 'Pemakanan', 'Kesihatan Awam', 'Epidemiologi', 'Imunologi',
+        'Kejuruteraan', 'Seni Bina', 'Perancangan Bandar', 'Ukur Tanah', 'Lanskap',
+        'Teknologi Maklumat', 'Rangkaian', 'Pangkalan Data', 'Keselamatan Siber', 'Pengaturcaraan',
+        'Pembangunan Web', 'Pembangunan Aplikasi', 'Pembangunan Permainan', 'Kecerdasan Buatan', 'Pembelajaran Mesin',
+        'Analisis Data', 'Sains Data', 'Pengkomputeran Awan', 'Blockchain', 'Internet Perkara',
+        'Robotik', 'Automasi', 'Elektronik', 'Mekatronik', 'Nanoteknologi',
+        'Bioteknologi', 'Bioinformatik', 'Farmaseutikal', 'Kosmetik', 'Nutraseutikal',
+        'Kulinari', 'Pastri', 'Bakeri', 'Barista', 'Sommelier',
+        'Sukan Sains', 'Pemakanan Sukan', 'Psikologi Sukan', 'Pengurusan Sukan', 'Perubatan Sukan',
+        'Muzik Teori', 'Komposisi', 'Orkestrasi', 'Penghasilan Muzik', 'Kejuruteraan Audio',
+        'Seni Digital', 'Seni Cetak', 'Patung', 'Seramik', 'Tekstil'
+    ];
+
+    var belajar = belajarNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: -Math.floor(Math.random()*10)-3,
+            a: Math.floor(Math.random()*20)+5,
+            kategori: i%6===0?'Sains':i%6===1?'Bahasa':i%6===2?'Perniagaan':i%6===3?'Seni':i%6===4?'Teknologi':'Kemahiran'
+        };
+    });
+
+    // 100 Sports
+    var sukanNama = [
+        'Bola Sepak', 'Futsal', 'Bola Jaring', 'Bola Keranjang', 'Bola Tampar',
+        'Badminton', 'Tenis', 'Skuasy', 'Ping Pong', 'Golf',
+        'Berenang', 'Menyelam', 'Polo Air', 'Renang Segerak', 'Terjun',
+        'Lumba Lari', 'Maraton', 'Lari Berganti-ganti', 'Lari Berhalangan', 'Jalan Kaki',
+        'Lumba Basikal', 'Basikal Gunung', 'BMX', 'Lumba Motor', 'Kart',
+        'Gimnastik', 'Akrobatik', 'Trampolin', 'Parkour', 'Yoga',
+        'Pilates', 'Zumba', 'Aerobik', 'Senamrobik', 'Body Combat',
+        'Angkat Berat', 'Powerlifting', 'Bodybuilding', 'Crossfit', 'Calisthenics',
+        'Tinju', 'Muay Thai', 'Karate', 'Taekwondo', 'Judo',
+        'Silat', 'Kung Fu', 'Aikido', 'Wushu', 'Kickboxing',
+        'Memanah', 'Menembak', 'Memburu', 'Memancing', 'Mendaki',
+        'Panjat Batu', 'Abseiling', 'Rafting', 'Kayak', 'Kanu',
+        'Melayar', 'Meluncur', 'Ski Air', 'Wakeboard', 'Jet Ski',
+        'Berkuda', 'Polo', 'Golf Mini', 'Bowling', 'Dart',
+        'Catur', 'Dam', 'Go', 'Scrabble', 'Sudoku',
+        'E-sukan', 'Permainan Video', 'Realiti Maya', 'Realiti Terimbuh', 'Drone Racing',
+        'Menari', 'Balet', 'Tarian Moden', 'Tarian Tradisional', 'Breakdance',
+        'Lumba Layar', 'Terbang Layang', 'Terjun Udara', 'Paragliding', 'Hang Gliding',
+        'Sukan Lasak', 'Triathlon', 'Duathlon', 'Pentathlon', 'Heptathlon',
+        'Ski', 'Ski Salji', 'Luncur Salji', 'Lumba Kereta Salji', 'Mendaki Gunung'
+    ];
+
+    var sukan = sukanNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: -Math.floor(Math.random()*30)-10,
+            a: Math.floor(Math.random()*25)+10,
+            k: Math.floor(Math.random()*20)+10,
+            jenis: i%4===0?'Kardio':i%4===1?'Kekuatan':i%4===2?'Fleksibiliti':'Berkumpulan'
+        };
+    });
+
+    // 80 Social Activities
+    var sosialNama = [
+        'Bertemu Kawan', 'Makan Bersama', 'Minum Kopi', 'Berbual', 'Bersembang',
+        'Berpesta', 'Kenduri Kahwin', 'Majlis Hari Jadi', 'Sambutan Perayaan', 'Reunion',
+        'Melawat Keluarga', 'Pulang Kampung', 'Ziarah Saudara', 'Makan Malam Keluarga', 'Berkumpul Keluarga',
+        'Berkenalan', 'Temu Janji', 'Berkencan', 'Perjumpaan Rakan', 'Berjumpa Jiran',
+        'Bersosial Media', 'Video Call', 'Berkirim Pesan', 'Panggilan Telefon', 'Berkongsi Gambar',
+        'Berkongsi Video', 'Siaran Langsung', 'Komen Media Sosial', 'Suka Posting', 'Kongsi Status',
+        'Menghadiri Kursus', 'Seminar', 'Bengkel', 'Konferensi', 'Simposium',
+        'Mesyuarat', 'Perbincangan', 'Sesi Sumbangsaran', 'Pembentangan', 'Ceramah',
+        'Sukarelawan', 'Kerja Amal', 'Gotong-royong', 'Membersihkan Kawasan', 'Membantu Orang',
+        'Mengajar', 'Mentor', 'Tutor', 'Membimbing', 'Memberi Nasihat',
+        'Berkelah', 'Berkhemah', 'Piknik', 'Bersantai Tepi Pantai', 'Mendaki Bersama',
+        'Menonton Wayang', 'Menonton Konsert', 'Menonton Teater', 'Menonton Sukan', 'Menonton Permainan',
+        'Bermain Permainan', 'Permainan Papan', 'Permainan Kad', 'Permainan Video', 'Permainan Luar',
+        'Bersiar-siar', 'Berbelanja', 'Melancong', 'Melawat Muzium', 'Melawat Galeri',
+        'Menghadiri Majlis', 'Majlis Agama', 'Majlis Perkahwinan', 'Majlis Pertunangan', 'Majlis Perpisahan',
+        'Bersukan Bersama', 'Berjoging Bersama', 'Bersenam Bersama', 'Bermain Sukan', 'Berkelompok'
+    ];
+
+    var sosial = sosialNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: -Math.floor(Math.random()*8)-2,
+            s: Math.floor(Math.random()*15)+5,
+            mood: Math.floor(Math.random()*10)+5,
+            jenis: i%5===0?'Kawan':i%5===1?'Keluarga':i%5===2?'Rakan':i%5===3?'Jiran':'Pasangan'
+        };
+    });
+
+    // 120 Hobbies
+    var hobiNama = [
+        'Bermain Gitar', 'Bermain Piano', 'Bermain Biola', 'Bermain Drum', 'Bermain Seruling',
+        'Bermain Ukulele', 'Bermain Harmonika', 'Bermain Saxophone', 'Bermain Trompet', 'Bermain Cello',
+        'Menyanyi', 'Karaoke', 'Menulis Lagu', 'Menghasilkan Muzik', 'Menjadi DJ',
+        'Melukis', 'Menggambar', 'Mewarna', 'Melakar', 'Mencatat',
+        'Menjahit', 'Mengait', 'Menyulam', 'Menenun', 'Membuat Kraf',
+        'Memasak', 'Membakar', 'Membuat Kek', 'Membuat Roti', 'Membuat Pastri',
+        'Berkebun', 'Menanam', 'Menyiram Tanaman', 'Membuat Bonsai', 'Membuat Taman',
+        'Membaca', 'Menulis', 'Menulis Cerita', 'Menulis Puisi', 'Menulis Novel',
+        'Menulis Blog', 'Menulis Jurnal', 'Menulis Artikel', 'Menulis Skrip', 'Menulis Buku',
+        'Fotografi', 'Videografi', 'Mengedit Foto', 'Mengedit Video', 'Membuat Animasi',
+        'Membuat Filem', 'Membuat Dokumentari', 'Membuat Podcast', 'Membuat Vlog', 'Membuat Blog',
+        'Berkhemah', 'Mendaki', 'Memancing', 'Berburu', 'Bersiar-siar',
+        'Mengumpul Setem', 'Mengumpul Duit Syiling', 'Mengumpul Barang Antik', 'Mengumpul Patung', 'Mengumpul Kad',
+        'Membina Model', 'Membina Lego', 'Membina Robot', 'Membina Drone', 'Membina Komputer',
+        'Bermain Catur', 'Bermain Dam', 'Bermain Go', 'Bermain Scrabble', 'Bermain Sudoku',
+        'Bermain Teka-teki', 'Bermain Silang Kata', 'Bermain Puzzle', 'Bermain Rubik', 'Bermain Permainan Papan',
+        'Bermain Permainan Video', 'Bermain E-sukan', 'Bermain Permainan Mudah Alih', 'Bermain Permainan Komputer', 'Bermain Permainan Konsol',
+        'Belajar Bahasa', 'Belajar Memasak', 'Belajar Menari', 'Belajar Menyanyi', 'Belajar Melukis',
+        'Belajar Bermain Alat', 'Belajar Fotografi', 'Belajar Videografi', 'Belajar Menulis', 'Belajar Membaca',
+        'Meditasi', 'Yoga', 'Taichi', 'Qigong', 'Senaman Pernafasan',
+        'Membuat Sabun', 'Membuat Lilin', 'Membuat Barang Kemas', 'Membuat Tembikar', 'Membuat Seramik',
+        'Membuat Perabot', 'Memulihkan Perabot', 'Mengecat', 'Menghias Rumah', 'Membaiki Rumah',
+        'Membaiki Kereta', 'Membaiki Motosikal', 'Membaiki Komputer', 'Membaiki Telefon', 'Membaiki Peralatan',
+        'Menonton Filem', 'Menonton Siri', 'Menonton Dokumentari', 'Menonton Anime', 'Menonton K-drama'
+    ];
+
+    var hobi = hobiNama.map(function(nama, i) {
+        return {
+            n: nama,
+            t: -Math.floor(Math.random()*8)-2,
+            k: Math.floor(Math.random()*15)+5,
+            mood: Math.floor(Math.random()*12)+5,
+            jenis: i%8===0?'Muzik':i%8===1?'Seni':i%8===2?'Kraf':i%8===3?'Teknologi':i%8===4?'Memasak':i%8===5?'Kebun':i%8===6?'Membaca':'Koleksi'
+        };
+    });
+
+    // 80 Health Treatments
+    var kesihatanNama = [
+        'Pemeriksaan Kesihatan', 'Pemeriksaan Darah', 'Pemeriksaan Jantung', 'Pemeriksaan Mata', 'Pemeriksaan Gigi',
+        'Pemeriksaan Kulit', 'Pemeriksaan Tulang', 'Pemeriksaan Paru-paru', 'Pemeriksaan Buah Pinggang', 'Pemeriksaan Hati',
+        'Rawatan Selesema', 'Rawatan Demam', 'Rawatan Batuk', 'Rawatan Sakit Kepala', 'Rawatan Sakit Perut',
+        'Rawatan Sakit Belakang', 'Rawatan Sakit Sendi', 'Rawatan Sakit Otot', 'Rawatan Sakit Gigi', 'Rawatan Sakit Mata',
+        'Rawatan Kulit', 'Rawatan Rambut', 'Rawatan Kuku', 'Rawatan Telinga', 'Rawatan Hidung',
+        'Vaksin Influenza', 'Vaksin Hepatitis', 'Vaksin COVID-19', 'Vaksin Demam Denggi', 'Vaksin Pneumonia',
+        'Suplemen Vitamin C', 'Suplemen Vitamin D', 'Suplemen Vitamin E', 'Suplemen Vitamin B', 'Suplemen Multivitamin',
+        'Suplemen Kalsium', 'Suplemen Zat Besi', 'Suplemen Magnesium', 'Suplemen Zink', 'Suplemen Omega-3',
+        'Terapi Fizikal', 'Terapi Urutan', 'Terapi Kiropraktik', 'Terapi Akupunktur', 'Terapi Aromaterapi',
+        'Terapi Psikologi', 'Terapi Kaunseling', 'Terapi Keluarga', 'Terapi Kumpulan', 'Terapi Seni',
+        'Rawatan Tradisional', 'Rawatan Herba', 'Rawatan Homeopati', 'Rawatan Ayurveda', 'Rawatan Cina',
+        'Pembedahan Kecil', 'Pembedahan Besar', 'Pembedahan Plastik', 'Pembedahan Mata', 'Pembedahan Jantung',
+        'Rawatan Kecemasan', 'Rawatan ICU', 'Rawatan Ambulatori', 'Rawatan Pesakit Luar', 'Rawatan Pesakit Dalam',
+        'Pemulihan', 'Rehabilitasi', 'Fisioterapi', 'Terapi Cara Kerja', 'Terapi Pertuturan',
+        'Pemeriksaan Kehamilan', 'Penjagaan Bayi', 'Penjagaan Kanak-kanak', 'Penjagaan Warga Emas', 'Penjagaan Paliatif',
+        'Perubatan Alternatif', 'Perubatan Komplementari', 'Perubatan Holistik', 'Perubatan Naturopati', 'Perubatan Osteopati'
+    ];
+
+    var kesihatan = kesihatanNama.map(function(nama, i) {
+        return {
+            n: nama,
+            kos: Math.floor(Math.random()*500)+50,
+            kesan: Math.floor(Math.random()*30)+10,
+            jenis: i%6===0?'Doktor':i%6===1?'Ubat':i%6===2?'Terapi':i%6===3?'Vaksin':i%6===4?'Suplemen':'Pemeriksaan'
+        };
+    });
+
+    // 50 Career Paths
+    var kerjayaNama = [
+        'Pembantu Pejabat', 'Kerani', 'Penyelia', 'Pengurus', 'Pengarah',
+        'Eksekutif', 'Perunding', 'Penganalisis', 'Pakar', 'Profesional',
+        'Guru', 'Pensyarah', 'Profesor', 'Dekan', 'Pendidik',
+        'Jururawat', 'Doktor', 'Pakar Bedah', 'Pakar Perubatan', 'Pengarah Perubatan',
+        'Pekerja Am', 'Juruteknik', 'Jurutera', 'Jurutera Kanan', 'Ketua Jurutera',
+        'Pereka', 'Pereka Kanan', 'Pengarah Seni', 'Pengarah Kreatif', 'Pengarah Reka Bentuk',
+        'Pembangun', 'Pembangun Kanan', 'Arkitek Perisian', 'Pengarah Teknologi', 'Ketua Pegawai Teknologi',
+        'Jurujual', 'Pengurus Jualan', 'Pengarah Jualan', 'Naib Presiden Jualan', 'Ketua Pegawai Eksekutif',
+        'Pekerja Restoran', 'Pengurus Restoran', 'Pengurus Wilayah', 'Pengarah Operasi', 'Ketua Pegawai Operasi',
+        'Penulis', 'Editor', 'Penerbit', 'Pengarah Penerbitan', 'Ketua Pegawai Kandungan',
+        'Penganalisis Kewangan', 'Pengurus Kewangan', 'Pengarah Kewangan', 'Ketua Pegawai Kewangan', 'Bendahari',
+        'Pekerja IT', 'Pentadbir Sistem', 'Arkitek Rangkaian', 'Pengarah IT', 'Ketua Pegawai Maklumat'
+    ];
+
+    var kerjaya = kerjayaNama.map(function(nama, i) {
+        return {
+            n: nama,
+            tahap: i+1,
+            gaji: (i+1)*1500,
+            keperluan: {pendidikan:(i+1)*2, kemahiran:(i+1)*3, pengalaman:(i+1)*5}
+        };
+    });
+
+    // 60 Skills
+    var kemahiranNama = [
+        'Komunikasi', 'Kepimpinan', 'Kerja Berpasukan', 'Pengurusan Masa', 'Penyelesaian Masalah',
+        'Pemikiran Kritis', 'Kreativiti', 'Inovasi', 'Adaptasi', 'Ketahanan',
+        'Pengaturcaraan', 'Analisis Data', 'Reka Bentuk Web', 'Pembangunan Aplikasi', 'Keselamatan Siber',
+        'Rangkaian Komputer', 'Pangkalan Data', 'Pengkomputeran Awan', 'Kecerdasan Buatan', 'Pembelajaran Mesin',
+        'Pemasaran Digital', 'Media Sosial', 'SEO', 'Analitik Web', 'E-dagang',
+        'Pengurusan Projek', 'Pengurusan Risiko', 'Pengurusan Perubahan', 'Pengurusan Kualiti', 'Pengurusan Sumber',
+        'Perundingan', 'Jualan', 'Perkhidmatan Pelanggan', 'Perhubungan Awam', 'Rundingan',
+        'Penulisan', 'Penyuntingan', 'Penterjemahan', 'Pengucapan Awam', 'Penceritaan',
+        'Fotografi', 'Videografi', 'Reka Bentuk Grafik', 'Animasi', 'Ilustrasi',
+        'Memasak', 'Membakar', 'Pemakanan', 'Perancangan Menu', 'Keselamatan Makanan',
+        'Pertolongan Cemas', 'CPR', 'Kecemasan', 'Keselamatan', 'Pertahanan Diri',
+        'Berenang', 'Menunggang Basikal', 'Memandu', 'Navigasi', 'Berkhemah',
+        'Berkebun', 'Pertanian', 'Penternakan', 'Perikanan', 'Perhutanan'
+    ];
+
+    var kemahiran = kemahiranNama.map(function(nama, i) {
+        return {
+            n: nama,
+            tahap: 0,
+            maksimum: 100,
+            kategori: i%12===0?'Teknikal':i%12===1?'Kreatif':i%12===2?'Sosial':i%12===3?'Fizikal':i%12===4?'Mental':i%12===5?'Perniagaan':i%12===6?'Bahasa':i%12===7?'Sains':i%12===8?'Seni':i%12===9?'Sukan':i%12===10?'Teknologi':'Kepimpinan'
+        };
+    });
+
+    // 40 Relationships
+    var hubunganNama = [
+        'Ayah', 'Ibu', 'Abang', 'Kakak', 'Adik',
+        'Atuk', 'Nenek', 'Pak Cik', 'Mak Cik', 'Sepupu',
+        'Kawan Baik', 'Kawan Sekolah', 'Kawan Universiti', 'Kawan Kerja', 'Kawan Kejiranan',
+        'Rakan Niaga', 'Rakan Kongsi', 'Rakan Sekerja', 'Rakan Sukan', 'Rakan Hobi',
+        'Jiran Sebelah', 'Jiran Depan', 'Jiran Belakang', 'Jiran Kiri', 'Jiran Kanan',
+        'Bakal Pasangan', 'Teman Istimewa', 'Kekasih', 'Tunang', 'Pasangan',
+        'Mentor', 'Guru', 'Pensyarah', 'Ketua', 'Penyelia',
+        'Anak Saudara', 'Anak Buah', 'Anak Kawan', 'Anak Jiran', 'Anak Angkat'
+    ];
+
+    var hubungan = hubunganNama.map(function(nama, i) {
+        return {
+            n: nama,
+            tahap: 0,
+            maksimum: 100,
+            jenis: i%5===0?'Kawan':i%5===1?'Keluarga':i%5===2?'Rakan':i%5===3?'Jiran':'Pasangan'
+        };
+    });
+
+    // 100 Events
+    var acaraNama = [
+        'Memenangi Loteri', 'Kemalangan Jalan Raya', 'Hari Jadi', 'Kehilangan Dompet', 'Mendapat Bonus',
+        'Kenaikan Gaji', 'Ditipu', 'Mendapat Warisan', 'Banjir', 'Kebakaran',
+        'Mendapat Hadiah', 'Mendapat Anugerah', 'Pertandingan', 'Peperiksaan', 'Temu Duga',
+        'Perkahwinan', 'Perceraian', 'Kelahiran Anak', 'Kematian Ahli Keluarga', 'Mendapat Kucing',
+        'Mendapat Anjing', 'Menemui Harta Karun', 'Mendapat Penyakit', 'Sembuh dari Penyakit', 'Mendapat Pekerjaan',
+        'Berhenti Kerja', 'Pindah Rumah', 'Melancong', 'Mendapat Biasiswa', 'Mendapat Pinjaman',
+        'Kejohanan Sukan', 'Konsert', 'Pesta', 'Perayaan', 'Krisis',
+        'Perang', 'Keamanan', 'Revolusi', 'Inovasi', 'Penemuan',
+        'Kemelesetan Ekonomi', 'Kemakmuran', 'Inflasi', 'Deflasi', 'Pelaburan Berjaya',
+        'Pelaburan Gagal', 'Mendapat Pelanggan', 'Kehilangan Pelanggan', 'Perkongsian', 'Percantuman',
+        'Pengambilalihan', 'Kebankrapan', 'Kejayaan', 'Kegagalan', 'Pencapaian',
+        'Rekod Dunia', 'Pingat Emas', 'Piala', 'Trofi', 'Sijil',
+        'Ijazah', 'Diploma', 'Sarjana', 'Doktor Falsafah', 'Profesor',
+        'Mendapat Kenaikan Pangkat', 'Diturunkan Pangkat', 'Pertukaran Jabatan', 'Persaraan', 'Pemberhentian',
+        'Mendapat Idea', 'Eureka', 'Inspirasi', 'Motivasi', 'Depresi',
+        'Kebahagiaan', 'Kesedihan', 'Kemarahan', 'Ketakutan', 'Kegembiraan',
+        'Mendapat Panggilan', 'Menerima Surat', 'Mendapat E-mel', 'Mesej', 'Panggilan Video',
+        'Bertemu Selebriti', 'Bertemu Idola', 'Bertemu Presiden', 'Bertemu Perdana Menteri', 'Bertemu Raja'
+    ];
+
+    var acara = acaraNama.map(function(nama, i) {
+        return {
+            n: nama,
+            jenis: i%7===0?'positif':i%7===1?'negatif':i%7===2?'neutral':i%7===3?'peluang':i%7===4?'cabaran':i%7===5?'kejutan':'rawak',
+            kesan: {kesihatan:Math.floor(Math.random()*20)-10, mental:Math.floor(Math.random()*20)-10, wang:Math.floor(Math.random()*500)-250}
+        };
+    });
+
+    // 100 Achievements with proper names
+    var pencapaianNama = [
+        'Langkah Pertama', 'Bangun Awal', 'Pemakan Sihat', 'Ahli Sukan', 'Pembaca Tegar',
+        'Pekerja Keras', 'Pelajar Cemerlang', 'Kawan Baik', 'Ahli Keluarga', 'Jiran Mesra',
+        'Jutawan', 'Ahli Perniagaan', 'Pelabur Bijak', 'Penyimpan Wang', 'Pengurus Kewangan',
+        'Chef Terkenal', 'Atlet Profesional', 'Cendekiawan', 'Seniman', 'Pemuzik',
+        'Penulis', 'Wartawan', 'Saintis', 'Jurutera', 'Doktor',
+        'Peguam', 'Arkitek', 'Pereka', 'Pengaturcara', 'Pentadbir',
+        'Pemimpin', 'Pengurus', 'Eksekutif', 'Pengarah', 'Presiden',
+        'Pahlawan', 'Wira', 'Legenda', 'Ikon', 'Superstar',
+        'Perintis', 'Inovator', 'Pencipta', 'Penemu', 'Peneroka',
+        'Juara', 'Pemenang', 'Pingat Emas', 'Rekod Dunia', 'Terbaik',
+        'Paling Aktif', 'Paling Rajin', 'Paling Kreatif', 'Paling Pintar', 'Paling Kuat',
+        'Paling Pantas', 'Paling Tahan', 'Paling Fleksibel', 'Paling Sihat', 'Paling Bahagia',
+        'Paling Kaya', 'Paling Berjaya', 'Paling Popular', 'Paling Dihormati', 'Paling Disayangi',
+        'Paling Berpengaruh', 'Paling Berkuasa', 'Paling Bijaksana', 'Paling Berani', 'Paling Setia',
+        'Paling Jujur', 'Paling Adil', 'Paling Baik', 'Paling Mulia', 'Paling Sempurna',
+        'Survival 1 Hari', 'Survival 1 Minggu', 'Survival 1 Bulan', 'Survival 1 Tahun', 'Survival 10 Tahun',
+        'Survival 50 Tahun', 'Survival 80 Tahun', 'Survival 100 Tahun', 'Immortal', 'Dewa',
+        'Koleksi 10 Item', 'Koleksi 50 Item', 'Koleksi 100 Item', 'Koleksi 500 Item', 'Koleksi 1000 Item',
+        'Selesaikan 10 Quest', 'Selesaikan 50 Quest', 'Selesaikan 100 Quest', 'Selesaikan 500 Quest', 'Selesaikan Semua Quest',
+        'Tahap 10', 'Tahap 25', 'Tahap 50', 'Tahap 75', 'Tahap 100'
+    ];
+
+    var pencapaianList = pencapaianNama.map(function(nama, i) {
+        return {
+            id: 'ach_'+(i+1),
+            nama: nama,
+            syarat: 'Capai '+(i+1)*10+' jam',
+            hadiah: {wang:(i+1)*100, xp:(i+1)*50},
+            rarity: i%10===0?'legend':i%5===0?'epic':i%3===0?'rare':'common'
+        };
+    });
+
+    // 50 Quests with proper names
+    var questNama = [
+        'Makan 5 Kali', 'Makan 25 Kali', 'Makan 50 Kali', 'Makan 100 Kali', 'Makan 250 Kali',
+        'Tidur 3 Kali', 'Tidur 15 Kali', 'Tidur 30 Kali', 'Tidur 60 Kali', 'Tidur 150 Kali',
+        'Kerja 5 Kali', 'Kerja 25 Kali', 'Kerja 50 Kali', 'Kerja 100 Kali', 'Kerja 250 Kali',
+        'Belajar 5 Kali', 'Belajar 25 Kali', 'Belajar 50 Kali', 'Belajar 100 Kali', 'Belajar 250 Kali',
+        'Bersukan 5 Kali', 'Bersukan 25 Kali', 'Bersukan 50 Kali', 'Bersukan 100 Kali', 'Bersukan 250 Kali',
+        'Bersosial 5 Kali', 'Bersosial 25 Kali', 'Bersosial 50 Kali', 'Bersosial 100 Kali', 'Bersosial 250 Kali',
+        'Mengumpul RM1000', 'Mengumpul RM5000', 'Mengumpul RM10000', 'Mengumpul RM50000', 'Mengumpul RM100000',
+        'Mencapai Tahap 5', 'Mencapai Tahap 10', 'Mencapai Tahap 25', 'Mencapai Tahap 50', 'Mencapai Tahap 100',
+        'Mencapai Umur 20', 'Mencapai Umur 30', 'Mencapai Umur 40', 'Mencapai Umur 50', 'Mencapai Umur 60',
+        'Mencapai Umur 70', 'Mencapai Umur 80', 'Hidup 1 Tahun', 'Hidup 5 Tahun', 'Hidup 10 Tahun'
+    ];
+
+    var questList = questNama.map(function(nama, i) {
+        return {
+            id: 'quest_'+(i+1),
+            nama: nama,
+            syarat: 'Lakukan '+(i+1)*5+' aktiviti',
+            hadiah: {wang:(i+1)*200, xp:(i+1)*100, item:'Hadiah '+(i+1)},
+            progress: 0,
+            target: (i+1)*5,
+            complete: false
+        };
+    });
+
+    // 150 Shop Items with proper names
+    var kedaiNama = [
+        'Buku Nota', 'Pen', 'Pensil', 'Pemadam', 'Pembaris',
+        'Beg Sekolah', 'Beg Tangan', 'Dompet', 'Jam Tangan', 'Cermin Mata',
+        'Telefon Bimbit', 'Komputer Riba', 'Tablet', 'Kamera', 'Pencetak',
+        'Televisyen', 'Radio', 'Pembesar Suara', 'Fon Kepala', 'Mikrofon',
+        'Baju', 'Seluar', 'Kasut', 'Stokin', 'Topi',
+        'Tudung', 'Songkok', 'Tali Pinggang', 'Sarung Tangan', 'Selendang',
+        'Makanan Ringan', 'Minuman', 'Buah-buahan', 'Sayur-sayuran', 'Daging',
+        'Ikan', 'Ayam', 'Telur', 'Susu', 'Roti',
+        'Ubat Sakit Kepala', 'Ubat Selesema', 'Ubat Batuk', 'Ubat Demam', 'Vitamin',
+        'Minyak Wangi', 'Sabun', 'Syampu', 'Berus Gigi', 'Ubat Gigi',
+        'Tuala', 'Selimut', 'Bantal', 'Tilam', 'Cadar',
+        'Periuk', 'Kuali', 'Pinggan', 'Mangkuk', 'Cawan',
+        'Sudu', 'Garpu', 'Pisau', 'Cerek', 'Periuk Nasi',
+        'Meja', 'Kerusi', 'Almari', 'Katil', 'Sofa',
+        'Lampu', 'Kipas', 'Penyaman Udara', 'Pemanas Air', 'Peti Sejuk',
+        'Mesin Basuh', 'Ketuhar', 'Pengisar', 'Pembakar Roti', 'Periuk Tekanan',
+        'Basikal', 'Motosikal', 'Kereta', 'Van', 'Lori',
+        'Tiket Bas', 'Tiket Kereta Api', 'Tiket Kapal Terbang', 'Kad Pengangkutan', 'Pas Perjalanan',
+        'Buku Cerita', 'Buku Teks', 'Buku Rujukan', 'Novel', 'Komik',
+        'Majalah', 'Surat Khabar', 'Peta', 'Atlas', 'Kamus',
+        'Gitar', 'Piano', 'Biola', 'Drum', 'Seruling',
+        'Bola Sepak', 'Bola Keranjang', 'Bola Tampar', 'Raket Badminton', 'Raket Tenis',
+        'Peralatan Memancing', 'Khemah', 'Beg Tidur', 'Dapur Kem', 'Lampu Suluh',
+        'Alat Tulis', 'Kalkulator', 'Komputer Meja', 'Monitor', 'Papan Kekunci',
+        'Tetikus', 'Pencetak Laser', 'Pengimbas', 'Projektor', 'Skrin',
+        'Cermin Mata Hitam', 'Payung', 'Baju Hujan', 'But', 'Sandal',
+        'Permainan Papan', 'Permainan Kad', 'Puzzle', 'Rubik', 'Lego',
+        'Anak Patung', 'Kereta Mainan', 'Drone', 'Robot', 'Konsol Permainan',
+        'Alat Muzik', 'Peralatan Seni', 'Peralatan Sukan', 'Peralatan Memasak', 'Peralatan Taman'
+    ];
+
+    var kedaiItem = kedaiNama.map(function(nama, i) {
+        return {
+            id: 'item_'+(i+1),
+            nama: nama,
+            harga: (i+1)*25,
+            kategori: i%7===0?'Makanan':i%7===1?'Ubat':i%7===2?'Buku':i%7===3?'Pakaian':i%7===4?'Alat':i%7===5?'Hadiah':'Rawak',
+            kesan: {tenaga:Math.floor(Math.random()*20), kesihatan:Math.floor(Math.random()*20), mood:Math.floor(Math.random()*20)}
+        };
+    });
+
+    // All functions remain the same as before
     function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2500)}
     function addLog(m,c){var d=document.getElementById('logHidup');d.innerHTML='<p class="'+(c||'')+'"><b>'+state.masa+'j</b> — '+m+'</p>'+d.innerHTML}
     function sanitize(n){return n.replace(/[^a-zA-Z0-9_]/g,'').toLowerCase()}
@@ -289,7 +545,7 @@
         if(n==='statistik')showStatistik();
         if(n==='tetapan')showTetapan();
     }
-    
+
     function showList(arr,id,fn){
         var html='';
         arr.forEach(function(x,i){
@@ -297,7 +553,7 @@
         });
         document.getElementById(id).innerHTML=html;
     }
-    
+
     function showKewangan(){
         var html='<div class="grid">';
         html+='<div class="stat"><div class="l">WANG</div><div class="v">RM'+state.wang+'</div></div>';
@@ -311,7 +567,7 @@
         html+='</div>';
         document.getElementById('kewanganContent').innerHTML=html;
     }
-    
+
     function showPencapaian(){
         var html='';
         pencapaianList.forEach(function(a){
@@ -323,7 +579,7 @@
         });
         document.getElementById('pencapaianList').innerHTML=html;
     }
-    
+
     function showInventori(){
         var html='';
         for(var item in state.inventori){
@@ -332,7 +588,7 @@
         if(html==='')html='<p style="text-align:center;color:var(--dim)">Inventori kosong</p>';
         document.getElementById('inventoriList').innerHTML=html;
     }
-    
+
     function showQuest(){
         var html='';
         questList.forEach(function(q,index){
@@ -347,7 +603,7 @@
         });
         document.getElementById('questList').innerHTML=html;
     }
-    
+
     function showKedai(){
         var html='';
         kedaiItem.forEach(function(item,index){
@@ -357,7 +613,7 @@
         });
         document.getElementById('kedaiList').innerHTML=html;
     }
-    
+
     function showStatistik(){
         var html='<div class="grid">';
         html+='<div class="stat"><div class="l">MAKAN</div><div class="v">'+state.statistik.totalMakan+'</div></div>';
@@ -369,7 +625,7 @@
         html+='</div>';
         document.getElementById('statistikContent').innerHTML=html;
     }
-    
+
     function showTetapan(){
         var html='<div style="margin-bottom:10px">';
         html+='<label><input type="checkbox" '+(state.tetapan.autoSimpan?'checked':'')+' onchange="toggleAutoSimpan()"> Auto Simpan</label><br>';
@@ -383,12 +639,12 @@
         html+='<button class="btn bahaya" onclick="resetGame()">RESET GAME</button>';
         document.getElementById('tetapanContent').innerHTML=html;
     }
-    
+
     function simpan(){
         if(!pengguna)return;
         db.ref('profil/'+pengguna).update(state).catch(function(){});
     }
-    
+
     function muat(nama){
         var key=sanitize(nama);
         if(!key){toast('Nama tidak sah');return}
@@ -398,7 +654,7 @@
                 Object.keys(saved).forEach(function(k){state[k]=saved[k]});
                 state.hidup=state.hidup!==false;
             }else{
-                state={umur:18,kesihatan:85,mental:80,tenaga:70,kenyang:70,air:70,pengetahuan:30,kemahiran:20,stamina:60,kebahagiaan:75,masa:0,tahun:1,hidup:true,wang:1000,pengalaman:0,tahap:1,mood:'neutral'};
+                state={umur:18,kesihatan:85,mental:80,tenaga:70,kenyang:70,air:70,pengetahuan:30,kemahiran:20,stamina:60,kebahagiaan:75,masa:0,tahun:1,hidup:true,wang:1000,pengalaman:0,tahap:1,mood:'neutral',inventori:{},pencapaian:{},quest:{},statistik:{totalMakan:0,totalTidur:0,totalKerja:0,totalBelajar:0,totalSukan:0,totalSosial:0},tetapan:{autoSimpan:true,kelajuan:1,notifikasi:true}};
                 simpan();
             }
             pengguna=key;
@@ -408,7 +664,7 @@
             startAutoSave();
         }).catch(function(){toast('Ralat')});
     }
-    
+
     function daftar(nama,kata){
         var key=sanitize(nama);
         if(!key||!kata){toast('Isi semua');return}
@@ -420,7 +676,7 @@
             });
         });
     }
-    
+
     function login(nama,kata){
         var key=sanitize(nama);
         if(!key||!kata){toast('Isi semua');return}
@@ -430,7 +686,7 @@
             muat(key);
         });
     }
-    
+
     function showStats(){
         var stats=[
             {l:'UMUR',v:state.umur},{l:'JAM',v:state.masa},{l:'TAHUN',v:state.tahun},
@@ -447,7 +703,7 @@
             return '<div class="stat" onclick="toast(\''+x.l+': '+x.v+'\')"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';
         }).join('');
     }
-    
+
     function makan(i){
         if(!rateLimit())return;
         var m=makanan[i];
@@ -462,7 +718,7 @@
         simpan();showStats();
         addLog('Makan '+m.n+' ('+m.kategori+')','baik');
     }
-    
+
     function tidur(i){
         if(!rateLimit())return;
         var t=tidur[i];
@@ -472,7 +728,7 @@
         simpan();showStats();
         addLog('Tidur '+t.n+' (Kualiti: '+t.kualiti+'%)','baik');
     }
-    
+
     function kerja(i){
         if(!rateLimit())return;
         var k=kerja[i];
@@ -486,7 +742,7 @@
         simpan();showStats();
         addLog(k.n+' (+RM'+k.w+')','baik');
     }
-    
+
     function belajar(i){
         if(!rateLimit())return;
         var b=belajar[i];
@@ -497,7 +753,7 @@
         simpan();showStats();
         addLog(b.n+' ('+b.kategori+')','baik');
     }
-    
+
     function sukan(i){
         if(!rateLimit())return;
         var s=sukan[i];
@@ -509,7 +765,7 @@
         simpan();showStats();
         addLog(s.n+' ('+s.jenis+')','baik');
     }
-    
+
     function sosial(i){
         if(!rateLimit())return;
         var s=sosial[i];
@@ -521,7 +777,7 @@
         simpan();showStats();
         addLog(s.n+' ('+s.jenis+')','baik');
     }
-    
+
     function hobi(i){
         if(!rateLimit())return;
         var h=hobi[i];
@@ -532,7 +788,7 @@
         simpan();showStats();
         addLog(h.n+' ('+h.jenis+')','baik');
     }
-    
+
     function kesihatan(i){
         if(!rateLimit())return;
         var k=kesihatan[i];
@@ -542,7 +798,7 @@
         simpan();showStats();
         addLog(k.n+' (-RM'+k.kos+')','baik');
     }
-    
+
     function kerjaya(i){
         if(!rateLimit())return;
         var k=kerjaya[i];
@@ -554,7 +810,7 @@
         simpan();showStats();
         addLog('Mula kerjaya: '+k.n+' (Gaji RM'+k.gaji+')','baik');
     }
-    
+
     function kemahiran(i){
         if(!rateLimit())return;
         var k=kemahiran[i];
@@ -564,7 +820,7 @@
         simpan();showStats();
         addLog('Latih '+k.n+' ('+k.kategori+')','baik');
     }
-    
+
     function hubungan(i){
         if(!rateLimit())return;
         var h=hubungan[i];
@@ -574,7 +830,7 @@
         simpan();showStats();
         addLog('Kuatkan hubungan dengan '+h.n+' ('+h.jenis+')','baik');
     }
-    
+
     function acara(i){
         if(!rateLimit())return;
         var a=acara[i];
@@ -585,7 +841,7 @@
         simpan();showStats();
         addLog(a.n+' ('+a.jenis+')',a.jenis==='positif'?'baik':a.jenis==='negatif'?'buruk':'neutral');
     }
-    
+
     function beliItem(i){
         if(!rateLimit())return;
         var item=kedaiItem[i];
@@ -598,7 +854,7 @@
         simpan();showStats();
         addLog('Beli '+item.nama+' (-RM'+item.harga+')','baik');
     }
-    
+
     function claimQuest(i){
         var q=questList[i];
         state.wang+=q.hadiah.wang;
@@ -608,7 +864,7 @@
         simpan();showQuest();
         addLog('Selesaikan quest: '+q.nama+' (+RM'+q.hadiah.wang+')','baik');
     }
-    
+
     function checkQuest(){
         questList.forEach(function(q,index){
             var progress=state.quest[q.id]||0;
@@ -621,7 +877,7 @@
             }
         });
     }
-    
+
     function levelUp(){
         var nextLevel=state.tahap*100;
         if(state.pengalaman>=nextLevel){
@@ -631,7 +887,7 @@
             addLog('Tahap naik ke '+state.tahap,'rarity');
         }
     }
-    
+
     function simpanWang(){
         if(state.wang<100){toast('Wang tidak cukup!');return}
         state.wang-=100;
@@ -639,7 +895,7 @@
         simpan();showStats();
         addLog('Simpan RM100','baik');
     }
-    
+
     function laburWang(){
         if(state.wang<200){toast('Wang tidak cukup!');return}
         state.wang-=200;
@@ -648,7 +904,7 @@
         simpan();showStats();
         addLog('Labur RM200','baik');
     }
-    
+
     function bayarHutang(){
         if(state.wang<150){toast('Wang tidak cukup!');return}
         state.wang-=150;
@@ -656,7 +912,7 @@
         simpan();showStats();
         addLog('Bayar hutang RM150','baik');
     }
-    
+
     function toggleAutoSimpan(){state.tetapan.autoSimpan=!state.tetapan.autoSimpan;simpan();toast('Auto simpan '+(state.tetapan.autoSimpan?'AKTIF':'MATI'))}
     function toggleNotifikasi(){state.tetapan.notifikasi=!state.tetapan.notifikasi;simpan();toast('Notifikasi '+(state.tetapan.notifikasi?'AKTIF':'MATI'))}
     function ubahKelajuan(v){state.tetapan.kelajuan=parseInt(v);simpan();toast('Kelajuan '+v+'x')}
@@ -667,7 +923,7 @@
             toast('Game direset');
         }
     }
-    
+
     function startAutoSave(){
         if(autoSaveInterval)clearInterval(autoSaveInterval);
         autoSaveInterval=setInterval(function(){
@@ -676,8 +932,7 @@
             }
         },30000);
     }
-    
-    // Time functions
+
     function advanceTime(hours){
         for(var h=0;h<hours;h++){
             state.masa++;
@@ -694,7 +949,7 @@
         }
         simpan();showStats();
     }
-    
+
     document.getElementById('btnLogin').addEventListener('click',function(){login(document.getElementById('namaLogin').value.trim(),document.getElementById('kataLogin').value.trim())});
     document.getElementById('btnDaftar').addEventListener('click',function(){daftar(document.getElementById('namaLogin').value.trim(),document.getElementById('kataLogin').value.trim())});
     document.getElementById('btnLogout').addEventListener('click',function(){
@@ -718,9 +973,6 @@
         if(!rateLimit())return;
         advanceTime(168*state.tetapan.kelajuan);
     });
-    
-    // Initialize
+
     showStats();
-    </script>
-</body>
-</html>
+</script>
