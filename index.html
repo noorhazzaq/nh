@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Game — Versi Penuh">
-    <title>ZACK Game</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Game","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
+    <meta name="description" content="ZACK Hacker — Simulasi Hacker">
+    <title>ZACK Hacker</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Hacker","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
         :root{--r:#ff0033;--c:#00f0ff;--g:#ffd700;--b:#000;--w:#fff;--m:#999;--s:#00ff88;--br:rgba(0,240,255,.3);--gd:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff);--st:env(safe-area-inset-top,0);--sb:env(safe-area-inset-bottom,0)}
@@ -17,7 +17,7 @@
         .header{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(12px + var(--st)) 15px;background:rgba(0,0,0,.9);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
         .logo{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .badge{font-size:7px;font-family:'Orbitron',sans-serif;padding:4px 8px;border-radius:10px;border:1px solid var(--s);color:var(--s)}
-        .badge.mati{border-color:var(--r);color:var(--r)}
+        .badge.bahaya{border-color:var(--r);color:var(--r)}
         .main{position:relative;z-index:2;padding:calc(55px + var(--st)) 8px calc(60px + var(--sb));max-width:600px;margin:0 auto;height:100dvh;overflow-y:auto}
         .tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:6px 8px calc(6px + var(--sb));background:rgba(0,0,0,.95);border-top:1px solid var(--br);display:flex;justify-content:space-around;max-width:600px;margin:0 auto}
         .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:none;border:none;color:var(--m);font-family:'Orbitron',sans-serif;font-size:6px;cursor:pointer;border-radius:8px}
@@ -58,34 +58,34 @@
 </head>
 <body>
     <div class="aurora"></div>
-    <div class="header"><div class="logo">ZACK GAME</div><span id="umur" class="badge">TAHUN 1</span></div>
+    <div class="header"><div class="logo">ZACK HACKER</div><span id="level" class="badge">LEVEL 1</span></div>
     <div class="main">
         <div class="halaman aktif" id="hal-login">
-            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR</button></div>
+            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA HACKER" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR</button></div>
         </div>
         <div class="halaman" id="hal-status">
             <div class="kad">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">📊 STATUS</h3><span id="status" class="badge">AKTIF</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">💻 SISTEM</h3><span id="status" class="badge">AKTIF</span></div>
                 <div class="grid-stat" id="sg"></div>
-                <button class="butang" id="langkah" style="margin-top:8px">⚡ TAHUN SETERUSNYA</button>
+                <button class="butang" id="langkah" style="margin-top:8px">⚡ HACK SETERUSNYA</button>
             </div>
             <div id="ch"></div>
         </div>
         <div class="halaman" id="hal-tindakan">
-            <div class="kad"><h3>🎯 MENU</h3><div id="tindakan"></div></div>
+            <div class="kad"><h3>🎯 OPERASI HACK</h3><div id="tindakan"></div></div>
         </div>
         <div class="halaman" id="hal-pemain">
-            <div class="kad"><h3>👥 PEMAIN</h3><div id="senaraiPemain"></div></div>
+            <div class="kad"><h3>👥 HACKER LAIN</h3><div id="senaraiPemain"></div></div>
         </div>
         <div class="halaman" id="hal-log">
-            <div class="kad"><h3>📜 ALIRAN</h3><div class="log-v" id="log"></div></div>
+            <div class="kad"><h3>📜 LOG HACK</h3><div class="log-v" id="log"></div></div>
         </div>
     </div>
     <div class="tab-bar" id="tabBar" style="display:none">
-        <button class="tab aktif" onclick="tukar('status',this)"><span class="ikon">📊</span>STATUS</button>
-        <button class="tab" onclick="tukar('tindakan',this)"><span class="ikon">🎯</span>MENU</button>
-        <button class="tab" onclick="tukar('pemain',this)"><span class="ikon">👥</span>PEMAIN</button>
-        <button class="tab" onclick="tukar('log',this)"><span class="ikon">📜</span>ALIRAN</button>
+        <button class="tab aktif" onclick="tukar('status',this)"><span class="ikon">💻</span>SISTEM</button>
+        <button class="tab" onclick="tukar('tindakan',this)"><span class="ikon">🎯</span>HACK</button>
+        <button class="tab" onclick="tukar('pemain',this)"><span class="ikon">👥</span>HACKER</button>
+        <button class="tab" onclick="tukar('log',this)"><span class="ikon">📜</span>LOG</button>
     </div>
     <div class="modal" id="modal">
         <div class="modal-kandungan">
@@ -102,47 +102,30 @@
     const db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     let pengguna=null,s=null;
     const A=[
-        {i:'a1',k:'🏥 Kesihatan',n:'Makan',c:50,e:s=>{if(s.bank<50)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=50;s.tenaga=M.min(100,s.tenaga+20);return{teks:'Tenaga +20%',aras:'tindakan'}}},
-        {i:'a2',k:'🏥 Kesihatan',n:'Minum Air',c:10,e:s=>{if(s.bank<10)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=10;s.hidrasi=M.min(100,s.hidrasi+15);return{teks:'Hidrasi +15%',aras:'tindakan'}}},
-        {i:'a3',k:'🏥 Kesihatan',n:'Tidur',c:0,e:s=>{s.tenaga=M.min(100,s.tenaga+30);return{teks:'Tenaga +30%',aras:'tindakan'}}},
-        {i:'a4',k:'🏥 Kesihatan',n:'Pemeriksaan',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Kesihatan +15%',aras:'tindakan'}}},
-        {i:'a5',k:'🏥 Kesihatan',n:'Vaksinasi',c:50,e:s=>{if(s.bank<50)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=50;s.imun=M.min(100,s.imun+10);return{teks:'Imun +10%',aras:'tindakan'}}},
-        {i:'a6',k:'🧠 Mental',n:'Meditasi',c:0,e:s=>{s.mental=M.min(100,s.mental+10);return{teks:'Mental +10%',aras:'tindakan'}}},
-        {i:'a7',k:'🧠 Mental',n:'Kaunseling',c:150,e:s=>{if(s.bank<150)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=150;s.mental=M.min(100,s.mental+15);return{teks:'Mental +15%',aras:'tindakan'}}},
-        {i:'a8',k:'💰 Kewangan',n:'Bekerja',c:0,e:s=>{s.bank+=s.gaji;s.tenaga=M.max(0,s.tenaga-10);return{teks:`Gaji $${s.gaji}`,aras:'tindakan'}}},
-        {i:'a9',k:'💰 Kewangan',n:'Kerja Lebih Masa',c:0,e:s=>{s.bank+=500;s.tenaga=M.max(0,s.tenaga-20);return{teks:'+$500, tenaga -20%',aras:'tindakan'}}},
-        {i:'a10',k:'💰 Kewangan',n:'Simpan $200',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.simpanan+=200;return{teks:'Simpanan +$200',aras:'tindakan'}}},
-        {i:'a11',k:'💰 Kewangan',n:'Labur ASB',c:1000,e:s=>{if(s.bank<1000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=1000;s.pelaburan=(s.pelaburan||0)+1000;return{teks:'ASB +$1000',aras:'tindakan'}}},
-        {i:'a12',k:'💰 Kewangan',n:'Beli Emas',c:2000,e:s=>{if(s.bank<2000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=2000;s.emas=(s.emas||0)+2000;return{teks:'Emas +$2000',aras:'tindakan'}}},
-        {i:'a13',k:'💰 Kewangan',n:'Bayar Hutang',c:500,e:s=>{if(s.bank<500)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=500;s.hutang=M.max(0,s.hutang-500);return{teks:'Hutang -$500',aras:'tindakan'}}},
-        {i:'a14',k:'💰 Kewangan',n:'Transfer',c:0,e:s=>{bukaTransfer();return{teks:'Pilih penerima',aras:'sistem'}}},
-        {i:'a15',k:'👤 Sosial',n:'Bersosial',c:0,e:s=>{s.sosial=M.min(100,s.sosial+10);return{teks:'Sosial +10%',aras:'tindakan'}}},
-        {i:'a16',k:'👤 Sosial',n:'Kahwin',c:5000,e:s=>{if(s.bank<5000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=5000;s.berkahwin=1;return{teks:'Berkahwin!',aras:'tindakan'}}},
-        {i:'a17',k:'👤 Sosial',n:'Dapat Anak',c:1000,e:s=>{if(s.bank<1000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=1000;s.anak=(s.anak||0)+1;return{teks:'Anak +1',aras:'tindakan'}}},
-        {i:'a18',k:'👤 Sosial',n:'Keluarga',c:0,e:s=>{s.kebahagiaan=M.min(100,s.kebahagiaan+10);return{teks:'+10% kebahagiaan',aras:'tindakan'}}},
-        {i:'a19',k:'🎓 Pendidikan',n:'Belajar',c:100,e:s=>{if(s.bank<100)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=100;s.kemahiran=(s.kemahiran||0)+5;return{teks:'Kemahiran +5',aras:'tindakan'}}},
-        {i:'a20',k:'🛡️ Insurans',n:'Insurans',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.insurans=(s.insurans||0)+1;return{teks:'Insurans dibeli',aras:'tindakan'}}}
+        {i:'a1',k:'💻 Hack',n:'Hack Sistem Bank',c:0,e:s=>{const u=M.random()>.4?M.floor(M.random()*5000)+1000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+5);return{teks:`Berjaya! +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+20);return{teks:'Gagal! Risiko +20%',aras:'bahaya'}}}},
+        {i:'a2',k:'💻 Hack',n:'Hack Pelayan Kerajaan',c:0,e:s=>{const u=M.random()>.6?M.floor(M.random()*10000)+2000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+10);return{teks:`Berjaya! +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+30);return{teks:'Gagal! Risiko +30%',aras:'bahaya'}}}},
+        {i:'a3',k:'💻 Hack',n:'Curi Data Pelanggan',c:0,e:s=>{const u=M.random()>.5?M.floor(M.random()*3000)+500:0;if(u>0){s.wang+=u;return{teks:`Data dijual +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+15);return{teks:'Dikesan! +15%',aras:'bahaya'}}}},
+        {i:'a4',k:'🛠️ Peralatan',n:'Beli Perisian',c:500,e:s=>{if(s.wang<500)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=500;s.kemahiran=M.min(100,s.kemahiran+10);return{teks:'Kemahiran +10%',aras:'tindakan'}}},
+        {i:'a5',k:'🛠️ Peralatan',n:'Beli VPN',c:1000,e:s=>{if(s.wang<1000)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=1000;s.risiko=M.max(0,s.risiko-20);return{teks:'Risiko -20%',aras:'tindakan'}}},
+        {i:'a6',k:'🛠️ Peralatan',n:'Beli Firewall',c:2000,e:s=>{if(s.wang<2000)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=2000;s.perlindungan=M.min(100,s.perlindungan+15);return{teks:'Perlindungan +15%',aras:'tindakan'}}},
+        {i:'a7',k:'🌐 Rangkaian',n:'Sertai Forum Hacker',c:100,e:s=>{if(s.wang<100)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=100;s.reputasi=M.min(100,s.reputasi+5);return{teks:'Reputasi +5%',aras:'tindakan'}}},
+        {i:'a8',k:'🌐 Rangkaian',n:'Upah Hacker Lain',c:500,e:s=>{if(s.wang<500)return{teks:'Wang tidak cukup',aras:'amaran'};s.wang-=500;s.kemahiran=M.min(100,s.kemahiran+8);return{teks:'Kemahiran +8%',aras:'tindakan'}}}
     ];
-    const D=['Gempa Bumi','Tsunami','Banjir','Kebakaran','Rusuhan','Perang','Revolusi','Olimpik','Piala Dunia','Revolusi AI','Krisis Air','Krisis Makanan','Inflasi','Deflasi','Boom Ekonomi','Kemelesetan','Harga Minyak Naik','Harga Emas Naik','Pasaran Naik','Pasaran Turun'];
-    const SM={'KESIHATAN':'🏥 Kesihatan','TENAGA':'🏥 Kesihatan','HIDRASI':'🏥 Kesihatan','IMUN':'🏥 Kesihatan','MENTAL':'🧠 Mental','BANK':'💰 Kewangan','SIMPANAN':'💰 Kewangan','PELABURAN':'💰 Kewangan','EMAS':'💰 Kewangan','HUTANG':'💰 Kewangan','SOSIAL':'👤 Sosial','KEBAHAGIAAN':'👤 Sosial','KEMAHIRAN':'🎓 Pendidikan','INSURANS':'🛡️ Insurans','STATUS':'👤 Sosial'};
     const C=[
-        {n:'Kerja',d:'Gaji lebih tinggi.',o:[{l:'Terima',v:()=>1,r:s=>{s.gaji+=500;return{teks:'Gaji +$500',aras:'tindakan'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
-        {n:'Sakit',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'-20%',aras:'bahaya'}}}]},
-        {n:'Pelaburan',d:'Saham risiko tinggi.',o:[{l:'Labur $500',v:s=>s.bank>=500,r:s=>{s.bank-=500;const u=M.random()>.5?800:-300;s.bank+=M.max(0,u);return{teks:u>0?'Untung +$800':'Rugi -$300',aras:u>0?'tindakan':'bahaya'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]}
+        {n:'Misi Khas',d:'Hack sistem pertahanan negara.',o:[{l:'Terima',v:()=>1,r:s=>{const u=M.random()>.7?20000:0;if(u>0){s.wang+=u;s.reputasi=M.min(100,s.reputasi+20);return{teks:`Berjaya! +$${u}`,aras:'tindakan'}}else{s.risiko=M.min(100,s.risiko+40);return{teks:'Gagal! Risiko +40%',aras:'bahaya'}}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
+        {n:'Polis Siber',d:'Polis mengesan aktiviti anda.',o:[{l:'Lari ($1000)',v:s=>s.wang>=1000,r:s=>{s.wang-=1000;s.risiko=M.max(0,s.risiko-30);return{teks:'Berjaya lari',aras:'tindakan'}}},{l:'Hadapi',v:()=>1,r:s=>{s.wang=M.max(0,s.wang-5000);s.risiko=M.min(100,s.risiko+20);return{teks:'Ditangkap! -$5000',aras:'bahaya'}}}]}
     ];
     function tukar(n,b){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+n).classList.add('aktif');if(b)b.classList.add('aktif');if(n==='pemain')muatPemain()}
     function simpan(){if(pengguna)db.ref('profil/'+pengguna).update(s).catch(()=>{})}
-    function muat(n){db.ref('profil/'+n).once('value').then(snap=>{s=snap.exists()?snap.val():{umur:30,hidup:1,kesihatan:80,mental:80,tenaga:70,hidrasi:70,sosial:50,kemahiran:10,imun:70,jangka:75,kebahagiaan:70,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};if(!snap.exists())db.ref('profil/'+n).set(s);s.ch=null;papar([])})}
-    function muatPemain(){db.ref('profil').on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{const d=c.val();l.push({n:c.key,b:d.bank||0,h:d.hidup!==0})});l.sort((a,b)=>b.b-a.b);$('senaraiPemain').innerHTML=l.map(p=>`<div class="pemain ${!p.h?'pemain-mati':''}"><span class="pemain-nama">${p.n}${p.n===pengguna?' (Anda)':''}${!p.h?' 💀':''}</span><span class="pemain-bank">${p.h?'$'+p.b:'Meninggal'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada pemain</p>'})}
+    function muat(n){db.ref('profil/'+n).once('value').then(snap=>{s=snap.exists()?snap.val():{level:1,hidup:1,wang:1000,reputasi:10,risiko:0,kemahiran:20,perlindungan:10,ch:null};if(!snap.exists())db.ref('profil/'+n).set(s);s.ch=null;papar([])})}
+    function muatPemain(){db.ref('profil').on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{const d=c.val();l.push({n:c.key,w:d.wang||0,h:d.hidup!==0})});l.sort((a,b)=>b.w-a.w);$('senaraiPemain').innerHTML=l.map(p=>`<div class="pemain ${!p.h?'pemain-mati':''}"><span class="pemain-nama">${p.n}${p.n===pengguna?' (Anda)':''}${!p.h?' 💀':''}</span><span class="pemain-bank">${p.h?'$'+p.w:'Ditangkap'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada hacker</p>'})}
     function bukaModal(k){$('modalTajuk').textContent=k;$('modalIsi').innerHTML=A.filter(a=>a.k===k).map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}');tutupModal()">${a.n} ${a.c?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('');$('modal').classList.add('aktif')}
-    function bukaStatusMenu(l){if(SM[l])bukaModal(SM[l])}
     function tutupModal(){$('modal').classList.remove('aktif')}
-    function bukaTransfer(){$('modalTajuk').textContent='💸 TRANSFER';$('modalIsi').innerHTML=`<input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button>`;$('modal').classList.add('aktif');$('btnTransfer').addEventListener('click',()=>{const p=$('penerima').value.trim(),j=parseInt($('jumlah').value);if(!p||!j||j<=0||p===pengguna)return;if(s.bank<j){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Baki tidak cukup',aras:'bahaya'}]);return}db.ref('profil/'+p).once('value').then(snap=>{if(!snap.exists()){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima tidak wujud',aras:'amaran'}]);return}const d=snap.val();if(d.hidup===0){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima telah meninggal',aras:'amaran'}]);return}d.bank=(d.bank||0)+j;s.bank-=j;db.ref('profil/'+p).update({bank:d.bank});simpan();tutupModal();papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:`$${j} kepada ${p}`,aras:'tindakan'}])})},{once:true})}
-    function langkah(){if(!s.hidup||s.ch)return[];const L=[];s.umur++;s.kesihatan=M.max(0,s.kesihatan-M.random()*5);s.mental=M.max(0,s.mental-M.random()*3);s.tenaga=M.max(0,s.tenaga-M.random()*10);s.hidrasi=M.max(0,s.hidrasi-M.random()*8);s.jangka--;s.bank=M.max(0,s.bank-M.floor(500+s.umur*.5));if(s.simpanan>0)s.simpanan+=M.floor(s.simpanan*.02);if(s.pelaburan>0){const f=M.floor(s.pelaburan*.06);s.pelaburan+=f;L.push({id:0,nama:'DIVIDEN',kategori:'Kewangan',teks:`+$${f}`,aras:'tindakan'})}if(s.hutang>0){const f=M.floor(s.hutang*.05);s.hutang+=f;L.push({id:0,nama:'FAEDAH',kategori:'Bank',teks:`+$${f}`,aras:'amaran'})}if(M.random()<.15){const d=D[M.floor(M.random()*D.length)];L.push({id:0,nama:d.toUpperCase(),kategori:'Dunia',teks:d,aras:'amaran'})}if(s.tenaga<=0){s.kesihatan=M.max(0,s.kesihatan-15);L.push({id:0,nama:'LETIH',kategori:'Kesihatan',teks:'Terlalu letih! -15%',aras:'bahaya'})}if(s.hidrasi<=0){s.kesihatan=M.max(0,s.kesihatan-10);L.push({id:0,nama:'DEHIDRASI',kategori:'Kesihatan',teks:'Dehidrasi! -10%',aras:'bahaya'})}if(s.hutang>100000&&M.random()<.2){s.hidup=0;L.push({id:0,nama:'MUFLIS',kategori:'Bank',teks:'Muflis',aras:'kematian'});simpan();return L}if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];if(s.kesihatan<=0||s.umur>=s.jangka){s.hidup=0;L.push({id:0,nama:'TAMAT',kategori:'Sistem',teks:`Umur ${s.umur}`,aras:'kematian'})}simpan();return L}
-    function papar(L=[]){if(!s)return;$('umur').textContent=`TAHUN ${s.umur}`;$('status').textContent=s.hidup?'AKTIF':'MENINGGAL';$('status').className=`badge ${s.hidup?'':'mati'}`;$('langkah').disabled=!s.hidup||!!s.ch;const st=[{l:'KESIHATAN',v:s.kesihatan.toFixed(0)+'%',b:s.kesihatan,c:s.kesihatan>50?'fh':'fm'},{l:'MENTAL',v:s.mental.toFixed(0)+'%',b:s.mental,c:s.mental>50?'fh':'fm'},{l:'TENAGA',v:s.tenaga.toFixed(0)+'%',b:s.tenaga,c:s.tenaga>50?'fh':'fm'},{l:'HIDRASI',v:s.hidrasi.toFixed(0)+'%',b:s.hidrasi,c:s.hidrasi>50?'fh':'fm'},{l:'SOSIAL',v:s.sosial.toFixed(0)+'%',b:s.sosial,c:'fh'},{l:'BANK',v:'$'+s.bank.toFixed(0)},{l:'SIMPANAN',v:'$'+s.simpanan.toFixed(0)},{l:'PELABURAN',v:'$'+(s.pelaburan||0).toFixed(0)},{l:'EMAS',v:'$'+(s.emas||0).toFixed(0)},{l:'HUTANG',v:'$'+s.hutang.toFixed(0)},{l:'KEMAHIRAN',v:s.kemahiran||0},{l:'INSURANS',v:s.insurans||0},{l:'STATUS',v:s.berkahwin?'Kahwin':'Bujang'}];$('sg').innerHTML=st.map(x=>`<div class="kotak" onclick="bukaStatusMenu('${x.l}')"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');$('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';$('tindakan').innerHTML=[...new Set(A.map(a=>a.k))].map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>T${s.umur}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}}
-    window.ea=id=>{const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.bank<a.c)return;const r=a.e(s);if(a.i!=='a14')papar([{id:0,nama:a.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpan()};
-    window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Pilihan',teks:r.teks,aras:r.aras}]);simpan()};
-    $('btnDaftar').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama wujud',aras:'amaran'}]);return}db.ref('auth/'+n).set({password:k}).then(()=>{const p={umur:30,hidup:1,kesihatan:80,mental:80,tenaga:70,hidrasi:70,sosial:50,kemahiran:10,imun:70,jangka:75,kebahagiaan:70,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};db.ref('profil/'+n).set(p).then(()=>papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Berjaya!',aras:'tindakan'}]))})})});
+    function langkah(){if(!s.hidup||s.ch)return[];const L=[];s.level++;if(s.risiko>50&&M.random()<.2){s.risiko=M.min(100,s.risiko+20);L.push({id:0,nama:'POLIS',kategori:'Bahaya',teks:'Polis semakin hampir!',aras:'bahaya'})}if(s.risiko>=100){s.hidup=0;L.push({id:0,nama:'DITANGKAP',kategori:'Sistem',teks:'Anda ditangkap polis!',aras:'kematian'});simpan();return L}if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];simpan();return L}
+    function papar(L=[]){if(!s)return;$('level').textContent=`LEVEL ${s.level}`;$('status').textContent=s.hidup?'AKTIF':'DITANGKAP';$('status').className=`badge ${s.hidup?'':'bahaya'}`;$('langkah').disabled=!s.hidup||!!s.ch;const st=[{l:'WANG',v:'$'+s.wang.toFixed(0)},{l:'REPUTASI',v:s.reputasi.toFixed(0)+'%',b:s.reputasi,c:'fh'},{l:'RISIKO',v:s.risiko.toFixed(0)+'%',b:s.risiko,c:s.risiko>50?'fm':'fh'},{l:'KEMAHIRAN',v:s.kemahiran.toFixed(0)+'%',b:s.kemahiran,c:'fh'},{l:'PERLINDUNGAN',v:s.perlindungan.toFixed(0)+'%',b:s.perlindungan,c:'fh'}];$('sg').innerHTML=st.map(x=>`<div class="kotak"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');$('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';$('tindakan').innerHTML=[...new Set(A.map(a=>a.k))].map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>L${s.level}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}}
+    window.ea=id=>{const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.wang<a.c)return;const r=a.e(s);papar([{id:0,nama:a.n,kategori:'Hack',teks:r.teks,aras:r.aras}]);simpan()};
+    window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Misi',teks:r.teks,aras:r.aras}]);simpan()};
+    $('btnDaftar').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama wujud',aras:'amaran'}]);return}db.ref('auth/'+n).set({password:k}).then(()=>{const p={level:1,hidup:1,wang:1000,reputasi:10,risiko:0,kemahiran:20,perlindungan:10,ch:null};db.ref('profil/'+n).set(p).then(()=>papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Berjaya!',aras:'tindakan'}]))})})});
     $('btnLogin').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(!snap.exists()){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Nama tiada',aras:'amaran'}]);return}if(snap.val().password!==k){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Salah',aras:'bahaya'}]);return}pengguna=n;$('hal-login').classList.remove('aktif');$('tabBar').style.display='flex';tukar('status');document.querySelectorAll('.tab')[0].classList.add('aktif');muat(n)})});
     $('langkah').addEventListener('click',()=>papar(langkah()));
     </script>
