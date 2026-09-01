@@ -4,112 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK — Laman Web Rasmi">
-    <title>ZACK — Laman Web</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
+    <meta name="description" content="Template Laman Web">
+    <title>Laman Web</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"Laman","short_name":"Laman","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap');
         :root{--r:#ff0033;--c:#00f0ff;--g:#ffd700;--b:#000;--w:#fff;--m:#999;--s:#00ff88;--br:rgba(0,240,255,.3);--gd:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff);--st:env(safe-area-inset-top,0);--sb:env(safe-area-inset-bottom,0)}
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{background:var(--b);font-family:'Rajdhani',sans-serif;color:var(--w);height:100dvh;overflow:hidden;touch-action:manipulation}
+        body{background:var(--b);font-family:'Rajdhani',sans-serif;color:var(--w);min-height:100dvh;overflow-x:hidden}
         ::-webkit-scrollbar{width:0;height:0}
         .aurora{position:fixed;inset:0;background:radial-gradient(circle at 20% 30%,rgba(255,0,51,.08),transparent 50%),radial-gradient(circle at 80% 70%,rgba(0,240,255,.08),transparent 50%);z-index:0;pointer-events:none}
-        .header{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(12px + var(--st)) 15px;background:rgba(0,0,0,.9);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
+        .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(12px + var(--st)) 15px;background:rgba(0,0,0,.9);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
         .logo{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-        .badge{font-size:7px;font-family:'Orbitron',sans-serif;padding:4px 8px;border-radius:10px;border:1px solid var(--s);color:var(--s)}
-        .main{position:relative;z-index:2;padding:calc(55px + var(--st)) 8px calc(60px + var(--sb));max-width:600px;margin:0 auto;height:100dvh;overflow-y:auto}
-        .tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:6px 8px calc(6px + var(--sb));background:rgba(0,0,0,.95);border-top:1px solid var(--br);display:flex;justify-content:space-around;max-width:600px;margin:0 auto}
-        .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:none;border:none;color:var(--m);font-family:'Orbitron',sans-serif;font-size:6px;cursor:pointer;border-radius:8px}
-        .tab.aktif{color:var(--c)}.tab .ikon{font-size:16px}
-        .halaman{display:none}.halaman.aktif{display:block;animation:f .3s}
-        @keyframes f{from{opacity:0;transform:translateY(8px)}}
-        .kad{border:1px solid var(--br);border-radius:14px;background:rgba(0,0,0,.5);padding:15px;margin-bottom:8px;text-align:center}
-        .kad h2{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--c);margin-bottom:8px;letter-spacing:2px}
-        .kad h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--g);margin-bottom:8px;letter-spacing:2px}
-        .kad p{font-size:11px;color:var(--m);line-height:1.6}
-        .btn{display:inline-block;padding:12px 25px;background:var(--gd);color:var(--w);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;border:none;border-radius:25px;font-weight:700;cursor:pointer;text-decoration:none}
+        .menu-btn{background:none;border:1px solid var(--br);color:var(--c);font-size:18px;padding:8px 12px;border-radius:10px;cursor:pointer}
+        .menu{position:fixed;top:0;right:-100%;width:75%;height:100dvh;background:rgba(0,0,0,.97);z-index:99;transition:right .3s;padding:calc(60px + var(--st)) 15px;border-left:1px solid var(--br)}
+        .menu.aktif{right:0}
+        .menu a{display:block;padding:15px;color:var(--m);text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;border-bottom:1px solid var(--br)}
+        .menu a:active{color:var(--c)}
+        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:98;display:none}
+        .overlay.aktif{display:block}
+        .hero{position:relative;z-index:2;padding:calc(80px + var(--st)) 20px 40px;text-align:center;max-width:600px;margin:0 auto}
+        .hero h1{font-family:'Orbitron',sans-serif;font-size:28px;font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px}
+        .hero p{font-size:13px;color:var(--m);line-height:1.7}
+        .btn{display:inline-block;padding:12px 25px;background:var(--gd);color:var(--w);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;border:none;border-radius:25px;font-weight:700;cursor:pointer;text-decoration:none;margin:5px}
         .btn-biru{border:1px solid var(--c);color:var(--c);background:transparent}
-        .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .ciri{border:1px solid var(--br);border-radius:12px;padding:15px 10px;text-align:center;background:rgba(0,0,0,.4)}
-        .ciri .ikon{font-size:30px;margin-bottom:8px}
-        .ciri .nama{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--c);letter-spacing:1px}
-        .input{width:100%;padding:10px 15px;background:rgba(0,0,0,.7);border:1px solid var(--br);color:var(--w);font-family:'Rajdhani',sans-serif;font-size:13px;border-radius:25px;outline:none;margin-bottom:6px}
-        .log-v{height:150px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;font-size:7px}
-        .log{padding:5px 8px;border-radius:5px;background:rgba(0,0,0,.4);border-left:3px solid var(--c)}
+        .seksyen{position:relative;z-index:2;max-width:600px;margin:0 auto;padding:30px 15px}
+        .kad{border:1px solid var(--br);border-radius:14px;background:rgba(0,0,0,.5);padding:20px;margin-bottom:10px;text-align:center}
+        .kad h2{font-family:'Orbitron',sans-serif;font-size:14px;color:var(--c);margin-bottom:10px;letter-spacing:2px}
+        .kad p{font-size:11px;color:var(--m);line-height:1.6}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .ciri{border:1px solid var(--br);border-radius:12px;padding:20px 10px;text-align:center;background:rgba(0,0,0,.4)}
+        .ciri .ikon{font-size:35px;margin-bottom:10px}
+        .ciri .nama{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--c);letter-spacing:1px}
+        .input{width:100%;padding:12px 15px;background:rgba(0,0,0,.7);border:1px solid var(--br);color:var(--w);font-family:'Rajdhani',sans-serif;font-size:13px;border-radius:25px;outline:none;margin-bottom:8px}
+        .footer{position:relative;z-index:2;text-align:center;padding:20px;border-top:1px solid var(--br);color:var(--m);font-size:10px}
     </style>
 </head>
 <body>
     <div class="aurora"></div>
-    <div class="header"><div class="logo">ZACK</div><span class="badge">ONLINE</span></div>
-    <div class="main">
-        <div class="halaman aktif" id="hal-utama">
-            <div class="kad">
-                <h2>ZACK WEBSITE</h2>
-                <p>Selamat datang ke laman web rasmi ZACK. Platform digital dengan pelbagai permainan & aplikasi.</p>
-            </div>
+    <div class="nav"><div class="logo">LAMAN</div><button class="menu-btn" onclick="bukaMenu()">☰</button></div>
+    <div class="overlay" id="overlay" onclick="tutupMenu()"></div>
+    <div class="menu" id="menu">
+        <a href="#utama" onclick="tutupMenu()">🏠 UTAMA</a>
+        <a href="#perkhidmatan" onclick="tutupMenu()">🛠️ PERKHIDMATAN</a>
+        <a href="#hubungi" onclick="tutupMenu()">📞 HUBUNGI</a>
+    </div>
+    <div class="hero" id="utama">
+        <h1>LAMAN WEB</h1>
+        <p>Template laman web percuma dengan reka bentuk Realm of Light. Sesuai untuk perniagaan, portfolio, atau projek peribadi.</p>
+        <a href="#perkhidmatan" class="btn">LIHAT PERKHIDMATAN</a>
+        <a href="#hubungi" class="btn btn-biru">HUBUNGI</a>
+    </div>
+    <div class="seksyen" id="perkhidmatan">
+        <div class="kad">
+            <h2>🛠️ PERKHIDMATAN</h2>
             <div class="grid">
-                <div class="ciri" onclick="tukar('game')"><div class="ikon">🎮</div><div class="nama">GAME</div></div>
-                <div class="ciri" onclick="tukar('chat')"><div class="ikon">💬</div><div class="nama">CHAT</div></div>
-                <div class="ciri" onclick="tukar('bank')"><div class="ikon">🏦</div><div class="nama">BANK</div></div>
-                <div class="ciri" onclick="tukar('profil')"><div class="ikon">👤</div><div class="nama">PROFIL</div></div>
-            </div>
-        </div>
-        <div class="halaman" id="hal-game">
-            <div class="kad">
-                <h2>🎮 PERMAINAN</h2>
-                <div class="grid">
-                    <div class="ciri"><div class="ikon">🕵️</div><div class="nama">HACKER</div></div>
-                    <div class="ciri"><div class="ikon">🏢</div><div class="nama">TYCOON</div></div>
-                    <div class="ciri"><div class="ikon">🌍</div><div class="nama">LIVES</div></div>
-                    <div class="ciri"><div class="ikon">💰</div><div class="nama">EKONOMI</div></div>
-                </div>
-            </div>
-        </div>
-        <div class="halaman" id="hal-chat">
-            <div class="kad">
-                <h2>💬 CHAT</h2>
-                <div class="log-v" id="chatLog"><p style="color:var(--m);font-size:9px">Chat akan datang...</p></div>
-                <input type="text" id="chatInput" class="input" placeholder="TULIS MESEJ...">
-                <button class="btn" onclick="hantarChat()">HANTAR</button>
-            </div>
-        </div>
-        <div class="halaman" id="hal-bank">
-            <div class="kad">
-                <h2>🏦 BANK</h2>
-                <p>Bank ZACK — Simpanan & transfer.</p>
-                <div class="grid" id="bankInfo">
-                    <div class="ciri"><div class="ikon">💰</div><div class="nama">BANK: $0</div></div>
-                    <div class="ciri"><div class="ikon">💳</div><div class="nama">SIMPANAN: $0</div></div>
-                </div>
-            </div>
-        </div>
-        <div class="halaman" id="hal-profil">
-            <div class="kad">
-                <h2>👤 PROFIL</h2>
-                <input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA">
-                <button class="btn" onclick="simpanProfil()">SIMPAN</button>
+                <div class="ciri"><div class="ikon">💻</div><div class="nama">WEB DESIGN</div></div>
+                <div class="ciri"><div class="ikon">📱</div><div class="nama">MOBILE APP</div></div>
+                <div class="ciri"><div class="ikon">🎮</div><div class="nama">GAME DEV</div></div>
+                <div class="ciri"><div class="ikon">🔥</div><div class="nama">FIREBASE</div></div>
             </div>
         </div>
     </div>
-    <div class="tab-bar">
-        <button class="tab aktif" onclick="tukar('utama',this)"><span class="ikon">🏠</span>UTAMA</button>
-        <button class="tab" onclick="tukar('game',this)"><span class="ikon">🎮</span>GAME</button>
-        <button class="tab" onclick="tukar('chat',this)"><span class="ikon">💬</span>CHAT</button>
-        <button class="tab" onclick="tukar('bank',this)"><span class="ikon">🏦</span>BANK</button>
-        <button class="tab" onclick="tukar('profil',this)"><span class="ikon">👤</span>PROFIL</button>
+    <div class="seksyen" id="hubungi">
+        <div class="kad">
+            <h2>📞 HUBUNGI</h2>
+            <input type="text" class="input" placeholder="NAMA">
+            <input type="email" class="input" placeholder="E-MEL">
+            <textarea class="input" placeholder="MESEJ" rows="3"></textarea>
+            <button class="btn" onclick="hantar()">HANTAR</button>
+        </div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <div class="footer">© 2026 LAMAN WEB — HAK CIPTA TERPELIHARA</div>
     <script>
     'use strict';
-    const $=id=>document.getElementById(id),M=Math;
-    const db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
-    window.tukar=function(n,b){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+n).classList.add('aktif');if(b)b.classList.add('aktif')};
-    window.hantarChat=function(){const t=$('chatInput').value.trim();if(!t)return;const n=localStorage.getItem('zack_nama')||'Anonymous';db.ref('chat').push({n,t}).then(()=>{$('chatInput').value='';muatChat()}).catch(()=>{})};
-    window.muatChat=function(){db.ref('chat').limitToLast(20).on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{l.push(c.val())});$('chatLog').innerHTML=l.map(m=>`<div class="log"><strong>${m.n}</strong> — ${m.t}</div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada mesej</p>'})};
-    window.simpanProfil=function(){const n=$('nama').value.trim();if(!n)return;localStorage.setItem('zack_nama',n);alert('Profil disimpan!')};
-    const n=localStorage.getItem('zack_nama');if(n)$('nama').value=n;
-    muatChat();
+    window.bukaMenu=function(){$('menu').classList.add('aktif');$('overlay').classList.add('aktif')};
+    window.tutupMenu=function(){$('menu').classList.remove('aktif');$('overlay').classList.remove('aktif')};
+    window.hantar=function(){alert('Mesej dihantar!')};
     </script>
 </body>
 </html>
