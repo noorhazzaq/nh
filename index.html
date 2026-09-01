@@ -17,9 +17,9 @@
         .nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:calc(12px + var(--st)) 15px;background:rgba(0,0,0,.9);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center}
         .logo{font-family:'Orbitron',sans-serif;font-size:18px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#ff0033,#ff4455,#00f0ff,#ffd700);background-size:400%;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .menu-btn{background:none;border:1px solid var(--br);color:var(--c);font-size:18px;padding:8px 12px;border-radius:10px;cursor:pointer}
-        .menu{position:fixed;top:0;right:-100%;width:75%;height:100dvh;background:rgba(0,0,0,.97);z-index:99;transition:right .3s;padding:calc(60px + var(--st)) 15px;border-left:1px solid var(--br)}
+        .menu{position:fixed;top:0;right:-100%;width:75%;height:100dvh;background:rgba(0,0,0,.97);z-index:99;transition:right .3s;padding:calc(60px + var(--st)) 15px;border-left:1px solid var(--br);overflow-y:auto}
         .menu.aktif{right:0}
-        .menu a{display:block;padding:15px;color:var(--m);text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;border-bottom:1px solid var(--br)}
+        .menu a{display:block;padding:15px;color:var(--m);text-decoration:none;font-family:'Orbitron',sans-serif;font-size:11px;letter-spacing:2px;border-bottom:1px solid var(--br);cursor:pointer}
         .menu a:active{color:var(--c)}
         .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:98;display:none}
         .overlay.aktif{display:block}
@@ -42,16 +42,16 @@
 </head>
 <body>
     <div class="aurora"></div>
-    <div class="nav"><div class="logo">LAMAN</div><button class="menu-btn" onclick="bukaMenu()">☰</button></div>
-    <div class="overlay" id="overlay" onclick="tutupMenu()"></div>
+    <div class="nav"><div class="logo">LAMAN</div><button class="menu-btn" id="btnMenu">☰</button></div>
+    <div class="overlay" id="overlay"></div>
     <div class="menu" id="menu">
-        <a href="#utama" onclick="tutupMenu()">🏠 UTAMA</a>
-        <a href="#perkhidmatan" onclick="tutupMenu()">🛠️ PERKHIDMATAN</a>
-        <a href="#hubungi" onclick="tutupMenu()">📞 HUBUNGI</a>
+        <a onclick="tutupMenu()">🏠 UTAMA</a>
+        <a onclick="tutupMenu()">🛠️ PERKHIDMATAN</a>
+        <a onclick="tutupMenu()">📞 HUBUNGI</a>
     </div>
     <div class="hero" id="utama">
         <h1>LAMAN WEB</h1>
-        <p>Template laman web percuma dengan reka bentuk Realm of Light. Sesuai untuk perniagaan, portfolio, atau projek peribadi.</p>
+        <p>Template laman web percuma dengan reka bentuk Realm of Light.</p>
         <a href="#perkhidmatan" class="btn">LIHAT PERKHIDMATAN</a>
         <a href="#hubungi" class="btn btn-biru">HUBUNGI</a>
     </div>
@@ -72,15 +72,20 @@
             <input type="text" class="input" placeholder="NAMA">
             <input type="email" class="input" placeholder="E-MEL">
             <textarea class="input" placeholder="MESEJ" rows="3"></textarea>
-            <button class="btn" onclick="hantar()">HANTAR</button>
+            <button class="btn" id="btnHantar">HANTAR</button>
         </div>
     </div>
     <div class="footer">© 2026 LAMAN WEB — HAK CIPTA TERPELIHARA</div>
     <script>
     'use strict';
-    window.bukaMenu=function(){$('menu').classList.add('aktif');$('overlay').classList.add('aktif')};
-    window.tutupMenu=function(){$('menu').classList.remove('aktif');$('overlay').classList.remove('aktif')};
-    window.hantar=function(){alert('Mesej dihantar!')};
+    var menu=document.getElementById('menu');
+    var overlay=document.getElementById('overlay');
+    var btnMenu=document.getElementById('btnMenu');
+    window.bukaMenu=function(){menu.classList.add('aktif');overlay.classList.add('aktif')};
+    window.tutupMenu=function(){menu.classList.remove('aktif');overlay.classList.remove('aktif')};
+    btnMenu.addEventListener('click',bukaMenu);
+    overlay.addEventListener('click',tutupMenu);
+    document.getElementById('btnHantar').addEventListener('click',function(){alert('Mesej dihantar!')});
     </script>
 </body>
 </html>
