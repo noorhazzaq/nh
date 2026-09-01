@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0f">
-    <title>ZACK FIGHTER — UE4</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Fighter","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
+    <title>ZACK LIVES — Simulasi Kehidupan</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
         :root{
@@ -21,261 +21,149 @@
             --dim:#94a3b8;
         }
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
-        .viewport{width:100%;max-width:520px;min-height:100vh;background:radial-gradient(ellipse at 50% 30%,#1a1a2e 0%,#0a0a0f 70%);position:relative;overflow:hidden;display:flex;flex-direction:column}
-        .scanline{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.15) 2px,rgba(0,0,0,.15) 4px);pointer-events:none;z-index:5}
+        body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
+        .viewport{max-width:520px;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);position:relative;display:flex;flex-direction:column}
+        .scanline{position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,0,0,.1) 2px,rgba(0,0,0,.1) 4px);pointer-events:none;z-index:50;max-width:520px;margin:0 auto}
         .header{background:var(--panel);padding:16px;text-align:center;border-bottom:1px solid var(--border);backdrop-filter:blur(10px)}
-        .header h1{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,248,.5)}
+        .header h1{font-family:'Orbitron',sans-serif;font-size:20px;font-weight:900;color:var(--cyan);letter-spacing:3px;text-shadow:0 0 30px rgba(56,189,248,.5)}
         .header span{font-size:10px;color:var(--dim);letter-spacing:2px}
-        .hud{display:flex;justify-content:space-between;padding:10px 16px;font-size:11px;color:var(--dim)}
-        .hud span{font-family:'Orbitron',sans-serif;letter-spacing:1px}
-        .arena{flex:1;position:relative;overflow:hidden;min-height:300px}
-        .grid-floor{position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(180deg,transparent,rgba(56,189,248,.1));border-top:1px solid var(--border)}
-        .grid-floor::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0,transparent 48px,rgba(56,189,248,.15) 48px,rgba(56,189,248,.15) 50px)}
-        .fighter{position:absolute;bottom:60px;width:80px;height:120px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;transition:left .2s cubic-bezier(.4,0,.2,1),transform .2s}
-        .fighter .body{width:55px;height:85px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:38px;transition:transform .15s;box-shadow:0 0 30px rgba(0,0,0,.5)}
-        .fighter .name{font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;margin-top:5px;letter-spacing:1px}
-        .fighter .hp-wrap{width:80px;height:8px;background:rgba(0,0,0,.7);border-radius:4px;overflow:hidden;margin-bottom:5px;border:1px solid var(--border)}
-        .fighter .hp{height:100%;border-radius:4px;transition:width .3s}
-        .fighter .rage-wrap{width:80px;height:4px;background:rgba(0,0,0,.7);border-radius:2px;overflow:hidden;margin-bottom:4px;border:1px solid rgba(245,158,11,.3)}
-        .fighter .rage{height:100%;background:linear-gradient(90deg,#f59e0b,#ef4444);border-radius:2px;transition:width .3s}
-        #player{left:40px}
-        #player .body{background:linear-gradient(135deg,#1e40af,#38bdf8)}
-        #player .hp{background:linear-gradient(90deg,#10b981,#34d399)}
-        #enemy{right:40px}
-        #enemy .body{background:linear-gradient(135deg,#991b1b,#ef4444)}
-        #enemy .hp{background:linear-gradient(90deg,#ef4444,#f87171)}
-        .particle{position:absolute;width:12px;height:12px;border-radius:50%;pointer-events:none;z-index:10;animation:particle .6s forwards}
-        @keyframes particle{from{opacity:1;transform:translate(0,0)scale(1)}to{opacity:0;transform:translate(var(--dx),var(--dy))scale(0)}}
-        .controls{padding:14px;display:flex;flex-direction:column;gap:8px}
-        .row{display:flex;gap:8px}
-        .btn{flex:1;padding:14px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-align:center;transition:all .15s;backdrop-filter:blur(5px)}
-        .btn:active{transform:scale(.94);background:rgba(56,189,248,.2);border-color:var(--cyan)}
-        .btn.special{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.4);color:var(--orange)}
-        .btn.special:active{background:rgba(245,158,11,.25)}
-        .btn.rage{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.4);color:var(--red)}
-        .btn.rage:active{background:rgba(239,68,68,.25)}
-        .btn.reset{background:transparent;border-color:var(--dim);color:var(--dim)}
-        .log-box{height:90px;overflow-y:auto;padding:10px 14px;background:var(--panel);border-top:1px solid var(--border)}
-        .log-box p{font-size:11px;color:var(--dim);padding:2px 0}
-        .log-box p.hit{color:var(--red)}
-        .log-box p.kritis{color:var(--orange)}
-        .log-box p.ko{color:var(--red);font-family:'Orbitron',sans-serif;font-weight:900;font-size:16px;text-align:center;letter-spacing:2px}
-        .log-box p.info{color:var(--cyan)}
+        .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border)}
+        .nav button{flex:1;padding:12px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s}
+        .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
+        .main{flex:1;padding:14px;overflow-y:auto}
+        .page{display:none}
+        .page.aktif{display:block;animation:fadeIn .3s}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
+        .card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px;backdrop-filter:blur(5px)}
+        .card h2{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:700;color:var(--cyan);margin-bottom:10px;letter-spacing:2px}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+        .stat{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+        .stat .l{font-size:9px;font-weight:600;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+        .stat .v{font-size:16px;font-weight:700;margin-top:4px}
+        .stat .v.baik{color:var(--green)}
+        .stat .v.buruk{color:var(--red)}
+        .stat .v.neutral{color:var(--orange)}
+        .bar{height:5px;background:rgba(0,0,0,.5);border-radius:3px;overflow:hidden;margin-top:6px}
+        .bar-fill{height:100%;border-radius:3px;transition:width .3s}
+        .bar-fill.baik{background:linear-gradient(90deg,#10b981,#34d399)}
+        .bar-fill.buruk{background:linear-gradient(90deg,#ef4444,#f87171)}
+        .bar-fill.neutral{background:linear-gradient(90deg,#f59e0b,#fbbf24)}
+        .btn{width:100%;padding:13px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;text-align:left;transition:all .15s;margin-bottom:6px}
+        .btn:active{transform:scale(.97);background:rgba(56,189,248,.2);border-color:var(--cyan)}
+        .log-v{height:150px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(0,0,0,.4)}
+        .log-v p{font-size:11px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
+        .log-v p b{color:var(--cyan)}
+        .log-v p.baik{color:var(--green)}
+        .log-v p.buruk{color:var(--red)}
+        .log-v p.neutral{color:var(--orange)}
+        .modal{position:fixed;inset:0;z-index:100;display:none;justify-content:center;align-items:center;padding:20px;background:rgba(0,0,0,.8)}
+        .modal.aktif{display:flex}
+        .modal-k{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:20px;max-width:320px;width:100%;text-align:center}
+        .modal-k h3{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--orange);margin-bottom:8px}
+        .modal-k p{font-size:12px;color:var(--dim);margin-bottom:15px}
+        .btn-row{display:flex;gap:8px}
     </style>
 </head>
 <body>
     <div class="viewport">
         <div class="scanline"></div>
-        <div class="header"><h1>ZACK FIGHTER</h1><span>UNREAL ENGINE 4 STYLE</span></div>
-        <div class="hud">
-            <span id="turnText">GILIRAN: ANDA</span>
-            <span id="roundText">PUSINGAN 1</span>
-            <span id="scoreText">MENANG: 0</span>
+        <div class="header"><h1>ZACK LIVES</h1><span>SIMULASI KEHIDUPAN</span></div>
+        <div class="nav">
+            <button class="aktif" onclick="page('hidup',this)">KEHIDUPAN</button>
+            <button onclick="page('kerja',this)">KERJAYA</button>
+            <button onclick="page('kewangan',this)">KEWANGAN</button>
+            <button onclick="page('log',this)">SEJARAH</button>
         </div>
-        <div class="arena">
-            <div class="grid-floor"></div>
-            <div class="fighter" id="player">
-                <div class="hp-wrap"><div class="hp" id="playerHp" style="width:100%"></div></div>
-                <div class="rage-wrap"><div class="rage" id="playerRage" style="width:0%"></div></div>
-                <div class="body" id="playerBody">KARATE</div>
-                <div class="name">ANDA</div>
+        <div class="main">
+            <div class="page aktif" id="pg-hidup">
+                <div class="card">
+                    <h2>STATUS KEHIDUPAN</h2>
+                    <div class="grid" id="statsHidup"></div>
+                    <button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button>
+                </div>
             </div>
-            <div class="fighter" id="enemy">
-                <div class="hp-wrap"><div class="hp" id="enemyHp" style="width:100%"></div></div>
-                <div class="rage-wrap"><div class="rage" id="enemyRage" style="width:0%"></div></div>
-                <div class="body" id="enemyBody">NINJA</div>
-                <div class="name">MUSUH</div>
+            <div class="page" id="pg-kerja">
+                <div class="card"><h2>KERJAYA</h2><div id="kerjaList"></div></div>
             </div>
-        </div>
-        <div class="controls">
-            <div class="row">
-                <button class="btn" onclick="attack('light')">PUKULAN RINGAN</button>
-                <button class="btn" onclick="attack('heavy')">PUKULAN KUAT</button>
-                <button class="btn" onclick="attack('combo')">KOMBINASI</button>
+            <div class="page" id="pg-kewangan">
+                <div class="card"><h2>KEWANGAN</h2><div id="kewanganList"></div></div>
             </div>
-            <div class="row">
-                <button class="btn" onclick="block()">BERTAHAN</button>
-                <button class="btn special" onclick="special()">SERANGAN KHAS</button>
-                <button class="btn" onclick="heal()">PULIH</button>
-            </div>
-            <div class="row">
-                <button class="btn rage" onclick="rageMode()">MOD RAGE</button>
-                <button class="btn reset" onclick="resetGame()">MULA SEMULA</button>
+            <div class="page" id="pg-log">
+                <div class="card"><h2>SEJARAH</h2><div class="log-v" id="logHidup"></div></div>
             </div>
         </div>
-        <div class="log-box" id="log"></div>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-k">
+            <h3 id="modalTitle">Sahkan</h3>
+            <p id="modalText">Laksanakan?</p>
+            <div class="btn-row">
+                <button class="btn" id="modalYa">Ya</button>
+                <button class="btn" id="modalTidak" style="text-align:center">Tidak</button>
+            </div>
+        </div>
     </div>
     <script>
     var state={
-        playerHp:100,enemyHp:100,
-        playerRage:0,enemyRage:0,
-        round:1,wins:0,
-        turn:'player',
-        playerBlock:false,enemyBlock:false,
-        playerRageActive:false,enemyRageActive:false,
-        combo:0
+        umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,
+        wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,
+        pekerjaan:'Pelajar',berkahwin:false,anak:0,
+        tahun:1,hidup:true,actionTunggu:null
     };
-    function addLog(m,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'">'+m+'</p>'+d.innerHTML;if(d.children.length>35)d.lastChild.remove()}
-    function updateHud(){
-        document.getElementById('playerHp').style.width=state.playerHp+'%';
-        document.getElementById('enemyHp').style.width=state.enemyHp+'%';
-        document.getElementById('playerRage').style.width=state.playerRage+'%';
-        document.getElementById('enemyRage').style.width=state.enemyRage+'%';
-        document.getElementById('roundText').textContent='PUSINGAN '+state.round;
-        document.getElementById('turnText').textContent='GILIRAN: '+(state.turn==='player'?'ANDA':'MUSUH');
-        document.getElementById('scoreText').textContent='MENANG: '+state.wins;
-    }
-    function spawnParticle(x,y,color){
-        var arena=document.querySelector('.arena');
-        for(var i=0;i<5;i++){
-            var p=document.createElement('div');
-            p.className='particle';
-            p.style.left=x+'px';
-            p.style.top=y+'px';
-            p.style.background=color;
-            p.style.setProperty('--dx',(Math.random()*100-50)+'px');
-            p.style.setProperty('--dy',(Math.random()*100-50)+'px');
-            arena.appendChild(p);
-            setTimeout(function(){p.remove()},600);
+    var kerja=[
+        {n:'Pelajar',gaji:0,syarat:'Umur 18-25'},
+        {n:'Pekerja Kilang',gaji:1800,syarat:'Tiada'},
+        {n:'Guru',gaji:2800,syarat:'Ijazah'},
+        {n:'Jurutera',gaji:5000,syarat:'Ijazah'},
+        {n:'Doktor',gaji:8000,syarat:'PhD'},
+        {n:'Peniaga',gaji:3500,syarat:'Modal'}
+    ];
+    var kewangan=[
+        {n:'Simpan $200',cost:200,effect:function(){state.wang-=200;state.simpanan+=200;return'Simpanan +$200'}},
+        {n:'Labur $500',cost:500,effect:function(){state.wang-=500;state.aset+=500;return'Aset +$500'}},
+        {n:'Bayar Hutang $300',cost:300,effect:function(){state.wang-=300;state.hutang=Math.max(0,state.hutang-300);return'Hutang -$300'}},
+        {n:'Pinjam $1000',cost:0,effect:function(){state.wang+=1000;state.hutang+=1000;return'Pinjaman +$1000'}}
+    ];
+    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='kerja')showKerja();if(n==='kewangan')showKewangan()}
+    function addLog(m,c){var d=document.getElementById('logHidup');d.innerHTML='<p class="'+(c||'')+'"><b>'+state.tahun+'</b> — '+m+'</p>'+d.innerHTML}
+    function showStats(){var k=state.kesihatan>=50?'baik':'buruk',me=state.mental>=50?'baik':'buruk',t=state.tenaga>=50?'baik':'buruk',h=state.kebahagiaan>=50?'baik':'buruk';document.getElementById('statsHidup').innerHTML=[
+        {l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},
+        {l:'KESIHATAN',v:state.kesihatan+'%',c:k,bar:state.kesihatan,cls:k},
+        {l:'MENTAL',v:state.mental+'%',c:me,bar:state.mental,cls:me},
+        {l:'TENAGA',v:state.tenaga+'%',c:t,bar:state.tenaga,cls:t},
+        {l:'KEBAHAGIAAN',v:state.kebahagiaan+'%',c:h,bar:state.kebahagiaan,cls:h},
+        {l:'WANG',v:'$'+state.wang},{l:'SIMPANAN',v:'$'+state.simpanan},
+        {l:'ASET',v:'$'+state.aset},{l:'HUTANG',v:'$'+state.hutang},
+        {l:'PEKERJAAN',v:state.pekerjaan},{l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'}
+    ].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div>'+(x.bar!==undefined?'<div class="bar"><div class="bar-fill '+(x.cls||'')+'" style="width:'+x.bar+'%"></div></div>':'')+'</div>'}).join('')}
+    function showKerja(){document.getElementById('kerjaList').innerHTML=kerja.map(function(k,i){return '<button class="btn" onclick="pilihKerja('+i+')">'+k.n+' — $'+k.gaji+' ('+k.syarat+')</button>'}).join('')}
+    function showKewangan(){document.getElementById('kewanganList').innerHTML=kewangan.map(function(k,i){return '<button class="btn" onclick="pilihKewangan('+i+')">'+k.n+'</button>'}).join('')}
+    function pilihKerja(i){var k=kerja[i];state.pekerjaan=k.n;state.gaji=k.gaji;addLog('Tukar kerja: '+k.n,'baik');showStats()}
+    function pilihKewangan(i){var k=kewangan[i];if(state.wang<k.cost){addLog('Wang tidak cukup!','buruk');return}var r=k.effect();addLog(r,'baik');showStats()}
+    document.getElementById('btnTahun').addEventListener('click',function(){
+        if(!state.hidup)return;
+        state.tahun++;state.umur++;
+        state.kesihatan=Math.max(0,state.kesihatan-Math.floor(Math.random()*5));
+        state.mental=Math.max(0,state.mental-Math.floor(Math.random()*3));
+        state.tenaga=Math.max(0,state.tenaga-Math.floor(Math.random()*4));
+        state.kebahagiaan=Math.max(0,state.kebahagiaan-Math.floor(Math.random()*2));
+        state.wang+=state.gaji;
+        state.wang=Math.max(0,state.wang-Math.floor(500+state.umur*10));
+        state.kesihatan=Math.max(0,state.kesihatan-Math.floor(state.umur*0.3));
+        if(Math.random()<0.3){
+            var peristiwa=['Sakit','Kemalangan','Bonus','Kenaikan gaji','Rakan baru','Kehilangan'];
+            var p=peristiwa[Math.floor(Math.random()*peristiwa.length)];
+            if(p==='Sakit'){state.kesihatan=Math.max(0,state.kesihatan-15);addLog('Anda sakit!','buruk')}
+            if(p==='Kemalangan'){state.kesihatan=Math.max(0,state.kesihatan-20);addLog('Kemalangan!','buruk')}
+            if(p==='Bonus'){state.wang+=500;addLog('Bonus +$500!','baik')}
+            if(p==='Kenaikan gaji'){state.gaji+=200;addLog('Gaji naik +$200!','baik')}
+            if(p==='Rakan baru'){state.kebahagiaan=Math.min(100,state.kebahagiaan+10);addLog('Rakan baru!','baik')}
+            if(p==='Kehilangan'){state.kebahagiaan=Math.max(0,state.kebahagiaan-10);addLog('Kehilangan...','buruk')}
         }
-    }
-    function moveFighter(id,dist){
-        var f=document.getElementById(id);
-        f.style.transform='translateX('+dist+'px)';
-        setTimeout(function(){f.style.transform='none'},200);
-    }
-    function attack(type){
-        if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;
-        var dmg=0,hits=1;
-        if(type==='light'){dmg=Math.floor(Math.random()*8)+5}
-        else if(type==='heavy'){dmg=Math.floor(Math.random()*18)+12}
-        else if(type==='combo'){dmg=Math.floor(Math.random()*12)+8;hits=3}
-        var total=0;
-        for(var i=0;i<hits;i++){
-            var d=dmg;
-            var crit=Math.random()<.2;
-            if(crit)d=Math.floor(d*2);
-            if(state.playerRageActive)d=Math.floor(d*1.5);
-            if(state.enemyBlock){d=Math.floor(d*.2);state.enemyBlock=false}
-            state.enemyHp=Math.max(0,state.enemyHp-d);
-            total+=d;
-            state.playerRage=Math.min(100,state.playerRage+3);
-        }
-        state.combo+=hits;
-        if(total>0){
-            addLog('ANDA SERANG ('+type.toUpperCase()+')! -'+total+(state.playerRageActive?' (RAGE!)':'')+(crit?' (KRITIKAL!)':''),total>30?'kritis':'hit');
-            spawnParticle(200,150,'#38bdf8');
-        }
-        moveFighter('player',25);
-        updateHud();
-        if(state.enemyHp<=0)return win();
-        state.turn='enemy';
-        setTimeout(enemyTurn,900);
-    }
-    function block(){
-        if(state.turn!=='player')return;
-        state.playerBlock=true;
-        addLog('ANDA BERTAHAN!','info');
-        state.turn='enemy';
-        setTimeout(enemyTurn,900);
-    }
-    function special(){
-        if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;
-        if(state.playerRage<50){addLog('RAGE TIDAK CUKUP! PERLU 50%','info');return}
-        state.playerRage-=50;
-        var dmg=Math.floor(Math.random()*35)+25;
-        if(state.enemyBlock){dmg=Math.floor(dmg*.2);state.enemyBlock=false}
-        state.enemyHp=Math.max(0,state.enemyHp-dmg);
-        addLog('SERANGAN KHAS! -'+dmg,'kritis');
-        spawnParticle(250,150,'#f59e0b');
-        moveFighter('player',50);
-        updateHud();
-        if(state.enemyHp<=0)return win();
-        state.turn='enemy';
-        setTimeout(enemyTurn,900);
-    }
-    function rageMode(){
-        if(state.turn!=='player')return;
-        if(state.playerRage<100){addLog('RAGE PENUH DIPERLUKAN!','info');return}
-        state.playerRage=0;
-        state.playerRageActive=true;
-        addLog('MOD RAGE AKTIF! SERANGAN x1.5','kritis');
-        state.turn='enemy';
-        setTimeout(enemyTurn,900);
-    }
-    function heal(){
-        if(state.turn!=='player'||state.playerHp<=0)return;
-        var h=Math.floor(Math.random()*10)+5;
-        state.playerHp=Math.min(100,state.playerHp+h);
-        addLog('ANDA PULIH +'+h,'info');
-        updateHud();
-        state.turn='enemy';
-        setTimeout(enemyTurn,900);
-    }
-    function enemyTurn(){
-        if(state.enemyHp<=0||state.playerHp<=0)return;
-        var act=Math.random();
-        if(act<.2){
-            state.enemyBlock=true;
-            addLog('MUSUH BERTAHAN!','info');
-        }else if(act<.5){
-            var dmg=Math.floor(Math.random()*10)+4;
-            if(state.enemyRageActive)dmg=Math.floor(dmg*1.5);
-            if(state.playerBlock){dmg=Math.floor(dmg*.2);addLog('ANDA BERTAHAN! -'+dmg,'hit');state.playerBlock=false}
-            else{state.playerHp=Math.max(0,state.playerHp-dmg);addLog('MUSUH SERANG! -'+dmg,'hit')}
-            state.enemyRage=Math.min(100,state.enemyRage+2);
-        }else if(act<.7){
-            var h=Math.floor(Math.random()*8)+5;
-            state.enemyHp=Math.min(100,state.enemyHp+h);
-            addLog('MUSUH PULIH +'+h);
-        }else if(act<.8&&state.enemyRage>=100){
-            state.enemyRage=0;
-            state.enemyRageActive=true;
-            addLog('MUSUH GUNA RAGE!','kritis');
-        }else if(act<.9&&state.enemyRage>=50){
-            state.enemyRage-=50;
-            var d2=Math.floor(Math.random()*30)+20;
-            if(state.playerBlock){d2=Math.floor(d2*.2);state.playerBlock=false}
-            state.playerHp=Math.max(0,state.playerHp-d2);
-            addLog('MUSUH SERANGAN KHAS! -'+d2,'kritis');
-            spawnParticle(200,150,'#ef4444');
-        }else{
-            var d3=Math.floor(Math.random()*15)+8;
-            if(state.playerBlock){d3=Math.floor(d3*.2);state.playerBlock=false}
-            state.playerHp=Math.max(0,state.playerHp-d3);
-            addLog('MUSUH KOMBINASI! -'+d3,'hit');
-        }
-        updateHud();
-        if(state.playerHp<=0)return lose();
-        state.turn='player';
-    }
-    function win(){
-        addLog('ANDA MENANG!','ko');
-        state.wins++;
-        state.round++;
-        setTimeout(function(){
-            state.playerHp=100;
-            state.enemyHp=100;
-            state.playerRage=0;
-            state.enemyRage=0;
-            state.playerRageActive=false;
-            state.enemyRageActive=false;
-            state.turn='player';
-            updateHud();
-        },1500);
-    }
-    function lose(){
-        addLog('ANDA KALAH!','ko');
-        setTimeout(resetGame,2000);
-    }
-    function resetGame(){
-        state={playerHp:100,enemyHp:100,playerRage:0,enemyRage:0,round:1,wins:0,turn:'player',playerBlock:false,enemyBlock:false,playerRageActive:false,enemyRageActive:false,combo:0};
-        document.getElementById('log').innerHTML='';
-        addLog('PERMAINAN BARU!','info');
-        updateHud();
-    }
-    updateHud();
+        if(state.kesihatan<=0||state.umur>80){state.hidup=false;addLog('KEHIDUPAN TAMAT','buruk')}
+        showStats();
+    });
+    showStats();
     </script>
 </body>
 </html>
