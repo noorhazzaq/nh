@@ -4,145 +4,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
-    <title>Simulasi Dunia</title>
+    <title>ZACK FIGHTER</title>
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Fighter","short_name":"ZACK","display":"standalone","theme_color":"%230f172a","background_color":"%230f172a"}'>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
         *{margin:0;padding:0;box-sizing:border-box}
-        body{background:#0f172a;font-family:'Inter',sans-serif;color:#f1f5f9;min-height:100vh}
-        .nav{background:#1e293b;padding:14px;display:flex;justify-content:space-between;align-items:center}
-        .logo{font-size:16px;font-weight:900;color:#38bdf8}
-        .nav a{color:#94a3b8;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;margin-left:10px}
-        .nav a.on{color:#38bdf8}
-        .main{max-width:500px;margin:0 auto;padding:12px}
-        .card{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:14px;margin-bottom:10px}
-        .card h2{font-size:14px;color:#38bdf8;margin-bottom:10px}
-        .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .box{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;text-align:center}
-        .box .l{font-size:9px;color:#94a3b8;text-transform:uppercase}
-        .box .v{font-size:15px;font-weight:700;margin-top:4px}
-        .box .v.good{color:#10b981}
-        .box .v.bad{color:#ef4444}
-        .btn{width:100%;padding:13px;background:#38bdf8;color:#0f172a;font-size:12px;font-weight:700;border:none;border-radius:10px;cursor:pointer;margin-top:8px}
-        .btn:active{transform:scale(.97)}
-        .btn.alt{background:transparent;color:#38bdf8;border:1px solid #38bdf8}
-        .log{height:160px;overflow-y:auto;border:1px solid #334155;border-radius:10px;padding:10px;background:#0f172a;margin-top:10px}
-        .log p{font-size:11px;color:#94a3b8;padding:4px 0;border-bottom:1px solid #1e293b}
-        .log p b{color:#38bdf8}
-        .log p.warn{color:#fbbf24}
-        .log p.ok{color:#10b981}
-        .sheet{position:fixed;bottom:-100%;left:0;right:0;background:#1e293b;border-radius:20px 20px 0 0;z-index:50;transition:bottom .3s;max-height:70vh;overflow-y:auto;padding:20px}
-        .sheet.on{bottom:0}
-        .handle{width:40px;height:4px;background:#334155;border-radius:2px;margin:0 auto 15px}
-        .sheet h3{font-size:13px;color:#38bdf8;text-align:center;margin-bottom:12px}
-        .opt{width:100%;padding:14px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f1f5f9;font-size:13px;font-weight:600;cursor:pointer;margin-bottom:8px;text-align:left}
-        .opt.alt{color:#94a3b8;font-weight:400}
-        .back{background:none;border:none;color:#38bdf8;font-size:12px;cursor:pointer;margin-bottom:10px}
-        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:40;display:none}
-        .overlay.on{display:block}
-        .modal{position:fixed;inset:0;z-index:60;display:none;justify-content:center;align-items:center;padding:20px}
-        .modal.on{display:flex}
-        .modal-box{background:#1e293b;border:1px solid #334155;border-radius:14px;padding:20px;max-width:320px;width:100%;text-align:center}
-        .modal-box h3{font-size:13px;color:#fbbf24;margin-bottom:8px}
-        .modal-box p{font-size:12px;color:#94a3b8;margin-bottom:15px}
+        body{background:#0f172a;font-family:'Inter',sans-serif;color:#f1f5f9;min-height:100vh;display:flex;flex-direction:column;align-items:center;-webkit-tap-highlight-color:transparent}
+        .header{width:100%;background:#1e293b;padding:14px;text-align:center;border-bottom:1px solid #334155}
+        .header h1{font-size:18px;font-weight:900;color:#ef4444;letter-spacing:1px}
+        .arena{width:100%;max-width:500px;height:280px;background:linear-gradient(180deg,#1e293b,#0f172a);position:relative;overflow:hidden;border-bottom:2px solid #334155}
+        .fighter{position:absolute;bottom:20px;width:60px;height:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:left .2s,transform .2s}
+        .fighter .body{width:40px;height:70px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px}
+        .fighter .name{font-size:9px;font-weight:700;margin-top:4px;text-align:center}
+        .fighter .hp-bar{width:60px;height:6px;background:#334155;border-radius:3px;overflow:hidden;margin-bottom:4px}
+        .fighter .hp{height:100%;border-radius:3px;transition:width .3s}
+        #player{left:60px}
+        #player .body{background:#1e40af}
+        #player .hp{background:#10b981}
+        #enemy{right:60px}
+        #enemy .body{background:#991b1b}
+        #enemy .hp{background:#ef4444}
+        .controls{width:100%;max-width:500px;padding:15px;display:flex;flex-direction:column;gap:8px}
         .row{display:flex;gap:8px}
-        .list{background:#0f172a;border:1px solid #334155;border-radius:10px;padding:12px;margin-bottom:6px;display:flex;justify-content:space-between;font-size:12px}
-        .input{width:100%;padding:12px;background:#0f172a;border:1px solid #334155;border-radius:10px;color:#f1f5f9;font-size:12px;outline:none;margin-bottom:8px}
-        .footer{text-align:center;padding:15px;color:#64748b;font-size:11px}
+        .ctrl{flex:1;padding:16px;background:#1e293b;border:1px solid #334155;border-radius:12px;color:#f1f5f9;font-size:14px;font-weight:700;cursor:pointer;text-align:center;transition:transform .1s}
+        .ctrl:active{transform:scale(.93);background:#334155}
+        .ctrl.special{background:#7c2d12;border-color:#ea580c;color:#fdba74}
+        .ctrl.special:active{background:#9a3412}
+        .hud{width:100%;max-width:500px;padding:10px 15px;display:flex;justify-content:space-between;font-size:11px;color:#94a3b8}
+        .log-box{width:100%;max-width:500px;height:80px;overflow-y:auto;padding:10px;background:#1e293b;border-radius:10px;margin:0 15px 15px}
+        .log-box p{font-size:10px;color:#94a3b8;padding:2px 0}
+        .log-box p.hit{color:#ef4444}
+        .log-box p.kritis{color:#fbbf24}
+        .log-box p.ko{color:#ef4444;font-weight:900;font-size:14px;text-align:center}
     </style>
 </head>
 <body>
-    <div class="nav">
-        <div class="logo">Dunia</div>
-        <div>
-            <a class="on" onclick="page('home',this)">Utama</a>
-            <a onclick="page('country',this)">Negara</a>
-            <a onclick="page('chat',this)">Chat</a>
-            <a onclick="page('player',this)">Pemain</a>
+    <div class="header"><h1>ZACK FIGHTER</h1></div>
+    <div class="hud">
+        <span id="turnText">Giliran: Anda</span>
+        <span id="roundText">Pusingan 1</span>
+    </div>
+    <div class="arena">
+        <div class="fighter" id="player">
+            <div class="hp-bar"><div class="hp" id="playerHp" style="width:100%"></div></div>
+            <div class="body">👊</div>
+            <div class="name">ANDA</div>
+        </div>
+        <div class="fighter" id="enemy">
+            <div class="hp-bar"><div class="hp" id="enemyHp" style="width:100%"></div></div>
+            <div class="body">🥋</div>
+            <div class="name">MUSUH</div>
         </div>
     </div>
-    <div class="main">
-        <div id="pg-home">
-            <div class="card">
-                <h2>Status Dunia</h2>
-                <div class="grid" id="stats"></div>
-                <button class="btn" id="btnYear">Tahun Seterusnya</button>
-                <button class="btn alt" id="btnAct">Tindakan</button>
-                <div class="log" id="log"></div>
-            </div>
+    <div class="controls">
+        <div class="row">
+            <button class="ctrl" onclick="attack('light')">Pukulan Ringan</button>
+            <button class="ctrl" onclick="attack('heavy')">Pukulan Kuat</button>
         </div>
-        <div id="pg-country" style="display:none">
-            <div class="card"><h2>Negara</h2><div id="countryList"></div></div>
+        <div class="row">
+            <button class="ctrl" onclick="block()">Bertahan</button>
+            <button class="ctrl special" onclick="special()">Serangan Khas</button>
         </div>
-        <div id="pg-chat" style="display:none">
-            <div class="card">
-                <h2>Chat</h2>
-                <div class="log" id="chatLog"></div>
-                <input class="input" id="chatName" placeholder="Nama">
-                <input class="input" id="chatText" placeholder="Mesej">
-                <button class="btn" id="btnChat">Hantar</button>
-            </div>
-        </div>
-        <div id="pg-player" style="display:none">
-            <div class="card"><h2>Pemain</h2><div id="playerList"></div></div>
+        <div class="row">
+            <button class="ctrl" onclick="heal()">Pulih</button>
+            <button class="ctrl" onclick="resetGame()">Mula Semula</button>
         </div>
     </div>
-    <div class="overlay" id="overlay"></div>
-    <div class="sheet" id="sheet">
-        <div class="handle"></div>
-        <div id="sheetContent"></div>
-    </div>
-    <div class="modal" id="modal">
-        <div class="modal-box">
-            <h3 id="modalTitle">Sahkan</h3>
-            <p id="modalText">Laksanakan?</p>
-            <div class="row">
-                <button class="btn" id="modalYes">Ya</button>
-                <button class="btn alt" id="modalNo">Tidak</button>
-            </div>
-        </div>
-    </div>
-    <div class="footer">Simulasi Dunia</div>
+    <div class="log-box" id="log"></div>
     <script>
-    var s={year:2024,pop:8000000000,eco:100,env:100,tech:50,health:50};
-    var disasters=['Gempa','Tsunami','Banjir','Kemarau','Wabak','Krisis','Perang','Pandemik'];
-    var groups={
-        'Ekonomi':[
-            {n:'Pertanian',f:function(){s.eco=Math.min(100,s.eco+3);s.env=Math.max(0,s.env-2);return'Ekonomi +3%'}},
-            {n:'Industri',f:function(){s.eco=Math.min(100,s.eco+8);s.env=Math.max(0,s.env-8);return'Ekonomi +8%'}}
-        ],
-        'Alam':[
-            {n:'Solar',f:function(){s.env=Math.min(100,s.env+8);return'Alam +8%'}},
-            {n:'Hutan',f:function(){s.env=Math.min(100,s.env+10);return'Alam +10%'}}
-        ],
-        'Sosial':[
-            {n:'Pendidikan',f:function(){s.tech=Math.min(100,s.tech+8);return'Teknologi +8%'}},
-            {n:'Hospital',f:function(){s.health=Math.min(100,s.health+10);return'Kesihatan +10%'}}
-        ]
-    };
-    var pending=null;
-    function page(n,btn){document.querySelectorAll('[id^=pg-]').forEach(function(e){e.style.display='none'});document.getElementById('pg-'+n).style.display='block';document.querySelectorAll('.nav a').forEach(function(a){a.classList.remove('on')});if(btn)btn.classList.add('on');if(n==='country')showCountry();if(n==='player')showPlayer()}
-    function showStats(){var e=s.eco>=50?'good':'bad',v=s.env>=50?'good':'bad';document.getElementById('stats').innerHTML=[
-        {l:'Tahun',v:s.year},{l:'Populasi',v:(s.pop/1000000000).toFixed(1)+'B'},
-        {l:'Ekonomi',v:s.eco+'%',c:e},{l:'Alam',v:s.env+'%',c:v},
-        {l:'Teknologi',v:s.tech+'%',c:s.tech>=50?'good':'bad'},
-        {l:'Kesihatan',v:s.health+'%',c:s.health>=50?'good':'bad'}
-    ].map(function(x){return '<div class="box"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>'}).join('')}
-    function addLog(t,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'"><b>'+s.year+'</b> — '+t+'</p>'+d.innerHTML}
-    function openSheet(){document.getElementById('sheet').classList.add('on');document.getElementById('overlay').classList.add('on');showGroups()}
-    function closeSheet(){document.getElementById('sheet').classList.remove('on');document.getElementById('overlay').classList.remove('on')}
-    function showGroups(){var h='<h3>Pilih Kumpulan</h3>';Object.keys(groups).forEach(function(k){h+='<button class="opt" onclick="showOptions(\''+k+'\')">'+k+'</button>'});document.getElementById('sheetContent').innerHTML=h}
-    function showOptions(k){var h='<button class="back" onclick="showGroups()">Kembali</button><h3>'+k+'</h3>';groups[k].forEach(function(o,i){h+='<button class="opt alt" onclick="confirm(\''+k+'\','+i+')">'+o.n+'</button>'});document.getElementById('sheetContent').innerHTML=h}
-    function confirm(k,i){pending={k:k,i:i};document.getElementById('modalTitle').textContent=groups[k][i].n;document.getElementById('modal').classList.add('on')}
-    function doAction(){if(!pending)return;var r=groups[pending.k][pending.i].f();addLog(r,'ok');pending=null;document.getElementById('modal').classList.remove('on');closeSheet();showStats()}
-    var countries=[{n:'China',c:'CN',p:1412000000},{n:'India',c:'IN',p:1428000000},{n:'USA',c:'US',p:332000000},{n:'Malaysia',c:'MY',p:33000000},{n:'Singapore',c:'SG',p:5900000}];
-    function showCountry(){document.getElementById('countryList').innerHTML=countries.map(function(c){return '<div class="list"><span>'+c.c+' '+c.n+'</span><span>'+(c.p/1000000).toFixed(0)+' juta</span></div>'}).join('')}
-    function showPlayer(){document.getElementById('playerList').innerHTML='<div class="list"><span>Pemain 1</span></div><div class="list"><span>Pemain 2</span></div>'}
-    document.getElementById('btnYear').addEventListener('click',function(){s.year++;s.pop+=Math.floor(Math.random()*50000000);s.eco=Math.max(0,s.eco-Math.floor(Math.random()*3));s.env=Math.max(0,s.env-Math.floor(Math.random()*2));if(Math.random()<0.4)addLog(disasters[Math.floor(Math.random()*disasters.length)],'warn');showStats()});
-    document.getElementById('btnAct').addEventListener('click',openSheet);
-    document.getElementById('overlay').addEventListener('click',closeSheet);
-    document.getElementById('modalYes').addEventListener('click',doAction);
-    document.getElementById('modalNo').addEventListener('click',function(){document.getElementById('modal').classList.remove('on');pending=null});
-    showStats();
+    var state={playerHp:100,enemyHp:100,round:1,turn:'player',playerBlock:false,enemyBlock:false};
+    function addLog(m,c){var d=document.getElementById('log');d.innerHTML='<p class="'+(c||'')+'">'+m+'</p>'+d.innerHTML;if(d.children.length>30)d.lastChild.remove()}
+    function updateHud(){document.getElementById('playerHp').style.width=state.playerHp+'%';document.getElementById('enemyHp').style.width=state.enemyHp+'%';document.getElementById('roundText').textContent='Pusingan '+state.round;document.getElementById('turnText').textContent='Giliran: '+(state.turn==='player'?'Anda':'Musuh')}
+    function attack(type){if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;var dmg=type==='light'?Math.floor(Math.random()*10)+5:Math.floor(Math.random()*20)+10;var crit=Math.random()<0.15;if(crit)dmg=Math.floor(dmg*2);if(state.enemyBlock){dmg=Math.floor(dmg*.3);addLog('Musuh bertahan! Kerosakan -' + dmg,'hit');state.enemyBlock=false}else{state.enemyHp=Math.max(0,state.enemyHp-dmg);addLog((crit?'KRITIKAL! ':'')+'Anda serang! -'+dmg+(crit?' (Kritikal)':''),crit?'kritis':'hit')}updateHud();if(state.enemyHp<=0)return win();state.turn='enemy';setTimeout(enemyTurn,800)}
+    function block(){if(state.turn!=='player')return;state.playerBlock=true;addLog('Anda bertahan!');state.turn='enemy';setTimeout(enemyTurn,800)}
+    function special(){if(state.turn!=='player'||state.playerHp<=0||state.enemyHp<=0)return;var dmg=Math.floor(Math.random()*30)+15;if(state.enemyBlock){dmg=Math.floor(dmg*.3);addLog('Musuh bertahan! Kerosakan -'+dmg,'hit');state.enemyBlock=false}else{state.enemyHp=Math.max(0,state.enemyHp-dmg);addLog('SERANGAN KHAS! -'+dmg,'kritis')}updateHud();if(state.enemyHp<=0)return win();state.turn='enemy';setTimeout(enemyTurn,800)}
+    function heal(){if(state.turn!=='player'||state.playerHp<=0)return;var h=Math.floor(Math.random()*15)+5;state.playerHp=Math.min(100,state.playerHp+h);addLog('Anda pulih +'+h,'ok');updateHud();state.turn='enemy';setTimeout(enemyTurn,800)}
+    function enemyTurn(){if(state.enemyHp<=0||state.playerHp<=0)return;var act=Math.random();if(act<.3){state.enemyBlock=true;addLog('Musuh bertahan!')}else if(act<.7){var dmg=Math.floor(Math.random()*12)+5;if(state.playerBlock){dmg=Math.floor(dmg*.3);addLog('Anda bertahan! -'+dmg,'hit');state.playerBlock=false}else{state.playerHp=Math.max(0,state.playerHp-dmg);addLog('Musuh serang! -'+dmg,'hit')}}else{var h=Math.floor(Math.random()*10)+5;state.enemyHp=Math.min(100,state.enemyHp+h);addLog('Musuh pulih +'+h)}updateHud();if(state.playerHp<=0)return lose();state.turn='player'}
+    function win(){addLog('ANDA MENANG!','ko');state.round++;setTimeout(function(){state.playerHp=100;state.enemyHp=100;state.turn='player';updateHud()},1500)}
+    function lose(){addLog('ANDA KALAH!','ko');setTimeout(resetGame,1500)}
+    function resetGame(){state={playerHp:100,enemyHp:100,round:1,turn:'player',playerBlock:false,enemyBlock:false};document.getElementById('log').innerHTML='';addLog('Permainan baru!');updateHud()}
+    updateHud();
     </script>
 </body>
 </html>
