@@ -4,173 +4,139 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#0a0a0f">
-    <title>ZACK LIVES — Live Player</title>
-    <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Lives","short_name":"ZACK","display":"standalone","theme_color":"%230a0a0f","background_color":"%230a0a0f"}'>
+    <title>PRESIDENT SIMULATOR</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Orbitron:wght@400;700;900&display=swap');
         :root{--bg:#0a0a0f;--panel:rgba(20,20,30,.92);--glass:rgba(56,189,248,.08);--border:rgba(56,189,248,.25);--cyan:#38bdf8;--orange:#f59e0b;--red:#ef4444;--green:#10b981;--text:#f1f5f9;--dim:#94a3b8}
         *{margin:0;padding:0;box-sizing:border-box}
         body{background:var(--bg);font-family:'Rajdhani',sans-serif;color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent}
-        .viewport{max-width:520px;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);display:flex;flex-direction:column}
+        .viewport{max-width:100%;margin:0 auto;min-height:100vh;background:radial-gradient(ellipse at 50% 20%,#1a1a2e 0%,#0a0a0f 70%);display:flex;flex-direction:column}
         .header{background:var(--panel);padding:14px;text-align:center;border-bottom:1px solid var(--border)}
-        .header h1{font-family:'Orbitron',sans-serif;font-size:17px;font-weight:900;color:var(--cyan);letter-spacing:2px}
+        .header h1{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--cyan);letter-spacing:2px}
         .nav{display:flex;background:var(--panel);border-bottom:1px solid var(--border);overflow-x:auto}
         .nav button{flex:1;padding:10px;background:transparent;border:none;color:var(--dim);font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;cursor:pointer;white-space:nowrap}
         .nav button.aktif{color:var(--cyan);border-bottom:2px solid var(--cyan)}
-        .main{flex:1;padding:14px;overflow-y:auto}
+        .main{flex:1;padding:12px;overflow-y:auto}
         .page{display:none}
-        .page.aktif{display:block;animation:fadeIn .3s}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}}
-        .card{background:var(--glass);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:12px}
-        .card h2{font-family:'Orbitron',sans-serif;font-size:13px;color:var(--cyan);margin-bottom:10px}
-        .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-        .stat{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
-        .stat .l{font-size:9px;color:var(--dim);text-transform:uppercase}
-        .stat .v{font-size:14px;font-weight:700;margin-top:4px}
+        .page.aktif{display:block}
+        .card{background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px}
+        .card h2{font-family:'Orbitron',sans-serif;font-size:12px;color:var(--cyan);margin-bottom:8px}
+        .grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+        .stat{background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center}
+        .stat .l{font-size:8px;color:var(--dim);text-transform:uppercase}
+        .stat .v{font-size:13px;font-weight:700;margin-top:3px}
         .stat .v.baik{color:var(--green)}
         .stat .v.buruk{color:var(--red)}
-        .btn{width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;cursor:pointer;margin-bottom:6px;text-align:left}
+        .stat .v.neutral{color:var(--orange)}
+        .btn{width:100%;padding:12px;background:var(--glass);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;cursor:pointer;margin-bottom:5px;text-align:left}
         .btn:active{transform:scale(.97);border-color:var(--cyan)}
-        .input{width:100%;padding:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:10px;color:var(--text);font-size:12px;outline:none;margin-bottom:8px}
-        .pemain{display:flex;justify-content:space-between;padding:10px;background:rgba(0,0,0,.4);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;font-size:12px;cursor:pointer}
-        .pemain .online{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}
-        .pemain .offline{background:var(--dim)}
-        .log-v{height:200px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;padding:10px;background:rgba(0,0,0,.4)}
-        .log-v p{font-size:10px;color:var(--dim);padding:4px 0;border-bottom:1px solid rgba(56,189,248,.1)}
+        .input{width:100%;padding:12px;background:rgba(0,0,0,.5);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;outline:none;margin-bottom:6px}
+        .log-v{height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;padding:8px;background:rgba(0,0,0,.4)}
+        .log-v p{font-size:10px;color:var(--dim);padding:3px 0;border-bottom:1px solid rgba(56,189,248,.1)}
         .log-v p b{color:var(--cyan)}
-        .log-v p.masuk{color:var(--green)}
-        .log-v p.keluar{color:var(--red)}
-        .log-v p.sosial{color:var(--orange)}
-        .toast{position:fixed;top:60px;right:15px;z-index:100;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-size:11px;animation:toastIn .3s;max-width:280px}
+        .log-v p.baik{color:var(--green)}
+        .log-v p.buruk{color:var(--red)}
+        .log-v p.neutral{color:var(--orange)}
+        .toast{position:fixed;top:60px;right:15px;z-index:100;background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px 14px;font-size:10px;animation:toastIn .3s;max-width:260px}
         @keyframes toastIn{from{transform:translateX(100%);opacity:0}}
     </style>
 </head>
 <body>
     <div class="viewport">
-        <div class="header"><h1>ZACK LIVES</h1></div>
+        <div class="header"><h1>PRESIDENT SIMULATOR</h1></div>
         <div class="nav">
-            <button class="aktif" onclick="page('hidup',this)">HIDUP</button>
-            <button onclick="page('profil',this)">PROFIL</button>
-            <button onclick="page('pemain',this)">PEMAIN</button>
-            <button onclick="page('kerjaya',this)">KERJAYA</button>
-            <button onclick="page('kewangan',this)">KEWANGAN</button>
-            <button onclick="page('sosial',this)">SOSIAL</button>
+            <button class="aktif" onclick="page('negara',this)">NEGARA</button>
+            <button onclick="page('ekonomi',this)">EKONOMI</button>
+            <button onclick="page('rakyat',this)">RAKYAT</button>
+            <button onclick="page('dasar',this)">DASAR</button>
             <button onclick="page('log',this)">LOG</button>
         </div>
         <div class="main">
-            <div class="page aktif" id="pg-hidup">
-                <div class="card"><h2>LOGIN</h2><input class="input" id="namaLogin" placeholder="Nama" maxlength="20"><input class="input" id="kataLogin" placeholder="Kata Laluan" type="password" maxlength="20"><button class="btn" id="btnLogin">MASUK</button><button class="btn" id="btnDaftar" style="text-align:center">DAFTAR</button></div>
-                <div class="card" id="hidupCard" style="display:none"><h2>STATUS</h2><div class="grid" id="statsHidup"></div><button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button><button class="btn" id="btnLogout" style="text-align:center">LOGOUT</button></div>
+            <div class="page aktif" id="pg-negara">
+                <div class="card"><h2>PILIH NEGARA</h2><div id="negaraList"></div></div>
+                <div class="card" id="negaraCard" style="display:none">
+                    <h2>STATUS NEGARA</h2>
+                    <div class="grid" id="statsNegara"></div>
+                    <button class="btn" id="btnTahun" style="text-align:center">TAHUN SETERUSNYA</button>
+                </div>
             </div>
-            <div class="page" id="pg-profil">
-                <div class="card" id="profilCard" style="display:none"><h2>PROFIL ANDA</h2><div id="profilSendiri"></div></div>
+            <div class="page" id="pg-ekonomi">
+                <div class="card"><h2>EKONOMI</h2><div id="ekonomiList"></div></div>
             </div>
-            <div class="page" id="pg-pemain">
-                <div class="card"><h2>SENARAI PEMAIN</h2><div id="senaraiPemain"></div></div>
-                <div class="card" id="profilLihat" style="display:none"><h2>PROFIL PEMAIN</h2><div id="profilPemain"></div></div>
+            <div class="page" id="pg-rakyat">
+                <div class="card"><h2>RAKYAT</h2><div id="rakyatList"></div></div>
             </div>
-            <div class="page" id="pg-kerjaya">
-                <div class="card"><h2>PEKERJAAN</h2><div id="kerjaList"></div></div>
-                <div class="card"><h2>NAIK PANGKAT</h2><button class="btn" id="btnPangkat">NAIK PANGKAT</button></div>
-                <div class="card"><h2>KERJA OT</h2><button class="btn" id="btnOT">KERJA OT</button></div>
-            </div>
-            <div class="page" id="pg-kewangan">
-                <div class="card"><h2>SIMPAN</h2><input class="input" id="simpanJumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnSimpan">SIMPAN</button></div>
-                <div class="card"><h2>LABUR</h2><input class="input" id="laburJumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnLabur">LABUR</button></div>
-                <div class="card"><h2>BAYAR HUTANG</h2><input class="input" id="bayarJumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnBayar">BAYAR</button></div>
-            </div>
-            <div class="page" id="pg-sosial">
-                <div class="card"><h2>TRANSFER</h2><input class="input" id="penerima" placeholder="Nama"><input class="input" id="jumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnTransfer">TRANSFER</button></div>
-                <div class="card"><h2>PINJAM</h2><input class="input" id="pinjamNama" placeholder="Nama"><input class="input" id="pinjamJumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnPinjam">PINJAM</button></div>
-                <div class="card"><h2>HADIAH</h2><input class="input" id="hadiahNama" placeholder="Nama"><input class="input" id="hadiahJumlah" placeholder="Jumlah" type="number"><button class="btn" id="btnHadiah">HADIAH</button></div>
-                <div class="card"><h2>KAHWIN</h2><input class="input" id="pasangan" placeholder="Nama"><button class="btn" id="btnKahwin">KAHWIN</button></div>
+            <div class="page" id="pg-dasar">
+                <div class="card"><h2>DASAR</h2><div id="dasarList"></div></div>
             </div>
             <div class="page" id="pg-log">
-                <div class="card"><h2>LOG PERISTIWA</h2><div class="log-v" id="logMultiplayer"></div></div>
+                <div class="card"><h2>LOG</h2><div class="log-v" id="logNegara"></div></div>
             </div>
         </div>
     </div>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
     <script>
     'use strict';
-    var db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
-    var pengguna=null;
-    var state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',berkahwin:false,tahun:1,hidup:true,online:true,lastSeen:Date.now()};
-    var kerja=[{n:'Pelajar',g:0},{n:'Pekerja Kilang',g:1800},{n:'Guru',g:2800},{n:'Jurutera',g:5000},{n:'Doktor',g:8000},{n:'Peniaga',g:3500}];
-    function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},3000)}
-    function tambahLog(jenis,teks){db.ref('logMultiplayer').push({jenis:jenis,teks:teks,masa:new Date().toLocaleTimeString('ms-MY',{hour:'2-digit',minute:'2-digit'}),nama:pengguna}).catch(function(){})}
-    function sanitize(n){return n.replace(/[^a-zA-Z0-9_]/g,'').toLowerCase()}
-    window.page=function(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='profil')showProfilSendiri();if(n==='pemain')muatPemain();if(n==='kerjaya')showKerja();if(n==='log')muatLog();};
-    function simpan(){if(!pengguna)return;state.lastSeen=Date.now();db.ref('profil/'+pengguna).set(state).catch(function(){})}
-    function setOnline(){if(!pengguna)return;db.ref('profil/'+pengguna+'/online').set(true).catch(function(){});db.ref('profil/'+pengguna+'/lastSeen').set(Date.now()).catch(function(){})}
-    function setOffline(){if(!pengguna)return;db.ref('profil/'+pengguna+'/online').set(false).catch(function(){});db.ref('profil/'+pengguna+'/lastSeen').set(Date.now()).catch(function(){})}
-    function muat(nama){
-        var key=sanitize(nama);
-        if(!key){toast('Nama tidak sah');return}
-        db.ref('profil/'+key).once('value').then(function(snap){
-            if(snap.exists()){state=snap.val();state.online=true;state.lastSeen=Date.now();}
-            else{state={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',berkahwin:false,tahun:1,hidup:true,online:true,lastSeen:Date.now()};}
-            pengguna=key;simpan();setOnline();
-            document.getElementById('hidupCard').style.display='block';
-            document.getElementById('profilCard').style.display='block';
-            showStats();showProfilSendiri();toast('Selamat datang '+key);
-        }).catch(function(){toast('Ralat')});
-    }
-    function daftar(nama,kata){
-        var key=sanitize(nama);
-        if(!key||!kata){toast('Isi semua');return}
-        db.ref('auth/'+key).once('value').then(function(snap){
-            if(snap.exists()){toast('Nama sudah wujud');return}
-            db.ref('auth/'+key).set({password:kata}).then(function(){
-                var profil={umur:18,kesihatan:85,mental:80,tenaga:70,kebahagiaan:75,wang:3000,simpanan:1000,aset:5000,hutang:0,gaji:1500,pekerjaan:'Pelajar',berkahwin:false,tahun:1,hidup:true,online:false,lastSeen:Date.now()};
-                db.ref('profil/'+key).set(profil).then(function(){toast('Daftar berjaya!')}).catch(function(){toast('Ralat')});
-            });
-        });
-    }
-    function login(nama,kata){
-        var key=sanitize(nama);
-        if(!key||!kata){toast('Isi semua');return}
-        db.ref('auth/'+key).once('value').then(function(snap){
-            if(!snap.exists()){toast('Nama tidak wujud');return}
-            if(snap.val().password!==kata){toast('Kata laluan salah');return}
-            muat(key);
-        });
-    }
+    var NEGARA=[
+        {n:'Malaysia',c:'MY',p:33000000,gdp:11409,inflasi:2.5,pengangguran:3.5,kemiskinan:5.6,kesihatan:75,pendidikan:80,kestabilan:85},
+        {n:'Indonesia',c:'ID',p:277000000,gdp:4320,inflasi:3.5,pengangguran:5.2,kemiskinan:9.4,kesihatan:60,pendidikan:65,kestabilan:70},
+        {n:'Singapura',c:'SG',p:5900000,gdp:82808,inflasi:1.5,pengangguran:2.1,kemiskinan:0.5,kesihatan:95,pendidikan:95,kestabilan:98},
+        {n:'Jepun',c:'JP',p:125000000,gdp:42345,inflasi:0.8,pengangguran:2.4,kemiskinan:15.7,kesihatan:90,pendidikan:90,kestabilan:92},
+        {n:'USA',c:'US',p:332000000,gdp:76399,inflasi:3.2,pengangguran:3.8,kemiskinan:11.6,kesihatan:70,pendidikan:85,kestabilan:75},
+        {n:'Nigeria',c:'NG',p:223000000,gdp:2163,inflasi:18.8,pengangguran:33.3,kemiskinan:40.1,kesihatan:35,pendidikan:45,kestabilan:50},
+        {n:'India',c:'IN',p:1428000000,gdp:3714,inflasi:5.5,pengangguran:8.1,kemiskinan:21.9,kesihatan:55,pendidikan:60,kestabilan:65},
+        {n:'Brazil',c:'BR',p:203000000,gdp:8918,inflasi:4.6,pengangguran:8.3,kemiskinan:29.4,kesihatan:65,pendidikan:70,kestabilan:60}
+    ];
+    var s=null;
+    var dasarEkonomi=[
+        {n:'Kurangkan Cukai',e:function(){s.gdp=Math.min(100000,s.gdp+500);s.kestabilan=Math.max(0,s.kestabilan-3);return'GDP +$500, Kestabilan -3%'}},
+        {n:'Naikkan Cukai',e:function(){s.gdp=Math.max(100,s.gdp-300);s.kestabilan=Math.min(100,s.kestabilan+3);return'GDP -$300, Kestabilan +3%'}},
+        {n:'Subsidi Makanan',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-3);s.kestabilan=Math.min(100,s.kestabilan+5);return'Kemiskinan -3%, Kestabilan +5%'}},
+        {n:'Labur Infrastruktur',e:function(){s.gdp=Math.min(100000,s.gdp+800);s.pengangguran=Math.max(0,s.pengangguran-1);return'GDP +$800, Pengangguran -1%'}}
+    ];
+    var dasarRakyat=[
+        {n:'Kesihatan Percuma',e:function(){s.kesihatan=Math.min(100,s.kesihatan+5);s.kestabilan=Math.min(100,s.kestabilan+5);return'Kesihatan +5%, Kestabilan +5%'}},
+        {n:'Pendidikan Percuma',e:function(){s.pendidikan=Math.min(100,s.pendidikan+5);s.pengangguran=Math.max(0,s.pengangguran-1);return'Pendidikan +5%, Pengangguran -1%'}},
+        {n:'Bantuan Rakyat',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-5);s.kestabilan=Math.min(100,s.kestabilan+8);return'Kemiskinan -5%, Kestabilan +8%'}}
+    ];
+    var dasarSosial=[
+        {n:'Kurangkan Jenayah',e:function(){s.kestabilan=Math.min(100,s.kestabilan+5);return'Kestabilan +5%'}},
+        {n:'Tingkatkan Gaji Minimum',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-4);s.gdp=Math.max(100,s.gdp-200);return'Kemiskinan -4%, GDP -$200'}},
+        {n:'Program Perumahan',e:function(){s.kemiskinan=Math.max(0,s.kemiskinan-3);s.kestabilan=Math.min(100,s.kestabilan+4);return'Kemiskinan -3%, Kestabilan +4%'}}
+    ];
+    function toast(m){var t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(function(){t.remove()},2500)}
+    function addLog(m,c){var d=document.getElementById('logNegara');d.innerHTML='<p class="'+(c||'')+'"><b>'+s.tahun+'</b> — '+m+'</p>'+d.innerHTML}
+    function page(n,btn){document.querySelectorAll('.page').forEach(function(p){p.classList.remove('aktif')});document.getElementById('pg-'+n).classList.add('aktif');document.querySelectorAll('.nav button').forEach(function(b){b.classList.remove('aktif')});if(btn)btn.classList.add('aktif');if(n==='ekonomi')showEkonomi();if(n==='rakyat')showRakyat();if(n==='dasar')showDasar();}
+    function pilihNegara(i){var n=NEGARA[i];s={tahun:2024,gdp:n.gdp,populasi:n.p,inflasi:n.inflasi,pengangguran:n.pengangguran,kemiskinan:n.kemiskinan,kesihatan:n.kesihatan,pendidikan:n.pendidikan,kestabilan:n.kestabilan,nama:n.n};document.getElementById('negaraCard').style.display='block';showStats();addLog('Dipilih '+n.n,'baik');toast('Anda jadi Presiden '+n.n)}
+    function showNegara(){document.getElementById('negaraList').innerHTML=NEGARA.map(function(n,i){return '<button class="btn" onclick="pilihNegara('+i+')">'+n.c+' '+n.n+' — GDP $'+n.gdp+'</button>';}).join('');}
     function showStats(){
-        var k=state.kesihatan>=50?'baik':'buruk';
-        document.getElementById('statsHidup').innerHTML=[
-            {l:'UMUR',v:state.umur},{l:'TAHUN',v:state.tahun},
-            {l:'KESIHATAN',v:state.kesihatan+'%',c:k},
-            {l:'MENTAL',v:state.mental+'%'},{l:'TENAGA',v:state.tenaga+'%'},
-            {l:'KEBAHAGIAAN',v:state.kebahagiaan+'%'},{l:'WANG',v:'$'+state.wang},
-            {l:'PEKERJAAN',v:state.pekerjaan},{l:'STATUS',v:state.berkahwin?'Kahwin':'Bujang'}
+        document.getElementById('statsNegara').innerHTML=[
+            {l:'NEGARA',v:s.nama},{l:'TAHUN',v:s.tahun},
+            {l:'GDP',v:'$'+s.gdp},{l:'POPULASI',v:s.populasi+' juta'},
+            {l:'INFLASI',v:s.inflasi+'%',c:s.inflasi>5?'buruk':'baik'},
+            {l:'PENGANGGURAN',v:s.pengangguran+'%',c:s.pengangguran>10?'buruk':'baik'},
+            {l:'KEMISKINAN',v:s.kemiskinan+'%',c:s.kemiskinan>20?'buruk':'baik'},
+            {l:'KESIHATAN',v:s.kesihatan+'%',c:s.kesihatan>=50?'baik':'buruk'},
+            {l:'PENDIDIKAN',v:s.pendidikan+'%',c:s.pendidikan>=50?'baik':'buruk'},
+            {l:'KESTABILAN',v:s.kestabilan+'%',c:s.kestabilan>=50?'baik':'buruk'}
         ].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v '+(x.c||'')+'">'+x.v+'</div></div>';}).join('');
     }
-    function showProfilSendiri(){if(!pengguna)return;document.getElementById('profilSendiri').innerHTML=[{l:'NAMA',v:pengguna},{l:'UMUR',v:state.umur},{l:'PEKERJAAN',v:state.pekerjaan},{l:'WANG',v:'$'+state.wang},{l:'STATUS',v:state.online?'Online':'Offline'},{l:'TERAKHIR',v:new Date(state.lastSeen).toLocaleTimeString('ms-MY')}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v">'+x.v+'</div></div>';}).join('');}
-    function muatPemain(){db.ref('profil').on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){var d=c.val();l.push({n:c.key,w:d.wang||0,o:d.online||false})});document.getElementById('senaraiPemain').innerHTML=l.map(function(p){return '<div class="pemain" onclick="lihatProfil(\''+p.n+'\')"><span><span class="online '+(p.o?'':'offline')+'"></span>'+p.n+(p.n===pengguna?' (Anda)':'')+'</span><span>$'+p.w+'</span></div>';}).join('')||'<p style="color:#94a3b8">Tiada</p>';});}
-    function lihatProfil(nama){db.ref('profil/'+nama).once('value').then(function(snap){if(!snap.exists())return;var d=snap.val();document.getElementById('profilLihat').style.display='block';document.getElementById('profilPemain').innerHTML=[{l:'NAMA',v:nama},{l:'UMUR',v:d.umur||0},{l:'PEKERJAAN',v:d.pekerjaan||'Tiada'},{l:'WANG',v:'$'+(d.wang||0)},{l:'STATUS',v:d.online?'Online':'Offline'},{l:'TERAKHIR',v:new Date(d.lastSeen||0).toLocaleTimeString('ms-MY')}].map(function(x){return '<div class="stat"><div class="l">'+x.l+'</div><div class="v">'+x.v+'</div></div>';}).join('');});}
-    function muatLog(){db.ref('logMultiplayer').limitToLast(50).on('value',function(snap){var l=[];if(snap.exists())snap.forEach(function(c){l.push(c.val())});l.reverse();document.getElementById('logMultiplayer').innerHTML=l.map(function(m){var cls=m.jenis==='masuk'?'masuk':m.jenis==='keluar'?'keluar':'sosial';return '<p class="'+cls+'"><b>'+m.masa+'</b> — '+m.nama+': '+m.teks+'</p>';}).join('')||'<p style="color:#94a3b8">Tiada</p>';});}
-    function showKerja(){document.getElementById('kerjaList').innerHTML=kerja.map(function(k,i){return '<button class="btn" onclick="pilihKerja('+i+')">'+k.n+' — $'+k.g+'</button>';}).join('');}
-    function pilihKerja(i){state.pekerjaan=kerja[i].n;state.gaji=kerja[i].g;simpan();showStats();showProfilSendiri();}
-    function transfer(p,j){if(!pengguna||!p||!j||j<=0||p===pengguna||state.wang<j)return;var key=sanitize(p);db.ref('profil/'+key).once('value').then(function(snap){if(!snap.exists()){toast('Penerima tiada');return}var d=snap.val();d.wang=(d.wang||0)+j;state.wang-=j;db.ref('profil/'+key).update({wang:d.wang});simpan();showStats();showProfilSendiri();tambahLog('keluar','Transfer $'+j+' kepada '+key);toast('Transfer OK')});}
-    function pinjam(p,j){if(!pengguna||!p||!j||j<=0)return;var key=sanitize(p);db.ref('profil/'+key).once('value').then(function(snap){if(!snap.exists()){toast('Pemberi tiada');return}var d=snap.val();if((d.wang||0)<j){toast('Pemberi miskin');return}d.wang-=j;state.wang+=j;state.hutang+=j;db.ref('profil/'+key).update({wang:d.wang});simpan();showStats();showProfilSendiri();tambahLog('masuk','Pinjam $'+j+' daripada '+key);toast('Pinjam OK')});}
-    function hadiah(p,j){if(!pengguna||!p||!j||j<=0||state.wang<j)return;var key=sanitize(p);db.ref('profil/'+key).once('value').then(function(snap){if(!snap.exists()){toast('Penerima tiada');return}var d=snap.val();d.wang=(d.wang||0)+j;state.wang-=j;db.ref('profil/'+key).update({wang:d.wang});simpan();showStats();showProfilSendiri();tambahLog('keluar','Hadiah $'+j+' kepada '+key);toast('Hadiah OK')});}
-    function kahwin(p){if(!pengguna||!p||p===pengguna)return;var key=sanitize(p);db.ref('profil/'+key).once('value').then(function(snap){if(!snap.exists()){toast('Pemain tiada');return}state.berkahwin=true;simpan();showStats();showProfilSendiri();tambahLog('sosial','Berkahwin dengan '+key);toast('Kahwin OK')});}
-    document.getElementById('btnDaftar').addEventListener('click',function(){daftar(document.getElementById('namaLogin').value.trim(),document.getElementById('kataLogin').value.trim())});
-    document.getElementById('btnLogin').addEventListener('click',function(){login(document.getElementById('namaLogin').value.trim(),document.getElementById('kataLogin').value.trim())});
-    document.getElementById('btnLogout').addEventListener('click',function(){setOffline();pengguna=null;document.getElementById('hidupCard').style.display='none';document.getElementById('profilCard').style.display='none';toast('Logout')});
-    document.getElementById('btnTahun').addEventListener('click',function(){if(!state.hidup)return;state.tahun++;state.umur++;state.kesihatan=Math.max(0,state.kesihatan-5);state.wang+=state.gaji;state.wang=Math.max(0,state.wang-500);if(state.kesihatan<=0||state.umur>80)state.hidup=false;simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnPangkat').addEventListener('click',function(){state.gaji+=500;simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnOT').addEventListener('click',function(){state.wang+=500;state.tenaga=Math.max(0,state.tenaga-15);simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnSimpan').addEventListener('click',function(){var j=parseInt(document.getElementById('simpanJumlah').value);if(!j||j<=0||state.wang<j)return;state.wang-=j;state.simpanan+=j;simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnLabur').addEventListener('click',function(){var j=parseInt(document.getElementById('laburJumlah').value);if(!j||j<=0||state.wang<j)return;state.wang-=j;state.aset+=j;simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnBayar').addEventListener('click',function(){var j=parseInt(document.getElementById('bayarJumlah').value);if(!j||j<=0||state.wang<j)return;state.wang-=j;state.hutang=Math.max(0,state.hutang-j);simpan();showStats();showProfilSendiri();});
-    document.getElementById('btnTransfer').addEventListener('click',function(){transfer(document.getElementById('penerima').value.trim(),parseInt(document.getElementById('jumlah').value))});
-    document.getElementById('btnPinjam').addEventListener('click',function(){pinjam(document.getElementById('pinjamNama').value.trim(),parseInt(document.getElementById('pinjamJumlah').value))});
-    document.getElementById('btnHadiah').addEventListener('click',function(){hadiah(document.getElementById('hadiahNama').value.trim(),parseInt(document.getElementById('hadiahJumlah').value))});
-    document.getElementById('btnKahwin').addEventListener('click',function(){kahwin(document.getElementById('pasangan').value.trim())});
-    window.addEventListener('beforeunload',function(){setOffline()});
+    function showEkonomi(){document.getElementById('ekonomiList').innerHTML=dasarEkonomi.map(function(d,i){return '<button class="btn" onclick="laksanaEkonomi('+i+')">'+d.n+'</button>';}).join('');}
+    function showRakyat(){document.getElementById('rakyatList').innerHTML=dasarRakyat.map(function(d,i){return '<button class="btn" onclick="laksanaRakyat('+i+')">'+d.n+'</button>';}).join('');}
+    function showDasar(){document.getElementById('dasarList').innerHTML=dasarSosial.map(function(d,i){return '<button class="btn" onclick="laksanaSosial('+i+')">'+d.n+'</button>';}).join('');}
+    function laksanaEkonomi(i){if(!s)return;var r=dasarEkonomi[i].e();addLog(r,'baik');showStats()}
+    function laksanaRakyat(i){if(!s)return;var r=dasarRakyat[i].e();addLog(r,'baik');showStats()}
+    function laksanaSosial(i){if(!s)return;var r=dasarSosial[i].e();addLog(r,'baik');showStats()}
+    document.getElementById('btnTahun').addEventListener('click',function(){
+        if(!s)return;
+        s.tahun++;
+        s.gdp=Math.max(100,Math.floor(s.gdp*(1+s.inflasi/100)));
+        s.pengangguran=Math.max(0,Math.min(50,s.pengangguran+Math.floor(Math.random()*3)-1));
+        s.kemiskinan=Math.max(0,Math.min(80,s.kemiskinan+Math.floor(Math.random()*3)-1));
+        s.kestabilan=Math.max(0,Math.min(100,s.kestabilan+Math.floor(Math.random()*5)-2));
+        if(Math.random()<0.3){var krisis=['Krisis Ekonomi','Bencana Alam','Protes','Skandal Politik','Boom Ekonomi'];var k=krisis[Math.floor(Math.random()*krisis.length)];if(k==='Krisis Ekonomi'){s.gdp=Math.floor(s.gdp*.8);addLog(k,'buruk')}if(k==='Bencana Alam'){s.kestabilan=Math.max(0,s.kestabilan-15);addLog(k,'buruk')}if(k==='Protes'){s.kestabilan=Math.max(0,s.kestabilan-10);addLog(k,'buruk')}if(k==='Skandal Politik'){s.kestabilan=Math.max(0,s.kestabilan-20);addLog(k,'buruk')}if(k==='Boom Ekonomi'){s.gdp=Math.floor(s.gdp*1.2);addLog(k,'baik')}}
+        showStats();
+    });
+    showNegara();
     </script>
 </body>
 </html>
