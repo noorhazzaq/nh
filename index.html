@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
-    <meta name="description" content="ZACK Game — Menu Gabungan">
+    <meta name="description" content="ZACK Game">
     <title>ZACK Game</title>
     <link rel="manifest" href='data:application/manifest+json,{"name":"ZACK Game","short_name":"ZACK","display":"standalone","theme_color":"%23000000","background_color":"%23000000"}'>
     <style>
@@ -21,10 +21,8 @@
         .main{position:relative;z-index:2;padding:calc(55px + var(--st)) 8px calc(60px + var(--sb));max-width:600px;margin:0 auto;height:100dvh;overflow-y:auto}
         .tab-bar{position:fixed;bottom:0;left:0;right:0;z-index:100;padding:6px 8px calc(6px + var(--sb));background:rgba(0,0,0,.95);border-top:1px solid var(--br);display:flex;justify-content:space-around;max-width:600px;margin:0 auto}
         .tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 10px;background:none;border:none;color:var(--m);font-family:'Orbitron',sans-serif;font-size:6px;cursor:pointer;border-radius:8px}
-        .tab.aktif{color:var(--c)}
-        .tab .ikon{font-size:16px}
-        .halaman{display:none}
-        .halaman.aktif{display:block;animation:f .3s}
+        .tab.aktif{color:var(--c)}.tab .ikon{font-size:16px}
+        .halaman{display:none}.halaman.aktif{display:block;animation:f .3s}
         @keyframes f{from{opacity:0;transform:translateY(8px)}}
         .kad{border:1px solid var(--br);border-radius:14px;background:rgba(0,0,0,.5);padding:10px;margin-bottom:6px}
         .kad h3{font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;color:var(--c);margin-bottom:6px}
@@ -35,17 +33,16 @@
         .label{font-size:7px;color:var(--m);font-family:'Orbitron',sans-serif}
         .nilai{font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;margin-top:3px}
         .bar{height:4px;background:rgba(0,0,0,.5);border-radius:2px;overflow:hidden;margin-top:4px}
-        .isi{height:100%}
-        .fh{background:var(--s)}.fk{background:var(--g)}.fm{background:var(--r)}
+        .isi{height:100%}.fh{background:var(--s)}.fk{background:var(--g)}.fm{background:var(--r)}
         .butang{width:100%;padding:10px;background:var(--gd);color:var(--w);font-family:'Orbitron',sans-serif;font-size:8px;letter-spacing:1px;border:none;border-radius:25px;font-weight:700;cursor:pointer;margin-bottom:3px}
         .butang:disabled{opacity:.3}
         .butang-k{width:100%;padding:7px 10px;background:rgba(255,0,51,.06);border:1px solid var(--br);color:var(--c);font-family:'Orbitron',sans-serif;font-size:7px;border-radius:15px;cursor:pointer;margin-bottom:3px;text-align:left}
         .butang-k:disabled{opacity:.3}
-        .butang-modal{width:100%;padding:10px;background:rgba(0,0,0,.8);border:1px solid var(--g);color:var(--g);font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:1px;border-radius:15px;cursor:pointer;margin-bottom:4px;text-align:left}
+        .butang-modal{width:100%;padding:10px;background:rgba(0,0,0,.8);border:1px solid var(--g);color:var(--g);font-family:'Orbitron',sans-serif;font-size:9px;border-radius:15px;cursor:pointer;margin-bottom:4px;text-align:left}
         .modal{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.9);display:none;justify-content:center;align-items:center;padding:20px}
         .modal.aktif{display:flex}
         .modal-kandungan{width:100%;max-width:400px;max-height:80dvh;overflow-y:auto;border:1px solid var(--br);border-radius:16px;background:var(--b);padding:15px}
-        .modal-kandungan h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--c);margin-bottom:10px;letter-spacing:2px}
+        .modal-kandungan h3{font-family:'Orbitron',sans-serif;font-size:10px;color:var(--c);margin-bottom:10px}
         .modal-tutup{width:100%;padding:10px;background:transparent;border:1px solid var(--r);color:var(--r);font-family:'Orbitron',sans-serif;font-size:8px;border-radius:25px;cursor:pointer;margin-top:10px}
         .pil{border:1px solid var(--g);border-radius:10px;background:rgba(255,215,0,.08);padding:8px;margin-bottom:6px}
         .pil-t{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--g);margin-bottom:4px}
@@ -54,11 +51,9 @@
         .log{padding:5px 8px;border-radius:5px;background:rgba(0,0,0,.4);border-left:3px solid var(--c)}
         .log.sistem{border-color:var(--m)}.log.tindakan{border-color:var(--c)}.log.amaran{border-color:var(--g)}.log.bahaya{border-color:var(--r)}.log.kematian{border-color:var(--r);background:rgba(255,0,51,.1)}
         .log-meta{display:flex;justify-content:space-between;font-size:6px;color:var(--m);font-family:'Orbitron',sans-serif}
-        .pemain{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:10px;margin-bottom:3px;font-size:9px}
-        .pemain-nama{color:var(--c);font-family:'Orbitron',sans-serif}
-        .pemain-bank{color:var(--s)}
-        .pemain-mati{opacity:.4;border-color:var(--r)}
-        .pemain-mati .pemain-nama{color:var(--r);text-decoration:line-through}
+        .pemain{display:flex;justify-content:space-between;padding:8px 10px;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:10px;margin-bottom:3px;font-size:9px}
+        .pemain-nama{color:var(--c);font-family:'Orbitron',sans-serif}.pemain-bank{color:var(--s)}
+        .pemain-mati{opacity:.4;border-color:var(--r)}.pemain-mati .pemain-nama{color:var(--r);text-decoration:line-through}
     </style>
 </head>
 <body>
@@ -66,18 +61,18 @@
     <div class="header"><div class="logo">ZACK GAME</div><span id="umur" class="badge">TAHUN 1</span></div>
     <div class="main">
         <div class="halaman aktif" id="hal-login">
-            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA PENGGUNA" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR BARU</button></div>
+            <div class="kad"><h3>🔐 LOGIN</h3><input type="text" id="nama" class="input" placeholder="NAMA" maxlength="20"><input type="password" id="kata" class="input" placeholder="KATA LALUAN" maxlength="20"><button class="butang" id="btnLogin">MASUK</button><button class="butang" id="btnDaftar" style="background:transparent;border:1px solid var(--c);color:var(--c)">DAFTAR</button></div>
         </div>
         <div class="halaman" id="hal-status">
             <div class="kad">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">📊 STATUS (KLIK UNTUK TINDAKAN)</h3><span id="status" class="badge">AKTIF</span></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><h3 style="margin:0">📊 STATUS</h3><span id="status" class="badge">AKTIF</span></div>
                 <div class="grid-stat" id="sg"></div>
                 <button class="butang" id="langkah" style="margin-top:8px">⚡ TAHUN SETERUSNYA</button>
             </div>
             <div id="ch"></div>
         </div>
         <div class="halaman" id="hal-tindakan">
-            <div class="kad"><h3>🎯 MENU UTAMA</h3><div id="tindakan"></div></div>
+            <div class="kad"><h3>🎯 MENU</h3><div id="tindakan"></div></div>
         </div>
         <div class="halaman" id="hal-pemain">
             <div class="kad"><h3>👥 PEMAIN</h3><div id="senaraiPemain"></div></div>
@@ -106,146 +101,40 @@
     const $=id=>document.getElementById(id),M=Math;
     const db=firebase.initializeApp({databaseURL:'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/'}).database();
     let pengguna=null,s=null;
-    const MENU={
-        '🏥 Kesihatan':[
-            {i:'a1',n:'Pemeriksaan Kesihatan',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Kesihatan +15%',aras:'tindakan'}}},
-            {i:'a2',n:'Rawatan Gigi',c:100,e:s=>{if(s.bank<100)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=100;s.kesihatan=M.min(100,s.kesihatan+8);return{teks:'Gigi dirawat',aras:'tindakan'}}},
-            {i:'a3',n:'Vaksinasi',c:50,e:s=>{if(s.bank<50)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=50;s.imun=M.min(100,s.imun+10);return{teks:'Imuniti +10%',aras:'tindakan'}}},
-            {i:'a4',n:'Kaunseling',c:150,e:s=>{if(s.bank<150)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=150;s.mental=M.min(100,s.mental+15);return{teks:'Mental +15%',aras:'tindakan'}}}
-        ],
-        '💰 Kewangan & Bank':[
-            {i:'a5',n:'Bekerja',c:0,e:s=>{s.bank+=s.gaji;return{teks:`Gaji $${s.gaji}`,aras:'tindakan'}}},
-            {i:'a6',n:'Kerja Lebih Masa',c:0,e:s=>{s.bank+=500;s.stamina=M.max(0,s.stamina-15);return{teks:'+$500, stamina -15%',aras:'tindakan'}}},
-            {i:'a7',n:'Simpan $200',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.simpanan+=200;return{teks:'Simpanan +$200',aras:'tindakan'}}},
-            {i:'a8',n:'Labur ASB',c:1000,e:s=>{if(s.bank<1000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=1000;s.pelaburan=(s.pelaburan||0)+1000;return{teks:'ASB +$1000',aras:'tindakan'}}},
-            {i:'a9',n:'Beli Emas',c:2000,e:s=>{if(s.bank<2000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=2000;s.emas=(s.emas||0)+2000;return{teks:'Emas +$2000',aras:'tindakan'}}},
-            {i:'a10',n:'Bayar Hutang',c:500,e:s=>{if(s.bank<500)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=500;s.hutang=M.max(0,s.hutang-500);return{teks:'Hutang -$500',aras:'tindakan'}}},
-            {i:'a11',n:'Transfer Wang',c:0,e:s=>{bukaTransfer();return{teks:'Sila pilih penerima',aras:'sistem'}}}
-        ],
-        '👤 Sosial & Keluarga':[
-            {i:'a12',n:'Kahwin',c:5000,e:s=>{if(s.bank<5000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=5000;s.berkahwin=1;return{teks:'Berkahwin!',aras:'tindakan'}}},
-            {i:'a13',n:'Dapat Anak',c:1000,e:s=>{if(s.bank<1000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=1000;s.anak=(s.anak||0)+1;return{teks:'Anak +1',aras:'tindakan'}}},
-            {i:'a14',n:'Masa Keluarga',c:0,e:s=>{s.kebahagiaan=M.min(100,s.kebahagiaan+10);return{teks:'Kebahagiaan +10%',aras:'tindakan'}}}
-        ],
-        '🛡️ Insurans':[
-            {i:'a15',n:'Insurans Kesihatan',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.insurans=(s.insurans||0)+1;return{teks:'Insurans dibeli',aras:'tindakan'}}},
-            {i:'a16',n:'Takaful',c:150,e:s=>{if(s.bank<150)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=150;s.insurans=(s.insurans||0)+1;return{teks:'Takaful dibeli',aras:'tindakan'}}}
-        ]
-    };
-    const STATUS_MENU={
-        'KESIHATAN':'🏥 Kesihatan',
-        'MENTAL':'🏥 Kesihatan',
-        'STAMINA':'🏥 Kesihatan',
-        'BANK':'💰 Kewangan & Bank',
-        'SIMPANAN':'💰 Kewangan & Bank',
-        'PELABURAN':'💰 Kewangan & Bank',
-        'EMAS':'💰 Kewangan & Bank',
-        'HUTANG':'💰 Kewangan & Bank',
-        'STATUS':'👤 Sosial & Keluarga',
-        'KEBAHAGIAAN':'👤 Sosial & Keluarga',
-        'INSURANS':'🛡️ Insurans'
-    };
-    const C=[
-        {n:'Peluang Kerja',d:'Tawaran gaji lebih tinggi.',o:[{l:'Terima',v:()=>1,r:s=>{s.gaji+=500;return{teks:'Gaji +$500',aras:'tindakan'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
-        {n:'Masalah Kesihatan',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'Kesihatan -20%',aras:'bahaya'}}}]},
-        {n:'Pelaburan',d:'Saham risiko tinggi.',o:[{l:'Labur $500',v:s=>s.bank>=500,r:s=>{s.bank-=500;const u=M.random()>.5?800:-300;s.bank+=M.max(0,u);return{teks:u>0?'Untung +$800':'Rugi -$300',aras:u>0?'tindakan':'bahaya'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]}
+    const A=[
+        {i:'a1',k:'🏥 Kesihatan',n:'Makan',c:50,e:s=>{if(s.bank<50)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=50;s.tenaga=M.min(100,s.tenaga+20);return{teks:'Tenaga +20%',aras:'tindakan'}}},
+        {i:'a2',k:'🏥 Kesihatan',n:'Minum Air',c:10,e:s=>{if(s.bank<10)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=10;s.hidrasi=M.min(100,s.hidrasi+15);return{teks:'Hidrasi +15%',aras:'tindakan'}}},
+        {i:'a3',k:'🏥 Kesihatan',n:'Tidur',c:0,e:s=>{s.tenaga=M.min(100,s.tenaga+30);return{teks:'Tenaga +30%',aras:'tindakan'}}},
+        {i:'a4',k:'🏥 Kesihatan',n:'Pemeriksaan',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Kesihatan +15%',aras:'tindakan'}}},
+        {i:'a5',k:'💰 Kewangan',n:'Bekerja',c:0,e:s=>{s.bank+=s.gaji;s.tenaga=M.max(0,s.tenaga-10);return{teks:`Gaji $${s.gaji}`,aras:'tindakan'}}},
+        {i:'a6',k:'💰 Kewangan',n:'Simpan $200',c:200,e:s=>{if(s.bank<200)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=200;s.simpanan+=200;return{teks:'Simpanan +$200',aras:'tindakan'}}},
+        {i:'a7',k:'💰 Kewangan',n:'Labur ASB',c:1000,e:s=>{if(s.bank<1000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=1000;s.pelaburan=(s.pelaburan||0)+1000;return{teks:'ASB +$1000',aras:'tindakan'}}},
+        {i:'a8',k:'💰 Kewangan',n:'Transfer',c:0,e:s=>{bukaTransfer();return{teks:'Pilih penerima',aras:'sistem'}}},
+        {i:'a9',k:'👤 Sosial',n:'Bersosial',c:0,e:s=>{s.sosial=M.min(100,s.sosial+10);return{teks:'Sosial +10%',aras:'tindakan'}}},
+        {i:'a10',k:'👤 Sosial',n:'Kahwin',c:5000,e:s=>{if(s.bank<5000)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=5000;s.berkahwin=1;return{teks:'Berkahwin!',aras:'tindakan'}}},
+        {i:'a11',k:'🎓 Pendidikan',n:'Belajar',c:100,e:s=>{if(s.bank<100)return{teks:'Baki tidak cukup',aras:'amaran'};s.bank-=100;s.kemahiran=(s.kemahiran||0)+5;return{teks:'Kemahiran +5',aras:'tindakan'}}},
+        {i:'a12',k:'🧠 Mental',n:'Meditasi',c:0,e:s=>{s.mental=M.min(100,s.mental+10);return{teks:'Mental +10%',aras:'tindakan'}}}
     ];
-    function tukar(nama,btn){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+nama).classList.add('aktif');if(btn)btn.classList.add('aktif');if(nama==='pemain')muatPemain()}
-    function simpanProfil(){if(!pengguna)return;db.ref('profil/'+pengguna).update(s).catch(()=>{})}
-    function muatProfil(nama){db.ref('profil/'+nama).once('value').then(snap=>{if(snap.exists()){s=snap.val();s.ch=null}else{s={umur:30,hidup:1,kesihatan:80,mental:80,imun:70,stamina:60,jangka:75,kebahagiaan:70,reputasi:50,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};db.ref('profil/'+nama).set(s).catch(()=>{})}papar([])})}
-    function muatPemain(){db.ref('profil').on('value',snap=>{const list=[];if(snap.exists()){snap.forEach(child=>{const d=child.val();list.push({nama:child.key,bank:d.bank||0,hidup:d.hidup!==0})})}list.sort((a,b)=>(b.hidup?b.bank:0)-(a.hidup?a.bank:0));$('senaraiPemain').innerHTML=list.map(p=>`<div class="pemain ${!p.hidup?'pemain-mati':''}"><span class="pemain-nama">${p.nama}${p.nama===pengguna?' (Anda)':''}${!p.hidup?' 💀':''}</span><span class="pemain-bank">${p.hidup?'$'+p.bank.toFixed(0):'Meninggal'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px;">Tiada pemain.</p>'})}
-    function bukaModal(menu){
-        $('modalTajuk').textContent=menu;
-        const actions=MENU[menu];
-        $('modalIsi').innerHTML=actions.map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}');tutupModal()">${a.n} ${a.c>0?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('');
-        $('modal').classList.add('aktif');
-    }
-    function bukaStatusMenu(label){
-        const menu=STATUS_MENU[label];
-        if(menu)bukaModal(menu);
-    }
+    const D=['Gempa Bumi','Tsunami','Banjir','Kebakaran','Rusuhan','Perang','Revolusi','Olimpik','Piala Dunia','Revolusi AI','Krisis Air','Krisis Makanan','Inflasi','Deflasi','Boom Ekonomi'];
+    const SM={'KESIHATAN':'🏥 Kesihatan','TENAGA':'🏥 Kesihatan','HIDRASI':'🏥 Kesihatan','MENTAL':'🧠 Mental','BANK':'💰 Kewangan','SIMPANAN':'💰 Kewangan','SOSIAL':'👤 Sosial','KEMAHIRAN':'🎓 Pendidikan'};
+    const C=[
+        {n:'Kerja',d:'Gaji lebih tinggi.',o:[{l:'Terima',v:()=>1,r:s=>{s.gaji+=500;return{teks:'Gaji +$500',aras:'tindakan'}}},{l:'Tolak',v:()=>1,r:s=>({teks:'Ditolak',aras:'sistem'})}]},
+        {n:'Sakit',d:'Anda jatuh sakit.',o:[{l:'Rawatan ($300)',v:s=>s.bank>=300,r:s=>{s.bank-=300;s.kesihatan=M.min(100,s.kesihatan+15);return{teks:'Dirawat',aras:'tindakan'}}},{l:'Biarkan',v:()=>1,r:s=>{s.kesihatan=M.max(0,s.kesihatan-20);return{teks:'-20%',aras:'bahaya'}}}]}
+    ];
+    function tukar(n,b){document.querySelectorAll('.halaman').forEach(h=>h.classList.remove('aktif'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('aktif'));$('hal-'+n).classList.add('aktif');if(b)b.classList.add('aktif');if(n==='pemain')muatPemain()}
+    function simpan(){if(pengguna)db.ref('profil/'+pengguna).update(s).catch(()=>{})}
+    function muat(n){db.ref('profil/'+n).once('value').then(snap=>{s=snap.exists()?snap.val():{umur:30,hidup:1,kesihatan:80,mental:80,tenaga:70,hidrasi:70,sosial:50,kemahiran:10,jangka:75,kebahagiaan:70,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};if(!snap.exists())db.ref('profil/'+n).set(s);s.ch=null;papar([])})}
+    function muatPemain(){db.ref('profil').on('value',snap=>{const l=[];if(snap.exists())snap.forEach(c=>{const d=c.val();l.push({n:c.key,b:d.bank||0,h:d.hidup!==0})});l.sort((a,b)=>b.b-a.b);$('senaraiPemain').innerHTML=l.map(p=>`<div class="pemain ${!p.h?'pemain-mati':''}"><span class="pemain-nama">${p.n}${p.n===pengguna?' (Anda)':''}${!p.h?' 💀':''}</span><span class="pemain-bank">${p.h?'$'+p.b:'Meninggal'}</span></div>`).join('')||'<p style="color:var(--m);font-size:9px">Tiada pemain</p>'})}
+    function bukaModal(k){$('modalTajuk').textContent=k;$('modalIsi').innerHTML=A.filter(a=>a.k===k).map(a=>`<button class="butang-k" ${!s.hidup||!!s.ch?'disabled':''} onclick="ea('${a.i}');tutupModal()">${a.n} ${a.c?`<span style="color:var(--m)">$${a.c}</span>`:''}</button>`).join('');$('modal').classList.add('aktif')}
+    function bukaStatusMenu(l){if(SM[l])bukaModal(SM[l])}
     function tutupModal(){$('modal').classList.remove('aktif')}
-    function bukaTransfer(){
-        $('modalTajuk').textContent='💸 TRANSFER';
-        $('modalIsi').innerHTML=`<input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button>`;
-        $('modal').classList.add('aktif');
-        $('btnTransfer').addEventListener('click',()=>{
-            const penerima=$('penerima').value.trim(),jumlah=parseInt($('jumlah').value);
-            if(!penerima||!jumlah||jumlah<=0||penerima===pengguna)return;
-            if(s.bank<jumlah){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Baki tidak cukup',aras:'bahaya'}]);return}
-            db.ref('profil/'+penerima).once('value').then(snap=>{
-                if(!snap.exists()){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima tidak wujud',aras:'amaran'}]);return}
-                const data=snap.val();if(data.hidup===0){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima telah meninggal',aras:'amaran'}]);return}
-                data.bank=(data.bank||0)+jumlah;s.bank-=jumlah;
-                db.ref('profil/'+penerima).update({bank:data.bank}).catch(()=>{});
-                simpanProfil();tutupModal();
-                papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:`$${jumlah} dihantar kepada ${penerima}`,aras:'tindakan'}]);
-            })
-        })
-    }
-    function langkah(){
-        if(!s.hidup||s.ch)return[];
-        const L=[];s.umur++;
-        s.kesihatan=M.max(0,s.kesihatan-(M.random()*5));s.mental=M.max(0,s.mental-(M.random()*3));s.stamina=M.max(0,s.stamina-(M.random()*4));s.jangka--;
-        s.bank=M.max(0,s.bank-M.floor(500+s.umur*.5));
-        if(s.simpanan>0){const f=M.floor(s.simpanan*.02);s.simpanan+=f}
-        if(s.pelaburan>0){const f=M.floor(s.pelaburan*.06);s.pelaburan+=f;L.push({id:0,nama:'DIVIDEN',kategori:'Kewangan',teks:`+$${f}`,aras:'tindakan'})}
-        if(s.hutang>0){const f=M.floor(s.hutang*.05);s.hutang+=f;L.push({id:0,nama:'FAEDAH HUTANG',kategori:'Bank',teks:`+$${f}`,aras:'amaran'})}
-        const peristiwa=['Inflasi','Deflasi','Kemelesetan','Boom Ekonomi','Harga Minyak Naik','Harga Emas Naik','Pasaran Naik','Pasaran Turun'];
-        if(M.random()<.15){const p=peristiwa[M.floor(M.random()*peristiwa.length)];L.push({id:0,nama:p.toUpperCase(),kategori:'Dunia',teks:`${p} melanda`,aras:'amaran'})}
-        if(s.kesihatan<30&&M.random()<.3){s.kesihatan=M.max(0,s.kesihatan-10);L.push({id:0,nama:'KRITIKAL',kategori:'Kesihatan',teks:'Kesihatan kritikal!',aras:'bahaya'})}
-        if(s.hutang>100000&&M.random()<.2){s.hidup=0;L.push({id:0,nama:'MUFLIS',kategori:'Bank',teks:'Diisytiharkan muflis',aras:'kematian'});simpanProfil();return L}
-        if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];
-        if(s.kesihatan<=0||s.umur>=s.jangka){s.hidup=0;L.push({id:0,nama:'PENAMATAN',kategori:'Sistem',teks:`Umur ${s.umur}`,aras:'kematian'})}
-        simpanProfil();return L;
-    }
-    function papar(L=[]){
-        if(!s)return;
-        $('umur').textContent=`TAHUN ${s.umur}`;$('status').textContent=s.hidup?'AKTIF':'MENINGGAL';$('status').className=`badge ${s.hidup?'':'mati'}`;$('langkah').disabled=!s.hidup||!!s.ch;
-        const st=[
-            {l:'KESIHATAN',v:s.kesihatan.toFixed(0)+'%',b:s.kesihatan,c:s.kesihatan>50?'fh':s.kesihatan>25?'fk':'fm'},
-            {l:'MENTAL',v:s.mental.toFixed(0)+'%',b:s.mental,c:s.mental>50?'fh':'fm'},
-            {l:'STAMINA',v:s.stamina.toFixed(0)+'%',b:s.stamina,c:s.stamina>50?'fh':'fm'},
-            {l:'JANGKA HAYAT',v:s.jangka+' thn'},
-            {l:'BANK',v:'$'+s.bank.toFixed(0)},
-            {l:'SIMPANAN',v:'$'+s.simpanan.toFixed(0)},
-            {l:'PELABURAN',v:'$'+(s.pelaburan||0).toFixed(0)},
-            {l:'EMAS',v:'$'+(s.emas||0).toFixed(0)},
-            {l:'HUTANG',v:'$'+s.hutang.toFixed(0)},
-            {l:'STATUS',v:s.berkahwin?'Kahwin':'Bujang'}
-        ];
-        $('sg').innerHTML=st.map(x=>`<div class="kotak" onclick="bukaStatusMenu('${x.l}')"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');
-        $('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';
-        $('tindakan').innerHTML=Object.keys(MENU).map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');
-        if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>Tahun ${s.umur}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}
-    }
-    window.ea=id=>{let found=null;Object.values(MENU).forEach(list=>{const a=list.find(x=>x.i===id);if(a)found=a});if(!found||!s.hidup||s.bank<found.c)return;const r=found.e(s);if(found.i!=='a11')papar([{id:0,nama:found.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpanProfil()};
-    window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Pilihan',teks:r.teks,aras:r.aras}]);simpanProfil()};
-    $('btnDaftar').addEventListener('click',()=>{
-        const nama=$('nama').value.trim(),kata=$('kata').value.trim();
-        if(!nama||!kata)return;
-        db.ref('auth/'+nama).once('value').then(snap=>{
-            if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama sudah wujud',aras:'amaran'}]);return}
-            db.ref('auth/'+nama).set({password:kata}).then(()=>{
-                const profil={umur:30,hidup:1,kesihatan:80,mental:80,imun:70,stamina:60,jangka:75,kebahagiaan:70,reputasi:50,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};
-                db.ref('profil/'+nama).set(profil).then(()=>{papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Pendaftaran berjaya!',aras:'tindakan'}])});
-            })
-        })
-    });
-    $('btnLogin').addEventListener('click',()=>{
-        const nama=$('nama').value.trim(),kata=$('kata').value.trim();
-        if(!nama||!kata)return;
-        db.ref('auth/'+nama).once('value').then(snap=>{
-            if(!snap.exists()){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Nama tidak wujud',aras:'amaran'}]);return}
-            if(snap.val().password!==kata){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Kata laluan salah',aras:'bahaya'}]);return}
-            pengguna=nama;
-            $('hal-login').classList.remove('aktif');
-            $('tabBar').style.display='flex';
-            tukar('status');
-            document.querySelectorAll('.tab')[0].classList.add('aktif');
-            muatProfil(nama);
-        })
-    });
+    function bukaTransfer(){$('modalTajuk').textContent='💸 TRANSFER';$('modalIsi').innerHTML=`<input type="text" id="penerima" class="input" placeholder="NAMA PENERIMA"><input type="number" id="jumlah" class="input" placeholder="JUMLAH ($)"><button class="butang" id="btnTransfer">HANTAR</button>`;$('modal').classList.add('aktif');$('btnTransfer').addEventListener('click',()=>{const p=$('penerima').value.trim(),j=parseInt($('jumlah').value);if(!p||!j||j<=0||p===pengguna)return;if(s.bank<j){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Baki tidak cukup',aras:'bahaya'}]);return}db.ref('profil/'+p).once('value').then(snap=>{if(!snap.exists()){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima tidak wujud',aras:'amaran'}]);return}const d=snap.val();if(d.hidup===0){papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:'Penerima telah meninggal',aras:'amaran'}]);return}d.bank=(d.bank||0)+j;s.bank-=j;db.ref('profil/'+p).update({bank:d.bank});simpan();tutupModal();papar([{id:0,nama:'TRANSFER',kategori:'Bank',teks:`$${j} kepada ${p}`,aras:'tindakan'}])})},{once:true})}
+    function langkah(){if(!s.hidup||s.ch)return[];const L=[];s.umur++;s.kesihatan=M.max(0,s.kesihatan-M.random()*5);s.mental=M.max(0,s.mental-M.random()*3);s.tenaga=M.max(0,s.tenaga-M.random()*10);s.hidrasi=M.max(0,s.hidrasi-M.random()*8);s.jangka--;s.bank=M.max(0,s.bank-M.floor(500+s.umur*.5));if(s.simpanan>0)s.simpanan+=M.floor(s.simpanan*.02);if(s.pelaburan>0){const f=M.floor(s.pelaburan*.06);s.pelaburan+=f;L.push({id:0,nama:'DIVIDEN',kategori:'Kewangan',teks:`+$${f}`,aras:'tindakan'})}if(s.hutang>0){const f=M.floor(s.hutang*.05);s.hutang+=f;L.push({id:0,nama:'FAEDAH',kategori:'Bank',teks:`+$${f}`,aras:'amaran'})}if(M.random()<.15){const d=D[M.floor(M.random()*D.length)];L.push({id:0,nama:d.toUpperCase(),kategori:'Dunia',teks:d,aras:'amaran'})}if(s.tenaga<=0){s.kesihatan=M.max(0,s.kesihatan-15);L.push({id:0,nama:'LETIH',kategori:'Kesihatan',teks:'Terlalu letih! -15%',aras:'bahaya'})}if(s.hidrasi<=0){s.kesihatan=M.max(0,s.kesihatan-10);L.push({id:0,nama:'DEHIDRASI',kategori:'Kesihatan',teks:'Dehidrasi! -10%',aras:'bahaya'})}if(s.hutang>100000&&M.random()<.2){s.hidup=0;L.push({id:0,nama:'MUFLIS',kategori:'Bank',teks:'Muflis',aras:'kematian'});simpan();return L}if(M.random()<.2)s.ch=C[M.floor(M.random()*C.length)];if(s.kesihatan<=0||s.umur>=s.jangka){s.hidup=0;L.push({id:0,nama:'TAMAT',kategori:'Sistem',teks:`Umur ${s.umur}`,aras:'kematian'})}simpan();return L}
+    function papar(L=[]){if(!s)return;$('umur').textContent=`TAHUN ${s.umur}`;$('status').textContent=s.hidup?'AKTIF':'MENINGGAL';$('status').className=`badge ${s.hidup?'':'mati'}`;$('langkah').disabled=!s.hidup||!!s.ch;const st=[{l:'KESIHATAN',v:s.kesihatan.toFixed(0)+'%',b:s.kesihatan,c:s.kesihatan>50?'fh':'fm'},{l:'MENTAL',v:s.mental.toFixed(0)+'%',b:s.mental,c:s.mental>50?'fh':'fm'},{l:'TENAGA',v:s.tenaga.toFixed(0)+'%',b:s.tenaga,c:s.tenaga>50?'fh':'fm'},{l:'HIDRASI',v:s.hidrasi.toFixed(0)+'%',b:s.hidrasi,c:s.hidrasi>50?'fh':'fm'},{l:'SOSIAL',v:s.sosial.toFixed(0)+'%',b:s.sosial,c:'fh'},{l:'BANK',v:'$'+s.bank.toFixed(0)},{l:'SIMPANAN',v:'$'+s.simpanan.toFixed(0)},{l:'PELABURAN',v:'$'+(s.pelaburan||0).toFixed(0)},{l:'HUTANG',v:'$'+s.hutang.toFixed(0)},{l:'KEMAHIRAN',v:s.kemahiran||0},{l:'STATUS',v:s.berkahwin?'Kahwin':'Bujang'}];$('sg').innerHTML=st.map(x=>`<div class="kotak" onclick="bukaStatusMenu('${x.l}')"><div class="label">${x.l}</div><div class="nilai">${x.v}</div>${x.b!==undefined?`<div class="bar"><div class="isi ${x.c}" style="width:${x.b}%"></div></div>`:''}</div>`).join('');$('ch').innerHTML=s.ch?`<div class="pil"><div class="pil-t">⚡ ${s.ch.n}</div><div class="pil-d">${s.ch.d}</div>${s.ch.o.map((o,i)=>`<button class="butang-k" ${!o.v(s)?'disabled':''} onclick="rc(${i})">${o.l}</button>`).join('')}</div>`:'';$('tindakan').innerHTML=[...new Set(A.map(a=>a.k))].map(k=>`<button class="butang-modal" ${!s.hidup||!!s.ch?'disabled':''} onclick="bukaModal('${k}')">${k} →</button>`).join('');if(L.length){const f=document.createDocumentFragment();L.forEach(x=>{const d=document.createElement('div');d.className=`log ${x.aras}`;d.innerHTML=`<div class="log-meta"><span>${x.kategori}</span><span>T${s.umur}</span></div><strong>${x.nama}</strong> — ${x.teks}`;f.appendChild(d)});$('log').appendChild(f);$('log').scrollTop=$('log').scrollHeight}}
+    window.ea=id=>{const a=A.find(x=>x.i===id);if(!a||!s.hidup||s.bank<a.c)return;const r=a.e(s);if(a.i!=='a8')papar([{id:0,nama:a.n,kategori:'Tindakan',teks:r.teks,aras:r.aras}]);simpan()};
+    window.rc=i=>{if(!s.ch||!s.hidup)return;const o=s.ch.o[i];if(!o||!o.v(s))return;const r=o.r(s);s.ch=null;papar([{id:0,nama:'KEPUTUSAN',kategori:'Pilihan',teks:r.teks,aras:r.aras}]);simpan()};
+    $('btnDaftar').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(snap.exists()){papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Nama wujud',aras:'amaran'}]);return}db.ref('auth/'+n).set({password:k}).then(()=>{const p={umur:30,hidup:1,kesihatan:80,mental:80,tenaga:70,hidrasi:70,sosial:50,kemahiran:10,jangka:75,kebahagiaan:70,bank:5000,simpanan:2000,aset:10000,hutang:0,gaji:3000,berkahwin:0,anak:0,emas:0,insurans:0,ch:null};db.ref('profil/'+n).set(p).then(()=>papar([{id:0,nama:'DAFTAR',kategori:'Auth',teks:'Berjaya!',aras:'tindakan'}]))})})});
+    $('btnLogin').addEventListener('click',()=>{const n=$('nama').value.trim(),k=$('kata').value.trim();if(!n||!k)return;db.ref('auth/'+n).once('value').then(snap=>{if(!snap.exists()){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Nama tiada',aras:'amaran'}]);return}if(snap.val().password!==k){papar([{id:0,nama:'LOGIN',kategori:'Auth',teks:'Salah',aras:'bahaya'}]);return}pengguna=n;$('hal-login').classList.remove('aktif');$('tabBar').style.display='flex';tukar('status');document.querySelectorAll('.tab')[0].classList.add('aktif');muat(n)})});
     $('langkah').addEventListener('click',()=>papar(langkah()));
     </script>
 </body>
