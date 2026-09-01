@@ -55,7 +55,6 @@
             flex-direction: column;
         }
 
-        /* SCREEN MANAGEMENT */
         .screen {
             display: none;
             width: 100%;
@@ -73,14 +72,12 @@
             z-index: 10;
         }
 
-        /* SCROLLBAR HIDE */
         ::-webkit-scrollbar {
             width: 0;
             height: 0;
             display: none;
         }
 
-        /* GTA 5 STYLE - SCANLINE OVERLAY */
         .scanline-overlay {
             position: fixed;
             top: 0;
@@ -96,7 +93,6 @@
                     transparent 3px);
         }
 
-        /* VIGNETTE */
         .vignette {
             position: fixed;
             top: 0;
@@ -108,7 +104,6 @@
             background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
         }
 
-        /* ============ MAIN MENU ============ */
         #menu-screen {
             justify-content: center;
             align-items: center;
@@ -218,7 +213,6 @@
             text-transform: uppercase;
         }
 
-        /* ============ COUNTRY SELECT ============ */
         #country-screen {
             background: var(--bg);
         }
@@ -329,7 +323,6 @@
             }
         }
 
-        /* ============ GAME SCREEN ============ */
         #game-screen {
             background: var(--bg);
             position: relative;
@@ -348,7 +341,6 @@
             z-index: 0;
         }
 
-        /* HUD Top */
         .hud-top {
             display: flex;
             align-items: center;
@@ -403,7 +395,6 @@
             transition: width 0.5s ease;
         }
 
-        /* MAIN CONTENT */
         .game-content {
             flex: 1;
             display: flex;
@@ -416,7 +407,6 @@
             gap: 10px;
         }
 
-        /* STAT PANEL */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -459,7 +449,6 @@
             color: var(--accent);
         }
 
-        /* NEWS TICKER */
         .news-ticker {
             background: rgba(15, 15, 15, 0.9);
             border: 1px solid var(--panel-border);
@@ -494,7 +483,6 @@
             flex: 1;
         }
 
-        /* DECISION AREA */
         .decision-area {
             flex-shrink: 0;
             display: flex;
@@ -567,7 +555,6 @@
             color: #ef5350;
         }
 
-        /* MODAL OVERLAY */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -641,7 +628,6 @@
             background: #e0c060;
         }
 
-        /* GAME OVER */
         .gameover-stats {
             margin: 16px 0;
             text-align: left;
@@ -664,7 +650,6 @@
             font-weight: 700;
         }
 
-        /* RESPONSIVE */
         @media (max-width: 360px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
@@ -692,7 +677,6 @@
             }
         }
 
-        /* FIREBASE STATUS */
         .fb-status {
             position: fixed;
             bottom: 8px;
@@ -716,7 +700,7 @@
     <div class="scanline-overlay"></div>
     <div class="vignette"></div>
 
-    <!-- ============ MAIN MENU ============ -->
+    <!-- MAIN MENU -->
     <div id="menu-screen" class="screen active">
         <div class="menu-title">PRESIDENT</div>
         <div class="menu-subtitle">Simulator</div>
@@ -726,7 +710,7 @@
         <div class="menu-version">v1.0 | Firebase RTDB</div>
     </div>
 
-    <!-- ============ COUNTRY SELECT ============ -->
+    <!-- COUNTRY SELECT -->
     <div id="country-screen" class="screen">
         <div class="screen-header">
             <button class="back-btn" onclick="showScreen('menu-screen')">← Back</button>
@@ -738,7 +722,7 @@
         </div>
     </div>
 
-    <!-- ============ GAME SCREEN ============ -->
+    <!-- GAME SCREEN -->
     <div id="game-screen" class="screen">
         <div class="hud-top">
             <div class="hud-country">
@@ -754,12 +738,11 @@
             </div>
         </div>
         <div class="game-content" id="game-content">
-            <!-- Dynamically populated -->
         </div>
         <div class="fb-status" id="fb-status">DB: —</div>
     </div>
 
-    <!-- ============ MODAL ============ -->
+    <!-- MODAL -->
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal-box">
             <div class="modal-title" id="modal-title">Event</div>
@@ -772,25 +755,18 @@
         // ============ FIREBASE CONFIG ============
         const FIREBASE_DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
         let firebaseConnected = false;
-        let dbRef = null;
 
         function initFirebase() {
-            try {
-                dbRef = FIREBASE_DB_URL;
-                // Simple REST check
-                fetch(FIREBASE_DB_URL + '.json?shallow=true', { method: 'GET' })
-                    .then(res => {
-                        if (res.ok) {
-                            firebaseConnected = true;
-                            updateFbStatus(true);
-                        } else {
-                            updateFbStatus(false);
-                        }
-                    })
-                    .catch(() => updateFbStatus(false));
-            } catch (e) {
-                updateFbStatus(false);
-            }
+            fetch(FIREBASE_DB_URL + '.json?shallow=true', { method: 'GET' })
+                .then(res => {
+                    if (res.ok) {
+                        firebaseConnected = true;
+                        updateFbStatus(true);
+                    } else {
+                        updateFbStatus(false);
+                    }
+                })
+                .catch(() => updateFbStatus(false));
         }
 
         function updateFbStatus(online) {
@@ -818,9 +794,7 @@
                     body: JSON.stringify(data),
                     headers: { 'Content-Type': 'application/json' }
                 }).catch(() => {});
-            } catch (e) {
-                // Silently fail
-            }
+            } catch (e) {}
         }
 
         function saveGlobalStats(country) {
@@ -831,9 +805,7 @@
                     body: JSON.stringify({ picked: true, timestamp: Date.now() }),
                     headers: { 'Content-Type': 'application/json' }
                 }).catch(() => {});
-            } catch (e) {
-                // Silently fail
-            }
+            } catch (e) {}
         }
 
         // ============ SCREEN MANAGEMENT ============
@@ -866,11 +838,10 @@
             maxYears: 4,
             gameOver: false,
             decisions: [],
-            crisisHistory: [],
-            liveStats: {}
+            crisisHistory: []
         };
 
-        // ============ REAL WORLD DATA (REST Countries API) ============
+        // ============ REAL WORLD DATA (REST Countries API Only) ============
         let countriesData = [];
         let countriesLoaded = false;
 
@@ -883,18 +854,23 @@
             listEl.innerHTML = '<div class="loading-text">Fetching real country data...</div>';
 
             try {
-                const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flag,region,population,cca2');
-                if (!res.ok) throw new Error('API error');
+                const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flag,region,population,capital');
+                if (!res.ok) throw new Error('API error: ' + res.status);
                 const data = await res.json();
                 countriesData = data
                     .filter(c => c.population > 500000)
                     .sort((a, b) => b.population - a.population)
-                    .slice(0, 30); // Top 30 most populous
+                    .slice(0, 30);
                 countriesLoaded = true;
                 renderCountryList(countriesData);
             } catch (e) {
-                listEl.innerHTML =
-                    '<div class="loading-text">Failed to load countries. Check internet connection.</div><div style="text-align:center;padding:10px;"><button class="back-btn" onclick="loadCountries()">Retry</button></div>';
+                listEl.innerHTML = `
+                    <div class="loading-text">⚠️ Failed to load countries.</div>
+                    <div class="loading-text">Check internet connection.</div>
+                    <div style="text-align:center;padding:10px;">
+                        <button class="back-btn" onclick="loadCountries()">Retry</button>
+                    </div>
+                `;
             }
         }
 
@@ -904,7 +880,6 @@
             countries.forEach(c => {
                 const item = document.createElement('div');
                 item.className = 'country-item';
-                item.setAttribute('data-country', JSON.stringify(c).replace(/"/g, '&quot;'));
                 const popStr = formatNumber(c.population);
                 item.innerHTML = `
                     <div class="country-flag">${c.flag || '🏳️'}</div>
@@ -937,7 +912,7 @@
             startGame();
         }
 
-        // ============ ESTIMATED REAL DATA (Based on World Bank averages) ============
+        // ============ ESTIMATED REAL DATA ============
         function getEstimatedGDP(countryData) {
             const regionFactors = { 'Asia': 8000, 'Europe': 35000, 'Africa': 3000, 'Americas': 20000, 'Oceania': 30000 };
             const base = regionFactors[countryData.region] || 12000;
@@ -955,7 +930,7 @@
         }
 
         function getEstimatedDebt(countryData) {
-            return Math.round(getEstimatedGDP(countryData) * 0.7); // ~70% debt-to-GDP
+            return Math.round(getEstimatedGDP(countryData) * 0.7);
         }
 
         function formatNumber(num) {
@@ -988,7 +963,6 @@
             document.getElementById('hud-approval-bar').style.width = GAME_STATE.approval + '%';
             document.getElementById('hud-term').textContent = 'Year ' + GAME_STATE.year + ' / ' + GAME_STATE.maxYears;
 
-            // Update approval bar color
             const bar = document.getElementById('hud-approval-bar');
             if (GAME_STATE.approval >= 60) bar.style.background = '#4caf50';
             else if (GAME_STATE.approval >= 40) bar.style.background = '#c8a84e';
@@ -1050,82 +1024,27 @@
 
         // ============ DECISION GENERATION ============
         const DECISION_TEMPLATES = [
-            {
-                icon: '💰',
-                text: 'Tax Reform: Cut taxes to stimulate economy?',
-                effects: { approval: +8, gdp: +2, unemployment: -0.5, inflation: +1, debt: +5 },
-                altText: 'You implemented tax cuts. Markets rally.'
-            }, {
-                icon: '🏥',
-                text: 'Healthcare: Increase public health spending?',
-                effects: { approval: +5, gdp: -1, unemployment: -0.3, inflation: +0.5, debt: +3 },
-                altText: 'Healthcare expansion approved. Public health improves.'
-            }, {
-                icon: '🛡️',
-                text: 'Defense: Boost military budget?',
-                effects: { approval: -3, gdp: +1, unemployment: -0.2, inflation: +0.8, debt: +7 },
-                altText: 'Military spending increased. Tensions with neighbors rise.'
-            }, {
-                icon: '🌍',
-                text: 'Climate: Sign major emissions treaty?',
-                effects: { approval: +6, gdp: -2, unemployment: +0.4, inflation: +0.3, debt: +2 },
-                altText: 'Climate treaty signed. Environmentalists celebrate.'
-            }, {
-                icon: '🏗️',
-                text: 'Infrastructure: Massive public works program?',
-                effects: { approval: +7, gdp: +3, unemployment: -1.5, inflation: +2, debt: +10 },
-                altText: 'Infrastructure project launched. Jobs created.'
-            }, {
-                icon: '🏦',
-                text: 'Central Bank: Pressure for lower interest rates?',
-                effects: { approval: +2, gdp: +2, unemployment: -0.5, inflation: +3, debt: -1 },
-                altText: 'Interest rates lowered. Risk of overheating economy.'
-            }, {
-                icon: '📚',
-                text: 'Education: Free university tuition?',
-                effects: { approval: +9, gdp: -2, unemployment: -0.8, inflation: +0.5, debt: +4 },
-                altText: 'Education reform passed. Youth support surges.'
-            }, {
-                icon: '🚔',
-                text: 'Security: Increase police funding?',
-                effects: { approval: -2, gdp: 0, unemployment: -0.1, inflation: +0.2, debt: +2 },
-                altText: 'Police funding increased. Mixed public reaction.'
-            }, {
-                icon: '🌾',
-                text: 'Agriculture: Subsidize farmers?',
-                effects: { approval: +4, gdp: +1, unemployment: -0.6, inflation: -0.5, debt: +3 },
-                altText: 'Farm subsidies approved. Rural communities pleased.'
-            }, {
-                icon: '🔬',
-                text: 'Technology: Fund AI research initiative?',
-                effects: { approval: +3, gdp: +4, unemployment: -0.7, inflation: +0.4, debt: +5 },
-                altText: 'Tech initiative announced. Innovation sector booms.'
-            }, {
-                icon: '🏠',
-                text: 'Housing: Subsidize affordable housing?',
-                effects: { approval: +6, gdp: +1, unemployment: -0.9, inflation: +1, debt: +6 },
-                altText: 'Housing program launched. Homelessness decreases.'
-            }, {
-                icon: '⚡',
-                text: 'Energy: Nationalize power grid?',
-                effects: { approval: -5, gdp: -3, unemployment: +0.2, inflation: +2, debt: +8 },
-                altText: 'Energy sector nationalized. Investors alarmed.'
-            }
+            { icon: '💰', text: 'Tax Reform: Cut taxes to stimulate economy?', effects: { approval: +8, gdp: +2, unemployment: -0.5, inflation: +1, debt: +5 }, altText: 'You implemented tax cuts. Markets rally.' },
+            { icon: '🏥', text: 'Healthcare: Increase public health spending?', effects: { approval: +5, gdp: -1, unemployment: -0.3, inflation: +0.5, debt: +3 }, altText: 'Healthcare expansion approved. Public health improves.' },
+            { icon: '🛡️', text: 'Defense: Boost military budget?', effects: { approval: -3, gdp: +1, unemployment: -0.2, inflation: +0.8, debt: +7 }, altText: 'Military spending increased. Tensions with neighbors rise.' },
+            { icon: '🌍', text: 'Climate: Sign major emissions treaty?', effects: { approval: +6, gdp: -2, unemployment: +0.4, inflation: +0.3, debt: +2 }, altText: 'Climate treaty signed. Environmentalists celebrate.' },
+            { icon: '🏗️', text: 'Infrastructure: Massive public works program?', effects: { approval: +7, gdp: +3, unemployment: -1.5, inflation: +2, debt: +10 }, altText: 'Infrastructure project launched. Jobs created.' },
+            { icon: '🏦', text: 'Central Bank: Pressure for lower interest rates?', effects: { approval: +2, gdp: +2, unemployment: -0.5, inflation: +3, debt: -1 }, altText: 'Interest rates lowered. Risk of overheating economy.' },
+            { icon: '📚', text: 'Education: Free university tuition?', effects: { approval: +9, gdp: -2, unemployment: -0.8, inflation: +0.5, debt: +4 }, altText: 'Education reform passed. Youth support surges.' },
+            { icon: '🚔', text: 'Security: Increase police funding?', effects: { approval: -2, gdp: 0, unemployment: -0.1, inflation: +0.2, debt: +2 }, altText: 'Police funding increased. Mixed public reaction.' },
+            { icon: '🌾', text: 'Agriculture: Subsidize farmers?', effects: { approval: +4, gdp: +1, unemployment: -0.6, inflation: -0.5, debt: +3 }, altText: 'Farm subsidies approved. Rural communities pleased.' },
+            { icon: '🔬', text: 'Technology: Fund AI research initiative?', effects: { approval: +3, gdp: +4, unemployment: -0.7, inflation: +0.4, debt: +5 }, altText: 'Tech initiative announced. Innovation sector booms.' },
+            { icon: '🏠', text: 'Housing: Subsidize affordable housing?', effects: { approval: +6, gdp: +1, unemployment: -0.9, inflation: +1, debt: +6 }, altText: 'Housing program launched. Homelessness decreases.' },
+            { icon: '⚡', text: 'Energy: Nationalize power grid?', effects: { approval: -5, gdp: -3, unemployment: +0.2, inflation: +2, debt: +8 }, altText: 'Energy sector nationalized. Investors alarmed.' }
         ];
 
         const CRISIS_TEMPLATES = [
-            { icon: '🌊', text: 'Natural disaster strikes! Emergency response needed.', effects: { approval: -5, gdp: -3,
-                    unemployment: +1, inflation: +1, debt: +5 }, title: 'Natural Disaster' },
-            { icon: '📉', text: 'Global recession fears grip markets.', effects: { approval: -7, gdp: -5, unemployment: +2,
-                    inflation: -1, debt: +3 }, title: 'Economic Crisis' },
-            { icon: '🦠', text: 'Pandemic outbreak reported in major cities.', effects: { approval: -4, gdp: -4,
-                    unemployment: +2.5, inflation: +0.5, debt: +6 }, title: 'Pandemic Alert' },
-            { icon: '⚔️', text: 'Border tensions escalate with neighboring country.', effects: { approval: -3, gdp: -2,
-                    unemployment: +0.5, inflation: +2, debt: +7 }, title: 'Geopolitical Crisis' },
-            { icon: '🏦', text: 'Banking sector stability questioned.', effects: { approval: -6, gdp: -3, unemployment: +1,
-                    inflation: +2, debt: +4 }, title: 'Financial Crisis' },
-            { icon: '🔥', text: 'Massive wildfires rage across the nation.', effects: { approval: -3, gdp: -2,
-                    unemployment: +0.3, inflation: +0.5, debt: +4 }, title: 'Environmental Crisis' }
+            { icon: '🌊', text: 'Natural disaster strikes! Emergency response needed.', effects: { approval: -5, gdp: -3, unemployment: +1, inflation: +1, debt: +5 }, title: 'Natural Disaster' },
+            { icon: '📉', text: 'Global recession fears grip markets.', effects: { approval: -7, gdp: -5, unemployment: +2, inflation: -1, debt: +3 }, title: 'Economic Crisis' },
+            { icon: '🦠', text: 'Pandemic outbreak reported in major cities.', effects: { approval: -4, gdp: -4, unemployment: +2.5, inflation: +0.5, debt: +6 }, title: 'Pandemic Alert' },
+            { icon: '⚔️', text: 'Border tensions escalate with neighboring country.', effects: { approval: -3, gdp: -2, unemployment: +0.5, inflation: +2, debt: +7 }, title: 'Geopolitical Crisis' },
+            { icon: '🏦', text: 'Banking sector stability questioned.', effects: { approval: -6, gdp: -3, unemployment: +1, inflation: +2, debt: +4 }, title: 'Financial Crisis' },
+            { icon: '🔥', text: 'Massive wildfires rage across the nation.', effects: { approval: -3, gdp: -2, unemployment: +0.3, inflation: +0.5, debt: +4 }, title: 'Environmental Crisis' }
         ];
 
         let decisionIndex = 0;
@@ -1138,7 +1057,6 @@
             const template = DECISION_TEMPLATES[decisionIndex % DECISION_TEMPLATES.length];
             decisionIndex++;
 
-            // Random chance of crisis instead
             if (Math.random() < 0.25 && GAME_STATE.year > 1) {
                 const crisis = CRISIS_TEMPLATES[Math.floor(Math.random() * CRISIS_TEMPLATES.length)];
                 decisionArea.innerHTML = `
@@ -1194,7 +1112,7 @@
 
         function rejectDecision(decisionText) {
             if (GAME_STATE.gameOver) return;
-            GAME_STATE.approval -= 2; // Slight penalty for inaction
+            GAME_STATE.approval -= 2;
             updateNewsTicker('You rejected the proposal. Critics say you lack leadership.');
             advanceYear();
         }
