@@ -19,13 +19,18 @@
             box-sizing: border-box;
         }
         
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
         body {
             font-family: 'Courier New', monospace;
             background: #0a0a0a;
             color: #00f0ff;
-            height: 100vh;
-            overflow: hidden;
             position: relative;
+            -webkit-tap-highlight-color: transparent;
         }
         
         /* ===== 2. GRID BACKGROUND ===== */
@@ -100,11 +105,14 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            height: 100dvh;
+            /* Dynamic viewport height for mobile */
             max-width: 480px;
             margin: 0 auto;
             padding: 10px;
-            background: rgba(10, 10, 10, 0.85);
+            background: rgba(10, 10, 10, 0.92);
             backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border-left: 2px solid rgba(0, 240, 255, 0.2);
             border-right: 2px solid rgba(0, 240, 255, 0.2);
         }
@@ -112,14 +120,14 @@
         /* ===== 5. HEADER ===== */
         .header {
             text-align: center;
-            padding: 15px 0 10px;
+            padding: 12px 0 8px;
             border-bottom: 2px solid rgba(0, 240, 255, 0.3);
             position: relative;
             flex-shrink: 0;
         }
         
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             letter-spacing: 8px;
             text-transform: uppercase;
             color: #00f0ff;
@@ -141,10 +149,10 @@
         }
         
         .header .subtitle {
-            font-size: 0.7rem;
-            color: rgba(0, 240, 255, 0.5);
+            font-size: 0.65rem;
+            color: rgba(0, 240, 255, 0.4);
             letter-spacing: 4px;
-            margin-top: 4px;
+            margin-top: 2px;
         }
         
         .online-count {
@@ -152,7 +160,7 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #7b2ffc;
             text-shadow: 0 0 10px rgba(123, 47, 252, 0.5);
         }
@@ -161,13 +169,14 @@
         .messages {
             flex: 1;
             overflow-y: auto;
-            padding: 15px 5px;
-            margin: 10px 0;
+            padding: 12px 4px;
+            margin: 8px 0;
             scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
         }
         
         .messages::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
         
         .messages::-webkit-scrollbar-track {
@@ -181,21 +190,21 @@
         
         /* ===== 7. MESSAGE BUBBLES ===== */
         .message {
-            margin-bottom: 12px;
-            padding: 10px 14px;
+            margin-bottom: 10px;
+            padding: 8px 12px;
             border-radius: 4px;
             border-left: 3px solid #00f0ff;
             background: rgba(0, 240, 255, 0.05);
-            animation: messageIn 0.3s ease-out;
-            position: relative;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
+            animation: messageIn 0.25s ease-out;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.03);
         }
         
         @keyframes messageIn {
             0% {
                 opacity: 0;
-                transform: translateX(-20px);
+                transform: translateX(-15px);
             }
             100% {
                 opacity: 1;
@@ -204,24 +213,24 @@
         }
         
         .message .sender {
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: #7b2ffc;
             text-transform: uppercase;
             letter-spacing: 2px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
             text-shadow: 0 0 10px rgba(123, 47, 252, 0.3);
         }
         
         .message .text {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             line-height: 1.4;
             color: #c0f0ff;
         }
         
         .message .time {
-            font-size: 0.6rem;
-            color: rgba(0, 240, 255, 0.3);
-            margin-top: 4px;
+            font-size: 0.55rem;
+            color: rgba(0, 240, 255, 0.25);
+            margin-top: 3px;
             text-align: right;
         }
         
@@ -230,11 +239,14 @@
             background: rgba(123, 47, 252, 0.05);
             text-align: center;
             font-style: italic;
-            color: rgba(123, 47, 252, 0.6);
         }
         
         .message.system .text {
             color: rgba(123, 47, 252, 0.6);
+        }
+        
+        .message.system .sender {
+            display: none;
         }
         
         /* ===== 8. INPUT AREA ===== */
@@ -242,7 +254,7 @@
             flex-shrink: 0;
             display: flex;
             gap: 8px;
-            padding: 12px 0;
+            padding: 10px 0 4px;
             border-top: 2px solid rgba(0, 240, 255, 0.2);
             position: relative;
         }
@@ -270,15 +282,17 @@
         
         #messageInput {
             flex: 1;
-            padding: 12px 16px;
+            padding: 10px 14px;
             background: rgba(0, 240, 255, 0.05);
             border: 1px solid rgba(0, 240, 255, 0.2);
             border-radius: 4px;
             color: #00f0ff;
             font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             outline: none;
             transition: all 0.3s;
+            min-height: 44px;
+            /* Better touch target */;
         }
         
         #messageInput:focus {
@@ -287,23 +301,27 @@
         }
         
         #messageInput::placeholder {
-            color: rgba(0, 240, 255, 0.3);
+            color: rgba(0, 240, 255, 0.25);
         }
         
         #sendBtn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             background: transparent;
             border: 1px solid #00f0ff;
             border-radius: 4px;
             color: #00f0ff;
             font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 2px;
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
+            min-height: 44px;
+            /* Better touch target */
+            touch-action: manipulation;
+            white-space: nowrap;
         }
         
         #sendBtn::before {
@@ -321,14 +339,9 @@
             left: 100%;
         }
         
-        #sendBtn:hover {
-            background: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
-        }
-        
         #sendBtn:active {
             transform: scale(0.95);
+            background: rgba(0, 240, 255, 0.15);
         }
         
         /* ===== 9. BANNED OVERLAY ===== */
@@ -357,27 +370,64 @@
         }
         
         .ban-overlay p {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 0.85rem;
             max-width: 300px;
         }
         
-        /* ===== 10. RESPONSIVE ===== */
+        /* ===== 10. CONNECTION STATUS ===== */
+        .connection-status {
+            text-align: center;
+            font-size: 0.6rem;
+            color: rgba(0, 240, 255, 0.2);
+            padding: 4px 0;
+            letter-spacing: 2px;
+            flex-shrink: 0;
+        }
+        
+        .connection-status.offline {
+            color: rgba(255, 0, 64, 0.5);
+            animation: blink 1s infinite;
+        }
+        
+        @keyframes blink {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+        
+        /* ===== 11. RESPONSIVE ===== */
         @media (max-width: 480px) {
+            .chat-container {
+                padding: 6px 8px;
+            }
             .header h1 {
-                font-size: 1.3rem;
+                font-size: 1.2rem;
                 letter-spacing: 4px;
             }
+            .header .subtitle {
+                font-size: 0.55rem;
+            }
             .message .text {
-                font-size: 0.85rem;
+                font-size: 0.82rem;
             }
             #sendBtn {
-                padding: 12px 16px;
-                font-size: 0.7rem;
+                padding: 10px 14px;
+                font-size: 0.65rem;
+                letter-spacing: 1px;
             }
             #messageInput {
-                font-size: 0.85rem;
-                padding: 10px 12px;
+                font-size: 0.8rem;
+                padding: 8px 12px;
+                min-height: 40px;
+            }
+            .online-count {
+                font-size: 0.55rem;
+                right: 4px;
             }
         }
         
@@ -388,11 +438,43 @@
                 box-shadow: 0 0 60px rgba(0, 240, 255, 0.05);
             }
         }
+        
+        @media (max-height: 600px) {
+            .header {
+                padding: 6px 0 4px;
+            }
+            .header h1 {
+                font-size: 1.2rem;
+            }
+            .header .subtitle {
+                display: none;
+            }
+            .message {
+                padding: 5px 10px;
+                margin-bottom: 6px;
+            }
+            .message .text {
+                font-size: 0.78rem;
+            }
+            .input-area {
+                padding: 6px 0 2px;
+            }
+            #messageInput {
+                min-height: 34px;
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
+            #sendBtn {
+                min-height: 34px;
+                padding: 6px 12px;
+                font-size: 0.6rem;
+            }
+        }
     </style>
 </head>
 <body>
     
-    <!-- BAN OVERLAY (hidden by default) -->
+    <!-- BAN OVERLAY -->
     <div id="banOverlay" class="ban-overlay" style="display:none;">
         <h1>⛔ ACCESS DENIED</h1>
         <p>This terminal is only accessible from Android devices.</p>
@@ -416,9 +498,12 @@
         <!-- Messages -->
         <div class="messages" id="messages"></div>
         
+        <!-- Connection Status -->
+        <div class="connection-status" id="connectionStatus">● CONNECTED</div>
+        
         <!-- Input -->
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="500" />
+            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="500" autocomplete="off" />
             <button id="sendBtn">SEND</button>
         </div>
     </div>
@@ -435,6 +520,7 @@
         const database = firebase.database();
         const messagesRef = database.ref('messages');
         const usersRef = database.ref('users');
+        const presenceRef = database.ref('.info/connected');
         
         // ============================================================
         // 2. DEVICE DETECTION - BLOCK NON-ANDROID
@@ -450,146 +536,282 @@
         }
         
         // ============================================================
-        // 3. EMOJI & GIF FILTER
+        // 3. EMOJI & GIF FILTER (IMPROVED)
         // ============================================================
         function filterEmojiAndGif(text) {
-            // Remove emoji (Unicode emoji ranges)
-            const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2934}\u{2935}\u{2190}-\u{21FF}]/gu;
+            // Remove emoji (comprehensive Unicode ranges)
+            const emojiRegex = /[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{2300}-\u{23FF}]|[\u{2B50}]|[\u{2934}]|[\u{2935}]|[\u{2190}-\u{21FF}]/gu;
             text = text.replace(emojiRegex, '');
+            
+            // Remove common emoji shortcodes
+            text = text.replace(/:[a-zA-Z_]+:/g, '');
             
             // Remove GIF references (case insensitive)
             text = text.replace(/gif/gi, '');
             text = text.replace(/\.gif/gi, '');
             text = text.replace(/\[gif\]/gi, '');
             text = text.replace(/\(gif\)/gi, '');
+            text = text.replace(/{gif}/gi, '');
             
-            // Remove extra spaces
+            // Remove extra spaces and trim
             text = text.replace(/\s+/g, ' ').trim();
             
-            return text || '[filtered]';
+            // If empty or only special chars, return null
+            if (!text || /^[\s\W_]+$/.test(text)) {
+                return null;
+            }
+            
+            return text;
         }
         
         // ============================================================
-        // 4. GENERATE USERNAME
+        // 4. GENERATE UNIQUE USERNAME (FIXED)
         // ============================================================
         function generateUsername() {
-            const prefixes = ['USER', 'NODE', 'GRID', 'CORE', 'BYTE', 'ZERO', 'ONE', 'LIGHT', 'DIGI', 'CYBER'];
-            const suffixes = ['_X', '_9', '_7', '_Z', '_K', '_V', '_R', '_M', '_Q', '_F'];
+            const prefixes = ['USER', 'NODE', 'GRID', 'CORE', 'BYTE', 'ZERO', 'ONE', 'LIGHT', 'DIGI', 'CYBER', 'TRON', 'DATA'];
             const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
-            const num = String(Math.floor(Math.random() * 100)).padStart(2, '0');
-            return prefix + suffix + num;
+            const num = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+            return prefix + '_' + num;
         }
         
-        const username = generateUsername();
+        let username = generateUsername();
+        
+        // Ensure unique username with retry
+        function claimUsername() {
+            const userRef = usersRef.child(username);
+            return userRef.set({ online: true, timestamp: firebase.database.ServerValue.TIMESTAMP })
+                .then(() => {
+                    return username;
+                })
+                .catch(() => {
+                    // If taken, generate new one and retry
+                    username = generateUsername();
+                    return claimUsername();
+                });
+        }
         
         // ============================================================
         // 5. SPARKLE GENERATOR
         // ============================================================
         function createSparkles() {
             const container = document.getElementById('sparkleContainer');
-            for (let i = 0; i < 25; i++) {
+            const count = Math.min(25, Math.floor(window.innerWidth / 20));
+            for (let i = 0; i < count; i++) {
                 const sparkle = document.createElement('div');
                 sparkle.className = 'sparkle';
                 sparkle.style.left = Math.random() * 100 + '%';
-                sparkle.style.width = (Math.random() * 3 + 1) + 'px';
-                sparkle.style.height = sparkle.style.width;
+                const size = Math.random() * 3 + 1;
+                sparkle.style.width = size + 'px';
+                sparkle.style.height = size + 'px';
                 sparkle.style.animationDuration = (Math.random() * 15 + 10) + 's';
                 sparkle.style.animationDelay = (Math.random() * 15) + 's';
-                sparkle.style.opacity = Math.random() * 0.5 + 0.2;
+                sparkle.style.opacity = Math.random() * 0.4 + 0.2;
                 container.appendChild(sparkle);
             }
         }
         createSparkles();
         
         // ============================================================
-        // 6. MESSAGE FUNCTIONS
+        // 6. MESSAGE FUNCTIONS (FIXED)
         // ============================================================
         function sendMessage(text) {
             text = text.trim();
-            if (!text) return;
+            if (!text) return false;
             
             // Filter emoji/GIF
-            text = filterEmojiAndGif(text);
-            if (!text || text === '[filtered]') return;
+            const filtered = filterEmojiAndGif(text);
+            if (!filtered) {
+                // Show feedback
+                const input = document.getElementById('messageInput');
+                input.style.borderColor = '#ff0040';
+                setTimeout(() => {
+                    input.style.borderColor = '';
+                }, 500);
+                return false;
+            }
             
             const message = {
                 sender: username,
-                text: text,
+                text: filtered,
                 timestamp: firebase.database.ServerValue.TIMESTAMP
             };
             
-            messagesRef.push(message);
-            document.getElementById('messageInput').value = '';
-            document.getElementById('messageInput').focus();
+            messagesRef.push(message)
+                .then(() => {
+                    document.getElementById('messageInput').value = '';
+                    document.getElementById('messageInput').focus();
+                })
+                .catch((error) => {
+                    console.error('Send failed:', error);
+                    // Show connection error
+                    document.getElementById('connectionStatus').textContent = '⚠️ SEND FAILED';
+                    document.getElementById('connectionStatus').className = 'connection-status offline';
+                    setTimeout(() => {
+                        document.getElementById('connectionStatus').textContent = '● CONNECTED';
+                        document.getElementById('connectionStatus').className = 'connection-status';
+                    }, 3000);
+                });
+            
+            return true;
         }
         
+        // ============================================================
+        // 7. DISPLAY MESSAGE (IMPROVED)
+        // ============================================================
+        const displayedKeys = new Set();
+        
         function displayMessage(data) {
-            const messagesDiv = document.getElementById('messages');
             const msg = data.val();
             const key = data.key;
             
-            // Skip if no text
-            if (!msg || !msg.text) return;
+            // Skip if already displayed
+            if (displayedKeys.has(key)) return;
+            displayedKeys.add(key);
             
+            // Limit stored keys to prevent memory leak
+            if (displayedKeys.size > 200) {
+                const toRemove = Array.from(displayedKeys).slice(0, 50);
+                toRemove.forEach(k => displayedKeys.delete(k));
+            }
+            
+            // Skip invalid messages
+            if (!msg || !msg.text || typeof msg.text !== 'string') return;
+            
+            const messagesDiv = document.getElementById('messages');
             const div = document.createElement('div');
             div.className = 'message';
-            div.dataset.key = key;
             
             // System message detection
-            if (msg.sender === 'SYSTEM') {
+            const isSystem = msg.sender === 'SYSTEM' || msg.sender === 'system';
+            if (isSystem) {
                 div.classList.add('system');
             }
             
-            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+            // Format time
+            let timeStr = '--:--';
+            if (msg.timestamp) {
+                try {
+                    const date = new Date(msg.timestamp);
+                    if (!isNaN(date.getTime())) {
+                        timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    }
+                } catch (e) {
+                    // Use default
+                }
+            }
+            
+            // Escape HTML and handle line breaks
+            const escapedText = escapeHtml(msg.text);
+            const formattedText = escapedText.replace(/\n/g, '<br>');
             
             div.innerHTML = `
-                        <div class="sender">${msg.sender || 'UNKNOWN'}</div>
-                        <div class="text">${escapeHtml(msg.text)}</div>
-                        <div class="time">${time}</div>
+                        ${!isSystem ? `<div class="sender">${escapeHtml(msg.sender || 'UNKNOWN')}</div>` : ''}
+                        <div class="text">${formattedText}</div>
+                        <div class="time">${timeStr}</div>
                     `;
             
+            // Check if we need to scroll (user near bottom)
+            const isAtBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight < 50;
+            
             messagesDiv.appendChild(div);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            
+            if (isAtBottom) {
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            }
         }
         
         function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+            if (!text) return '';
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
         }
         
         // ============================================================
-        // 7. ONLINE COUNT
+        // 8. ONLINE COUNT (FIXED)
         // ============================================================
         function updateOnlineCount() {
             usersRef.on('value', function(snapshot) {
-                const count = snapshot.numChildren() || 0;
+                let count = 0;
+                snapshot.forEach(function(child) {
+                    const val = child.val();
+                    if (val && val.online === true) {
+                        count++;
+                    }
+                });
                 document.getElementById('onlineCount').textContent = '● ' + count;
             });
         }
         
-        // Add/remove user presence
-        function setPresence() {
-            const userRef = usersRef.child(username);
-            userRef.onDisconnect().remove();
-            userRef.set({ online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP });
-        }
+        // ============================================================
+        // 9. PRESENCE MANAGEMENT (FIXED)
+        // ============================================================
+        let isConnected = false;
+        let presenceCleanup = null;
         
-        // ============================================================
-        // 8. REAL-TIME LISTENER
-        // ============================================================
-        function listenForMessages() {
-            // Load last 100 messages
-            messagesRef.limitToLast(100).on('child_added', function(data) {
-                displayMessage(data);
+        function setupPresence() {
+            // Listen for connection status
+            presenceRef.on('value', function(snap) {
+                if (snap.val() === true) {
+                    isConnected = true;
+                    document.getElementById('connectionStatus').textContent = '● CONNECTED';
+                    document.getElementById('connectionStatus').className = 'connection-status';
+                    
+                    // Claim username when connected
+                    claimUsername().then(() => {
+                        const userRef = usersRef.child(username);
+                        userRef.onDisconnect().remove();
+                        userRef.set({
+                            online: true,
+                            timestamp: firebase.database.ServerValue.TIMESTAMP
+                        });
+                    });
+                } else {
+                    isConnected = false;
+                    document.getElementById('connectionStatus').textContent = '⚠️ OFFLINE';
+                    document.getElementById('connectionStatus').className = 'connection-status offline';
+                }
             });
         }
         
         // ============================================================
-        // 9. SEND SYSTEM MESSAGE
+        // 10. REAL-TIME LISTENER (FIXED)
+        // ============================================================
+        function listenForMessages() {
+            // Query last 100 messages, ordered by timestamp
+            const query = messagesRef.orderByChild('timestamp').limitToLast(100);
+            
+            query.on('child_added', function(data) {
+                displayMessage(data);
+            });
+            
+            // Handle errors
+            query.on('error', function(error) {
+                console.error('Firebase listener error:', error);
+                document.getElementById('connectionStatus').textContent = '⚠️ CONNECTION ERROR';
+                document.getElementById('connectionStatus').className = 'connection-status offline';
+            });
+        }
+        
+        // ============================================================
+        // 11. SEND SYSTEM MESSAGE (FIXED)
         // ============================================================
         function sendSystemMessage(text) {
+            // Check if system message already exists to prevent duplicates
+            const lastMessages = document.querySelectorAll('.message.system');
+            if (lastMessages.length > 0) {
+                const lastMsg = lastMessages[lastMessages.length - 1];
+                const lastText = lastMsg.querySelector('.text')?.textContent;
+                if (lastText === text) {
+                    return; // Skip duplicate
+                }
+            }
+            
             const msg = {
                 sender: 'SYSTEM',
                 text: text,
@@ -599,51 +821,86 @@
         }
         
         // ============================================================
-        // 10. EVENT LISTENERS
+        // 12. EVENT LISTENERS (IMPROVED)
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Set presence
-            setPresence();
+            // Setup presence
+            setupPresence();
             updateOnlineCount();
             
             // Listen for messages
             listenForMessages();
             
-            // Send system welcome
+            // Send welcome after connection
             setTimeout(() => {
-                sendSystemMessage('⚡ ' + username + ' has entered the Grid');
-            }, 500);
+                if (isConnected) {
+                    sendSystemMessage('⚡ ' + username + ' has entered the Grid');
+                }
+            }, 1000);
             
             // Send button
-            document.getElementById('sendBtn').addEventListener('click', function() {
+            document.getElementById('sendBtn').addEventListener('click', function(e) {
+                e.preventDefault();
                 const input = document.getElementById('messageInput');
                 sendMessage(input.value);
             });
             
             // Enter key
             document.getElementById('messageInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
+                if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
                     sendMessage(this.value);
                 }
             });
             
             // Auto-focus input
-            document.getElementById('messageInput').focus();
+            setTimeout(() => {
+                document.getElementById('messageInput').focus();
+            }, 300);
+            
+            // Handle visibility change to re-claim presence
+            document.addEventListener('visibilitychange', function() {
+                if (!document.hidden && isConnected) {
+                    const userRef = usersRef.child(username);
+                    userRef.set({
+                        online: true,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
+                    });
+                }
+            });
         });
         
         // ============================================================
-        // 11. CLEANUP ON UNLOAD
+        // 13. CLEANUP ON UNLOAD (IMPROVED)
         // ============================================================
+        let unloadSent = false;
+        
         window.addEventListener('beforeunload', function() {
+            if (unloadSent) return;
+            unloadSent = true;
+            
             const userRef = usersRef.child(username);
             userRef.remove();
-            sendSystemMessage('⚡ ' + username + ' has left the Grid');
+            
+            // Send leave message with slight delay to ensure it goes through
+            setTimeout(() => {
+                sendSystemMessage('⚡ ' + username + ' has left the Grid');
+            }, 100);
+        });
+        
+        // Also handle pagehide for mobile
+        window.addEventListener('pagehide', function() {
+            if (unloadSent) return;
+            unloadSent = true;
+            
+            const userRef = usersRef.child(username);
+            userRef.remove();
         });
         
         console.log('⚡ TRON CHAT INITIALIZED');
         console.log('👤 Username:', username);
         console.log('📱 Device:', navigator.userAgent);
+        console.log('🔗 Firebase:', firebaseConfig.databaseURL);
     </script>
 </body>
 </html>
