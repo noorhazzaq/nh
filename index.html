@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ZACK360 PRO CHAT</title>
+<title>ZACK360 ULTIMATE CHAT</title>
 <style>
-:root{--bg:#030712;--card:rgba(15,23,42,0.9);--border:rgba(0,243,255,0.3);--neon:#00f3ff;--pink:#ff007f;--purple:#a855f7;--gold:#eab308;--text:#f8fafc;}
+:root{--bg:#030712;--card:rgba(15,23,42,0.92);--border:rgba(0,243,255,0.3);--neon:#00f3ff;--pink:#ff007f;--purple:#a855f7;--gold:#eab308;--text:#f8fafc;}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;background:var(--bg);color:var(--text);overflow:hidden;}
 #blocker{display:none;position:fixed;inset:0;background:#000;z-index:99999;justify-content:center;align-items:center;text-align:center;padding:20px;color:var(--pink);font-size:1.2rem;font-weight:bold;text-shadow:0 0 10px var(--pink);}
@@ -46,13 +46,16 @@ header h1{font-size:0.95rem;color:var(--neon);text-shadow:0 0 8px var(--neon);}
 .msg-user{font-size:0.75rem;color:var(--neon);font-weight:bold;text-shadow:0 0 4px var(--neon);}
 .rank-tag{font-size:0.6rem;padding:1px 4px;border-radius:4px;background:rgba(234,179,8,0.2);color:var(--gold);border:1px solid var(--gold);font-weight:bold;}
 .msg-body{line-height:1.3;}
-.msg-img{max-width:100%;max-height:200px;border-radius:10px;margin-top:6px;border:1px solid var(--border);}
+.msg-img{max-width:100%;max-height:220px;border-radius:10px;margin-top:6px;border:1px solid var(--border);cursor:pointer;object-fit:cover;}
 .msg-footer{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:4px;}
 .msg-time{font-size:0.65rem;color:#64748b;}
 .ticks{font-size:0.7rem;color:var(--neon);}
 
-.reactions{display:flex;gap:4px;margin-top:4px;}
-.react-btn{font-size:0.7rem;padding:2px 6px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid var(--border);color:#fff;cursor:pointer;}
+.reactions{display:flex;gap:4px;margin-top:6px;}
+.react-btn{font-size:0.7rem;padding:2px 8px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid var(--border);color:#fff;cursor:pointer;}
+.react-btn.voted{border-color:var(--neon);background:rgba(0,243,255,0.2);}
+
+.typing-bar{font-size:0.7rem;color:var(--neon);padding:2px 15px;height:16px;font-style:italic;}
 
 .chat-input-bar{height:65px;min-height:65px;padding:8px 10px;background:var(--card);border-top:1px solid var(--border);display:flex;gap:6px;align-items:center;backdrop-filter:blur(12px);}
 .chat-input-bar input{border-radius:20px;padding-left:14px;font-size:0.9rem;}
@@ -64,11 +67,16 @@ header h1{font-size:0.95rem;color:var(--neon);text-shadow:0 0 8px var(--neon);}
 .lb-rank{font-size:0.9rem;font-weight:bold;color:var(--gold);width:20px;}
 .lb-name{color:var(--neon);font-weight:bold;font-size:0.9rem;}
 .lb-count{font-size:0.8rem;color:var(--pink);font-weight:bold;}
+
+#imgModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;justify-content:center;align-items:center;padding:20px;}
+#imgModal img{max-width:100%;max-height:80vh;border-radius:12px;border:1px solid var(--neon);box-shadow:0 0 20px var(--neon);}
 </style>
 </head>
 <body>
 <div id="blocker">ACCESS DENIED: ANDROID DEVICES ONLY</div>
 <div class="bg-glow"></div>
+
+<div id="imgModal" onclick="this.style.display='none'"><img id="modalImg" src=""></div>
 
 <div id="authScreen" class="screen active">
   <div class="auth-box">
@@ -98,6 +106,7 @@ header h1{font-size:0.95rem;color:var(--neon);text-shadow:0 0 8px var(--neon);}
   <div class="main-body">
     <div id="chatView" class="content"></div>
     <div id="lbView" class="content" style="display:none;"></div>
+    <div id="typingArea" class="typing-bar"></div>
     <div id="chatControls" class="chat-input-bar">
       <label class="media-btn" for="imgInput">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none;">
@@ -109,7 +118,7 @@ header h1{font-size:0.95rem;color:var(--neon);text-shadow:0 0 8px var(--neon);}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get, push, onValue, serverTimestamp, onDisconnect } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, set, get, push, onValue, serverTimestamp, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
 if (!/Android/i.test(navigator.userAgent)) {
   document.getElementById('blocker').style.display = 'flex';
@@ -120,6 +129,7 @@ const db = getDatabase(initializeApp({ databaseURL: "https://zack360-2b303-defau
 
 let currentUser = null;
 let isRegistering = false;
+let typingTimeout = null;
 
 const authScreen = document.getElementById('authScreen');
 const appScreen = document.getElementById('appScreen');
@@ -136,6 +146,7 @@ const sendBtn = document.getElementById('sendBtn');
 const chatTabBtn = document.getElementById('chatTabBtn');
 const lbTabBtn = document.getElementById('lbTabBtn');
 const chatControls = document.getElementById('chatControls');
+const typingArea = document.getElementById('typingArea');
 
 const playAudio = () => {
   try {
@@ -180,6 +191,7 @@ function login(u){
   setupPresence();
   initChat();
   initLeaderboard();
+  initTyping();
 }
 
 function setupPresence(){
@@ -190,6 +202,21 @@ function setupPresence(){
     const data = snap.val();
     const count = data ? Object.keys(data).length : 1;
     document.getElementById('onlineCount').innerText = `${count} online`;
+  });
+}
+
+function initTyping(){
+  const tRef = ref(db, `typing/${currentUser}`);
+  onDisconnect(tRef).remove();
+  msgInput.oninput = () => {
+    set(tRef, true);
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => remove(tRef), 2000);
+  };
+  onValue(ref(db, 'typing'), snap => {
+    const data = snap.val() || {};
+    const typers = Object.keys(data).filter(k => k !== currentUser);
+    typingArea.innerText = typers.length ? `${typers.join(', ')} is typing...` : '';
   });
 }
 
@@ -228,6 +255,11 @@ function formatTime(ts){
   return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 }
 
+window.openImg = src => {
+  document.getElementById('modalImg').src = src;
+  document.getElementById('imgModal').style.display = 'flex';
+};
+
 function initChat(){
   onValue(ref(db, 'messages'), snap => {
     chatView.innerHTML = '';
@@ -239,8 +271,19 @@ function initChat(){
       const div = document.createElement('div');
       div.className = `msg-row ${isMe ? 'me' : ''}`;
       
-      let imgHtml = m.image ? `<img src="${m.image}" class="msg-img">` : '';
-      let rxHtml = `<div class="reactions"><button class="react-btn" onclick="window.addReact('${id}','❤️')">❤️ ${m.reacts?.['❤️']||0}</button><button class="react-btn" onclick="window.addReact('${id}','🔥')">🔥 ${m.reacts?.['🔥']||0}</button></div>`;
+      let imgHtml = m.image ? `<img src="${m.image}" class="msg-img" onclick="window.openImg('${m.image}')">` : '';
+      
+      const heartCount = m.reacts?.['❤️'] ? Object.keys(m.reacts['❤️']).length : 0;
+      const fireCount = m.reacts?.['🔥'] ? Object.keys(m.reacts['🔥']).length : 0;
+      const hasHeart = m.reacts?.['❤️']?.[currentUser] ? 'voted' : '';
+      const hasFire = m.reacts?.['🔥']?.[currentUser] ? 'voted' : '';
+
+      let rxHtml = `
+        <div class="reactions">
+          <button class="react-btn ${hasHeart}" onclick="window.addReact('${id}','❤️')">❤️ ${heartCount}</button>
+          <button class="react-btn ${hasFire}" onclick="window.addReact('${id}','🔥')">🔥 ${fireCount}</button>
+        </div>
+      `;
 
       div.innerHTML = `
         <div class="msg-avatar">${escapeHTML(m.user.charAt(0).toUpperCase())}</div>
@@ -264,15 +307,20 @@ function initChat(){
 }
 
 window.addReact = async (msgId, emoji) => {
-  const rRef = ref(db, `messages/${msgId}/reacts/${emoji}`);
+  const rRef = ref(db, `messages/${msgId}/reacts/${emoji}/${currentUser}`);
   const snap = await get(rRef);
-  await set(rRef, (snap.val() || 0) + 1);
+  if(snap.exists()){
+    await remove(rRef);
+  } else {
+    await set(rRef, true);
+  }
 };
 
 async function sendMessage(imgData = null){
   const text = msgInput.value.trim();
   if(!text && !imgData) return;
   msgInput.value = '';
+  remove(ref(db, `typing/${currentUser}`));
   playAudio();
   await push(ref(db, 'messages'), { user: currentUser, text: text, image: imgData, time: serverTimestamp() });
   const countRef = ref(db, `users/${currentUser}/msgCount`);
@@ -287,7 +335,23 @@ imgInput.onchange = e => {
   const file = e.target.files[0];
   if(!file) return;
   const reader = new FileReader();
-  reader.onload = ev => sendMessage(ev.target.result);
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxDim = 800;
+      let w = img.width, h = img.height;
+      if(w > maxDim || h > maxDim){
+        if(w > h){ h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+      }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      sendMessage(canvas.toDataURL('image/jpeg', 0.6));
+    };
+    img.src = ev.target.result;
+  };
   reader.readAsDataURL(file);
 };
 
