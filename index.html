@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#0a0f1d">
+    <title>ZACK360 | Modern Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <div id="app" class="app-viewport">
+        <!-- Floating Header Island -->
+        <header class="floating-header">
+            <div class="header-left">
+                <button id="sheetToggleBtn" class="icon-btn-pill" aria-label="Open Menu" aria-expanded="false">
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                </button>
+                <div class="channel-title-pill">
+                    <span class="channel-hash">#</span>
+                    <span id="activeChannelName">general</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="status-indicator-ring online">
+                    <img src="https://via.placeholder.com/32" alt="Avatar" class="header-avatar">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Chat Area Container -->
+        <main id="chatCanvas" class="chat-canvas">
+            <div id="messageList" class="message-list" role="log" aria-live="polite">
+                <div class="date-divider"><span>Today</span></div>
+                <!-- Chat Bubbles Render Here -->
+                <div class="msg-row incoming">
+                    <div class="msg-bubble">
+                        <span class="msg-sender">System</span>
+                        <p class="msg-text">Welcome to ZACK360 modern 2026 bottom sheet interface!</p>
+                        <span class="msg-time">04:16 AM</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Floating Input Dock -->
+        <div class="floating-dock">
+            <button class="dock-action-btn" aria-label="Attach File">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </button>
+            <input type="text" id="chatInput" class="dock-input" placeholder="Message #general..." autocomplete="off">
+            <button id="sendBtn" class="dock-send-btn" aria-label="Send Message">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            </button>
+        </div>
+
+        <!-- Dimmed Backdrop Overlay -->
+        <div id="sheetBackdrop" class="sheet-backdrop" aria-hidden="true"></div>
+
+        <!-- Option A: Modern Bottom Sheet Drawer -->
+        <div id="bottomSheet" class="bottom-sheet" role="dialog" aria-modal="true" aria-hidden="true">
+            <!-- Drag Handle Bar Zone -->
+            <div id="sheetHandleZone" class="sheet-handle-zone">
+                <div class="sheet-handle"></div>
+            </div>
+
+            <div class="sheet-content-scroll">
+                <!-- Inline Quick Search -->
+                <div class="sheet-search-wrapper">
+                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input type="text" id="channelSearch" placeholder="Search channels..." class="sheet-search-input">
+                </div>
+
+                <!-- Channels Grid Section -->
+                <section class="sheet-section">
+                    <h3 class="section-badge">CHANNELS</h3>
+                    <div class="two-col-grid" id="channelGrid">
+                        <button class="channel-card active" data-channel="general">
+                            <span class="card-hash">#</span>
+                            <span class="card-label">general</span>
+                            <span class="unread-badge">3</span>
+                        </button>
+                        <button class="channel-card" data-channel="gaming">
+                            <span class="card-hash">#</span>
+                            <span class="card-label">gaming</span>
+                        </button>
+                        <button class="channel-card" data-channel="media">
+                            <span class="card-hash">#</span>
+                            <span class="card-label">media</span>
+                        </button>
+                        <button class="channel-card" data-channel="dev">
+                            <span class="card-hash">#</span>
+                            <span class="card-label">dev-talk</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Navigation List Section -->
+                <section class="sheet-section">
+                    <h3 class="section-badge">NAVIGATION</h3>
+                    <div class="nav-stack">
+                        <button class="nav-row-btn">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                            <span>Direct Message</span>
+                        </button>
+                        <button class="nav-row-btn">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
+                            <span>Leaderboard</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Bottom Actions -->
+                <section class="sheet-section bottom-actions">
+                    <button id="muteBtn" class="pill-action-btn">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4L9.91 6.09 12 8.18V4zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3z"/></svg>
+                        <span>Mute Audio</span>
+                    </button>
+                    <button id="logoutBtn" class="pill-action-btn destructive">
+                        <svg class="icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                        <span>Logout</span>
+                    </button>
+                </section>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
