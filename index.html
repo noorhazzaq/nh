@@ -1,553 +1,129 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Evolve Free Fire</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="robots" content="noindex,nofollow">
+<title>Real Lives</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;height:100%;overflow:hidden;background:#0a0a12;font-family:sans-serif;touch-action:none}
-#game{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
-canvas{display:block;width:100%;height:100%;background:radial-gradient(circle at center,#1a1a2e,#050510);touch-action:none;image-rendering:pixelated}
-#ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
-#hud{position:absolute;top:1.5vh;left:2vw;color:#fff;font-size:clamp(11px,2.6vw,20px);text-shadow:0 0 15px rgba(0,0,0,0.9);pointer-events:none;display:flex;gap:2.5vw;flex-wrap:wrap;font-weight:bold}
-#hud span{background:rgba(0,0,0,0.65);padding:0.3vh 1.6vw;border-radius:10px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.08)}
-#hud .lvl{color:#ffdd44;border-color:#ffdd44}
-#hud .xp{color:#44ffaa;border-color:#44ffaa}
-#hud .hp{color:#ff4466;border-color:#ff4466}
-#controls{position:absolute;bottom:2.5vh;left:0;width:100%;display:flex;justify-content:space-between;padding:0 3vw;pointer-events:none}
-.ctrl-btn{pointer-events:auto;width:clamp(55px,14vw,85px);height:clamp(55px,14vw,85px);border-radius:50%;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.15);color:#fff;font-size:clamp(18px,4.5vw,36px);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);box-shadow:0 4px 20px rgba(0,0,0,0.6);transition:transform 0.05s;touch-action:none;font-weight:bold;text-shadow:0 2px 8px rgba(0,0,0,0.6)}
-.ctrl-btn:active{transform:scale(0.82);background:rgba(255,200,50,0.25)}
-#fireBtn{width:clamp(65px,17vw,105px);height:clamp(65px,17vw,105px);background:rgba(255,40,40,0.25);border-color:rgba(255,80,80,0.6);font-size:clamp(14px,3.5vw,28px)}
-#info{position:absolute;bottom:10vh;left:50%;transform:translateX(-50%);color:#88ddff;font-size:clamp(11px,2.2vw,18px);background:rgba(0,0,0,0.7);padding:0.4vh 3vw;border-radius:20px;backdrop-filter:blur(6px);white-space:nowrap;pointer-events:none;text-shadow:0 2px 8px #000;border:1px solid rgba(136,221,255,0.15)}
-#info .highlight{color:#ffdd44}
-@media (orientation:portrait){#controls{padding:0 5vw}}
-@media (orientation:landscape){#controls{padding:0 8vw}}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#1a1a2e;color:#eee;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
+#app{width:100%;max-width:480px;min-height:100vh;background:#16213e;padding:16px;position:relative;display:flex;flex-direction:column}
+.header{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:2px solid #0f3460;margin-bottom:12px}
+.header h1{font-size:20px;font-weight:700;color:#e94560;letter-spacing:1px}
+.header .age{font-size:18px;background:#0f3460;padding:4px 14px;border-radius:20px;color:#fff}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card{background:#1a1a40;padding:8px 12px;border-radius:8px;border-left:4px solid #e94560;display:flex;justify-content:space-between;align-items:center}
+.stat-card .label{font-size:12px;color:#aaa;text-transform:uppercase;font-weight:600}
+.stat-card .value{font-size:16px;font-weight:700;color:#fff}
+.stat-bar{height:4px;background:#2a2a4a;border-radius:2px;margin-top:3px;overflow:hidden}
+.stat-bar .fill{height:100%;border-radius:2px;transition:width .3s}
+.fill-health{background:#e94560}
+.fill-happiness{background:#f5a623}
+.fill-intelligence{background:#4ecdc4}
+.fill-wealth{background:#ffd93d}
+.fill-fitness{background:#6bcb77}
+.fill-social{background:#a29bfe}
+.fill-career{background:#fd79a8}
+.fill-spirit{background:#fdcb6e}
+.event-area{background:#0f3460;border-radius:12px;padding:14px;min-height:120px;margin-bottom:12px;display:flex;flex-direction:column;justify-content:center}
+.event-area .event-title{font-size:16px;font-weight:700;color:#e94560;margin-bottom:6px}
+.event-area .event-desc{font-size:14px;color:#ccc;line-height:1.5;margin-bottom:10px}
+.event-area .event-choice{display:flex;gap:8px;flex-wrap:wrap}
+.event-area .event-choice button{flex:1;min-width:80px;background:#1a1a40;border:1px solid #2a2a5a;color:#fff;padding:8px 6px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.event-area .event-choice button:active{transform:scale(.96);background:#2a2a5a}
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.action-btn{background:#0f3460;border:none;color:#fff;padding:10px 0;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .2s;text-align:center}
+.action-btn:active{transform:scale(.94);background:#1a4a7a}
+.action-btn .icon{font-size:20px;display:block;margin-bottom:2px}
+.log-area{background:#0a0a1a;border-radius:8px;padding:8px 10px;max-height:140px;overflow-y:auto;flex:1;min-height:80px;font-size:12px;color:#888;border:1px solid #1a1a3a}
+.log-area .log-entry{padding:3px 0;border-bottom:1px solid #111;color:#bbb}
+.log-area .log-entry .year{color:#e94560;font-weight:700;margin-right:6px}
+.footer{display:flex;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid #1a1a3a}
+.footer button{flex:1;background:#0f3460;border:none;color:#fff;padding:8px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer}
+.footer button:active{transform:scale(.95)}
+.footer .save-btn{background:#1a6a3a}
+.footer .load-btn{background:#6a3a1a}
+.footer .reset-btn{background:#6a1a2a}
+.dead-overlay{position:absolute;inset:0;background:rgba(0,0,0,.85);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:100;border-radius:12px;padding:30px;text-align:center}
+.dead-overlay h2{font-size:32px;color:#e94560;margin-bottom:10px}
+.dead-overlay p{font-size:16px;color:#ccc;margin-bottom:20px;line-height:1.6}
+.dead-overlay .stats-final{display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;max-width:300px;margin-bottom:20px}
+.dead-overlay .stats-final div{background:#1a1a40;padding:6px 10px;border-radius:4px;display:flex;justify-content:space-between;font-size:13px}
+.dead-overlay .restart-btn{background:#e94560;border:none;color:#fff;padding:14px 40px;border-radius:30px;font-size:18px;font-weight:700;cursor:pointer}
+.hidden{display:none!important}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:#0a0a1a}
+::-webkit-scrollbar-thumb{background:#2a2a5a;border-radius:2px}
+@media(max-width:400px){#app{padding:10px}.stat-card{padding:6px 8px;font-size:11px}.action-btn{font-size:10px;padding:8px 0}}
+@media(min-width:481px){#app{max-width:600px;border-radius:16px;margin:10px}}
 </style>
 </head>
 <body>
-<div id="game">
-<canvas id="gc"></canvas>
-<div id="ui">
-<div id="hud">
-<span class="lvl">⭐ Lv.<span id="levelDisplay">1</span></span>
-<span class="xp">⚡ <span id="xpDisplay">0</span>/<span id="xpMaxDisplay">10</span></span>
-<span class="hp">❤️ <span id="hpDisplay">100</span></span>
-<span>💀 <span id="scoreDisplay">0</span></span>
-<span>🌊 <span id="waveDisplay">1</span></span>
-</div>
-<div id="controls">
-<div class="ctrl-btn" id="moveLeft">◀</div>
-<div class="ctrl-btn" id="fireBtn">🔥</div>
-<div class="ctrl-btn" id="moveRight">▶</div>
-</div>
-<div id="info">⚔️ <span class="highlight">EVOLVE</span> · Survive & grow stronger</div>
-</div>
+<div id="app">
+<div class="header"><h1>REAL LIVES</h1><span class="age" id="ageDisplay">Age: 0</span></div>
+<div class="stats-grid" id="statsGrid"></div>
+<div class="event-area" id="eventArea"><div class="event-title">Welcome</div><div class="event-desc">Your life begins. Make choices wisely.</div><div class="event-choice"><button data-choice="start">Begin Journey</button></div></div>
+<div class="action-grid" id="actionGrid"><button class="action-btn" data-action="work"><span class="icon">💼</span>Work</button><button class="action-btn" data-action="study"><span class="icon">📚</span>Study</button><button class="action-btn" data-action="social"><span class="icon">🤝</span>Social</button><button class="action-btn" data-action="exercise"><span class="icon">🏃</span>Exercise</button><button class="action-btn" data-action="rest"><span class="icon">😴</span>Rest</button><button class="action-btn" data-action="invest"><span class="icon">💰</span>Invest</button><button class="action-btn" data-action="family"><span class="icon">👨‍👩‍👦</span>Family</button><button class="action-btn" data-action="next"><span class="icon">⏭️</span>Next Year</button></div>
+<div class="log-area" id="logArea"><div class="log-entry"><span class="year">[0]</span>Welcome to Real Lives.</div></div>
+<div class="footer"><button class="save-btn" id="saveBtn">💾 Save</button><button class="load-btn" id="loadBtn">📂 Load</button><button class="reset-btn" id="resetBtn">🔄 Reset</button></div>
+<div class="dead-overlay hidden" id="deadOverlay"><h2>💀 GAME OVER</h2><p id="deathMessage">Your life has ended.</p><div class="stats-final" id="finalStats"></div><button class="restart-btn" id="restartBtn">🔄 Start New Life</button></div>
 </div>
 <script>
-(function(){
-const canvas=document.getElementById('gc');
-const ctx=canvas.getContext('2d');
-const scoreSpan=document.getElementById('scoreDisplay');
-const waveSpan=document.getElementById('waveDisplay');
-const levelSpan=document.getElementById('levelDisplay');
-const xpSpan=document.getElementById('xpDisplay');
-const xpMaxSpan=document.getElementById('xpMaxDisplay');
-const hpSpan=document.getElementById('hpDisplay');
-const moveLeft=document.getElementById('moveLeft');
-const moveRight=document.getElementById('moveRight');
-const fireBtn=document.getElementById('fireBtn');
-
-let W,H;
-function resize(){
-W=canvas.width=window.innerWidth;
-H=canvas.height=window.innerHeight;
-}
-window.addEventListener('resize',resize);
-resize();
-
-const player={
-x:0,y:0,r:0,
-hp:100,maxHp:100,
-level:1,xp:0,xpMax:10,
-damage:10,fireRate:15,fireCooldown:0,
-speed:3.2,
-shotCount:1,spread:0
-};
-const enemies=[];
-const bullets=[];
-const particles=[];
-const floatingTexts=[];
-let score=0;
-let wave=1;
-let alive=true;
-let moveDir=0;
-let enemySpawnCounter=0;
-const ENEMY_SPAWN_RATE=35;
-let enemySpeed=1.0;
-let baseEnemySpeed=1.0;
-let frame=0;
-let comboCount=0;
-let comboTimer=0;
-
-function resetGame(){
-player.x=W/2;
-player.y=H*0.85;
-player.r=Math.min(W,H)*0.022;
-player.hp=100;
-player.maxHp=100;
-player.level=1;
-player.xp=0;
-player.xpMax=10;
-player.damage=10;
-player.fireRate=15;
-player.fireCooldown=0;
-player.speed=3.2;
-player.shotCount=1;
-player.spread=0;
-enemies.length=0;
-bullets.length=0;
-particles.length=0;
-floatingTexts.length=0;
-score=0;
-wave=1;
-alive=true;
-enemySpeed=1.0;
-baseEnemySpeed=1.0;
-frame=0;
-comboCount=0;
-comboTimer=0;
-updateHUD();
-}
-
-function updateHUD(){
-scoreSpan.textContent=score;
-waveSpan.textContent=wave;
-levelSpan.textContent=player.level;
-xpSpan.textContent=player.xp;
-xpMaxSpan.textContent=player.xpMax;
-hpSpan.textContent=Math.floor(player.hp);
-}
-
-function spawnParticles(x,y,color,count=12,speed=3){
-for(let i=0;i<count;i++){
-const angle=Math.random()*Math.PI*2;
-const sp=Math.random()*speed+0.5;
-particles.push({
-x,y,
-vx:Math.cos(angle)*sp,
-vy:Math.sin(angle)*sp,
-life:30+Math.random()*30,
-maxLife:60,
-r:2+Math.random()*4,
-color:color
-});
-}
-}
-
-function spawnFloatingText(x,y,text,color='#ffdd44',size=16){
-floatingTexts.push({x,y,text,color,size,life:60,vy:-1.5});
-}
-
-function levelUp(){
-player.level++;
-player.xp=0;
-player.xpMax=Math.floor(player.xpMax*1.4)+2;
-player.maxHp+=15;
-player.hp=player.maxHp;
-player.damage+=3;
-player.speed+=0.15;
-if(player.level%2===0)player.shotCount++;
-if(player.level%3===0)player.fireRate=Math.max(6,player.fireRate-1);
-if(player.level%4===0)player.spread+=0.05;
-spawnParticles(player.x,player.y,'#ffdd44',40,6);
-spawnParticles(player.x,player.y,'#44ffaa',30,5);
-spawnFloatingText(player.x,player.y-30,'⬆ LEVEL UP!','#ffdd44',24);
-updateHUD();
-}
-
-function gainXP(amount){
-if(!alive)return;
-player.xp+=amount;
-while(player.xp>=player.xpMax)levelUp();
-updateHUD();
-}
-
-function spawnEnemy(){
-const r=Math.min(W,H)*0.03+Math.random()*0.01*W;
-const side=Math.floor(Math.random()*4);
-let x,y;
-if(side===0){x=Math.random()*W;y=-r;}
-else if(side===1){x=W+r;y=Math.random()*H;}
-else if(side===2){x=Math.random()*W;y=H+r;}
-else {x=-r;y=Math.random()*H;}
-const type=Math.random();
-let hp=1;
-let speedMul=1;
-let color='#ff6644';
-let size=r;
-if(type<0.15 && wave>3){
-hp=3;speedMul=0.6;color='#ff44ff';size=r*1.4;
-}else if(type<0.35 && wave>2){
-hp=2;speedMul=0.8;color='#ff8844';size=r*1.2;
-}
-enemies.push({
-x,y,r:size,
-hp:hp,maxHp:hp,
-speed:enemySpeed*speedMul,
-color:color,
-damage:10+wave*1.5,
-type:type<0.15?'tank':type<0.35?'strong':'normal'
-});
-}
-
-function spawnWave(){
-const count=3+wave*2+Math.floor(wave/2);
-for(let i=0;i<count;i++)spawnEnemy();
-enemySpeed=baseEnemySpeed+wave*0.12;
-}
-
-function fireBullet(){
-if(!alive)return;
-if(player.fireCooldown>0)return;
-const angle=-Math.PI/2;
-const speed=7+Math.min(W,H)*0.008;
-const count=player.shotCount;
-for(let i=0;i<count;i++){
-const spread=player.spread*(i-(count-1)/2)*0.8;
-const a=angle+spread+Math.random()*0.02;
-const bx=player.x+Math.cos(a)*(player.r+5);
-const by=player.y+Math.sin(a)*(player.r+5);
-bullets.push({
-x:bx,y:by,
-vx:Math.cos(a)*speed,
-vy:Math.sin(a)*speed,
-r:3+player.level*0.15,
-damage:player.damage,
-life:80
-});
-}
-player.fireCooldown=player.fireRate;
-spawnParticles(player.x,player.y-10,'#ffaa33',5,2);
-}
-
-function update(){
-if(!alive)return;
-frame++;
-if(player.fireCooldown>0)player.fireCooldown--;
-if(moveDir!==0){
-const spd=player.speed+Math.min(W,H)*0.006;
-player.x+=moveDir*spd;
-player.x=Math.max(player.r,Math.min(W-player.r,player.x));
-}
-if(comboTimer>0){comboTimer--;if(comboTimer===0)comboCount=0;}
-if(frame%ENEMY_SPAWN_RATE===0){
-if(enemies.length<40+wave*3)spawnEnemy();
-}
-if(frame%400===0){
-wave++;
-enemySpeed=baseEnemySpeed+wave*0.12;
-spawnWave();
-updateHUD();
-}
-for(let i=enemies.length-1;i>=0;i--){
-const e=enemies[i];
-const dx=player.x-e.x;
-const dy=player.y-e.y;
-const dist=Math.hypot(dx,dy);
-if(dist>0.5){
-const normX=dx/dist;
-const normY=dy/dist;
-e.x+=normX*e.speed;
-e.y+=normY*e.speed;
-}
-if(dist<player.r+e.r){
-player.hp-=e.damage*0.15;
-spawnParticles(player.x,player.y,'#ff4444',15,3);
-spawnFloatingText(player.x,player.y-20,'-'+Math.floor(e.damage*0.15),'#ff4444',14);
-if(player.hp<=0){player.hp=0;alive=false;updateHUD();return;}
-updateHUD();
-}
-}
-for(let i=bullets.length-1;i>=0;i--){
-const b=bullets[i];
-b.x+=b.vx;
-b.y+=b.vy;
-b.life--;
-if(b.x<-30||b.x>W+30||b.y<-30||b.y>H+30||b.life<=0){
-bullets.splice(i,1);continue;
-}
-let hit=false;
-for(let j=enemies.length-1;j>=0;j--){
-const e=enemies[j];
-if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+4){
-e.hp-=b.damage;
-spawnParticles(b.x,b.y,'#ffaa44',8,2);
-if(e.hp<=0){
-const xpGain=1+(e.type==='tank'?3:e.type==='strong'?2:1);
-gainXP(xpGain);
-comboCount++;
-comboTimer=60;
-score++;
-if(comboCount>5)spawnFloatingText(e.x,e.y-20,'🔥 '+comboCount+'x COMBO!','#ff8800',18);
-spawnParticles(e.x,e.y,e.color,20,4);
-enemies.splice(j,1);
-updateHUD();
-}else{
-spawnParticles(b.x,b.y,'#ff8844',6,2);
-}
-hit=true;
-break;
-}
-}
-if(hit){bullets.splice(i,1);}
-}
-for(let i=particles.length-1;i>=0;i--){
-const p=particles[i];
-p.x+=p.vx;
-p.y+=p.vy;
-p.vx*=0.96;
-p.vy*=0.96;
-p.life--;
-if(p.life<=0){particles.splice(i,1);}
-}
-for(let i=floatingTexts.length-1;i>=0;i--){
-const ft=floatingTexts[i];
-ft.y+=ft.vy;
-ft.life--;
-if(ft.life<=0){floatingTexts.splice(i,1);}
-}
-if(!alive)return;
-if(enemies.length===0){
-wave++;
-enemySpeed=baseEnemySpeed+wave*0.12;
-spawnWave();
-updateHUD();
-}
-}
-
-function draw(){
-ctx.clearRect(0,0,W,H);
-const grad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.9);
-grad.addColorStop(0,'#1a1a32');
-grad.addColorStop(1,'#06060e');
-ctx.fillStyle=grad;
-ctx.fillRect(0,0,W,H);
-ctx.shadowBlur=0;
-ctx.strokeStyle='rgba(100,200,255,0.06)';
-ctx.lineWidth=1;
-for(let i=0;i<20;i++){
-const x=(i*47+frame*0.1)%W;
-const y=(i*73+frame*0.05)%H;
-ctx.beginPath();
-ctx.arc(x,y,1,0,Math.PI*2);
-ctx.stroke();
-}
-ctx.shadowBlur=25;
-ctx.shadowColor='rgba(0,180,255,0.2)';
-ctx.strokeStyle='rgba(100,200,255,0.12)';
-ctx.lineWidth=2;
-ctx.beginPath();
-ctx.arc(player.x,player.y,player.r*3.5,0,Math.PI*2);
-ctx.stroke();
-ctx.shadowBlur=0;
-const hpRatio=player.hp/player.maxHp;
-ctx.strokeStyle='rgba(255,255,255,0.1)';
-ctx.lineWidth=3;
-ctx.beginPath();
-ctx.arc(player.x,player.y,player.r+6,0,Math.PI*2);
-ctx.stroke();
-ctx.strokeStyle=hpRatio>0.5?`rgba(68,255,136,${0.3+hpRatio*0.3})`:'rgba(255,68,68,0.5)';
-ctx.lineWidth=4;
-ctx.beginPath();
-ctx.arc(player.x,player.y,player.r+6,-Math.PI/2,(-Math.PI/2)+(Math.PI*2*hpRatio));
-ctx.stroke();
-ctx.shadowBlur=30;
-ctx.shadowColor='#00ddff';
-const grd=ctx.createRadialGradient(player.x-4,player.y-4,2,player.x,player.y,player.r);
-grd.addColorStop(0,'#66eeff');
-grd.addColorStop(0.4,'#00bbff');
-grd.addColorStop(1,'#0066aa');
-ctx.fillStyle=grd;
-ctx.beginPath();
-ctx.arc(player.x,player.y,player.r,0,Math.PI*2);
-ctx.fill();
-ctx.shadowBlur=0;
-ctx.fillStyle='#fff';
-ctx.beginPath();
-ctx.arc(player.x-3,player.y-4,player.r*0.22,0,Math.PI*2);
-ctx.fill();
-ctx.beginPath();
-ctx.arc(player.x+4,player.y-4,player.r*0.22,0,Math.PI*2);
-ctx.fill();
-ctx.fillStyle='#ff4466';
-ctx.beginPath();
-ctx.arc(player.x,player.y+2,player.r*0.18,0,Math.PI);
-ctx.fill();
-ctx.fillStyle='#88ddff';
-ctx.font='bold '+Math.max(10,player.r*0.7)+'px sans-serif';
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-ctx.fillText('⭐',player.x,player.y-player.r-8);
-for(const e of enemies){
-ctx.shadowBlur=20;
-ctx.shadowColor=e.color;
-const grd2=ctx.createRadialGradient(e.x-3,e.y-4,2,e.x,e.y,e.r);
-grd2.addColorStop(0,'#ffaa66');
-grd2.addColorStop(0.3,e.color);
-grd2.addColorStop(1,'#882200');
-ctx.fillStyle=grd2;
-ctx.beginPath();
-ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
-ctx.fill();
-ctx.shadowBlur=0;
-ctx.fillStyle='rgba(255,255,255,0.2)';
-ctx.beginPath();
-ctx.arc(e.x-3,e.y-5,e.r*0.25,0,Math.PI*2);
-ctx.fill();
-ctx.fillStyle='#000';
-ctx.beginPath();
-ctx.arc(e.x-4,e.y-2,2,0,Math.PI*2);
-ctx.fill();
-ctx.beginPath();
-ctx.arc(e.x+3,e.y-2,2,0,Math.PI*2);
-ctx.fill();
-if(e.hp<e.maxHp){
-ctx.fillStyle='rgba(0,0,0,0.5)';
-ctx.fillRect(e.x-e.r,e.y-e.r-6,e.r*2,3);
-ctx.fillStyle='#44ff88';
-ctx.fillRect(e.x-e.r+1,e.y-e.r-5,(e.r*2-2)*(e.hp/e.maxHp),1.5);
-}
-ctx.fillStyle='#ff3300';
-ctx.font='bold '+Math.max(7,e.r*0.6)+'px sans-serif';
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-ctx.fillText('👹',e.x,e.y-1);
-}
-for(const b of bullets){
-ctx.shadowBlur=30;
-ctx.shadowColor='#ffcc44';
-const grd3=ctx.createRadialGradient(b.x-3,b.y-3,1,b.x,b.y,b.r+4);
-grd3.addColorStop(0,'#ffffaa');
-grd3.addColorStop(0.3,'#ffaa33');
-grd3.addColorStop(1,'#ff4400');
-ctx.fillStyle=grd3;
-ctx.beginPath();
-ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
-ctx.fill();
-ctx.shadowBlur=0;
-ctx.fillStyle='#fff';
-ctx.beginPath();
-ctx.arc(b.x-2,b.y-3,2,0,Math.PI*2);
-ctx.fill();
-}
-for(const p of particles){
-const alpha=p.life/p.maxLife;
-ctx.globalAlpha=alpha;
-ctx.fillStyle=p.color;
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.r*alpha,0,Math.PI*2);
-ctx.fill();
-}
-ctx.globalAlpha=1;
-for(const ft of floatingTexts){
-const alpha=ft.life/60;
-ctx.globalAlpha=alpha;
-ctx.fillStyle=ft.color;
-ctx.font='bold '+ft.size+'px sans-serif';
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-ctx.shadowBlur=20;
-ctx.shadowColor='#000';
-ctx.fillText(ft.text,ft.x,ft.y);
-}
-ctx.globalAlpha=1;
-ctx.shadowBlur=0;
-if(!alive){
-ctx.fillStyle='rgba(0,0,0,0.7)';
-ctx.fillRect(0,0,W,H);
-ctx.fillStyle='#ff2244';
-ctx.font='bold '+Math.min(W,H)*0.08+'px sans-serif';
-ctx.textAlign='center';
-ctx.textBaseline='middle';
-ctx.shadowBlur=40;
-ctx.shadowColor='#ff0000';
-ctx.fillText('💀 GAME OVER',W/2,H/2-50);
-ctx.fillStyle='#ffcc00';
-ctx.font='bold '+Math.min(W,H)*0.03+'px sans-serif';
-ctx.shadowBlur=0;
-ctx.fillText('Tap anywhere to restart',W/2,H/2+20);
-ctx.fillStyle='#88ddff';
-ctx.font='bold '+Math.min(W,H)*0.025+'px sans-serif';
-ctx.fillText('Level '+player.level+' · '+score+' kills',W/2,H/2+60);
-}
-}
-
-function loop(){
-update();
-draw();
-requestAnimationFrame(loop);
-}
-
-function handleRestart(e){
-if(!alive){
-e.preventDefault();
-resetGame();
-}
-}
-
-canvas.addEventListener('click',handleRestart);
-canvas.addEventListener('touchstart',function(e){
-if(!alive){
-e.preventDefault();
-resetGame();
-}
-},{passive:false});
-
-moveLeft.addEventListener('touchstart',function(e){e.preventDefault();moveDir=-1;},{passive:false});
-moveLeft.addEventListener('touchend',function(e){e.preventDefault();if(moveDir<0)moveDir=0;},{passive:false});
-moveLeft.addEventListener('touchcancel',function(e){if(moveDir<0)moveDir=0;});
-moveRight.addEventListener('touchstart',function(e){e.preventDefault();moveDir=1;},{passive:false});
-moveRight.addEventListener('touchend',function(e){e.preventDefault();if(moveDir>0)moveDir=0;},{passive:false});
-moveRight.addEventListener('touchcancel',function(e){if(moveDir>0)moveDir=0;});
-fireBtn.addEventListener('touchstart',function(e){e.preventDefault();fireBullet();},{passive:false});
-fireBtn.addEventListener('touchcancel',function(e){});
-
-document.addEventListener('keydown',function(e){
-if(e.key==='ArrowLeft')moveDir=-1;
-if(e.key==='ArrowRight')moveDir=1;
-if(e.key===' '||e.key==='Space'){e.preventDefault();fireBullet();}
-if(e.key==='r'&&!alive)resetGame();
-});
-document.addEventListener('keyup',function(e){
-if(e.key==='ArrowLeft'&&moveDir<0)moveDir=0;
-if(e.key==='ArrowRight'&&moveDir>0)moveDir=0;
-});
-
-resetGame();
-loop();
-
-setInterval(function(){
-if(!alive)return;
-if(enemies.length<8+wave*2){
-for(let i=0;i<2;i++)spawnEnemy();
-}
-},1800);
-
-const style=document.createElement('style');
-style.textContent='*{touch-action:none!important}';
-document.head.appendChild(style);
-
-const banCheck=setInterval(function(){
-if(window.innerWidth<200||window.innerHeight<200){
-document.body.innerHTML='<div style="color:#fff;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;text-align:center;padding:20px;">⚠️ ANDROID ONLY</div>';
-clearInterval(banCheck);
-}
-},1000);
-
-if(navigator.userAgent.indexOf('Android')===-1){
-document.body.innerHTML='<div style="color:#fff;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;text-align:center;padding:20px;">🚫 ANDROID BROWSER ONLY</div>';
-}
+(function(){'use strict';
+const FIREBASE_URL='https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
+let state=null;
+let eventQueue=[];
+let turnLock=false;
+const STAT_KEYS=['health','happiness','intelligence','wealth','fitness','social','career','spirit'];
+const STAT_LABELS={health:'❤️ Health',happiness:'😊 Happiness',intelligence:'🧠 Intelligence',wealth:'💰 Wealth',fitness:'💪 Fitness',social:'👥 Social',career:'📈 Career',spirit:'✨ Spirit'};
+const CAREERS=['Unemployed','Retail Worker','Office Clerk','Teacher','Nurse','Engineer','Doctor','Lawyer','Artist','Scientist','CEO','Professor','Architect','Chef','Pilot','Journalist'];
+const EVENTS=[
+{minAge:0,maxAge:5,title:'Childhood',desc:'You learn to walk and talk.',effects:{health:2,happiness:3,intelligence:2,social:1}},
+{minAge:6,maxAge:12,title:'School Days',desc:'You start elementary school.',effects:{intelligence:4,social:3,happiness:2},choices:['Make friends','Study hard','Play sports']},
+{minAge:13,maxAge:17,title:'Teen Years',desc:'High school is challenging.',effects:{social:3,intelligence:3,fitness:2},choices:['Focus on grades','Join clubs','Part-time job']},
+{minAge:18,maxAge:22,title:'College',desc:'Higher education awaits.',effects:{intelligence:5,social:3,career:4},choices:['STEM major','Arts major','Business major']},
+{minAge:23,maxAge:30,title:'Early Career',desc:'Building your professional life.',effects:{career:5,wealth:4,social:2},choices:['Climb corporate','Start business','Work abroad']},
+{minAge:31,maxAge:45,title:'Mid Life',desc:'Family and career peak.',effects:{career:4,wealth:5,health:-2,happiness:3},choices:['Focus family','Focus career','Balance both']},
+{minAge:46,maxAge:60,title:'Late Career',desc:'Experience and wisdom.',effects:{career:3,wealth:4,intelligence:3,health:-3},choices:['Mentor others','Semi-retire','Change career']},
+{minAge:61,maxAge:75,title:'Retirement',desc:'Golden years begin.',effects:{happiness:4,social:3,health:-4,wealth:-2},choices:['Travel','Volunteer','Hobbies']},
+{minAge:76,maxAge:100,title:'Elder Years',desc:'Reflection and legacy.',effects:{health:-6,social:2,happiness:2,intelligence:2},choices:['Write memoir','Teach youth','Rest']}
+];
+const RANDOM_EVENTS=[
+{title:'Windfall',desc:'You receive an unexpected inheritance.',effects:{wealth:8},prob:.3},
+{title:'Accident',desc:'You have a minor accident.',effects:{health:-4,fitness:-3},prob:.25},
+{title:'Romance',desc:'You meet a special someone.',effects:{happiness:6,social:5},prob:.2},
+{title:'Illness',desc:'You catch a seasonal illness.',effects:{health:-5,fitness:-3},prob:.3},
+{title:'Promotion',desc:'You get a promotion at work!',effects:{career:5,wealth:6,happiness:4},prob:.15},
+{title:'Friendship',desc:'You make a lifelong friend.',effects:{social:5,happiness:4},prob:.25},
+{title:'Loss',desc:'You experience a personal loss.',effects:{happiness:-6,social:-3,spirit:2},prob:.15},
+{title:'Discovery',desc:'You discover a new passion.',effects:{happiness:5,intelligence:3,spirit:4},prob:.2},
+{title:'Financial Gain',desc:'Your investments pay off.',effects:{wealth:7},prob:.1},
+{title:'Setback',desc:'You face a financial setback.',effects:{wealth:-5,happiness:-3},prob:.15}
+];
+function createInitialState(){return{age:0,gender:Math.random()>.5?'Male':'Female',name:'',health:50,happiness:50,intelligence:40,wealth:30,fitness:50,social:40,career:20,spirit:30,alive:true,careerIndex:0,education:0,relationships:{friends:0,partner:false,children:0},lifeEvents:[],yearLog:[],saved:false}}
+function clamp(v,min,max){return Math.min(Math.max(v,min),max)}
+function random(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function pick(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function getStat(state,k){return state[k]||0}
+function setStat(state,k,v){state[k]=clamp(Math.round(v),0,100)}
+function modifyStat(state,k,delta){setStat(state,k,getStat(state,k)+delta)}
+function getAgeGroup(age){if(age<=5)return 0;if(age<=12)return 1;if(age<=17)return 2;if(age<=22)return 3;if(age<=30)return 4;if(age<=45)return 5;if(age<=60)return 6;if(age<=75)return 7;return 8}
+function getCareerName(index){return CAREERS[index]||CAREERS[0]}
+function renderStats(s){const grid=document.getElementById('statsGrid');grid.innerHTML='';STAT_KEYS.forEach(k=>{const v=getStat(s,k);const pct=Math.round(v);const colorClass='fill-'+k;const div=document.createElement('div');div.className='stat-card';div.innerHTML='<span class="label">'+STAT_LABELS[k]+'</span><span class="value">'+pct+'%</span><div class="stat-bar"><div class="fill '+colorClass+'" style="width:'+pct+'%"></div></div>';grid.appendChild(div)});document.getElementById('ageDisplay').textContent='Age: '+s.age}
+function renderLog(s){const log=document.getElementById('logArea');log.innerHTML='';const entries=s.yearLog.slice(-15);entries.forEach(e=>{const div=document.createElement('div');div.className='log-entry';div.innerHTML='<span class="year">['+e.year+']</span>'+e.text;log.appendChild(div)});log.scrollTop=log.scrollHeight}
+function renderEvent(title,desc,choices,callback){const area=document.getElementById('eventArea');area.innerHTML='<div class="event-title">'+title+'</div><div class="event-desc">'+desc+'</div>';const choiceDiv=document.createElement('div');choiceDiv.className='event-choice';if(choices&&choices.length){choices.forEach((c,i)=>{const btn=document.createElement('button');btn.textContent=c;btn.dataset.choice=i;btn.addEventListener('click',()=>{if(turnLock)return;callback(i)});choiceDiv.appendChild(btn)})}else{const btn=document.createElement('button');btn.textContent='Continue';btn.dataset.choice='continue';btn.addEventListener('click',()=>{if(turnLock)return;callback(0)});choiceDiv.appendChild(btn)}area.appendChild(choiceDiv)}
+function addLog(s,text){s.yearLog.push({year:s.age,text:text});if(s.yearLog.length>50)s.yearLog.shift();renderLog(s)}
+function processLifeEvent(s){const group=getAgeGroup(s.age);const base=EVENTS[group];if(base&&s.age%3===0){let choices=base.choices||['Continue'];renderEvent(base.title,base.desc,choices,(idx)=>{Object.keys(base.effects||{}).forEach(k=>{modifyStat(s,k,base.effects[k])});if(choices.length>1){addLog(s,'Chose: '+choices[idx]);if(idx===0)modifyStat(s,'intelligence',3);else if(idx===1)modifyStat(s,'social',3);else if(idx===2)modifyStat(s,'wealth',3)}else{addLog(s,base.title+' - '+base.desc)}s.age+=1;applyAging(s);checkRandomEvent(s);renderStats(s);if(s.alive)renderEvent('Year '+s.age,'Another year passes. Choose your action.',['Continue'],()=>{})});return true}return false}
+function checkRandomEvent(s){if(Math.random()<.3&&s.age>5){const ev=pick(RANDOM_EVENTS);if(Math.random()<ev.prob){Object.keys(ev.effects||{}).forEach(k=>{modifyStat(s,k,ev.effects[k])});addLog(s,'⚡ '+ev.title+': '+ev.desc);return true}}return false}
+function applyAging(s){const age=s.age;if(age>70){modifyStat(s,'health',-3);modifyStat(s,'fitness',-2)}else if(age>50){modifyStat(s,'health',-2);modifyStat(s,'fitness',-1)}else if(age>30){modifyStat(s,'health',-1)}if(age>18&&s.relationships.partner===false&&Math.random()<.05){s.relationships.partner=true;addLog(s,'💕 Found a life partner!')}if(age>25&&s.relationships.children<3&&s.relationships.partner&&Math.random()<.03){s.relationships.children+=1;addLog(s,'👶 Welcomed a child!')}if(age>80&&Math.random()<.15){s.alive=false;addLog(s,'💀 Passed away at age '+s.age);return}if(getStat(s,'health')<=0||getStat(s,'happiness')<=0){s.alive=false;addLog(s,'💀 Life ended due to health or happiness reaching zero');return}if(age>110){s.alive=false;addLog(s,'💀 Reached the end of natural life')}}
+function applyAction(s,action){if(!s.alive||turnLock)return;turnLock=true;let msg='';let choices=[];switch(action){case'work':if(s.age<16){msg='Too young to work.';break}const earn=5+Math.floor(getStat(s,'career')/10);modifyStat(s,'wealth',earn);modifyStat(s,'career',2);modifyStat(s,'happiness',-1);modifyStat(s,'fitness',-2);msg='Worked and earned $'+earn+'k.';if(Math.random()<.1){modifyStat(s,'wealth',3);msg+=' Bonus!']}break;case'study':if(s.age<6){msg='Too young to study.';break}modifyStat(s,'intelligence',4);modifyStat(s,'career',2);modifyStat(s,'happiness',-1);modifyStat(s,'social',-1);if(Math.random()<.05){modifyStat(s,'intelligence',5);msg='Studied hard! Major breakthrough.'}else msg='Studied and gained knowledge.';break;case'social':modifyStat(s,'social',5);modifyStat(s,'happiness',4);modifyStat(s,'health',1);if(Math.random()<.1){modifyStat(s,'social',3);msg='Made a great new friend!']}else msg='Socialized and connected with others.';break;case'exercise':modifyStat(s,'fitness',6);modifyStat(s,'health',4);modifyStat(s,'happiness',2);if(Math.random()<.05){modifyStat(s,'fitness',5);msg='Personal best! Feeling great.']}else msg='Exercised and improved fitness.';break;case'rest':modifyStat(s,'health',5);modifyStat(s,'happiness',3);modifyStat(s,'fitness',2);msg='Rested and recovered.';break;case'invest':if(getStat(s,'wealth')<10){msg='Not enough wealth to invest.';break}const risk=Math.random();if(risk<.4){const gain=Math.floor(getStat(s,'wealth')*.15);modifyStat(s,'wealth',gain);msg='Investment grew! +$'+gain+'k.'}else if(risk<.7){const loss=Math.floor(getStat(s,'wealth')*.08);modifyStat(s,'wealth',-loss);msg='Investment lost $'+loss+'k.'}else{const big=Math.floor(getStat(s,'wealth')*.3);modifyStat(s,'wealth',big);msg='Great investment! +$'+big+'k.'}break;case'family':if(s.relationships.partner){modifyStat(s,'happiness',4);modifyStat(s,'social',3);if(s.relationships.children>0){modifyStat(s,'happiness',2);msg='Spent quality time with family.'}else msg='Strengthened relationship with partner.'}else{modifyStat(s,'social',2);modifyStat(s,'happiness',1);msg='Reached out to relatives.'}break;case'next':s.age+=1;applyAging(s);checkRandomEvent(s);renderStats(s);turnLock=false;if(!s.alive){showDeath(s);return}if(!processLifeEvent(s)){renderEvent('Year '+s.age,'Another year passes. Choose your action.',['Continue'],()=>{})}return}if(msg){addLog(s,'▶ '+msg)}renderStats(s);turnLock=false;if(s.alive){if(!processLifeEvent(s)){renderEvent('Year '+s.age,'Choose your next action.',['Continue'],()=>{})}}else{showDeath(s)}}
+function showDeath(s){const overlay=document.getElementById('deadOverlay');overlay.classList.remove('hidden');document.getElementById('deathMessage').textContent='You lived to age '+s.age+'. Your journey is complete.';const final=document.getElementById('finalStats');final.innerHTML='';STAT_KEYS.forEach(k=>{const div=document.createElement('div');div.innerHTML='<span>'+STAT_LABELS[k]+'</span><span>'+Math.round(getStat(s,k))+'%</span>';final.appendChild(div)});const log=document.getElementById('logArea');addLog(s,'🏁 Life completed at age '+s.age)}
+function resetGame(){if(confirm('Start a new life? Current progress will be lost.')){state=createInitialState();document.getElementById('deadOverlay').classList.add('hidden');renderStats(state);addLog(state,'New life started.');renderEvent('Welcome','Your new life begins. Make your first choice.',['Begin'],()=>{state.age=1;addLog(state,'First year begins.');renderStats(state);renderEvent('Year 1','Choose your first action.',['Continue'],()=>{})})}}
+function saveGame(){if(!state||!state.alive){alert('Cannot save: No active life.');return}try{const data=JSON.stringify(state);const url=FIREBASE_URL+'/save.json';fetch(url,{method:'PUT',headers:{'Content-Type':'application/json'},body:data}).then(r=>r.json()).then(()=>{addLog(state,'💾 Game saved successfully.');alert('Game saved!')}).catch(()=>{alert('Save failed. Check network.')})}catch(e){alert('Save error: '+e.message)}}
+function loadGame(){try{const url=FIREBASE_URL+'/save.json';fetch(url).then(r=>{if(!r.ok)throw new Error('No save found');return r.json()}).then(data=>{if(!data||!data.age){alert('No valid save data found.');return}state=data;document.getElementById('deadOverlay').classList.add('hidden');renderStats(state);addLog(state,'📂 Game loaded successfully.');if(!state.alive){showDeath(state)}else{renderEvent('Loaded','Game restored. Continue your journey.',['Continue'],()=>{})}}).catch(()=>{alert('Load failed. No saved game found.')})}catch(e){alert('Load error: '+e.message)}}
+function init(){state=createInitialState();renderStats(state);addLog(state,'Welcome to Real Lives.');renderEvent('Welcome','Your life simulation begins. Choose your first action.',['Start Life'],()=>{state.age=1;addLog(state,'Life begins at age 1.');renderStats(state);renderEvent('Year 1','Take your first action.',['Continue'],()=>{})});document.querySelectorAll('.action-btn').forEach(btn=>{btn.addEventListener('click',function(){const action=this.dataset.action;if(state&&state.alive)applyAction(state,action)})});document.getElementById('saveBtn').addEventListener('click',saveGame);document.getElementById('loadBtn').addEventListener('click',loadGame);document.getElementById('resetBtn').addEventListener('click',resetGame);document.getElementById('restartBtn').addEventListener('click',resetGame);document.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){const btns=document.querySelectorAll('.event-choice button');if(btns.length===1)btns[0].click()}})}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init)}else{init()}
 })();
 </script>
 </body>
