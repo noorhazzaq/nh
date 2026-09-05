@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Android Cloud Pro</title>
+  <title>Threads - Social Platform</title>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Font Awesome for icons -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     /* ================================================================
-       SORTED & EVOLVED STYLES v3.0
+       THREADS STYLES v4.0
        ================================================================ */
     
-    /* ----- 1. RESET & BASE ----- */
+    /* ----- 1. RESET & VARIABLES ----- */
     * {
       margin: 0;
       padding: 0;
@@ -22,96 +22,65 @@
     }
 
     :root {
-      --primary: #6c5ce7;
-      --primary-dark: #5a4bd1;
-      --secondary: #00b894;
-      --danger: #e94560;
-      --warning: #fdcb6e;
-      --dark: #0f0c29;
-      --dark-mid: #302b63;
-      --dark-light: #24243e;
-      --bg: #f8f9fc;
-      --text: #1a1a2e;
-      --text-light: #6c6c8a;
-      --shadow: 0 20px 60px rgba(0,0,0,0.4);
-      --radius: 24px;
-      --radius-sm: 16px;
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --bg-primary: #000;
+      --bg-secondary: #0a0a0a;
+      --bg-card: #121212;
+      --bg-input: #1a1a1a;
+      --bg-hover: #1f1f1f;
+      --text-primary: #ffffff;
+      --text-secondary: #a0a0a0;
+      --text-muted: #6b6b6b;
+      --accent: #0095f6;
+      --accent-hover: #1a9fff;
+      --like: #ed4956;
+      --border: #2a2a2a;
+      --shadow: 0 4px 20px rgba(0,0,0,0.5);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --transition: all 0.2s ease;
     }
 
     body {
-      font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, var(--dark), var(--dark-mid), var(--dark-light));
+      font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 12px;
+      padding: 0;
       margin: 0;
     }
 
-    /* ----- 2. ANIMATIONS ----- */
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.95); }
-      to { opacity: 1; transform: translateY(0) scale(1); }
+    /* ----- 2. SCROLLBAR ----- */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 10px;
     }
 
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.2); }
-      50% { box-shadow: 0 0 40px rgba(108, 92, 231, 0.4); }
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-5px); }
-    }
-
-    /* ----- 3. APP CONTAINER ----- */
-    .app-wrapper {
-      width: 100%;
-      max-width: 480px;
-      animation: fadeSlideUp 0.6s ease;
-    }
-
-    .card {
-      background: rgba(255, 255, 255, 0.97);
-      backdrop-filter: blur(20px);
-      border-radius: var(--radius);
-      padding: 20px 20px 24px;
-      box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,0.15);
+    /* ----- 3. APP LAYOUT ----- */
+    .app-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 0 0 80px;
       position: relative;
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--warning), var(--danger));
-      background-size: 300% 100%;
-      animation: shimmer 4s linear infinite;
     }
 
     /* ----- 4. HEADER ----- */
     .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
-      padding-top: 4px;
     }
 
     .header-left {
@@ -120,412 +89,523 @@
       gap: 12px;
     }
 
-    .logo-wrap {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
-      border-radius: 14px;
+    .logo {
+      font-size: 1.6rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #0095f6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .logo i {
+      -webkit-text-fill-color: initial;
+      color: var(--accent);
+      margin-right: 4px;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .header-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .header-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .header-btn .badge-count {
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: var(--like);
+      color: white;
+      font-size: 0.5rem;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 10px;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .android-badge {
+      background: #3ddc84;
+      color: #000;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ----- 5. COMPOSE THREAD ----- */
+    .compose-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .compose-container {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .compose-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.4rem;
-      color: white;
-      box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
-    }
-
-    .title-group h1 {
       font-size: 1.2rem;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-      line-height: 1.2;
-    }
-
-    .title-group .subtitle {
-      font-size: 0.6rem;
-      color: var(--text-light);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .badge-group {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.55rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: none;
-    }
-
-    .badge-android {
-      background: #3ddc84;
-      color: #000;
-    }
-
-    .badge-pro {
-      background: linear-gradient(135deg, var(--primary), var(--secondary));
       color: white;
+      flex-shrink: 0;
     }
 
-    .badge-live {
-      background: var(--danger);
-      color: white;
-      animation: pulseGlow 2s infinite;
-    }
-
-    /* ----- 5. QUICK STATS ----- */
-    .quick-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
-    .stat-card {
-      background: var(--bg);
-      border-radius: var(--radius-sm);
-      padding: 10px 6px;
-      text-align: center;
-      transition: var(--transition);
-      cursor: default;
-      border: 1px solid transparent;
-    }
-
-    .stat-card:hover {
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .stat-card .number {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1.2;
-    }
-
-    .stat-card .label {
-      font-size: 0.5rem;
-      color: var(--text-light);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-    }
-
-    .stat-card .icon {
-      font-size: 0.8rem;
-      display: block;
-      margin-bottom: 2px;
-    }
-
-    /* ----- 6. DATA DISPLAY ----- */
-    .data-panel {
-      background: var(--bg);
-      border-radius: var(--radius-sm);
-      padding: 14px 16px;
-      margin-bottom: 14px;
-      border: 2px solid #eef0f4;
-      transition: var(--transition);
-      min-height: 120px;
+    .compose-input-wrap {
+      flex: 1;
       position: relative;
     }
 
-    .data-panel:focus-within {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+    .compose-input-wrap textarea {
+      width: 100%;
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 70px;
+      max-height: 200px;
+      outline: none;
+      transition: var(--transition);
     }
 
-    .data-panel .panel-header {
+    .compose-input-wrap textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .compose-input-wrap textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .compose-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-top: 10px;
+    }
+
+    .compose-tools {
+      display: flex;
+      gap: 8px;
+    }
+
+    .compose-tools button {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .compose-tools button:hover {
+      background: var(--bg-hover);
+      color: var(--accent);
+    }
+
+    .compose-submit {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 8px 24px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .compose-submit:hover {
+      background: var(--accent-hover);
+      transform: scale(1.02);
+    }
+
+    .compose-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .char-count {
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      margin-right: 12px;
+    }
+
+    .char-count.over {
+      color: var(--like);
+    }
+
+    /* ----- 6. THREADS FEED ----- */
+    .feed {
+      padding: 0;
+    }
+
+    .feed-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-secondary);
+    }
+
+    .feed-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .feed-header .feed-stats {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ----- 7. THREAD CARD ----- */
+    .thread-card {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+      cursor: pointer;
+      animation: fadeSlideUp 0.3s ease;
+    }
+
+    .thread-card:hover {
+      background: var(--bg-hover);
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .thread-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
       margin-bottom: 8px;
     }
 
-    .data-panel .panel-label {
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--text-light);
+    .thread-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .data-panel .panel-actions {
+    .thread-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
       display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .thread-avatar.green { background: linear-gradient(135deg, #00b894, #00a381); }
+    .thread-avatar.pink { background: linear-gradient(135deg, #e94560, #d63851); }
+    .thread-avatar.orange { background: linear-gradient(135deg, #fdcb6e, #f9ca5c); }
+    .thread-avatar.purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
+
+    .thread-user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .thread-username {
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
 
-    .data-panel .panel-actions button {
-      background: transparent;
-      border: none;
-      color: var(--text-light);
-      cursor: pointer;
-      padding: 2px 6px;
-      border-radius: 6px;
+    .thread-username .verified {
+      color: var(--accent);
       font-size: 0.7rem;
-      transition: var(--transition);
     }
 
-    .data-panel .panel-actions button:hover {
-      background: rgba(108, 92, 231, 0.1);
-      color: var(--primary);
-    }
-
-    .data-content {
-      font-family: 'JetBrains Mono', 'Courier New', monospace;
-      font-size: 0.8rem;
-      color: var(--text);
-      word-break: break-word;
-      white-space: pre-wrap;
-      line-height: 1.6;
-      max-height: 200px;
-      overflow-y: auto;
-      padding: 4px 0;
-    }
-
-    .data-content.empty {
-      color: #b0b0c0;
-      font-style: italic;
-      font-family: inherit;
-    }
-
-    .data-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 8px;
-      font-size: 0.55rem;
-      color: var(--text-light);
-    }
-
-    .data-meta .size {
-      font-weight: 600;
-    }
-
-    /* ----- 7. ACTION BUTTONS ----- */
-    .action-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .btn {
-      padding: 12px 8px;
-      border: none;
-      border-radius: var(--radius-sm);
+    .thread-handle {
       font-size: 0.75rem;
-      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .thread-time {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .thread-content {
+      margin: 8px 0 12px 46px;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+
+    .thread-content .hashtag {
+      color: var(--accent);
       cursor: pointer;
-      transition: var(--transition);
+    }
+
+    .thread-content .mention {
+      color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* ----- 8. THREAD MEDIA ----- */
+    .thread-media {
+      margin: 8px 0 12px 46px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--bg-input);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 120px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .thread-media img {
+      width: 100%;
+      display: block;
+      max-height: 300px;
+      object-fit: cover;
+    }
+
+    .thread-media .media-placeholder {
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn i {
-      font-size: 1rem;
-    }
-
-    .btn:active {
-      transform: scale(0.94);
-    }
-
-    .btn::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255,255,255,0.2);
-      transform: translateX(-100%);
-      transition: transform 0.3s;
-    }
-
-    .btn:active::after {
-      transform: translateX(0);
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
-    }
-
-    .btn-success {
-      background: var(--secondary);
-      color: white;
-    }
-
-    .btn-success:hover {
-      background: #00a381;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0, 184, 148, 0.3);
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-danger:hover {
-      background: #d63851;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.3);
-    }
-
-    .btn-warning {
-      background: var(--warning);
-      color: var(--text);
-    }
-
-    .btn-warning:hover {
-      background: #f9ca5c;
-      transform: translateY(-2px);
-    }
-
-    .btn-ghost {
-      background: var(--bg);
-      color: var(--text);
-      border: 2px solid #eef0f4;
-    }
-
-    .btn-ghost:hover {
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
-    .btn .badge-btn {
-      font-size: 0.45rem;
-      background: rgba(255,255,255,0.2);
-      padding: 1px 6px;
-      border-radius: 10px;
-    }
-
-    /* ----- 8. INPUT AREA ----- */
-    .input-section {
-      display: flex;
       gap: 8px;
-      margin-bottom: 12px;
     }
 
-    .input-section input {
+    .thread-media .media-placeholder i {
+      font-size: 2rem;
+      color: var(--text-muted);
+    }
+
+    /* ----- 9. THREAD ACTIONS ----- */
+    .thread-actions {
+      display: flex;
+      gap: 20px;
+      margin-left: 46px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+    }
+
+    .thread-action-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .thread-action-btn:hover {
+      background: var(--bg-hover);
+      color: var(--text-primary);
+    }
+
+    .thread-action-btn.liked {
+      color: var(--like);
+    }
+
+    .thread-action-btn.liked i {
+      font-weight: 900;
+    }
+
+    .thread-action-btn .count {
+      font-weight: 600;
+    }
+
+    .thread-action-btn .icon {
+      font-size: 1.1rem;
+    }
+
+    /* ----- 10. REPLY SECTION ----- */
+    .reply-section {
+      margin: 10px 0 0 46px;
+      display: none;
+      animation: fadeSlideUp 0.2s ease;
+    }
+
+    .reply-section.open {
+      display: block;
+    }
+
+    .reply-container {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .reply-container .compose-avatar {
+      width: 28px;
+      height: 28px;
+      font-size: 0.8rem;
+    }
+
+    .reply-container input {
       flex: 1;
-      padding: 10px 14px;
-      border: 2px solid #eef0f4;
-      border-radius: var(--radius-sm);
+      background: var(--bg-input);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 14px;
+      color: var(--text-primary);
       font-size: 0.85rem;
       outline: none;
       transition: var(--transition);
-      background: var(--bg);
     }
 
-    .input-section input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+    .reply-container input:focus {
+      border-color: var(--accent);
     }
 
-    .input-section input::placeholder {
-      color: #b0b0c0;
+    .reply-container input::placeholder {
+      color: var(--text-muted);
     }
 
-    .input-section .btn {
-      padding: 10px 16px;
-      flex-shrink: 0;
-      flex-direction: row;
-      gap: 6px;
-    }
-
-    /* ----- 9. ADVANCED CONTROLS ----- */
-    .advanced-controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-bottom: 12px;
-    }
-
-    .advanced-controls .btn {
-      flex-direction: row;
-      gap: 6px;
-      font-size: 0.65rem;
-      padding: 8px 12px;
-    }
-
-    /* ----- 10. STATUS BAR ----- */
-    .status-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-top: 14px;
-      border-top: 2px solid #eef0f4;
-    }
-
-    .status-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .status-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      display: inline-block;
+    .reply-container .reply-submit {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      cursor: pointer;
       transition: var(--transition);
     }
 
-    .status-dot.idle { background: #b2bec3; }
-    .status-dot.loading { background: var(--warning); animation: pulseGlow 0.8s infinite; }
-    .status-dot.success { background: var(--secondary); }
-    .status-dot.error { background: var(--danger); }
-
-    .status-text {
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: var(--text-light);
+    .reply-container .reply-submit:hover {
+      background: var(--accent-hover);
     }
 
-    .status-right {
+    /* ----- 11. REPLIES LIST ----- */
+    .replies-list {
+      margin: 8px 0 0 34px;
+      padding-left: 16px;
+      border-left: 2px solid var(--border);
+    }
+
+    .reply-item {
+      padding: 8px 0;
       display: flex;
-      align-items: center;
-      gap: 12px;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .reply-item .thread-avatar {
+      width: 24px;
+      height: 24px;
       font-size: 0.6rem;
-      color: var(--text-light);
     }
 
-    .status-right .online-indicator {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+    .reply-item .reply-content {
+      flex: 1;
     }
 
-    .status-right .online-indicator .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--secondary);
-      display: inline-block;
+    .reply-item .reply-user {
+      font-weight: 700;
+      font-size: 0.75rem;
     }
 
-    .status-right .online-indicator .dot.offline {
-      background: var(--danger);
+    .reply-item .reply-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-top: 2px;
     }
 
-    /* ----- 11. TOAST NOTIFICATIONS ----- */
+    .reply-item .reply-time {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+    }
+
+    /* ----- 12. EMPTY STATE ----- */
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+
+    .empty-state h3 {
+      color: var(--text-primary);
+      margin-bottom: 8px;
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    /* ----- 13. LOADING SHIMMER ----- */
+    .shimmer {
+      background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 8px;
+      height: 60px;
+      margin: 12px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* ----- 14. TOAST ----- */
     .toast-container {
       position: fixed;
       bottom: 20px;
@@ -537,77 +617,48 @@
       gap: 8px;
       align-items: center;
       width: 90%;
-      max-width: 460px;
+      max-width: 540px;
       pointer-events: none;
     }
 
     .toast {
-      background: var(--text);
+      background: rgba(30,30,30,0.95);
+      backdrop-filter: blur(20px);
       color: white;
       padding: 12px 20px;
       border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      font-weight: 600;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      font-size: 0.85rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
       animation: fadeSlideUp 0.3s ease;
       pointer-events: auto;
       display: flex;
       align-items: center;
       gap: 10px;
       width: 100%;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .toast.success { background: var(--secondary); }
-    .toast.error { background: var(--danger); }
-    .toast.warning { background: var(--warning); color: var(--text); }
-    .toast.info { background: var(--primary); }
+    .toast.success { border-left: 3px solid var(--accent); }
+    .toast.error { border-left: 3px solid var(--like); }
+    .toast.warning { border-left: 3px solid #fdcb6e; }
 
-    .toast .toast-icon { font-size: 1.1rem; }
     .toast .toast-close {
       margin-left: auto;
       background: none;
       border: none;
-      color: inherit;
+      color: var(--text-muted);
       cursor: pointer;
-      opacity: 0.6;
       font-size: 1rem;
     }
 
-    /* ----- 12. RESPONSIVE ----- */
-    @media (max-width: 420px) {
-      .action-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .action-grid .btn-full {
-        grid-column: 1 / -1;
-      }
-      .quick-stats {
-        grid-template-columns: repeat(2, 1fr);
-      }
-      .advanced-controls {
-        grid-template-columns: 1fr;
-      }
-      .header {
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-      .badge-group {
-        margin-left: auto;
-      }
-      .card {
-        padding: 16px;
-      }
-    }
-
-    /* ----- 13. BLOCKED PAGE ----- */
+    /* ----- 15. BLOCKED PAGE ----- */
     .blocked-page {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, var(--dark), var(--dark-mid));
+      background: #000;
       color: white;
       padding: 20px;
       text-align: center;
@@ -620,42 +671,40 @@
       animation: float 3s ease-in-out infinite;
     }
 
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
     .blocked-page h1 {
       font-size: 2rem;
       margin: 0 0 8px;
-      background: linear-gradient(135deg, #3ddc84, #00b894);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
     }
 
     .blocked-page p {
       max-width: 320px;
       color: #aaa;
       line-height: 1.8;
-      font-size: 0.9rem;
     }
 
-    .blocked-page .ua {
-      margin-top: 30px;
-      font-size: 0.6rem;
-      color: #555;
-      word-break: break-all;
-      background: rgba(255,255,255,0.05);
-      padding: 12px 16px;
-      border-radius: 12px;
-      max-width: 320px;
-    }
-
-    /* Scrollbar styling */
-    .data-content::-webkit-scrollbar {
-      width: 4px;
-    }
-    .data-content::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    .data-content::-webkit-scrollbar-thumb {
-      background: #d0d0d8;
-      border-radius: 10px;
+    /* ----- 16. RESPONSIVE ----- */
+    @media (max-width: 480px) {
+      .thread-content {
+        margin-left: 0;
+      }
+      .thread-actions {
+        margin-left: 0;
+      }
+      .reply-section {
+        margin-left: 0;
+      }
+      .replies-list {
+        margin-left: 0;
+        padding-left: 12px;
+      }
+      .compose-container {
+        flex-direction: row;
+      }
     }
   </style>
 </head>
@@ -669,7 +718,7 @@
     "use strict";
 
     // ================================================================
-    // 1. SORTED: CONFIGURATION
+    // 1. CONFIGURATION
     // ================================================================
     const CONFIG = {
       firebase: {
@@ -681,69 +730,68 @@
         messagingSenderId: "123456789012",
         appId: "1:123456789012:web:abcdef123456"
       },
-      dbPath: 'proData',
-      maxRetries: 3,
-      toastDuration: 3000
+      dbPath: 'threads',
+      maxThreadLength: 500,
+      maxReplies: 50
     };
 
     // ================================================================
-    // 2. SORTED: STATE
+    // 2. STATE
     // ================================================================
     const State = {
-      data: null,
-      dataSize: 0,
-      lastUpdate: null,
+      threads: [],
+      users: {},
+      currentUser: null,
       isOnline: true,
-      stats: { reads: 0, writes: 0, errors: 0, deletes: 0 },
-      pendingActions: 0,
-      isBlocked: false
+      loading: true,
+      replyingTo: null,
+      stats: { threads: 0, replies: 0, likes: 0 }
     };
 
     // ================================================================
-    // 3. SORTED: UTILITY FUNCTIONS
+    // 3. UTILITY FUNCTIONS
     // ================================================================
     const Utils = {
-      getDataSize(obj) {
-        try {
-          const str = typeof obj === 'object' ? JSON.stringify(obj) : String(obj);
-          return new Blob([str]).size;
-        } catch { return 0; }
-      },
-
-      formatBytes(bytes) {
-        if (bytes < 1024) return bytes + ' B';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-      },
-
-      generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
-      },
-
-      debounce(fn, ms = 300) {
-        let timer;
-        return (...args) => {
-          clearTimeout(timer);
-          timer = setTimeout(() => fn(...args), ms);
-        };
-      },
-
       isAndroid() {
         return /android/i.test(navigator.userAgent);
       },
 
-      getTimestamp() {
-        return new Date().toLocaleString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        });
+      generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
+      },
+
+      timeAgo(timestamp) {
+        const diff = Date.now() - timestamp;
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        
+        if (days > 0) return days + 'd';
+        if (hours > 0) return hours + 'h';
+        if (minutes > 0) return minutes + 'm';
+        return 'now';
+      },
+
+      getAvatarColor(id) {
+        const colors = ['', 'green', 'pink', 'orange', 'purple'];
+        return colors[parseInt(id.charAt(id.length - 1), 36) % colors.length] || '';
+      },
+
+      getInitials(name) {
+        return name.charAt(0).toUpperCase();
+      },
+
+      formatText(text) {
+        // Simple hashtag and mention detection
+        return text
+          .replace(/#(\w+)/g, '<span class="hashtag">#$1</span>')
+          .replace(/@(\w+)/g, '<span class="mention">@$1</span>');
       }
     };
 
     // ================================================================
-    // 4. SORTED: TOAST SYSTEM
+    // 4. TOAST SYSTEM
     // ================================================================
     const Toast = {
       container: null,
@@ -752,39 +800,27 @@
         this.container = document.getElementById('toastContainer');
       },
 
-      show(message, type = 'info', duration = CONFIG.toastDuration) {
+      show(message, type = 'info') {
         if (!this.container) return;
-        
-        const icons = {
-          success: '✅',
-          error: '❌',
-          warning: '⚠️',
-          info: 'ℹ️'
-        };
-
         const toast = document.createElement('div');
         toast.className = `toast ${type}`;
         toast.innerHTML = `
-          <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
           <span>${message}</span>
           <button class="toast-close">&times;</button>
         `;
-
         toast.querySelector('.toast-close').addEventListener('click', () => {
           toast.style.opacity = '0';
           toast.style.transform = 'translateY(20px)';
           setTimeout(() => toast.remove(), 300);
         });
-
         this.container.appendChild(toast);
-
         setTimeout(() => {
           if (toast.parentNode) {
             toast.style.opacity = '0';
             toast.style.transform = 'translateY(20px)';
             setTimeout(() => toast.remove(), 300);
           }
-        }, duration);
+        }, 3000);
       },
 
       success(msg) { this.show(msg, 'success'); },
@@ -794,130 +830,125 @@
     };
 
     // ================================================================
-    // 5. SORTED: FIREBASE MANAGER
+    // 5. FIREBASE MANAGER
     // ================================================================
     const FirebaseManager = {
       db: null,
       ref: null,
+      threadsRef: null,
       initialized: false,
-      listenerAttached: false,
 
       init() {
         if (this.initialized) return;
+        firebase.initializeApp(CONFIG.firebase);
+        this.db = firebase.database();
+        this.ref = this.db.ref(CONFIG.dbPath);
+        this.threadsRef = this.ref.child('threads');
+        this.initialized = true;
+        Toast.success('Connected');
+        return this;
+      },
+
+      async getThreads() {
         try {
-          firebase.initializeApp(CONFIG.firebase);
-          this.db = firebase.database();
-          this.ref = this.db.ref(CONFIG.dbPath);
-          this.initialized = true;
-          this.monitorConnection();
-          Toast.success('🔥 Firebase connected');
+          const snapshot = await this.threadsRef.orderByChild('timestamp').limitToLast(50).once('value');
+          const data = snapshot.val();
+          if (!data) return [];
+          return Object.entries(data).map(([id, thread]) => ({ id, ...thread }));
         } catch (e) {
-          Toast.error('Firebase init failed: ' + e.message);
+          Toast.error('Failed to load threads');
           throw e;
         }
       },
 
-      monitorConnection() {
-        const connRef = this.db.ref('.info/connected');
-        connRef.on('value', (snap) => {
-          State.isOnline = snap.val() === true;
-          document.querySelector('.online-indicator .dot')?.classList.toggle('offline', !State.isOnline);
-        });
-      },
-
-      async read() {
+      async createThread(threadData) {
         try {
-          const snapshot = await this.ref.once('value');
-          const val = snapshot.val();
-          State.data = val;
-          State.dataSize = Utils.getDataSize(val);
-          State.stats.reads++;
-          State.lastUpdate = Date.now();
-          return val;
+          const id = Utils.generateId();
+          await this.threadsRef.child(id).set({
+            ...threadData,
+            id,
+            timestamp: Date.now(),
+            replies: {},
+            replyCount: 0,
+            likes: 0,
+            likedBy: {}
+          });
+          return id;
         } catch (e) {
-          State.stats.errors++;
+          Toast.error('Failed to post');
           throw e;
         }
       },
 
-      async write(data) {
+      async addReply(threadId, replyData) {
         try {
-          await this.ref.set(data);
-          State.data = data;
-          State.dataSize = Utils.getDataSize(data);
-          State.stats.writes++;
-          State.lastUpdate = Date.now();
-          return data;
+          const replyId = Utils.generateId();
+          const replyPath = `threads/${threadId}/replies/${replyId}`;
+          await this.ref.child(replyPath).set({
+            ...replyData,
+            id: replyId,
+            timestamp: Date.now()
+          });
+          // Increment reply count
+          await this.threadsRef.child(threadId).child('replyCount').transaction(current => (current || 0) + 1);
+          return replyId;
         } catch (e) {
-          State.stats.errors++;
+          Toast.error('Failed to reply');
           throw e;
         }
       },
 
-      async update(updates) {
+      async toggleLike(threadId) {
         try {
-          await this.ref.update(updates);
-          const snapshot = await this.ref.once('value');
-          const val = snapshot.val();
-          State.data = val;
-          State.dataSize = Utils.getDataSize(val);
-          State.stats.writes++;
-          State.lastUpdate = Date.now();
-          return val;
+          const threadRef = this.threadsRef.child(threadId);
+          const snapshot = await threadRef.child('likedBy').once('value');
+          const likedBy = snapshot.val() || {};
+          const userId = 'user_' + Utils.generateId().substr(0, 8);
+          
+          if (likedBy[userId]) {
+            // Unlike
+            await threadRef.child('likedBy').child(userId).remove();
+            await threadRef.child('likes').transaction(current => Math.max(0, (current || 0) - 1));
+            return { liked: false, likes: (await threadRef.child('likes').once('value')).val() || 0 };
+          } else {
+            // Like
+            await threadRef.child('likedBy').child(userId).set(true);
+            await threadRef.child('likes').transaction(current => (current || 0) + 1);
+            return { liked: true, likes: (await threadRef.child('likes').once('value')).val() || 0 };
+          }
         } catch (e) {
-          State.stats.errors++;
-          throw e;
-        }
-      },
-
-      async delete() {
-        try {
-          await this.ref.remove();
-          State.data = null;
-          State.dataSize = 0;
-          State.stats.deletes++;
-          State.lastUpdate = Date.now();
-          return true;
-        } catch (e) {
-          State.stats.errors++;
+          Toast.error('Failed to like');
           throw e;
         }
       },
 
       attachRealtime(callback) {
-        if (this.listenerAttached) return;
-        this.listenerAttached = true;
-        this.ref.on('value', (snapshot) => {
-          const val = snapshot.val();
-          State.data = val;
-          State.dataSize = Utils.getDataSize(val);
-          State.lastUpdate = Date.now();
-          if (callback) callback(val);
-        }, (error) => {
-          Toast.warning('Realtime: ' + error.message);
+        this.threadsRef.orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+          const data = snapshot.val();
+          if (!data) {
+            callback([]);
+            return;
+          }
+          const threads = Object.entries(data).map(([id, thread]) => ({ id, ...thread }));
+          callback(threads.reverse());
         });
       },
 
       detachRealtime() {
-        if (this.listenerAttached) {
-          this.ref.off();
-          this.listenerAttached = false;
-        }
+        this.threadsRef.off();
       }
     };
 
     // ================================================================
-    // 6. SORTED: ANDROID ENFORCEMENT
+    // 6. ANDROID ENFORCEMENT
     // ================================================================
     function enforceAndroid() {
       if (!Utils.isAndroid()) {
-        State.isBlocked = true;
         document.body.innerHTML = `
           <div class="blocked-page">
             <div class="icon">📱</div>
             <h1>Android Only</h1>
-            <p>This premium app is optimized for Android browsers.<br>Please open on your Android device.</p>
-            <div class="ua">${navigator.userAgent}</div>
+            <p>Threads is optimized for Android browsers.<br>Please open on your Android device.</p>
           </div>
         `;
         return false;
@@ -926,444 +957,451 @@
     }
 
     // ================================================================
-    // 7. SORTED: UI RENDERER
+    // 7. UI RENDERER
     // ================================================================
     const UI = {
       elements: {},
 
       render() {
         document.getElementById('root').innerHTML = `
-          <div class="app-wrapper">
-            <div class="card">
-              <!-- Header -->
-              <div class="header">
-                <div class="header-left">
-                  <div class="logo-wrap"><i class="fas fa-cloud"></i></div>
-                  <div class="title-group">
-                    <h1>Cloud Pro</h1>
-                    <div class="subtitle">Real-time Database v3</div>
+          <div class="app-container">
+            <!-- Header -->
+            <header class="header">
+              <div class="header-left">
+                <span class="logo"><i class="fas fa-threads"></i>Threads</span>
+                <span class="android-badge">🤖 Android</span>
+              </div>
+              <div class="header-right">
+                <button class="header-btn" id="refreshBtn" title="Refresh">
+                  <i class="fas fa-sync"></i>
+                </button>
+                <button class="header-btn" id="statsBtn" title="Stats">
+                  <i class="fas fa-chart-simple"></i>
+                  <span class="badge-count" id="threadCount">0</span>
+                </button>
+              </div>
+            </header>
+
+            <!-- Compose -->
+            <div class="compose-section">
+              <div class="compose-container">
+                <div class="compose-avatar" id="userAvatar">U</div>
+                <div class="compose-input-wrap">
+                  <textarea id="threadInput" placeholder="What's on your mind?..." maxlength="${CONFIG.maxThreadLength}"></textarea>
+                  <div class="compose-actions">
+                    <div class="compose-tools">
+                      <button id="emojiBtn" title="Add emoji"><i class="fas fa-face-smile"></i></button>
+                      <button id="hashtagBtn" title="Add hashtag"><i class="fas fa-hashtag"></i></button>
+                    </div>
+                    <div>
+                      <span class="char-count" id="charCount">0/${CONFIG.maxThreadLength}</span>
+                      <button class="compose-submit" id="postBtn">Post</button>
+                    </div>
                   </div>
                 </div>
-                <div class="badge-group">
-                  <span class="badge badge-android" id="androidBadge">🤖 Android</span>
-                  <span class="badge badge-pro" id="proBadge">⚡ Pro</span>
-                  <span class="badge badge-live" id="liveBadge">● Live</span>
-                </div>
               </div>
+            </div>
 
-              <!-- Quick Stats -->
-              <div class="quick-stats">
-                <div class="stat-card">
-                  <span class="icon">📥</span>
-                  <div class="number" id="statReads">0</div>
-                  <div class="label">Reads</div>
-                </div>
-                <div class="stat-card">
-                  <span class="icon">📤</span>
-                  <div class="number" id="statWrites">0</div>
-                  <div class="label">Writes</div>
-                </div>
-                <div class="stat-card">
-                  <span class="icon">❌</span>
-                  <div class="number" id="statErrors">0</div>
-                  <div class="label">Errors</div>
-                </div>
-                <div class="stat-card">
-                  <span class="icon">🗑️</span>
-                  <div class="number" id="statDeletes">0</div>
-                  <div class="label">Deletes</div>
-                </div>
+            <!-- Feed -->
+            <div class="feed">
+              <div class="feed-header">
+                <h2><i class="fas fa-home"></i> Feed</h2>
+                <span class="feed-stats" id="feedStats">0 threads</span>
               </div>
-
-              <!-- Data Panel -->
-              <div class="data-panel">
-                <div class="panel-header">
-                  <span class="panel-label"><i class="fas fa-database"></i> Data</span>
-                  <div class="panel-actions">
-                    <button id="copyBtn" title="Copy"><i class="fas fa-copy"></i></button>
-                    <button id="expandBtn" title="Expand"><i class="fas fa-expand"></i></button>
-                    <button id="refreshBtn" title="Refresh"><i class="fas fa-sync"></i></button>
-                  </div>
-                </div>
-                <div class="data-content empty" id="dataContent">📭 No data yet</div>
-                <div class="data-meta">
-                  <span class="size" id="dataSize">0 B</span>
-                  <span id="dataTime">—</span>
-                </div>
-              </div>
-
-              <!-- Action Grid -->
-              <div class="action-grid">
-                <button class="btn btn-primary" id="fetchBtn"><i class="fas fa-download"></i> Fetch</button>
-                <button class="btn btn-success" id="updateBtn"><i class="fas fa-pen"></i> Update</button>
-                <button class="btn btn-danger" id="deleteBtn"><i class="fas fa-trash"></i> Delete</button>
-                <button class="btn btn-warning" id="resetBtn"><i class="fas fa-undo"></i> Reset</button>
-              </div>
-
-              <!-- Input Section -->
-              <div class="input-section">
-                <input type="text" id="customInput" placeholder="Enter JSON or text..." />
-                <button class="btn btn-primary" id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
-              </div>
-
-              <!-- Advanced Controls -->
-              <div class="advanced-controls">
-                <button class="btn btn-ghost" id="incrementBtn"><i class="fas fa-plus-circle"></i> Increment</button>
-                <button class="btn btn-ghost" id="timestampBtn"><i class="fas fa-clock"></i> Timestamp</button>
-                <button class="btn btn-ghost" id="clearDisplayBtn"><i class="fas fa-eraser"></i> Clear View</button>
-                <button class="btn btn-ghost" id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
-              </div>
-
-              <!-- Status Bar -->
-              <div class="status-bar">
-                <div class="status-left">
-                  <span class="status-dot idle" id="statusDot"></span>
-                  <span class="status-text" id="statusText">Ready</span>
-                </div>
-                <div class="status-right">
-                  <span class="online-indicator">
-                    <span class="dot"></span>
-                    <span id="onlineStatus">Online</span>
-                  </span>
-                  <span id="actionCounter">0 pending</span>
-                </div>
+              <div id="feedContainer">
+                <div class="shimmer"></div>
+                <div class="shimmer"></div>
+                <div class="shimmer"></div>
               </div>
             </div>
           </div>
         `;
 
         this.cacheElements();
-        this.setupBadges();
         Toast.init();
       },
 
       cacheElements() {
         const ids = [
-          'androidBadge', 'proBadge', 'liveBadge',
-          'statReads', 'statWrites', 'statErrors', 'statDeletes',
-          'dataContent', 'dataSize', 'dataTime',
-          'statusDot', 'statusText', 'onlineStatus', 'actionCounter',
-          'fetchBtn', 'updateBtn', 'deleteBtn', 'resetBtn',
-          'sendBtn', 'customInput', 'incrementBtn', 'timestampBtn',
-          'clearDisplayBtn', 'exportBtn', 'copyBtn', 'expandBtn', 'refreshBtn'
+          'threadInput', 'postBtn', 'charCount', 'feedContainer',
+          'refreshBtn', 'statsBtn', 'threadCount', 'feedStats',
+          'userAvatar', 'emojiBtn', 'hashtagBtn'
         ];
         ids.forEach(id => {
           this.elements[id] = document.getElementById(id);
         });
       },
 
-      setupBadges() {
-        if (this.elements.androidBadge) {
-          this.elements.androidBadge.style.display = 'inline-block';
-        }
-        if (this.elements.proBadge) {
-          this.elements.proBadge.style.display = 'inline-block';
-        }
-        if (this.elements.liveBadge) {
-          this.elements.liveBadge.style.display = 'inline-block';
-        }
-      },
+      renderThreads(threads) {
+        const container = this.elements.feedContainer;
+        if (!container) return;
 
-      updateStats() {
-        const s = State.stats;
-        if (this.elements.statReads) this.elements.statReads.textContent = s.reads;
-        if (this.elements.statWrites) this.elements.statWrites.textContent = s.writes;
-        if (this.elements.statErrors) this.elements.statErrors.textContent = s.errors;
-        if (this.elements.statDeletes) this.elements.statDeletes.textContent = s.deletes;
-      },
-
-      updateDataDisplay(data) {
-        const el = this.elements.dataContent;
-        if (!el) return;
-        if (data === null || data === undefined) {
-          el.textContent = '📭 No data yet';
-          el.className = 'data-content empty';
+        if (!threads || threads.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon"><i class="fas fa-comment"></i></div>
+              <h3>No threads yet</h3>
+              <p>Be the first to start a conversation!</p>
+            </div>
+          `;
           return;
         }
-        const display = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
-        el.textContent = display;
-        el.className = 'data-content';
+
+        container.innerHTML = threads.map(thread => this.createThreadHTML(thread)).join('');
+        this.updateStats(threads);
+        this.bindThreadEvents();
       },
 
-      updateMeta() {
-        if (this.elements.dataSize) {
-          this.elements.dataSize.textContent = Utils.formatBytes(State.dataSize);
+      createThreadHTML(thread) {
+        const avatarClass = Utils.getAvatarColor(thread.userId || thread.id);
+        const content = Utils.formatText(thread.content || '');
+        const time = Utils.timeAgo(thread.timestamp);
+        const replyCount = thread.replyCount || 0;
+        const likes = thread.likes || 0;
+        const replies = thread.replies ? Object.values(thread.replies) : [];
+
+        return `
+          <div class="thread-card" data-thread-id="${thread.id}">
+            <div class="thread-header">
+              <div class="thread-user">
+                <div class="thread-avatar ${avatarClass}">${Utils.getInitials(thread.username || 'User')}</div>
+                <div class="thread-user-info">
+                  <div class="thread-username">
+                    ${thread.username || 'Anonymous'}
+                    ${thread.verified ? '<span class="verified"><i class="fas fa-check-circle"></i></span>' : ''}
+                  </div>
+                  <div class="thread-handle">@${thread.handle || 'user'}</div>
+                </div>
+              </div>
+              <div class="thread-time">${time}</div>
+            </div>
+            <div class="thread-content">${content}</div>
+            ${this.createThreadMedia(thread)}
+            <div class="thread-actions">
+              <button class="thread-action-btn like-btn" data-thread-id="${thread.id}">
+                <span class="icon"><i class="fa-regular fa-heart"></i></span>
+                <span class="count like-count">${likes}</span>
+              </button>
+              <button class="thread-action-btn reply-toggle" data-thread-id="${thread.id}">
+                <span class="icon"><i class="fa-regular fa-comment"></i></span>
+                <span class="count">${replyCount}</span>
+              </button>
+              <button class="thread-action-btn share-btn" data-thread-id="${thread.id}">
+                <span class="icon"><i class="fa-regular fa-share-from-square"></i></span>
+              </button>
+            </div>
+            ${this.createReplySection(thread)}
+            ${this.createRepliesList(replies)}
+          </div>
+        `;
+      },
+
+      createThreadMedia(thread) {
+        if (thread.media) {
+          return `
+            <div class="thread-media">
+              <img src="${thread.media}" alt="Thread media" loading="lazy" />
+            </div>
+          `;
         }
-        if (this.elements.dataTime) {
-          this.elements.dataTime.textContent = State.lastUpdate ? '🕐 ' + Utils.getTimestamp() : '—';
+        if (thread.mediaType) {
+          return `
+            <div class="thread-media">
+              <div class="media-placeholder">
+                <i class="fas fa-${thread.mediaType}"></i>
+                <span>${thread.mediaLabel || 'Media'}</span>
+              </div>
+            </div>
+          `;
+        }
+        return '';
+      },
+
+      createReplySection(thread) {
+        return `
+          <div class="reply-section" data-thread-id="${thread.id}">
+            <div class="reply-container">
+              <div class="compose-avatar" style="width:28px;height:28px;font-size:0.8rem;">U</div>
+              <input type="text" class="reply-input" placeholder="Write a reply..." maxlength="280" />
+              <button class="reply-submit" data-thread-id="${thread.id}">Reply</button>
+            </div>
+          </div>
+        `;
+      },
+
+      createRepliesList(replies) {
+        if (!replies || replies.length === 0) return '';
+        return `
+          <div class="replies-list">
+            ${replies.slice(0, CONFIG.maxReplies).map(reply => `
+              <div class="reply-item">
+                <div class="thread-avatar ${Utils.getAvatarColor(reply.userId || reply.id)}" style="width:24px;height:24px;font-size:0.6rem;">
+                  ${Utils.getInitials(reply.username || 'U')}
+                </div>
+                <div class="reply-content">
+                  <div>
+                    <span class="reply-user">${reply.username || 'Anonymous'}</span>
+                    <span class="reply-time"> · ${Utils.timeAgo(reply.timestamp)}</span>
+                  </div>
+                  <div class="reply-text">${reply.content}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      },
+
+      updateStats(threads) {
+        const total = threads.length;
+        const replies = threads.reduce((sum, t) => sum + (t.replyCount || 0), 0);
+        const likes = threads.reduce((sum, t) => sum + (t.likes || 0), 0);
+        
+        if (this.elements.threadCount) this.elements.threadCount.textContent = total;
+        if (this.elements.feedStats) this.elements.feedStats.textContent = `${total} threads · ${replies} replies · ${likes} likes`;
+        
+        State.stats.threads = total;
+        State.stats.replies = replies;
+        State.stats.likes = likes;
+      },
+
+      updateCharCount() {
+        const input = this.elements.threadInput;
+        const counter = this.elements.charCount;
+        if (!input || !counter) return;
+        const len = input.value.length;
+        const max = CONFIG.maxThreadLength;
+        counter.textContent = `${len}/${max}`;
+        counter.classList.toggle('over', len > max);
+        if (this.elements.postBtn) {
+          this.elements.postBtn.disabled = len === 0 || len > max;
         }
       },
 
-      setStatus(msg, type = 'idle') {
-        if (this.elements.statusText) this.elements.statusText.textContent = msg;
-        if (this.elements.statusDot) {
-          this.elements.statusDot.className = 'status-dot ' + type;
+      bindThreadEvents() {
+        // Like buttons
+        document.querySelectorAll('.like-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const threadId = btn.dataset.threadId;
+            if (threadId) this.handleLike(threadId, btn);
+          });
+        });
+
+        // Reply toggle
+        document.querySelectorAll('.reply-toggle').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const threadId = btn.dataset.threadId;
+            const section = document.querySelector(`.reply-section[data-thread-id="${threadId}"]`);
+            if (section) {
+              section.classList.toggle('open');
+              const input = section.querySelector('.reply-input');
+              if (input) input.focus();
+            }
+          });
+        });
+
+        // Reply submit
+        document.querySelectorAll('.reply-submit').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const threadId = btn.dataset.threadId;
+            const section = document.querySelector(`.reply-section[data-thread-id="${threadId}"]`);
+            const input = section?.querySelector('.reply-input');
+            if (input && input.value.trim()) {
+              this.handleReply(threadId, input.value.trim());
+              input.value = '';
+              section.classList.remove('open');
+            }
+          });
+        });
+
+        // Reply input enter key
+        document.querySelectorAll('.reply-input').forEach(input => {
+          input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              const threadId = input.closest('.reply-section')?.dataset.threadId;
+              if (threadId) {
+                const btn = document.querySelector(`.reply-submit[data-thread-id="${threadId}"]`);
+                if (btn) btn.click();
+              }
+            }
+          });
+        });
+
+        // Share buttons
+        document.querySelectorAll('.share-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const threadId = btn.dataset.threadId;
+            if (navigator.share) {
+              navigator.share({
+                title: 'Threads Post',
+                text: 'Check out this thread!',
+                url: window.location.href + '?thread=' + threadId
+              });
+            } else {
+              navigator.clipboard?.writeText(window.location.href + '?thread=' + threadId);
+              Toast.success('Link copied!');
+            }
+          });
+        });
+      },
+
+      async handleLike(threadId, btn) {
+        try {
+          const result = await FirebaseManager.toggleLike(threadId);
+          const countEl = btn.querySelector('.like-count');
+          if (countEl) countEl.textContent = result.likes;
+          btn.classList.toggle('liked', result.liked);
+          Toast.info(result.liked ? '❤️ Liked!' : '💔 Unliked');
+        } catch (e) {
+          Toast.error('Failed to like');
         }
       },
 
-      updateOnlineStatus() {
-        if (this.elements.onlineStatus) {
-          this.elements.onlineStatus.textContent = State.isOnline ? 'Online' : 'Offline';
-        }
-      },
-
-      updateActionCounter() {
-        if (this.elements.actionCounter) {
-          this.elements.actionCounter.textContent = State.pendingActions + ' pending';
+      async handleReply(threadId, content) {
+        try {
+          const replyData = {
+            content: content,
+            username: 'User_' + Utils.generateId().substr(0, 4),
+            userId: Utils.generateId(),
+            timestamp: Date.now()
+          };
+          await FirebaseManager.addReply(threadId, replyData);
+          Toast.success('💬 Reply posted!');
+          // Refresh will happen via realtime listener
+        } catch (e) {
+          Toast.error('Failed to reply');
         }
       }
     };
 
     // ================================================================
-    // 8. SORTED: APP CONTROLLER
+    // 8. APP CONTROLLER
     // ================================================================
     const App = {
       init() {
-        // Step 1: Enforce Android
         if (!enforceAndroid()) return;
 
-        // Step 2: Render UI
         UI.render();
-
-        // Step 3: Init Firebase
         FirebaseManager.init();
 
-        // Step 4: Load initial data
-        this.loadData();
+        // Load initial threads
+        this.loadThreads();
 
-        // Step 5: Attach realtime listener
-        FirebaseManager.attachRealtime((data) => {
-          UI.updateDataDisplay(data);
-          UI.updateMeta();
-          UI.setStatus('🔄 Live update', 'success');
+        // Attach realtime listener
+        FirebaseManager.attachRealtime((threads) => {
+          State.threads = threads;
+          UI.renderThreads(threads);
         });
 
-        // Step 6: Bind events
-        this.bindEvents();
-
-        // Step 7: Start periodic status updates
-        setInterval(() => {
-          UI.updateOnlineStatus();
-          UI.updateActionCounter();
-          UI.updateStats();
-        }, 2000);
-
-        Toast.success('🚀 Cloud Pro ready!');
-      },
-
-      async loadData() {
-        try {
-          UI.setStatus('Loading...', 'loading');
-          const data = await FirebaseManager.read();
-          UI.updateDataDisplay(data);
-          UI.updateMeta();
-          UI.updateStats();
-          UI.setStatus('✅ Loaded', 'success');
-        } catch (e) {
-          Toast.error('Load failed: ' + e.message);
-          UI.setStatus('❌ Error', 'error');
-        }
-      },
-
-      async updateData(value) {
-        const payload = value || {
-          timestamp: Date.now(),
-          message: 'Hello from Pro!',
-          random: Math.floor(Math.random() * 100000),
-          note: 'Evolved v3.0',
-          id: Utils.generateId()
-        };
-
-        try {
-          State.pendingActions++;
-          UI.updateActionCounter();
-          UI.setStatus('Updating...', 'loading');
-
-          const data = await FirebaseManager.write(payload);
-          UI.updateDataDisplay(data);
-          UI.updateMeta();
-          UI.updateStats();
-          UI.setStatus('✅ Updated', 'success');
-          Toast.success('Data updated!');
-        } catch (e) {
-          Toast.error('Update failed: ' + e.message);
-          UI.setStatus('❌ Error', 'error');
-        } finally {
-          State.pendingActions--;
-          UI.updateActionCounter();
-        }
-      },
-
-      async deleteData() {
-        if (!confirm('🗑️ Delete all data from Firebase?')) return;
-
-        try {
-          State.pendingActions++;
-          UI.updateActionCounter();
-          UI.setStatus('Deleting...', 'loading');
-
-          await FirebaseManager.delete();
-          UI.updateDataDisplay(null);
-          UI.updateMeta();
-          UI.updateStats();
-          UI.setStatus('🗑️ Deleted', 'success');
-          Toast.success('Data deleted!');
-        } catch (e) {
-          Toast.error('Delete failed: ' + e.message);
-          UI.setStatus('❌ Error', 'error');
-        } finally {
-          State.pendingActions--;
-          UI.updateActionCounter();
-        }
-      },
-
-      async incrementCounter() {
-        try {
-          const current = State.data?.counter || 0;
-          const newVal = current + 1;
-          await FirebaseManager.update({ counter: newVal });
-          UI.updateDataDisplay(State.data);
-          UI.updateMeta();
-          UI.updateStats();
-          UI.setStatus(`🔢 Counter: ${newVal}`, 'success');
-          Toast.info(`Counter: ${newVal}`);
-        } catch (e) {
-          Toast.error('Increment failed: ' + e.message);
-        }
-      },
-
-      async addTimestamp() {
-        try {
-          const ts = Date.now();
-          await FirebaseManager.update({ 
-            lastTimestamp: ts,
-            timestampReadable: new Date(ts).toLocaleString()
-          });
-          UI.updateDataDisplay(State.data);
-          UI.updateMeta();
-          UI.setStatus('🕐 Timestamp added', 'success');
-          Toast.success('Timestamp saved!');
-        } catch (e) {
-          Toast.error('Failed: ' + e.message);
-        }
-      },
-
-      exportData() {
-        if (!State.data) {
-          Toast.warning('No data to export');
-          return;
-        }
-        const json = JSON.stringify(State.data, null, 2);
-        const blob = new Blob([json], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `backup-${Date.now()}.json`;
-        a.click();
-        URL.revokeObjectURL(url);
-        Toast.success('📤 Data exported!');
-      },
-
-      copyData() {
-        if (!State.data) {
-          Toast.warning('No data to copy');
-          return;
-        }
-        const text = JSON.stringify(State.data, null, 2);
-        navigator.clipboard?.writeText(text).then(() => {
-          Toast.success('📋 Copied!');
-        }).catch(() => {
-          // Fallback
-          const area = document.createElement('textarea');
-          area.value = text;
-          document.body.appendChild(area);
-          area.select();
-          document.execCommand('copy');
-          area.remove();
-          Toast.success('📋 Copied!');
-        });
-      },
-
-      bindEvents() {
-        const E = UI.elements;
-
-        // Primary actions
-        if (E.fetchBtn) E.fetchBtn.addEventListener('click', () => this.loadData());
-        if (E.updateBtn) E.updateBtn.addEventListener('click', () => this.updateData());
-        if (E.deleteBtn) E.deleteBtn.addEventListener('click', () => this.deleteData());
-        if (E.resetBtn) E.resetBtn.addEventListener('click', () => {
-          this.updateData({ 
-            reset: true,
-            timestamp: Date.now(),
-            message: 'Reset state',
-            counter: 0
-          });
-        });
-
-        // Send custom input
-        if (E.sendBtn) {
-          E.sendBtn.addEventListener('click', () => {
-            const input = E.customInput;
-            if (!input) return;
-            const val = input.value.trim();
-            if (!val) {
-              Toast.warning('Please enter a value');
-              return;
-            }
-            let parsed;
-            try { parsed = JSON.parse(val); } catch { parsed = val; }
-            this.updateData(parsed);
-            input.value = '';
-          });
-        }
-
-        if (E.customInput) {
-          E.customInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') E.sendBtn?.click();
-          });
-        }
-
-        // Advanced controls
-        if (E.incrementBtn) E.incrementBtn.addEventListener('click', () => this.incrementCounter());
-        if (E.timestampBtn) E.timestampBtn.addEventListener('click', () => this.addTimestamp());
-        if (E.clearDisplayBtn) {
-          E.clearDisplayBtn.addEventListener('click', () => {
-            UI.updateDataDisplay(null);
-            UI.setStatus('🧹 View cleared', 'idle');
-            Toast.info('Display cleared');
-          });
-        }
-        if (E.exportBtn) E.exportBtn.addEventListener('click', () => this.exportData());
-
-        // Panel actions
-        if (E.copyBtn) E.copyBtn.addEventListener('click', () => this.copyData());
-        if (E.refreshBtn) E.refreshBtn.addEventListener('click', () => this.loadData());
-        if (E.expandBtn) {
-          E.expandBtn.addEventListener('click', () => {
-            const el = UI.elements.dataContent;
-            if (el) {
-              el.style.maxHeight = el.style.maxHeight === 'none' ? '200px' : 'none';
-              Toast.info(el.style.maxHeight === 'none' ? '📖 Expanded' : '📕 Collapsed');
+        // Compose thread
+        const postBtn = UI.elements.postBtn;
+        const threadInput = UI.elements.threadInput;
+        
+        if (threadInput) {
+          threadInput.addEventListener('input', () => UI.updateCharCount());
+          threadInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              postBtn?.click();
             }
           });
         }
 
-        // Network status
-        window.addEventListener('online', () => {
-          State.isOnline = true;
-          UI.updateOnlineStatus();
-          Toast.success('🌐 Back online');
-        });
-        window.addEventListener('offline', () => {
-          State.isOnline = false;
-          UI.updateOnlineStatus();
-          Toast.warning('📡 Offline');
-        });
+        if (postBtn) {
+          postBtn.addEventListener('click', async () => {
+            const content = threadInput?.value.trim();
+            if (!content || content.length > CONFIG.maxThreadLength) return;
+
+            const threadData = {
+              content: content,
+              username: 'AndroidUser_' + Utils.generateId().substr(0, 4),
+              handle: 'user_' + Utils.generateId().substr(0, 6),
+              userId: Utils.generateId(),
+              verified: Math.random() > 0.9,
+              timestamp: Date.now()
+            };
+
+            try {
+              await FirebaseManager.createThread(threadData);
+              if (threadInput) threadInput.value = '';
+              UI.updateCharCount();
+              Toast.success('🎉 Thread posted!');
+            } catch (e) {
+              Toast.error('Failed to post');
+            }
+          });
+        }
+
+        // Emoji button
+        const emojiBtn = UI.elements.emojiBtn;
+        if (emojiBtn) {
+          emojiBtn.addEventListener('click', () => {
+            const emojis = ['😊', '🔥', '💯', '👏', '🙌', '💪', '✨', '🚀', '🎉', '❤️'];
+            const random = emojis[Math.floor(Math.random() * emojis.length)];
+            if (threadInput) {
+              const cursor = threadInput.selectionStart || 0;
+              const text = threadInput.value;
+              threadInput.value = text.slice(0, cursor) + random + text.slice(cursor);
+              threadInput.focus();
+              UI.updateCharCount();
+            }
+          });
+        }
+
+        // Hashtag button
+        const hashtagBtn = UI.elements.hashtagBtn;
+        if (hashtagBtn) {
+          hashtagBtn.addEventListener('click', () => {
+            if (threadInput) {
+              const cursor = threadInput.selectionStart || 0;
+              const text = threadInput.value;
+              const hashtag = prompt('Enter hashtag:', 'threads');
+              if (hashtag) {
+                threadInput.value = text.slice(0, cursor) + '#' + hashtag + ' ' + text.slice(cursor);
+                threadInput.focus();
+                UI.updateCharCount();
+              }
+            }
+          });
+        }
+
+        // Refresh button
+        const refreshBtn = UI.elements.refreshBtn;
+        if (refreshBtn) {
+          refreshBtn.addEventListener('click', () => {
+            Toast.info('🔄 Refreshing...');
+            this.loadThreads();
+          });
+        }
+
+        // Stats button
+        const statsBtn = UI.elements.statsBtn;
+        if (statsBtn) {
+          statsBtn.addEventListener('click', () => {
+            Toast.info(`📊 ${State.stats.threads} threads · ${State.stats.replies} replies · ${State.stats.likes} likes`);
+          });
+        }
+
+        // Initial char count
+        UI.updateCharCount();
+      },
+
+      async loadThreads() {
+        try {
+          const threads = await FirebaseManager.getThreads();
+          State.threads = threads;
+          UI.renderThreads(threads);
+        } catch (e) {
+          Toast.error('Failed to load threads');
+        }
       }
     };
 
     // ================================================================
-    // 9. SORTED: BOOT
+    // 9. BOOT
     // ================================================================
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', () => App.init());
