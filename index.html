@@ -53,6 +53,21 @@ header h1{font-size:0.9rem;color:var(--neon);text-shadow:0 0 8px var(--neon);}
 .msg-user{font-size:0.7rem;color:var(--neon);font-weight:bold;text-shadow:0 0 4px var(--neon);cursor:pointer;}
 .rank-tag{font-size:0.55rem;padding:1px 4px;border-radius:4px;background:rgba(234,179,8,0.2);color:var(--gold);border:1px solid var(--gold);font-weight:bold;}
 .msg-body{line-height:1.25;}
+
+/* Glowing Clickable Links */
+.msg-body a {
+  color: var(--neon);
+  font-weight: bold;
+  text-decoration: underline;
+  text-shadow: 0 0 6px var(--neon);
+  word-break: break-all;
+  transition: all 0.2s ease-in-out;
+}
+.msg-body a:hover, .msg-body a:focus {
+  color: #fff;
+  text-shadow: 0 0 12px var(--neon), 0 0 20px var(--neon);
+}
+
 .msg-img{max-width:100%;max-height:180px;border-radius:8px;margin-top:4px;border:1px solid var(--border);cursor:pointer;object-fit:cover;}
 .msg-audio{width:100%;margin-top:4px;height:32px;}
 .msg-footer{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:4px;}
@@ -366,9 +381,13 @@ function escapeHTML(str) {
 }
 
 function linkify(text) {
+  if (!text) return '';
   const cleanText = escapeHTML(text);
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  return cleanText.replace(urlRegex, url => `<a href="${url}" target="_blank" rel="noopener" style="color:var(--neon);font-weight:bold">${url}</a>`);
+  const urlRegex = /(https?:\/\/[^\s<]+)/gi;
+  return cleanText.replace(urlRegex, (url) => {
+    const cleanUrl = url.replace(/[.,;!?]+$/, '');
+    return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>`;
+  });
 }
 
 function formatTime(ts){
