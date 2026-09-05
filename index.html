@@ -1,163 +1,359 @@
-<!-- DeepSeek: Production-ready with everything -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Login | ZACK360</title>
-  <link href="styles.css" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Free Fire</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#1a1a2e;font-family:sans-serif;touch-action:none}
+#game{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative}
+canvas{display:block;width:100%;height:100%;background:radial-gradient(circle at center,#2d2d44,#0a0a12);touch-action:none;image-rendering:pixelated}
+#ui{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#hud{position:absolute;top:2vh;left:2vw;color:#fff;font-size:clamp(14px,3vw,24px);text-shadow:0 0 10px rgba(0,0,0,0.8);pointer-events:none;display:flex;gap:4vw;font-weight:bold}
+#hud span{background:rgba(0,0,0,0.5);padding:0.5vh 1.5vw;border-radius:8px;backdrop-filter:blur(4px)}
+#controls{position:absolute;bottom:3vh;left:0;width:100%;display:flex;justify-content:space-between;padding:0 4vw;pointer-events:none}
+.ctrl-btn{pointer-events:auto;width:clamp(60px,15vw,90px);height:clamp(60px,15vw,90px);border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);color:#fff;font-size:clamp(20px,5vw,40px);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.05s;touch-action:none;font-weight:bold;text-shadow:0 2px 8px rgba(0,0,0,0.6)}
+.ctrl-btn:active{transform:scale(0.85);background:rgba(255,200,50,0.4)}
+#fireBtn{width:clamp(70px,18vw,110px);height:clamp(70px,18vw,110px);background:rgba(255,50,50,0.5);border-color:rgba(255,100,100,0.8);font-size:clamp(16px,4vw,32px)}
+#info{position:absolute;bottom:12vh;left:50%;transform:translateX(-50%);color:#ffcc00;font-size:clamp(12px,2.5vw,20px);background:rgba(0,0,0,0.6);padding:0.5vh 3vw;border-radius:20px;backdrop-filter:blur(4px);white-space:nowrap;pointer-events:none;text-shadow:0 2px 8px #000}
+@media (orientation:portrait){#controls{padding:0 6vw}}
+@media (orientation:landscape){#controls{padding:0 8vw}}
+</style>
 </head>
 <body>
-  <div class="auth-container glass-morphism">
-    <!-- Logo & Branding -->
-    <div class="auth-header">
-      <span class="logo">✦ ZACK360</span>
-      <p class="subtitle">Secure access to your account</p>
-    </div>
+<div id="game">
+<canvas id="gc"></canvas>
+<div id="ui">
+<div id="hud"><span id="scoreDisplay">💀 0</span><span id="waveDisplay">🌊 1</span></div>
+<div id="controls">
+<div class="ctrl-btn" id="moveLeft">◀</div>
+<div class="ctrl-btn" id="fireBtn">🔥</div>
+<div class="ctrl-btn" id="moveRight">▶</div>
+</div>
+<div id="info">⚔️ SURVIVE</div>
+</div>
+</div>
+<script>
+(function(){
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+const scoreSpan=document.getElementById('scoreDisplay');
+const waveSpan=document.getElementById('waveDisplay');
+const moveLeft=document.getElementById('moveLeft');
+const moveRight=document.getElementById('moveRight');
+const fireBtn=document.getElementById('fireBtn');
 
-    <!-- Login Form -->
-    <form id="loginForm" class="auth-form" autocomplete="off">
-      <!-- Username Field -->
-      <div class="input-group floating">
-        <i class="fas fa-user input-icon"></i>
-        <input 
-          type="text" 
-          id="username" 
-          class="input-field" 
-          placeholder=" " 
-          required 
-          minlength="3"
-          maxlength="20"
-          pattern="[a-zA-Z0-9_]+"
-          aria-describedby="username-error"
-        />
-        <label for="username" class="input-label">Username</label>
-        <span id="username-error" class="error-message"></span>
-      </div>
+let W,H;
+function resize(){
+W=canvas.width=window.innerWidth;
+H=canvas.height=window.innerHeight;
+}
+window.addEventListener('resize',resize);
+resize();
 
-      <!-- Password Field -->
-      <div class="input-group floating">
-        <i class="fas fa-lock input-icon"></i>
-        <input 
-          type="password" 
-          id="password" 
-          class="input-field" 
-          placeholder=" " 
-          required 
-          minlength="6"
-          aria-describedby="password-error"
-        />
-        <label for="password" class="input-label">Password</label>
-        <button type="button" class="toggle-password" aria-label="Toggle password visibility">
-          <i class="fas fa-eye"></i>
-        </button>
-        <span id="password-error" class="error-message"></span>
-      </div>
+const player={x:0,y:0,r:Math.min(W,H)*0.025};
+const enemies=[];
+const bullets=[];
+let score=0;
+let wave=1;
+let alive=true;
+let fireCooldown=0;
+const MAX_FIRE_CD=10;
+let moveDir=0;
+let enemySpawnCounter=0;
+const ENEMY_SPAWN_RATE=40;
+let enemySpeed=1.2;
+let baseEnemySpeed=1.2;
+let frame=0;
 
-      <!-- Remember Me & Forgot -->
-      <div class="form-options">
-        <label class="checkbox-label">
-          <input type="checkbox" id="rememberMe" />
-          <span class="checkmark"></span>
-          Remember me
-        </label>
-        <a href="#" class="forgot-link">Forgot password?</a>
-      </div>
+function resetGame(){
+player.x=W/2;
+player.y=H*0.85;
+player.r=Math.min(W,H)*0.025;
+enemies.length=0;
+bullets.length=0;
+score=0;
+wave=1;
+alive=true;
+fireCooldown=0;
+moveDir=0;
+enemySpawnCounter=0;
+enemySpeed=baseEnemySpeed;
+frame=0;
+updateHUD();
+}
 
-      <!-- Login Button -->
-      <button type="submit" class="btn-neon" id="loginBtn">
-        <span class="btn-text">Secure Login</span>
-        <i class="fas fa-arrow-right btn-icon"></i>
-      </button>
+function updateHUD(){
+scoreSpan.textContent='💀 '+score;
+waveSpan.textContent='🌊 '+wave;
+}
 
-      <!-- Register Link -->
-      <p class="auth-switch">
-        Don't have an account? 
-        <a href="#" id="registerLink">Create one</a>
-      </p>
-    </form>
+function spawnEnemy(){
+const r=Math.min(W,H)*0.035;
+const side=Math.floor(Math.random()*4);
+let x,y;
+if(side===0){x=Math.random()*W;y=-r;}
+else if(side===1){x=W+r;y=Math.random()*H;}
+else if(side===2){x=Math.random()*W;y=H+r;}
+else {x=-r;y=Math.random()*H;}
+enemies.push({x,y,r,vx:0,vy:0,hp:1});
+}
 
-    <!-- Social Login -->
-    <div class="social-login">
-      <span class="divider">or continue with</span>
-      <div class="social-buttons">
-        <button class="social-btn google">
-          <i class="fab fa-google"></i>
-          Google
-        </button>
-        <button class="social-btn github">
-          <i class="fab fa-github"></i>
-          GitHub
-        </button>
-      </div>
-    </div>
+function spawnWave(){
+const count=3+wave*2;
+for(let i=0;i<count;i++)spawnEnemy();
+enemySpeed=baseEnemySpeed+wave*0.15;
+}
 
-    <!-- Footer -->
-    <p class="auth-footer">
-      By continuing, you agree to our 
-      <a href="#">Terms</a> and <a href="#">Privacy Policy</a>
-    </p>
-  </div>
+function fireBullet(){
+if(!alive)return;
+if(fireCooldown>0)return;
+const angle=Math.PI/2;
+const speed=8+Math.min(W,H)*0.01;
+const bx=player.x+Math.cos(angle)*(player.r+4);
+const by=player.y+Math.sin(angle)*(player.r+4);
+bullets.push({x:bx,y:by,vx:0,vy:-speed,r:4,life:120});
+fireCooldown=MAX_FIRE_CD;
+}
 
-  <script type="module">
-    // Full-featured login with validation, security, and UX
-    import { validateForm, showToast } from './utils.js';
-    
-    const loginForm = document.getElementById('loginForm');
-    
-    loginForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-      
-      // Real-time validation
-      if (!validateForm({ username, password })) {
-        showToast('Please fix the errors above', 'warning');
-        return;
-      }
-      
-      // Show loading state
-      const btn = document.getElementById('loginBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<span class="spinner"></span> Authenticating...';
-      
-      try {
-        // API call with timeout
-        const response = await Promise.race([
-          fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password })
-          }),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Request timeout')), 5000)
-          )
-        ]);
-        
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.message || 'Login failed');
-        }
-        
-        // Success
-        showToast('Welcome back!', 'success');
-        window.location.href = '/dashboard';
-        
-      } catch (error) {
-        // Error handling
-        console.error('Login error:', error);
-        showToast(error.message || 'Authentication failed', 'error');
-        
-        // Re-enable button
-        btn.disabled = false;
-        btn.innerHTML = `
-          <span class="btn-text">Secure Login</span>
-          <i class="fas fa-arrow-right btn-icon"></i>
-        `;
-      }
-    });
-  </script>
+function update(){
+if(!alive)return;
+frame++;
+if(fireCooldown>0)fireCooldown--;
+if(moveDir!==0){
+const spd=3+Math.min(W,H)*0.008;
+player.x+=moveDir*spd;
+player.x=Math.max(player.r,Math.min(W-player.r,player.x));
+}
+if(frame%ENEMY_SPAWN_RATE===0){
+if(enemies.length<30+wave*5)spawnEnemy();
+}
+if(frame%300===0){
+wave++;
+enemySpeed=baseEnemySpeed+wave*0.15;
+spawnWave();
+updateHUD();
+}
+for(let i=enemies.length-1;i>=0;i--){
+const e=enemies[i];
+const dx=player.x-e.x;
+const dy=player.y-e.y;
+const dist=Math.hypot(dx,dy);
+if(dist>0.1){
+const normX=dx/dist;
+const normY=dy/dist;
+e.x+=normX*enemySpeed;
+e.y+=normY*enemySpeed;
+}
+if(dist<player.r+e.r){
+alive=false;
+return;
+}
+}
+for(let i=bullets.length-1;i>=0;i--){
+const b=bullets[i];
+b.x+=b.vx;
+b.y+=b.vy;
+b.life--;
+if(b.y<-20||b.life<=0){bullets.splice(i,1);continue;}
+let hit=false;
+for(let j=enemies.length-1;j>=0;j--){
+const e=enemies[j];
+if(Math.hypot(b.x-e.x,b.y-e.y)<e.r+4){
+enemies.splice(j,1);
+hit=true;
+score++;
+updateHUD();
+break;
+}
+}
+if(hit){bullets.splice(i,1);}
+}
+if(!alive)return;
+if(enemies.length===0){
+wave++;
+enemySpeed=baseEnemySpeed+wave*0.15;
+spawnWave();
+updateHUD();
+}
+}
+
+function draw(){
+ctx.clearRect(0,0,W,H);
+ctx.shadowBlur=0;
+ctx.shadowColor='transparent';
+ctx.fillStyle='#2d2d44';
+ctx.fillRect(0,0,W,H);
+const grad=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*0.8);
+grad.addColorStop(0,'#3a3a5c');
+grad.addColorStop(1,'#0f0f1a');
+ctx.fillStyle=grad;
+ctx.fillRect(0,0,W,H);
+ctx.shadowBlur=20;
+ctx.shadowColor='rgba(0,200,255,0.3)';
+ctx.strokeStyle='rgba(100,200,255,0.15)';
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.arc(player.x,player.y,player.r*3,0,Math.PI*2);
+ctx.stroke();
+ctx.shadowBlur=0;
+ctx.beginPath();
+ctx.arc(player.x,player.y,player.r,0,Math.PI*2);
+ctx.fillStyle='#00d4ff';
+ctx.shadowBlur=30;
+ctx.shadowColor='#00d4ff';
+ctx.fill();
+ctx.shadowBlur=0;
+ctx.fillStyle='#fff';
+ctx.beginPath();
+ctx.arc(player.x-4,player.y-4,player.r*0.25,0,Math.PI*2);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(player.x+4,player.y-4,player.r*0.25,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle='#ff4444';
+ctx.beginPath();
+ctx.arc(player.x,player.y+2,player.r*0.2,0,Math.PI);
+ctx.fill();
+ctx.shadowBlur=0;
+ctx.fillStyle='#ffaa00';
+ctx.font='bold '+Math.max(12,player.r*0.8)+'px sans-serif';
+ctx.textAlign='center';
+ctx.textBaseline='middle';
+ctx.fillText('🔥',player.x,player.y-player.r-10);
+for(const e of enemies){
+ctx.shadowBlur=25;
+ctx.shadowColor='#ff5500';
+const grad2=ctx.createRadialGradient(e.x-3,e.y-3,2,e.x,e.y,e.r);
+grad2.addColorStop(0,'#ff8844');
+grad2.addColorStop(1,'#cc2200');
+ctx.fillStyle=grad2;
+ctx.beginPath();
+ctx.arc(e.x,e.y,e.r,0,Math.PI*2);
+ctx.fill();
+ctx.shadowBlur=0;
+ctx.fillStyle='#ffcc66';
+ctx.beginPath();
+ctx.arc(e.x-3,e.y-4,e.r*0.3,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle='#000';
+ctx.beginPath();
+ctx.arc(e.x-4,e.y-2,2,0,Math.PI*2);
+ctx.fill();
+ctx.beginPath();
+ctx.arc(e.x+2,e.y-2,2,0,Math.PI*2);
+ctx.fill();
+ctx.fillStyle='#ff3300';
+ctx.font='bold '+Math.max(8,e.r*0.7)+'px sans-serif';
+ctx.textAlign='center';
+ctx.textBaseline='middle';
+ctx.fillText('👹',e.x,e.y-2);
+}
+for(const b of bullets){
+ctx.shadowBlur=40;
+ctx.shadowColor='#ffdd44';
+const grad3=ctx.createRadialGradient(b.x-2,b.y-2,1,b.x,b.y,b.r+4);
+grad3.addColorStop(0,'#ffff88');
+grad3.addColorStop(0.5,'#ffaa33');
+grad3.addColorStop(1,'#ff4400');
+ctx.fillStyle=grad3;
+ctx.beginPath();
+ctx.arc(b.x,b.y,b.r,0,Math.PI*2);
+ctx.fill();
+ctx.shadowBlur=0;
+ctx.fillStyle='#fff';
+ctx.beginPath();
+ctx.arc(b.x-1,b.y-2,2,0,Math.PI*2);
+ctx.fill();
+}
+ctx.shadowBlur=0;
+ctx.fillStyle='rgba(255,255,255,0.06)';
+ctx.fillRect(0,H-4,W,2);
+if(!alive){
+ctx.shadowBlur=0;
+ctx.fillStyle='rgba(0,0,0,0.6)';
+ctx.fillRect(0,0,W,H);
+ctx.fillStyle='#ff2244';
+ctx.font='bold '+Math.min(W,H)*0.08+'px sans-serif';
+ctx.textAlign='center';
+ctx.textBaseline='middle';
+ctx.shadowBlur=40;
+ctx.shadowColor='#ff0000';
+ctx.fillText('💀 GAME OVER',W/2,H/2-40);
+ctx.fillStyle='#ffcc00';
+ctx.font='bold '+Math.min(W,H)*0.035+'px sans-serif';
+ctx.shadowBlur=0;
+ctx.fillText('Tap anywhere to restart',W/2,H/2+40);
+}
+}
+
+function loop(){
+update();
+draw();
+requestAnimationFrame(loop);
+}
+
+function handleRestart(e){
+if(!alive){
+e.preventDefault();
+resetGame();
+}
+}
+
+canvas.addEventListener('click',handleRestart);
+canvas.addEventListener('touchstart',function(e){
+if(!alive){
+e.preventDefault();
+resetGame();
+}
+},{passive:false});
+
+moveLeft.addEventListener('touchstart',function(e){e.preventDefault();moveDir=-1;},{passive:false});
+moveLeft.addEventListener('touchend',function(e){e.preventDefault();if(moveDir<0)moveDir=0;},{passive:false});
+moveLeft.addEventListener('touchcancel',function(e){if(moveDir<0)moveDir=0;});
+moveRight.addEventListener('touchstart',function(e){e.preventDefault();moveDir=1;},{passive:false});
+moveRight.addEventListener('touchend',function(e){e.preventDefault();if(moveDir>0)moveDir=0;},{passive:false});
+moveRight.addEventListener('touchcancel',function(e){if(moveDir>0)moveDir=0;});
+fireBtn.addEventListener('touchstart',function(e){e.preventDefault();fireBullet();},{passive:false});
+fireBtn.addEventListener('touchcancel',function(e){});
+
+document.addEventListener('keydown',function(e){
+if(e.key==='ArrowLeft')moveDir=-1;
+if(e.key==='ArrowRight')moveDir=1;
+if(e.key===' '||e.key==='Space'){e.preventDefault();fireBullet();}
+if(e.key==='r'&&!alive)resetGame();
+});
+document.addEventListener('keyup',function(e){
+if(e.key==='ArrowLeft'&&moveDir<0)moveDir=0;
+if(e.key==='ArrowRight'&&moveDir>0)moveDir=0;
+});
+
+resetGame();
+loop();
+
+setInterval(function(){
+if(!alive)return;
+if(enemies.length<5+wave*2){
+for(let i=0;i<2;i++)spawnEnemy();
+}
+},2000);
+
+const style=document.createElement('style');
+style.textContent='*{touch-action:none!important}';
+document.head.appendChild(style);
+
+const banCheck=setInterval(function(){
+if(window.innerWidth<200||window.innerHeight<200){
+document.body.innerHTML='<div style="color:#fff;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;text-align:center;padding:20px;">⚠️ ANDROID ONLY</div>';
+clearInterval(banCheck);
+}
+},1000);
+
+if(navigator.userAgent.indexOf('Android')===-1){
+document.body.innerHTML='<div style="color:#fff;background:#000;display:flex;align-items:center;justify-content:center;height:100vh;font-size:2rem;text-align:center;padding:20px;">🚫 ANDROID BROWSER ONLY</div>';
+}
+})();
+</script>
 </body>
 </html>
