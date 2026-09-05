@@ -24,7 +24,7 @@
 </div>
 <script>
 (function(){
-const STATE={hp:100,maxHp:100,turn:0,location:'Terminal',flags:{},path:[],inCombat:false,enemyHp:0,enemyMax:0,enemyName:''};
+const STATE={hp:100,maxHp:100,turn:0,location:'Terminal',flags:{},path:[],inCombat:false,enemyHp:0,enemyMax:0,enemyName:'',combatCallback:null};
 const output=document.getElementById('output');
 const choicesDiv=document.getElementById('choices');
 const hpSpan=document.getElementById('hp');
@@ -38,12 +38,6 @@ function updateUI(){
 hpSpan.textContent='❤️ '+STATE.hp+'/'+STATE.maxHp;
 locSpan.textContent='📍 '+STATE.location;
 turnSpan.textContent='⏳ '+STATE.turn;
-}
-
-function typeText(text,callback){
-output.textContent+=text+'\n';
-output.scrollTop=output.scrollHeight;
-if(callback)setTimeout(callback,80);
 }
 
 function clearChoices(){choicesDiv.innerHTML='';}
@@ -60,7 +54,8 @@ blocked=true;
 clearChoices();
 const old=output.textContent;
 output.textContent=old+'> '+label+'\n';
-action();
+output.scrollTop=output.scrollHeight;
+setTimeout(function(){action();},50);
 });
 choicesDiv.appendChild(btn);
 }
@@ -84,12 +79,14 @@ function gameOver(msg){
 blocked=true;
 clearChoices();
 output.textContent+=msg+'\n\n--- GAME OVER ---\n';
+output.scrollTop=output.scrollHeight;
 addChoice('↺ Restart',function(){location.reload();});
 }
 
 function goTo(location,text,callback){
 STATE.location=location;
 output.textContent+=text+'\n';
+output.scrollTop=output.scrollHeight;
 updateUI();
 if(callback)setTimeout(callback,120);
 }
@@ -98,7 +95,6 @@ function combatRound(playerAction){
 if(!STATE.inCombat)return;
 let msg='';
 const enemy=STATE.enemyName;
-const eHp=STATE.enemyHp;
 if(playerAction==='attack'){
 const dmg=Math.floor(Math.random()*18)+8;
 STATE.enemyHp=Math.max(0,STATE.enemyHp-dmg);
@@ -107,6 +103,7 @@ if(STATE.enemyHp<=0){
 msg+='\n💀 '+enemy+' is destroyed!';
 STATE.inCombat=false;
 output.textContent+=msg+'\n';
+output.scrollTop=output.scrollHeight;
 endTurn();
 resolveCombatWin();
 return;
@@ -118,19 +115,21 @@ const eDmg=Math.max(0,Math.floor(Math.random()*14)+4-block);
 if(eDmg>0){msg+='\n💢 '+enemy+' hits for '+eDmg+' damage.';damage(eDmg);}
 else msg+='\n✅ You block the attack completely.';
 output.textContent+=msg+'\n';
+output.scrollTop=output.scrollHeight;
 if(STATE.hp<=0){endTurn();return;}
 endTurn();
 startEnemyTurn();
 return;
 }else if(playerAction==='flee'){
-if(Math.random()<0.45){msg='🏃 You escape from '+enemy+'!';STATE.inCombat=false;output.textContent+=msg+'\n';endTurn();resolveFlee();return;}
-else{msg='🚫 Cannot escape!';output.textContent+=msg+'\n';}
+if(Math.random()<0.45){msg='🏃 You escape from '+enemy+'!';STATE.inCombat=false;output.textContent+=msg+'\n';output.scrollTop=output.scrollHeight;endTurn();resolveFlee();return;}
+else{msg='🚫 Cannot escape!';output.textContent+=msg+'\n';output.scrollTop=output.scrollHeight;}
 }
 if(STATE.inCombat){
 const eDmg=Math.floor(Math.random()*12)+5;
 msg+='\n💢 '+enemy+' attacks for '+eDmg+' damage.';
 damage(eDmg);
 output.textContent+=msg+'\n';
+output.scrollTop=output.scrollHeight;
 if(STATE.hp<=0){endTurn();return;}
 endTurn();
 startEnemyTurn();
@@ -138,26 +137,32 @@ startEnemyTurn();
 }
 
 function startEnemyTurn(){
-if(!STATE.inCombat||STATE.hp<=0)return;
+if(!STATE.inCombat||STATE.hp<=0){blocked=false;return;}
 clearChoices();
 addChoice('⚔️ Attack',function(){combatRound('attack');});
 addChoice('🛡️ Defend',function(){combatRound('defend');});
 addChoice('🏃 Flee',function(){combatRound('flee');});
+blocked=false;
 }
 
 function resolveCombatWin(){
 STATE.flags.enemyDefeated=true;
 clearChoices();
 output.textContent+='🏆 You gained experience.\n';
+output.scrollTop=output.scrollHeight;
 addChoice('Continue',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function resolveFlee(){
 clearChoices();
 addChoice('Catch breath',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function enterZone(zone){
+blocked=true;
+clearChoices();
 if(zone==='clearing'){
 goTo('Clearing','🌿 You stand in a moonlit forest clearing. A path splits three ways.');
 updateUI();
@@ -169,6 +174,7 @@ if(STATE.flags.enemyDefeated&&!STATE.flags.talkedToWanderer){
 addChoice('💬 Speak with the wanderer',function(){talkWanderer();});
 }
 endTurn();
+blocked=false;
 }else if(zone==='north'){
 goTo('North Trail','❄️ The trail leads to a frozen lake. A figure stands in the distance.');
 updateUI();
@@ -176,6 +182,7 @@ clearChoices();
 addChoice('Approach the figure',function(){northEncounter();});
 addChoice('Turn back',function(){enterZone('clearing');});
 endTurn();
+blocked=false;
 }else if(zone==='east'){
 goTo('Eastern Woods','🌳 Dense trees. You hear growling.');
 updateUI();
@@ -189,6 +196,7 @@ addChoice('Search the area',function(){eastSearch();});
 addChoice('Return to clearing',function(){enterZone('clearing');});
 }
 endTurn();
+blocked=false;
 }else if(zone==='west'){
 goTo('Western Ridge','⛰️ A narrow path along the cliff. A cave entrance glows.');
 updateUI();
@@ -197,10 +205,13 @@ addChoice('Enter the cave',function(){westCave();});
 addChoice('Examine the cliff',function(){westCliff();});
 addChoice('Go back',function(){enterZone('clearing');});
 endTurn();
+blocked=false;
 }
 }
 
 function northEncounter(){
+blocked=true;
+clearChoices();
 goTo('Frozen Lake','🧊 The figure is a guardian spirit.');
 updateUI();
 if(!STATE.flags.northSpirit){
@@ -214,48 +225,58 @@ addChoice('🗡️ Receive blessing',function(){spiritBlessing();});
 addChoice('Return',function(){enterZone('clearing');});
 }
 endTurn();
+blocked=false;
 }
 
 function spiritTribute(){
-if(STATE.flags.tributeGiven){output.textContent+='You already gave tribute.\n';return;}
+if(STATE.flags.tributeGiven){output.textContent+='You already gave tribute.\n';output.scrollTop=output.scrollHeight;return;}
 STATE.flags.tributeGiven=true;
 heal(20);
 output.textContent+='🌟 Spirit accepts your offering. You feel restored.\n';
+output.scrollTop=output.scrollHeight;
 STATE.flags.northSpirit=true;
 endTurn();
 clearChoices();
 addChoice('Continue',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function spiritCombat(){
 output.textContent+='⚡ You attack the spirit! It defends with ice.\n';
+output.scrollTop=output.scrollHeight;
 STATE.inCombat=true;STATE.enemyName='Ice Spirit';STATE.enemyHp=35;STATE.enemyMax=35;
 clearChoices();
 addChoice('⚔️ Attack',function(){combatRound('attack');});
 addChoice('🛡️ Defend',function(){combatRound('defend');});
 addChoice('🏃 Flee',function(){combatRound('flee');});
+blocked=false;
 }
 
 function spiritBlessing(){
 output.textContent+='✨ Spirit grants you +15 max HP.\n';
+output.scrollTop=output.scrollHeight;
 STATE.maxHp+=15;STATE.hp=Math.min(STATE.hp+15,STATE.maxHp);updateUI();
 endTurn();
 clearChoices();
 addChoice('Return',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function eastCombat(){
 output.textContent+='🐺 A dire wolf charges!\n';
+output.scrollTop=output.scrollHeight;
 STATE.inCombat=true;STATE.enemyName='Dire Wolf';STATE.enemyHp=40;STATE.enemyMax=40;
 clearChoices();
 addChoice('⚔️ Attack',function(){combatRound('attack');});
 addChoice('🛡️ Defend',function(){combatRound('defend');});
 addChoice('🏃 Flee',function(){combatRound('flee');});
+blocked=false;
 }
 
 function eastSneak(){
 if(Math.random()<0.55){
 output.textContent+='🕵️ You slip past the wolf unnoticed.\n';
+output.scrollTop=output.scrollHeight;
 STATE.flags.eastCleared=true;
 endTurn();
 clearChoices();
@@ -263,6 +284,7 @@ addChoice('Explore deeper',function(){eastSearch();});
 addChoice('Go back',function(){enterZone('clearing');});
 }else{
 output.textContent+='🐺 The wolf catches you!\n';
+output.scrollTop=output.scrollHeight;
 damage(15);
 if(STATE.hp>0){
 endTurn();
@@ -271,19 +293,24 @@ addChoice('⚔️ Fight',function(){eastCombat();});
 addChoice('Flee again',function(){eastSneak();});
 }
 }
+blocked=false;
 }
 
 function eastSearch(){
-if(STATE.flags.eastTreasure){output.textContent+='You already found the treasure.\n';clearChoices();addChoice('Return',function(){enterZone('clearing');});return;}
+if(STATE.flags.eastTreasure){output.textContent+='You already found the treasure.\n';output.scrollTop=output.scrollHeight;clearChoices();addChoice('Return',function(){enterZone('clearing');});return;}
 STATE.flags.eastTreasure=true;
 output.textContent+='💎 You find a hidden gem! +10 gold (but gold is glory).\n';
+output.scrollTop=output.scrollHeight;
 heal(10);
 endTurn();
 clearChoices();
 addChoice('Return',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function westCave(){
+blocked=true;
+clearChoices();
 goTo('Cave','🕯️ Inside the cave, you see a sleeping dragon.');
 updateUI();
 if(!STATE.flags.caveCleared){
@@ -297,11 +324,13 @@ addChoice('Collect dragon scale',function(){caveScale();});
 addChoice('Leave',function(){enterZone('clearing');});
 }
 endTurn();
+blocked=false;
 }
 
 function caveSneak(){
 if(Math.random()<0.5){
 output.textContent+='🤫 You sneak past and find a treasure hoard.\n';
+output.scrollTop=output.scrollHeight;
 STATE.flags.caveCleared=true;STATE.flags.caveTreasure=true;
 heal(25);
 endTurn();
@@ -310,6 +339,7 @@ addChoice('Grab treasure',function(){caveTreasure();});
 addChoice('Leave quietly',function(){enterZone('clearing');});
 }else{
 output.textContent+='🐉 Dragon wakes! It attacks!\n';
+output.scrollTop=output.scrollHeight;
 damage(20);
 if(STATE.hp>0){
 STATE.inCombat=true;STATE.enemyName='Dragon';STATE.enemyHp=60;STATE.enemyMax=60;
@@ -319,20 +349,24 @@ addChoice('🛡️ Defend',function(){combatRound('defend');});
 addChoice('🏃 Flee',function(){combatRound('flee');});
 }
 }
+blocked=false;
 }
 
 function caveFight(){
 output.textContent+='🐉 You engage the dragon!\n';
+output.scrollTop=output.scrollHeight;
 STATE.inCombat=true;STATE.enemyName='Dragon';STATE.enemyHp=60;STATE.enemyMax=60;
 clearChoices();
 addChoice('⚔️ Attack',function(){combatRound('attack');});
 addChoice('🛡️ Defend',function(){combatRound('defend');});
 addChoice('🏃 Flee',function(){combatRound('flee');});
+blocked=false;
 }
 
 function caveTreasure(){
 if(STATE.flags.caveTreasure){
 output.textContent+='🏅 You claim ancient relics. Power surges through you.\n';
+output.scrollTop=output.scrollHeight;
 STATE.maxHp+=20;STATE.hp=Math.min(STATE.hp+20,STATE.maxHp);
 updateUI();
 STATE.flags.caveTreasure=false;
@@ -340,35 +374,45 @@ STATE.flags.caveTreasure=false;
 endTurn();
 clearChoices();
 addChoice('Return',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function caveScale(){
 output.textContent+='🐉 You take a glowing scale. +5 HP.\n';
+output.scrollTop=output.scrollHeight;
 heal(5);
 endTurn();
 clearChoices();
 addChoice('Leave',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function westCliff(){
+blocked=true;
+clearChoices();
 goTo('Cliff Edge','🌄 A breathtaking view. You see a distant tower.');
 updateUI();
 clearChoices();
 addChoice('🔭 Study the tower',function(){cliffTower();});
 addChoice('Return',function(){enterZone('clearing');});
 endTurn();
+blocked=false;
 }
 
 function cliffTower(){
 output.textContent+='🏰 The tower seems to be the source of the anomaly.\n';
+output.scrollTop=output.scrollHeight;
 if(!STATE.flags.towerSeen){STATE.flags.towerSeen=true;heal(10);}
 endTurn();
 clearChoices();
 addChoice('Head toward tower',function(){towerApproach();});
 addChoice('Go back',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function towerApproach(){
+blocked=true;
+clearChoices();
 goTo('Tower','🔮 You arrive at the obsidian tower. The door opens.');
 updateUI();
 clearChoices();
@@ -376,9 +420,12 @@ addChoice('Enter the tower',function(){towerInside();});
 addChoice('Examine runes',function(){towerRunes();});
 addChoice('Retreat',function(){enterZone('clearing');});
 endTurn();
+blocked=false;
 }
 
 function towerInside(){
+blocked=true;
+clearChoices();
 goTo('Tower Interior','⚡ A floating crystal pulses with energy.');
 updateUI();
 if(!STATE.flags.towerCleared){
@@ -392,56 +439,67 @@ addChoice('Take fragment',function(){towerFragment();});
 addChoice('Leave',function(){enterZone('clearing');});
 }
 endTurn();
+blocked=false;
 }
 
 function towerCrystal(){
 output.textContent+='💫 The crystal explodes with light! You are empowered.\n';
+output.scrollTop=output.scrollHeight;
 STATE.maxHp+=30;STATE.hp=Math.min(STATE.hp+30,STATE.maxHp);
 STATE.flags.towerCleared=true;
 updateUI();
 endTurn();
 clearChoices();
 addChoice('Continue',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function towerChannel(){
-if(STATE.flags.channeled){output.textContent+='You already channeled.\n';return;}
+if(STATE.flags.channeled){output.textContent+='You already channeled.\n';output.scrollTop=output.scrollHeight;return;}
 STATE.flags.channeled=true;
 damage(10);
 if(STATE.hp<=0)return;
 output.textContent+='🌀 You harness the energy. +20 max HP.\n';
+output.scrollTop=output.scrollHeight;
 STATE.maxHp+=20;STATE.hp=Math.min(STATE.hp+20,STATE.maxHp);
 updateUI();
 endTurn();
 clearChoices();
 addChoice('Continue',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function towerFragment(){
 output.textContent+='💎 You collect a crystal shard. +5 HP.\n';
+output.scrollTop=output.scrollHeight;
 heal(5);
 endTurn();
 clearChoices();
 addChoice('Leave',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function towerRunes(){
 output.textContent+='📜 Runes tell of a champion who must unite the shards.\n';
+output.scrollTop=output.scrollHeight;
 if(!STATE.flags.runesRead){STATE.flags.runesRead=true;heal(5);}
 endTurn();
 clearChoices();
 addChoice('Enter tower',function(){towerInside();});
 addChoice('Return',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function talkWanderer(){
 if(STATE.flags.talkedToWanderer)return;
 STATE.flags.talkedToWanderer=true;
 output.textContent+='🧙 Wanderer: "You seek the shards. The tower holds the key."\n';
+output.scrollTop=output.scrollHeight;
 heal(15);
 endTurn();
 clearChoices();
 addChoice('Continue',function(){enterZone('clearing');});
+blocked=false;
 }
 
 function initGame(){
@@ -450,8 +508,10 @@ updateUI();
 clearChoices();
 addChoice('▶️ Start adventure',function(){
 output.textContent+='You wake in a misty forest. A wanderer approaches.\n';
+output.scrollTop=output.scrollHeight;
 enterZone('clearing');
 });
+blocked=false;
 }
 initGame();
 
@@ -460,6 +520,7 @@ const val=cmdInput.value.trim();
 if(!val||blocked)return;
 cmdInput.value='';
 output.textContent+='> '+val+'\n';
+output.scrollTop=output.scrollHeight;
 if(val.toLowerCase()==='help'){
 output.textContent+='Commands: help, status, clear\n';
 }else if(val.toLowerCase()==='status'){
