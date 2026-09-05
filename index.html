@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ZACK BANK • TRON</title>
+    <title>ZACK THREADS</title>
     
     <style>
         * {
@@ -248,17 +248,6 @@
             box-shadow: 0 0 40px rgba(255, 0, 170, 0.3);
         }
 
-        .btn-success {
-            background: rgba(0, 255, 208, 0.15);
-            color: var(--neon-cyan);
-            border-color: var(--neon-cyan);
-        }
-
-        .btn-success:hover {
-            background: rgba(0, 255, 208, 0.25);
-            box-shadow: 0 0 40px rgba(0, 255, 208, 0.3);
-        }
-
         .btn-secondary {
             background: rgba(0, 240, 255, 0.05);
             color: rgba(0, 240, 255, 0.6);
@@ -269,77 +258,39 @@
             background: rgba(0, 240, 255, 0.1);
         }
 
-        .balance-display {
-            margin: 1.5rem 0;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 16px;
-            border: 1px solid rgba(0, 240, 255, 0.15);
+        .hidden {
+            display: none !important;
+        }
+
+        .error-msg {
+            color: var(--neon-pink);
+            font-size: 0.65rem;
             text-align: center;
-            position: relative;
-            overflow: hidden;
+            margin-top: 0.5rem;
+            text-shadow: 0 0 10px var(--neon-pink);
         }
 
-        .balance-display::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(0, 240, 255, 0.05), transparent, rgba(180, 0, 255, 0.05), transparent);
-            animation: rotateBg 10s linear infinite;
-        }
-
-        @keyframes rotateBg {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .balance-label {
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            color: rgba(0, 240, 255, 0.6);
-            text-transform: uppercase;
-            position: relative;
-            z-index: 1;
-        }
-
-        .balance-amount {
-            font-size: 3.2rem;
-            font-weight: 900;
+        .username-display {
+            text-align: center;
+            padding: 0.5rem;
             color: var(--neon-cyan);
-            text-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
-            position: relative;
-            z-index: 1;
-            animation: balancePulse 2s infinite alternate;
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            margin-bottom: 1rem;
         }
 
-        @keyframes balancePulse {
-            0% { text-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
-            100% { text-shadow: 0 0 50px rgba(0, 240, 255, 0.6), 0 0 80px rgba(180, 0, 255, 0.3); }
-        }
-
-        .balance-currency {
-            font-size: 1.2rem;
+        .username-display span {
             color: var(--neon-purple);
             text-shadow: 0 0 20px var(--neon-purple);
         }
 
-        .panel {
-            margin: 1.5rem 0;
+        .thread-input {
+            margin: 1rem 0;
         }
 
-        .panel .input-group {
-            display: flex;
-            gap: 0.6rem;
-            margin-bottom: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .panel .input-group input {
-            flex: 2;
-            min-width: 120px;
+        .thread-input textarea {
+            width: 100%;
             padding: 0.9rem 1.2rem;
             background: rgba(0, 0, 0, 0.6);
             border: 1.5px solid rgba(0, 240, 255, 0.25);
@@ -347,136 +298,229 @@
             color: #e0f0ff;
             font-family: 'Orbitron', monospace;
             font-size: 0.8rem;
-            outline: none;
             transition: all 0.3s;
+            outline: none;
+            resize: vertical;
+            min-height: 80px;
         }
 
-        .panel .input-group input:focus {
+        .thread-input textarea:focus {
             border-color: var(--neon-cyan);
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
         }
 
-        .panel .input-group input::placeholder {
+        .thread-input textarea::placeholder {
             color: rgba(0, 240, 255, 0.3);
-            font-size: 0.6rem;
-            letter-spacing: 1px;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
         }
 
-        .btn-group {
-            display: flex;
-            gap: 0.6rem;
-            flex-wrap: wrap;
+        .thread-input .btn {
+            margin-top: 0.6rem;
         }
 
-        .btn-group .btn {
-            flex: 1;
-            min-width: 80px;
-            padding: 0.8rem;
-            font-size: 0.65rem;
-        }
-
-        .log-section {
+        .threads-container {
             margin-top: 1.5rem;
             padding-top: 1.2rem;
             border-top: 1px solid rgba(0, 240, 255, 0.1);
         }
 
-        .log-header {
+        .threads-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 0.8rem;
         }
 
-        .log-header span {
+        .threads-header span {
             font-size: 0.65rem;
             letter-spacing: 3px;
             color: rgba(0, 240, 255, 0.4);
             text-transform: uppercase;
         }
 
-        .log-header .log-count {
+        .threads-header .thread-count {
             color: var(--neon-purple);
             text-shadow: 0 0 10px var(--neon-purple);
         }
 
-        .log-container {
-            max-height: 150px;
+        .threads-list {
+            max-height: 400px;
             overflow-y: auto;
             padding-right: 0.3rem;
             scrollbar-width: thin;
             scrollbar-color: var(--neon-cyan) transparent;
         }
 
-        .log-container::-webkit-scrollbar {
+        .threads-list::-webkit-scrollbar {
             width: 4px;
         }
 
-        .log-container::-webkit-scrollbar-thumb {
+        .threads-list::-webkit-scrollbar-thumb {
             background: var(--neon-cyan);
             border-radius: 10px;
             box-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        .log-item {
-            padding: 0.5rem 0.8rem;
-            margin-bottom: 0.3rem;
+        .thread-item {
+            padding: 1rem;
+            margin-bottom: 0.8rem;
             background: rgba(0, 0, 0, 0.3);
-            border-left: 2px solid var(--neon-cyan);
-            border-radius: 4px;
-            font-size: 0.65rem;
+            border-radius: 12px;
+            border-left: 3px solid var(--neon-cyan);
+            animation: threadIn 0.3s ease-out;
+            transition: all 0.3s;
+        }
+
+        .thread-item:hover {
+            background: rgba(0, 240, 255, 0.05);
+            border-left-color: var(--neon-purple);
+        }
+
+        @keyframes threadIn {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .thread-item .thread-author {
+            font-size: 0.7rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+
+        .thread-item .thread-content {
+            font-size: 0.8rem;
+            color: #e0f0ff;
+            margin: 0.5rem 0;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .thread-item .thread-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            animation: logIn 0.3s ease-out;
-        }
-
-        @keyframes logIn {
-            0% { opacity: 0; transform: translateX(-20px); }
-            100% { opacity: 1; transform: translateX(0); }
-        }
-
-        .log-item .log-amount {
-            font-weight: 700;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-        }
-
-        .log-item .log-amount.negative {
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px rgba(255, 0, 170, 0.2);
-        }
-
-        .log-item .log-time {
-            font-size: 0.5rem;
+            font-size: 0.55rem;
             color: rgba(0, 240, 255, 0.3);
+            margin-top: 0.5rem;
+        }
+
+        .thread-item .thread-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .thread-item .thread-actions button {
+            background: none;
+            border: none;
+            color: rgba(0, 240, 255, 0.4);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.55rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        .thread-item .thread-actions button:hover {
+            color: var(--neon-cyan);
+            background: rgba(0, 240, 255, 0.1);
+        }
+
+        .thread-item .thread-actions .like-btn.liked {
+            color: var(--neon-pink);
+            text-shadow: 0 0 20px var(--neon-pink);
+        }
+
+        .thread-item .thread-actions .reply-btn:hover {
+            color: var(--neon-purple);
+        }
+
+        .thread-item .replies-container {
+            margin-top: 0.8rem;
+            padding-left: 1rem;
+            border-left: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        .thread-item .reply-item {
+            padding: 0.5rem 0;
+            font-size: 0.7rem;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.05);
+        }
+
+        .thread-item .reply-item:last-child {
+            border-bottom: none;
+        }
+
+        .thread-item .reply-item .reply-author {
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px rgba(180, 0, 255, 0.2);
+            font-weight: 700;
+        }
+
+        .thread-item .reply-item .reply-text {
+            color: #b0c4de;
+            margin-left: 0.5rem;
+        }
+
+        .thread-item .reply-item .reply-time {
+            font-size: 0.45rem;
+            color: rgba(0, 240, 255, 0.2);
+            float: right;
+        }
+
+        .thread-item .reply-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .thread-item .reply-input-group input {
+            flex: 1;
+            padding: 0.4rem 0.6rem;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(180, 0, 255, 0.2);
+            border-radius: 8px;
+            color: #e0f0ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .thread-item .reply-input-group input:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(180, 0, 255, 0.2);
+        }
+
+        .thread-item .reply-input-group input::placeholder {
+            color: rgba(0, 240, 255, 0.2);
+            font-size: 0.5rem;
             letter-spacing: 1px;
         }
 
-        .log-item .log-type {
-            font-size: 0.5rem;
-            padding: 0.2rem 0.6rem;
-            border-radius: 20px;
-            background: rgba(0, 240, 255, 0.1);
-            color: var(--neon-cyan);
-            border: 1px solid rgba(0, 240, 255, 0.15);
-        }
-
-        .log-item .log-type.transfer {
-            background: rgba(180, 0, 255, 0.1);
+        .thread-item .reply-input-group button {
+            padding: 0.4rem 0.8rem;
+            background: rgba(180, 0, 255, 0.15);
+            border: 1px solid var(--neon-purple);
+            border-radius: 8px;
             color: var(--neon-purple);
-            border-color: rgba(180, 0, 255, 0.2);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .log-item .log-type.receive {
-            background: rgba(0, 255, 208, 0.1);
-            color: var(--neon-cyan);
-            border-color: rgba(0, 255, 208, 0.2);
+        .thread-item .reply-input-group button:hover {
+            background: rgba(180, 0, 255, 0.25);
+            box-shadow: 0 0 20px rgba(180, 0, 255, 0.3);
         }
 
-        .empty-log {
+        .empty-threads {
             text-align: center;
-            padding: 1.5rem;
+            padding: 2rem;
             color: rgba(0, 240, 255, 0.15);
             font-size: 0.7rem;
             letter-spacing: 4px;
@@ -514,154 +558,16 @@
             50% { opacity: 0.2; }
         }
 
-        .hidden {
-            display: none !important;
-        }
-
-        .username-display {
-            text-align: center;
-            padding: 0.5rem;
-            color: var(--neon-cyan);
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
-            margin-bottom: 1rem;
-        }
-
-        .username-display span {
-            color: var(--neon-purple);
-            text-shadow: 0 0 20px var(--neon-purple);
-        }
-
-        .error-msg {
-            color: var(--neon-pink);
-            font-size: 0.65rem;
-            text-align: center;
-            margin-top: 0.5rem;
-            text-shadow: 0 0 10px var(--neon-pink);
-        }
-
-        .chat-section {
-            margin-top: 1.5rem;
-            padding-top: 1.2rem;
-            border-top: 1px solid rgba(0, 240, 255, 0.1);
-        }
-
-        .chat-header {
-            font-size: 0.65rem;
-            letter-spacing: 3px;
-            color: rgba(0, 240, 255, 0.4);
-            text-transform: uppercase;
-            margin-bottom: 0.8rem;
-        }
-
-        .chat-container {
-            max-height: 120px;
-            overflow-y: auto;
-            padding-right: 0.3rem;
-            margin-bottom: 0.6rem;
-            scrollbar-width: thin;
-            scrollbar-color: var(--neon-purple) transparent;
-        }
-
-        .chat-container::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .chat-container::-webkit-scrollbar-thumb {
-            background: var(--neon-purple);
-            border-radius: 10px;
-            box-shadow: 0 0 10px var(--neon-purple);
-        }
-
-        .chat-message {
-            padding: 0.4rem 0.6rem;
-            margin-bottom: 0.3rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 6px;
-            font-size: 0.6rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            animation: logIn 0.3s ease-out;
-            border-left: 2px solid var(--neon-purple);
-        }
-
-        .chat-message .chat-sender {
-            color: var(--neon-cyan);
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
-        }
-
-        .chat-message .chat-text {
-            color: #e0f0ff;
-            flex: 1;
-            margin: 0 0.5rem;
-        }
-
-        .chat-message .chat-time {
-            font-size: 0.45rem;
-            color: rgba(0, 240, 255, 0.2);
-        }
-
-        .chat-input-group {
-            display: flex;
-            gap: 0.6rem;
-        }
-
-        .chat-input-group input {
-            flex: 1;
-            padding: 0.6rem 0.8rem;
-            background: rgba(0, 0, 0, 0.6);
-            border: 1.5px solid rgba(180, 0, 255, 0.25);
-            border-radius: 10px;
-            color: #e0f0ff;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.7rem;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        .chat-input-group input:focus {
-            border-color: var(--neon-purple);
-            box-shadow: 0 0 20px rgba(180, 0, 255, 0.2);
-        }
-
-        .chat-input-group input::placeholder {
-            color: rgba(0, 240, 255, 0.2);
-            font-size: 0.55rem;
-            letter-spacing: 1px;
-        }
-
-        .chat-input-group .btn {
-            flex: 0 0 auto;
-            width: auto;
-            padding: 0.6rem 1.2rem;
-            font-size: 0.55rem;
-            background: rgba(180, 0, 255, 0.15);
-            color: var(--neon-purple);
-            border-color: var(--neon-purple);
-        }
-
-        .chat-input-group .btn:hover {
-            background: rgba(180, 0, 255, 0.25);
-            box-shadow: 0 0 30px rgba(180, 0, 255, 0.3);
-        }
-
         @media (max-width: 600px) {
             .container { margin: 0.8rem; padding: 1rem; }
             .header h1 { font-size: 1.8rem; letter-spacing: 3px; }
-            .balance-amount { font-size: 2.4rem; }
-            .btn-group .btn { font-size: 0.55rem; padding: 0.6rem; }
-            .panel .input-group input { font-size: 0.7rem; }
+            .thread-item { padding: 0.8rem; }
         }
 
         @media (max-width: 400px) {
-            .balance-amount { font-size: 1.8rem; }
-            .btn-group { flex-direction: column; }
-            .btn-group .btn { width: 100%; }
-            .chat-input-group { flex-direction: column; }
-            .chat-input-group .btn { width: 100%; }
+            .thread-item .thread-footer { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+            .thread-item .reply-input-group { flex-direction: column; }
+            .thread-item .reply-input-group button { width: 100%; }
         }
     </style>
 </head>
@@ -679,8 +585,8 @@
     <!-- ===== LOGIN PAGE ===== -->
     <div class="container" id="loginPage">
         <div class="header">
-            <h1>Zack Bank</h1>
-            <div class="subtitle">◈ cyber finance ◈</div>
+            <h1>Zack Threads</h1>
+            <div class="subtitle">◈ cyber social ◈</div>
         </div>
         <div class="form-group">
             <input type="text" id="loginUsername" placeholder="USERNAME" />
@@ -694,7 +600,7 @@
     <!-- ===== REGISTER PAGE ===== -->
     <div class="container hidden" id="registerPage">
         <div class="header">
-            <h1>Zack Bank</h1>
+            <h1>Zack Threads</h1>
             <div class="subtitle">◈ create account ◈</div>
         </div>
         <div class="form-group">
@@ -707,61 +613,28 @@
         </div>
     </div>
 
-    <!-- ===== BANK PAGE ===== -->
-    <div class="container hidden" id="bankPage">
+    <!-- ===== THREADS PAGE ===== -->
+    <div class="container hidden" id="threadsPage">
         <div class="header">
-            <h1>Zack Bank</h1>
-            <div class="subtitle">◈ cyber finance ◈</div>
+            <h1>Zack Threads</h1>
+            <div class="subtitle">◈ cyber social ◈</div>
         </div>
         <div class="username-display">
             WELCOME, <span id="displayUsername">USER</span>
         </div>
 
-        <div class="balance-display">
-            <div class="balance-label">⟡ available balance ⟡</div>
-            <div class="balance-amount" id="balanceDisplay">
-                0.00 <span class="balance-currency">ZACK</span>
-            </div>
+        <div class="thread-input">
+            <textarea id="threadContent" placeholder="WHAT'S HAPPENING?"></textarea>
+            <button class="btn" onclick="postThread()">⟐ POST THREAD</button>
         </div>
 
-        <div class="panel">
-            <div class="input-group">
-                <input type="number" id="amountInput" placeholder="AMOUNT" step="0.01" min="0.01" />
+        <div class="threads-container">
+            <div class="threads-header">
+                <span>⟡ recent threads</span>
+                <span class="thread-count" id="threadCount">0 threads</span>
             </div>
-            <div class="btn-group">
-                <button class="btn btn-success" onclick="deposit()">⚡ DEPOSIT</button>
-                <button class="btn" onclick="withdraw()">⬡ WITHDRAW</button>
-            </div>
-        </div>
-
-        <div class="panel">
-            <div class="input-group">
-                <input type="text" id="transferUsername" placeholder="TO USERNAME" />
-                <input type="number" id="transferAmount" placeholder="AMOUNT" step="0.01" min="0.01" />
-            </div>
-            <button class="btn" onclick="transfer()" style="background:rgba(180,0,255,0.15);color:var(--neon-purple);border-color:var(--neon-purple);">
-                ⟐ TRANSFER
-            </button>
-        </div>
-
-        <div class="log-section">
-            <div class="log-header">
-                <span>⟡ transaction log</span>
-                <span class="log-count" id="logCount">0 entries</span>
-            </div>
-            <div class="log-container" id="logContainer">
-                <div class="empty-log">⍟ no transactions yet ⍟</div>
-            </div>
-        </div>
-
-        <div class="chat-section">
-            <div class="chat-header">⟡ personal chat</div>
-            <div class="chat-container" id="chatContainer">
-                <div class="empty-log">⍟ no messages ⍟</div>
-            </div>
-            <div class="chat-input-group">
-                <input type="text" id="chatInput" placeholder="MESSAGE" />
-                <button class="btn" onclick="sendChat()">⏎ SEND</button>
+            <div class="threads-list" id="threadsList">
+                <div class="empty-threads">⍟ no threads yet ⍟</div>
             </div>
         </div>
 
@@ -795,29 +668,27 @@
         firebase.initializeApp(FIREBASE_CONFIG);
         const database = firebase.database();
         const usersRef = database.ref('/users');
-        const chatsRef = database.ref('/chats');
+        const threadsRef = database.ref('/threads');
 
         let currentUser = null;
-        let balance = 0;
-        let transactions = [];
-        let chatMessages = [];
+        let threads = [];
 
         function showLogin() {
             document.getElementById('loginPage').classList.remove('hidden');
             document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('bankPage').classList.add('hidden');
+            document.getElementById('threadsPage').classList.add('hidden');
         }
 
         function showRegister() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('registerPage').classList.remove('hidden');
-            document.getElementById('bankPage').classList.add('hidden');
+            document.getElementById('threadsPage').classList.add('hidden');
         }
 
-        function showBank() {
+        function showThreads() {
             document.getElementById('loginPage').classList.add('hidden');
             document.getElementById('registerPage').classList.add('hidden');
-            document.getElementById('bankPage').classList.remove('hidden');
+            document.getElementById('threadsPage').classList.remove('hidden');
         }
 
         function register() {
@@ -846,12 +717,7 @@
                 }
                 usersRef.child(username).set({
                     password: password,
-                    balance: 1000,
-                    transactions: [{
-                        type: 'deposit',
-                        amount: 1000,
-                        timestamp: Date.now()
-                    }]
+                    created: Date.now()
                 }).then(() => {
                     errorEl.textContent = '';
                     document.getElementById('regUsername').value = '';
@@ -890,217 +756,169 @@
                 document.getElementById('loginUsername').value = '';
                 document.getElementById('loginPassword').value = '';
                 document.getElementById('displayUsername').textContent = username.toUpperCase();
-                loadUserData();
-                showBank();
+                loadThreads();
+                showThreads();
             });
         }
 
         function logout() {
             currentUser = null;
-            balance = 0;
-            transactions = [];
-            chatMessages = [];
+            threads = [];
             showLogin();
             document.getElementById('loginError').textContent = '';
         }
 
-        function loadUserData() {
-            if (!currentUser) return;
-            usersRef.child(currentUser).on('value', snapshot => {
+        function loadThreads() {
+            threadsRef.on('value', snapshot => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    balance = data.balance || 0;
-                    transactions = data.transactions || [];
-                    renderBank();
-                }
-            });
-            loadChat();
-        }
-
-        function loadChat() {
-            chatsRef.child(currentUser).on('value', snapshot => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    chatMessages = data.messages || [];
-                    renderChat();
+                    threads = Object.keys(data).map(key => ({
+                        id: key,
+                        ...data[key]
+                    }));
+                    threads.sort((a, b) => b.timestamp - a.timestamp);
+                    renderThreads();
                 } else {
-                    chatMessages = [];
-                    renderChat();
+                    threads = [];
+                    renderThreads();
                 }
             });
         }
 
-        function renderBank() {
-            const balanceEl = document.getElementById('balanceDisplay');
-            balanceEl.innerHTML = `${balance.toFixed(2)} <span class="balance-currency">ZACK</span>`;
+        function renderThreads() {
+            const list = document.getElementById('threadsList');
+            const count = document.getElementById('threadCount');
 
-            const logContainer = document.getElementById('logContainer');
-            const logCountEl = document.getElementById('logCount');
-
-            if (transactions.length === 0) {
-                logContainer.innerHTML = '<div class="empty-log">⍟ no transactions yet ⍟</div>';
-                logCountEl.textContent = '0 entries';
+            if (threads.length === 0) {
+                list.innerHTML = '<div class="empty-threads">⍟ no threads yet ⍟</div>';
+                count.textContent = '0 threads';
                 return;
             }
 
             let html = '';
-            const display = transactions.slice(0, 20);
-            display.forEach(tx => {
-                const isNegative = tx.type === 'withdraw' || tx.type === 'transfer';
-                const cls = isNegative ? 'log-amount negative' : 'log-amount';
-                let typeCls = 'log-type';
-                let typeLabel = tx.type.toUpperCase();
-                if (tx.type === 'transfer') {
-                    typeCls += ' transfer';
-                    typeLabel = 'SENT';
-                } else if (tx.type === 'receive') {
-                    typeCls += ' receive';
-                    typeLabel = 'RECEIVED';
-                }
-                const sign = (tx.type === 'withdraw' || tx.type === 'transfer') ? '-' : '+';
-                const amountDisplay = tx.type === 'transfer' || tx.type === 'receive' ? 
-                    tx.amount.toFixed(2) : tx.amount.toFixed(2);
-                const time = new Date(tx.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            threads.forEach(thread => {
+                const time = new Date(thread.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+                const likes = thread.likes || [];
+                const liked = likes.includes(currentUser);
+                
                 html += `
-                    <div class="log-item">
-                        <span class="${typeCls}">${typeLabel}</span>
-                        <span class="${cls}">${sign}$${amountDisplay}</span>
-                        <span class="log-time">${time}</span>
+                    <div class="thread-item" id="thread-${thread.id}">
+                        <div class="thread-author">${thread.author.toUpperCase()}</div>
+                        <div class="thread-content">${thread.content}</div>
+                        <div class="thread-footer">
+                            <span>${time}</span>
+                            <div class="thread-actions">
+                                <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeThread('${thread.id}')">
+                                    ♥ ${likes.length}
+                                </button>
+                                <button class="reply-btn" onclick="toggleReply('${thread.id}')">
+                                    ⌨ ${thread.replies ? thread.replies.length : 0}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="replies-container" id="replies-${thread.id}">
+                            ${renderReplies(thread)}
+                        </div>
+                        <div class="reply-input-group hidden" id="replyInput-${thread.id}">
+                            <input type="text" id="replyText-${thread.id}" placeholder="REPLY..." />
+                            <button onclick="postReply('${thread.id}')">SEND</button>
+                        </div>
                     </div>
                 `;
             });
-            logContainer.innerHTML = html;
-            logCountEl.textContent = `${transactions.length} entries`;
+
+            list.innerHTML = html;
+            count.textContent = `${threads.length} threads`;
         }
 
-        function renderChat() {
-            const container = document.getElementById('chatContainer');
-            if (chatMessages.length === 0) {
-                container.innerHTML = '<div class="empty-log">⍟ no messages ⍟</div>';
-                return;
-            }
+        function renderReplies(thread) {
+            if (!thread.replies || thread.replies.length === 0) return '';
             let html = '';
-            const display = chatMessages.slice(-20);
-            display.forEach(msg => {
-                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            thread.replies.forEach(reply => {
+                const time = new Date(reply.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
                 html += `
-                    <div class="chat-message">
-                        <span class="chat-sender">${msg.sender.toUpperCase()}</span>
-                        <span class="chat-text">${msg.text}</span>
-                        <span class="chat-time">${time}</span>
+                    <div class="reply-item">
+                        <span class="reply-author">${reply.author.toUpperCase()}</span>
+                        <span class="reply-text">${reply.text}</span>
+                        <span class="reply-time">${time}</span>
                     </div>
                 `;
             });
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
+            return html;
         }
 
-        function deposit() {
-            const val = parseFloat(document.getElementById('amountInput').value);
-            if (!val || val <= 0) {
-                setStatus('invalid amount', true);
-                return;
+        function toggleReply(threadId) {
+            const input = document.getElementById(`replyInput-${threadId}`);
+            input.classList.toggle('hidden');
+            if (!input.classList.contains('hidden')) {
+                document.getElementById(`replyText-${threadId}`).focus();
             }
-            balance += val;
-            transactions.unshift({ type: 'deposit', amount: val, timestamp: Date.now() });
-            saveUserData();
-            document.getElementById('amountInput').value = '';
-            setStatus(`+ $${val.toFixed(2)} deposited`);
         }
 
-        function withdraw() {
-            const val = parseFloat(document.getElementById('amountInput').value);
-            if (!val || val <= 0) {
-                setStatus('invalid amount', true);
+        function postThread() {
+            const content = document.getElementById('threadContent').value.trim();
+            if (!content) {
+                setStatus('enter thread content', true);
                 return;
             }
-            if (val > balance) {
-                setStatus('insufficient funds', true);
-                return;
-            }
-            balance -= val;
-            transactions.unshift({ type: 'withdraw', amount: val, timestamp: Date.now() });
-            saveUserData();
-            document.getElementById('amountInput').value = '';
-            setStatus(`- $${val.toFixed(2)} withdrawn`);
-        }
+            if (!currentUser) return;
 
-        function transfer() {
-            const toUser = document.getElementById('transferUsername').value.trim();
-            const val = parseFloat(document.getElementById('transferAmount').value);
-            if (!toUser) {
-                setStatus('enter recipient username', true);
-                return;
-            }
-            if (!val || val <= 0) {
-                setStatus('invalid amount', true);
-                return;
-            }
-            if (val > balance) {
-                setStatus('insufficient funds', true);
-                return;
-            }
-            if (toUser === currentUser) {
-                setStatus('cannot transfer to self', true);
-                return;
-            }
+            const newThread = {
+                author: currentUser,
+                content: content,
+                timestamp: Date.now(),
+                likes: [],
+                replies: []
+            };
 
-            usersRef.child(toUser).once('value').then(snapshot => {
-                if (!snapshot.exists()) {
-                    setStatus('recipient not found', true);
-                    return;
-                }
-                const recipientData = snapshot.val();
-                const newRecipientBalance = (recipientData.balance || 0) + val;
-                const recipientTxs = recipientData.transactions || [];
-                recipientTxs.unshift({ type: 'receive', amount: val, from: currentUser, timestamp: Date.now() });
-
-                balance -= val;
-                transactions.unshift({ type: 'transfer', amount: val, to: toUser, timestamp: Date.now() });
-
-                const updates = {};
-                updates[`/users/${currentUser}/balance`] = balance;
-                updates[`/users/${currentUser}/transactions`] = transactions;
-                updates[`/users/${toUser}/balance`] = newRecipientBalance;
-                updates[`/users/${toUser}/transactions`] = recipientTxs;
-
-                database.ref().update(updates).then(() => {
-                    document.getElementById('transferUsername').value = '';
-                    document.getElementById('transferAmount').value = '';
-                    setStatus(`⟐ $${val.toFixed(2)} sent to ${toUser}`);
-                    renderBank();
-                }).catch(err => {
-                    setStatus('transfer failed: ' + err.message, true);
-                });
+            threadsRef.push(newThread).then(() => {
+                document.getElementById('threadContent').value = '';
+                setStatus('thread posted ✓');
+            }).catch(err => {
+                setStatus('error: ' + err.message, true);
             });
         }
 
-        function sendChat() {
-            const text = document.getElementById('chatInput').value.trim();
+        function likeThread(threadId) {
+            if (!currentUser) return;
+            const thread = threads.find(t => t.id === threadId);
+            if (!thread) return;
+
+            const likes = thread.likes || [];
+            const index = likes.indexOf(currentUser);
+            if (index > -1) {
+                likes.splice(index, 1);
+            } else {
+                likes.push(currentUser);
+            }
+
+            threadsRef.child(threadId).update({ likes: likes }).catch(err => {
+                setStatus('error: ' + err.message, true);
+            });
+        }
+
+        function postReply(threadId) {
+            const input = document.getElementById(`replyText-${threadId}`);
+            const text = input.value.trim();
             if (!text) return;
             if (!currentUser) return;
 
-            const msg = {
-                sender: currentUser,
+            const thread = threads.find(t => t.id === threadId);
+            if (!thread) return;
+
+            const replies = thread.replies || [];
+            replies.push({
+                author: currentUser,
                 text: text,
                 timestamp: Date.now()
-            };
-
-            chatMessages.push(msg);
-            chatsRef.child(currentUser).set({ messages: chatMessages }).then(() => {
-                document.getElementById('chatInput').value = '';
-                renderChat();
-            }).catch(err => {
-                setStatus('chat error: ' + err.message, true);
             });
-        }
 
-        function saveUserData() {
-            usersRef.child(currentUser).update({
-                balance: balance,
-                transactions: transactions
+            threadsRef.child(threadId).update({ replies: replies }).then(() => {
+                input.value = '';
+                document.getElementById(`replyInput-${threadId}`).classList.add('hidden');
+                setStatus('reply posted ✓');
             }).catch(err => {
-                setStatus('save error: ' + err.message, true);
+                setStatus('error: ' + err.message, true);
             });
         }
 
@@ -1116,16 +934,8 @@
             }
         }
 
-        document.getElementById('amountInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') deposit();
-        });
-
-        document.getElementById('transferAmount').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') transfer();
-        });
-
-        document.getElementById('chatInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') sendChat();
+        document.getElementById('threadContent').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) postThread();
         });
 
         document.getElementById('loginPassword').addEventListener('keydown', (e) => {
