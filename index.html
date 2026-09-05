@@ -154,13 +154,14 @@
         .container,.item,.btn,.box,.topbar{-webkit-backface-visibility:hidden;backface-visibility:hidden}
         .list{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
         *{-webkit-tap-highlight-color:transparent}
+        .hidden{display:none!important}
     </style>
 </head>
 <body>
     <div class="particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
     <div class="sparkle"></div>
     <div class="topbar">
-        <div class="brand" onclick="scrollTop()">ZACK<small>◈ threads ◈</small></div>
+        <div class="brand" onclick="scrollToTop()">ZACK<small>◈ threads ◈</small></div>
         <div class="menu">
             <div class="user" id="userInfo" style="display:none;"><span class="dot"></span><span class="name" id="userName">USER</span></div>
             <button class="gold" id="loginBtn" onclick="openLogin()">⚡ LOGIN</button>
@@ -209,42 +210,633 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
-        const FB={apiKey:"AIzaSyCv2VrXUJ4fZ0qC1XZ5sJv8fH3eL9qYz0",authDomain:"zack360-2b303.firebaseapp.com",databaseURL:"https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"zack360-2b303",storageBucket:"zack360-2b303.appspot.com",messagingSenderId:"123456789012",appId:"1:123456789012:web:abcdef123456"};
-        if(!firebase.apps.length)firebase.initializeApp(FB);
-        const DB=firebase.database(),USERS=DB.ref('/users'),THREADS=DB.ref('/threads');
-        let user=null,threads=[],publics=[],listening=false,pListener=null,timer=null,statusTimer=null,logging=false,bypass=false,guestCount=0;
-        const $=id=>document.getElementById(id);
-        const el=id=>$(id)||{textContent:'',style:{},classList:{add:()=>{},remove:()=>{},toggle:()=>{}}};
-        const D={overlay:$('overlay'),loginUser:$('loginUser'),loginPass:$('loginPass'),loginErr:$('loginError'),displayUser:$('displayUser'),userName:$('userName'),userInfo:$('userInfo'),loginBtn:$('loginBtn'),logoutBtn:$('logoutBtn'),threadInput:$('threadInput'),feedList:$('feedList'),feedCount:$('feedCount'),publicList:$('publicList'),publicCount:$('publicCount'),statusText:$('statusText'),loggedIn:$('loggedIn'),bypassBtn:$('bypassBtn'),console:$('console'),logs:$('logs')};
-        function log(m,l='info'){const c=el(D.logs);const t=new Date().toLocaleTimeString();const e=document.createElement('div');e.className='entry';e.innerHTML=`<span class="time">[${t}]</span><span class="level ${l}">${l.toUpperCase()}</span> ${m}`;c.appendChild(e);c.scrollTop=c.scrollHeight;if(c.children.length>100)c.removeChild(c.firstChild)}
-        function toggleConsole(){const c=el(D.console);c.classList.toggle('show');if(c.classList.contains('show'))log('Console opened','info')}
-        function toggleBypass(){bypass=!bypass;const b=el(D.bypassBtn);if(bypass){b.classList.add('active');b.textContent='🔧 BYPASS ON';log('🔧 BYPASS ENABLED','bypass');if(!user)bypassLogin()}else{b.classList.remove('active');b.textContent='🔧 BYPASS';log('🔧 BYPASS DISABLED','bypass');if(!user)logout()}}
-        function bypassLogin(){const u='bypass_'+Math.random().toString(36).substring(2,8);user=u;guestCount=0;updateUI(u);closeLogin();if(pListener){THREADS.off('value',pListener);pListener=null}D.loggedIn.style.display='block';loadFeed();setStatus('🔓 BYPASS: '+u);log('🔓 BYPASS LOGIN: '+u,'bypass')}
-        function evalPost(){if(!user){log('❌ No user','error');return}const i=el(D.threadInput);const c=i.value.trim();if(!c){log('❌ Empty','error');return}try{const r=eval(c);log('⚡ EVAL: '+JSON.stringify(r),'eval');i.value='';setStatus('⚡ eval done')}catch(e){log('❌ EVAL ERROR: '+e.message,'error')}}
-        function openLogin(){el(D.overlay).classList.add('show');setTimeout(()=>el(D.loginUser).focus(),100);el(D.loginErr).textContent='';log('Login opened','info')}
-        function closeLogin(){el(D.overlay).classList.remove('show');el(D.loginUser).value='';el(D.loginPass).value='';el(D.loginErr).textContent=''}
-        function register(){const e=el(D.loginErr);const u=el(D.loginUser).value.trim();const p=el(D.loginPass).value;if(!u||!p){e.textContent='All fields required';return}if(p.length<4){e.textContent='Password min 4 chars';return}USERS.child(u).once('value').then(s=>{if(s.exists()){e.textContent='Username taken';return}return USERS.child(u).set({password:p,created:Date.now()}).then(()=>{e.textContent='';e.style.color='var(--cyan)';e.textContent='✓ Account created!';log('Account: '+u,'success');setTimeout(()=>{e.style.color='';e.textContent=''},3000)})}).catch(err=>{log('Register error: '+err.message,'error');e.textContent='Error: '+err.message})}
-        function login(){if(logging)return;logging=true;const u=el(D.loginUser).value.trim();const p=el(D.loginPass).value;const e=el(D.loginErr);if(!u||!p){e.textContent='Enter username and password';logging=false;return}USERS.child(u).once('value').then(s=>{if(!s.exists()){e.textContent='User not found';logging=false;return}const d=s.val();if(d.password!==p){e.textContent='Wrong password';logging=false;return}e.textContent='';user=u;updateUI(u);closeLogin();if(pListener){THREADS.off('value',pListener);pListener=null}D.loggedIn.style.display='block';loadFeed();setStatus('welcome '+u);log('Login: '+u,'success');logging=false}).catch(err=>{log('Login error: '+err.message,'error');e.textContent='Error: '+err.message;logging=false})}
-        function updateUI(u){el(D.displayUser).textContent=u.toUpperCase();el(D.userName).textContent=u.toUpperCase();el(D.userInfo).style.display='flex';el(D.loginBtn).style.display='none';el(D.logoutBtn).style.display='block'}
-        function logout(){if(listening){THREADS.off();listening=false}user=null;threads=[];bypass=false;el(D.loggedIn).style.display='none';el(D.userInfo).style.display='none';el(D.loginBtn).style.display='block';el(D.logoutBtn).style.display='none';el(D.bypassBtn).classList.remove('active');el(D.bypassBtn).textContent='🔧 BYPASS';setStatus('logged out');loadPublic();window.scrollTo({top:0,behavior:'smooth'});log('Logged out','info')}
-        function setStatus(m,e=false){const s=el(D.statusText);s.textContent=m;s.style.color=e?'#ff00aa':'rgba(0,240,255,.5)';if(!e){clearTimeout(statusTimer);statusTimer=setTimeout(()=>{s.textContent='online';s.style.color='rgba(0,240,255,.5)'},3000)}}
-        function loadPublic(){if(pListener){THREADS.off('value',pListener);pListener=null}pListener=function(snap){try{if(snap.exists()){const d=snap.val();publics=Object.keys(d).map(k=>({id:k,...d[k]}));publics.sort((a,b)=>b.timestamp-a.timestamp)}else{publics=[]}renderPublic()}catch(e){log('Public load error: '+e.message,'error')}};THREADS.on('value',pListener);log('Public threads loaded','info')}
-        function renderPublic(){const l=el(D.publicList);const c=el(D.publicCount);if(!publics.length){l.innerHTML='<div class="empty">⍟ no threads yet ⍟</div>';c.textContent='0 threads';return}let html='';const m=Math.min(publics.length,50);for(let i=0;i<m;i++){const t=publics[i];const time=new Date(t.timestamp).toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});const likes=t.likes||[];const replies=t.replies||[];let rHtml='';const rLen=Math.min(replies.length,5);for(let j=0;j<rLen;j++){const r=replies[j];const rt=new Date(r.timestamp).toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});rHtml+=`<div class="reply"><span class="rAuthor">${esc(r.author).toUpperCase()}</span><span class="rText">${esc(r.text)}</span><span class="rTime">${rt}</span></div>`}if(replies.length>5)rHtml+=`<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length-5} more</div>`;html+=`<div class="item"><div class="author">${esc(t.author).toUpperCase()}</div><div class="content">${esc(t.content)}</div><div class="footer"><span>${time}</span><div class="actions"><span class="view">♥ ${likes.length}</span><span class="view">⌨ ${replies.length}</span></div></div><div class="replies">${rHtml}</div></div>`}l.innerHTML=html;c.textContent=`${publics.length} threads`}
-        function loadFeed(){if(listening){THREADS.off();listening=false}THREADS.on('value',snap=>{try{if(snap.exists()){const d=snap.val();threads=Object.keys(d).map(k=>({id:k,...d[k]}));threads.sort((a,b)=>b.timestamp-a.timestamp)}else{threads=[]}if(timer)cancelAnimationFrame(timer);timer=requestAnimationFrame(renderFeed)}catch(e){log('Feed error: '+e.message,'error');setStatus('error loading',true)}},err=>{log('Firebase error: '+err.message,'error');setStatus('connection error',true)});listening=true}
-        function renderFeed(){const l=el(D.feedList);const c=el(D.feedCount);if(!threads.length){l.innerHTML='<div class="empty">⍟ no threads yet ⍟</div>';c.textContent='0 threads';return}let html='';const m=Math.min(threads.length,50);for(let i=0;i<m;i++){const t=threads[i];const time=new Date(t.timestamp).toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});const likes=t.likes||[];const liked=likes.includes(user);const replies=t.replies||[];let rHtml='';const rLen=Math.min(replies.length,5);for(let j=0;j<rLen;j++){const r=replies[j];const rt=new Date(r.timestamp).toLocaleTimeString('en-US',{hour12:false,hour:'2-digit',minute:'2-digit'});rHtml+=`<div class="reply"><span class="rAuthor">${esc(r.author).toUpperCase()}</span><span class="rText">${esc(r.text)}</span><span class="rTime">${rt}</span></div>`}if(replies.length>5)rHtml+=`<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length-5} more</div>`;html+=`<div class="item" id="thread-${t.id}"><div class="author">${esc(t.author).toUpperCase()}</div><div class="content">${esc(t.content)}</div><div class="footer"><span>${time}</span><div class="actions"><button class="${liked?'liked':''}" onclick="like('${t.id}')" ${liked?'style="color:#ff00aa"':''}>♥ ${likes.length}</button><button onclick="toggleReply('${t.id}')">⌨ ${replies.length}</button></div></div><div class="replies" id="replies-${t.id}">${rHtml}</div><div class="replyInput hidden" id="replyInput-${t.id}"><input type="text" id="replyText-${t.id}" placeholder="REPLY..." maxlength="200" /><button onclick="reply('${t.id}')">SEND</button></div></div>`}l.innerHTML=html;c.textContent=`${threads.length} threads`}
-        function esc(t){if(!t)return '';const d=document.createElement('div');d.textContent=t;return d.innerHTML}
-        function toggleReply(id){const i=document.getElementById(`replyInput-${id}`);if(i){i.classList.toggle('hidden');if(!i.classList.contains('hidden')){const f=document.getElementById(`replyText-${id}`);if(f)setTimeout(()=>f.focus(),50)}}}
-        function postThread(){if(!user){alert('You must be logged in.');return}const i=el(D.threadInput);const c=i.value.trim();if(!c){alert('Please enter content.');return}if(c.length>500){alert('Max 500 characters.');return}if(bypass){guestCount++;const t={author:user,content:'[BYPASS] '+c,timestamp:Date.now(),likes:[],replies:[]};THREADS.push(t).then(()=>{i.value='';setStatus('🔓 guest post #'+guestCount+' posted ✓');log('Bypass post #'+guestCount,'bypass')}).catch(err=>{alert('Error: '+err.message);log('Post error: '+err.message,'error')});return}THREADS.push({author:user,content:c,timestamp:Date.now(),likes:[],replies:[]}).then(()=>{i.value='';setStatus('thread posted ✓');log('Thread posted','success')}).catch(err=>{alert('Error: '+err.message);log('Post error: '+err.message,'error')})}
-        function like(id){if(!user){alert('Login to like.');return}const t=threads.find(x=>x.id===id);if(!t)return;const likes=t.likes||[];const idx=likes.indexOf(user);if(idx>-1)likes.splice(idx,1);else likes.push(user);THREADS.child(id).update({likes:likes}).catch(err=>log('Like error: '+err.message,'error'))}
-        function reply(id){if(!user){alert('Login to reply.');return}const i=document.getElementById(`replyText-${id}`);if(!i)return;const t=i.value.trim();if(!t)return;if(t.length>200){alert('Max 200 characters.');return}const th=threads.find(x=>x.id===id);if(!th)return;const replies=th.replies||[];replies.push({author:user,text:t,timestamp:Date.now()});THREADS.child(id).update({replies:replies}).then(()=>{i.value='';const inp=document.getElementById(`replyInput-${id}`);if(inp)inp.classList.add('hidden');setStatus('reply posted ✓');log('Reply posted','success')}).catch(err=>{alert('Error: '+err.message);log('Reply error: '+err.message,'error')})}
-        const ti=D.threadInput;if(ti){ti.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&e.ctrlKey){e.preventDefault();postThread()}})}
-        const lp=D.loginPass;if(lp){lp.addEventListener('keydown',(e)=>{if(e.key==='Enter')login()})}
-        function scrollTop(){window.scrollTo({top:0,behavior:'smooth'})}
-        const ov=D.overlay;if(ov){ov.addEventListener('click',(e)=>{if(e.target===ov)closeLogin()})}
-        loadPublic();log('🚀 ZACK THREADS LOADED','info');log('🔧 BYPASS TOOLS ACTIVE','bypass');log('📟 Click 📟 for console','info');
-        if(window.innerWidth<600){document.querySelectorAll('.particle').forEach((el,i)=>{if(i>5)el.style.display='none'})}
-        document.addEventListener('visibilitychange',()=>{const h=document.hidden;document.querySelectorAll('.particle,.sparkle,body::before,body::after').forEach(el=>{if(el.style)el.style.animationPlayState=h?'paused':'running'})});
-        console.log('✓ ZACK THREADS • REMAKE');
+        // ===== FIREBASE CONFIG =====
+        const FB_CONFIG = {
+            apiKey: "AIzaSyCv2VrXUJ4fZ0qC1XZ5sJv8fH3eL9qYz0",
+            authDomain: "zack360-2b303.firebaseapp.com",
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "zack360-2b303",
+            storageBucket: "zack360-2b303.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:abcdef123456"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(FB_CONFIG);
+        }
+
+        const DB = firebase.database();
+        const USERS = DB.ref('/users');
+        const THREADS = DB.ref('/threads');
+
+        // ===== STATE =====
+        let currentUser = null;
+        let userThreads = [];
+        let publicThreads = [];
+        let publicListener = null;
+        let feedListener = null;
+        let renderTimer = null;
+        let statusTimer = null;
+        let bypassMode = false;
+        let guestCount = 0;
+        let loggingIn = false;
+
+        // ===== DOM HELPERS =====
+        const $ = id => document.getElementById(id);
+        const el = id => $(id) || { textContent: '', style: {}, classList: { add: () => {}, remove: () => {}, toggle: () => {} } };
+
+        const DOM = {
+            overlay: $('overlay'),
+            loginUser: $('loginUser'),
+            loginPass: $('loginPass'),
+            loginError: $('loginError'),
+            displayUser: $('displayUser'),
+            userName: $('userName'),
+            userInfo: $('userInfo'),
+            loginBtn: $('loginBtn'),
+            logoutBtn: $('logoutBtn'),
+            threadInput: $('threadInput'),
+            feedList: $('feedList'),
+            feedCount: $('feedCount'),
+            publicList: $('publicList'),
+            publicCount: $('publicCount'),
+            statusText: $('statusText'),
+            loggedIn: $('loggedIn'),
+            bypassBtn: $('bypassBtn'),
+            consoleBox: $('console'),
+            consoleLogs: $('logs')
+        };
+
+        // ===== CONSOLE LOGGER =====
+        function logConsole(msg, level = 'info') {
+            const logs = el(DOM.consoleLogs);
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.className = 'entry';
+            entry.innerHTML = `<span class="time">[${time}]</span><span class="level ${level}">${level.toUpperCase()}</span> ${msg}`;
+            logs.appendChild(entry);
+            logs.scrollTop = logs.scrollHeight;
+            if (logs.children.length > 100) logs.removeChild(logs.firstChild);
+        }
+
+        function toggleConsole() {
+            const box = el(DOM.consoleBox);
+            box.classList.toggle('show');
+            if (box.classList.contains('show')) logConsole('Console opened', 'info');
+        }
+
+        // ===== BYPASS =====
+        function toggleBypass() {
+            bypassMode = !bypassMode;
+            const btn = el(DOM.bypassBtn);
+            if (bypassMode) {
+                btn.classList.add('active');
+                btn.textContent = '🔧 BYPASS ON';
+                logConsole('🔧 BYPASS ENABLED', 'bypass');
+                if (!currentUser) bypassLogin();
+            } else {
+                btn.classList.remove('active');
+                btn.textContent = '🔧 BYPASS';
+                logConsole('🔧 BYPASS DISABLED', 'bypass');
+                if (!currentUser) logout();
+            }
+        }
+
+        function bypassLogin() {
+            const username = 'bypass_' + Math.random().toString(36).substring(2, 8);
+            currentUser = username;
+            guestCount = 0;
+            updateUI(username);
+            closeLogin();
+            if (publicListener) {
+                THREADS.off('value', publicListener);
+                publicListener = null;
+            }
+            DOM.loggedIn.style.display = 'block';
+            loadFeed();
+            setStatus('🔓 BYPASS: ' + username);
+            logConsole('🔓 BYPASS LOGIN: ' + username, 'bypass');
+        }
+
+        // ===== EVAL =====
+        function evalPost() {
+            if (!currentUser) {
+                logConsole('❌ No user logged in', 'error');
+                return;
+            }
+            const input = el(DOM.threadInput);
+            const code = input.value.trim();
+            if (!code) {
+                logConsole('❌ Empty code', 'error');
+                return;
+            }
+            try {
+                const result = eval(code);
+                logConsole('⚡ EVAL: ' + JSON.stringify(result), 'eval');
+                input.value = '';
+                setStatus('⚡ eval executed');
+            } catch (e) {
+                logConsole('❌ EVAL ERROR: ' + e.message, 'error');
+            }
+        }
+
+        // ===== LOGIN =====
+        function openLogin() {
+            el(DOM.overlay).classList.add('show');
+            setTimeout(() => el(DOM.loginUser).focus(), 100);
+            el(DOM.loginError).textContent = '';
+            logConsole('Login opened', 'info');
+        }
+
+        function closeLogin() {
+            el(DOM.overlay).classList.remove('show');
+            el(DOM.loginUser).value = '';
+            el(DOM.loginPass).value = '';
+            el(DOM.loginError).textContent = '';
+        }
+
+        function register() {
+            const err = el(DOM.loginError);
+            const username = el(DOM.loginUser).value.trim();
+            const password = el(DOM.loginPass).value;
+
+            if (!username || !password) {
+                err.textContent = 'All fields required';
+                return;
+            }
+            if (password.length < 4) {
+                err.textContent = 'Password min 4 chars';
+                return;
+            }
+
+            USERS.child(username).once('value').then(snap => {
+                if (snap.exists()) {
+                    err.textContent = 'Username taken';
+                    return;
+                }
+                return USERS.child(username).set({
+                    password: password,
+                    created: Date.now()
+                }).then(() => {
+                    err.textContent = '';
+                    err.style.color = 'var(--cyan)';
+                    err.textContent = '✓ Account created!';
+                    logConsole('Account created: ' + username, 'success');
+                    setTimeout(() => {
+                        err.style.color = '';
+                        err.textContent = '';
+                    }, 3000);
+                });
+            }).catch(err => {
+                logConsole('Register error: ' + err.message, 'error');
+                err.textContent = 'Error: ' + err.message;
+            });
+        }
+
+        function login() {
+            if (loggingIn) return;
+            loggingIn = true;
+
+            const username = el(DOM.loginUser).value.trim();
+            const password = el(DOM.loginPass).value;
+            const err = el(DOM.loginError);
+
+            if (!username || !password) {
+                err.textContent = 'Enter username and password';
+                loggingIn = false;
+                return;
+            }
+
+            USERS.child(username).once('value').then(snap => {
+                if (!snap.exists()) {
+                    err.textContent = 'User not found';
+                    loggingIn = false;
+                    return;
+                }
+                const data = snap.val();
+                if (data.password !== password) {
+                    err.textContent = 'Wrong password';
+                    loggingIn = false;
+                    return;
+                }
+                err.textContent = '';
+                currentUser = username;
+                updateUI(username);
+                closeLogin();
+                if (publicListener) {
+                    THREADS.off('value', publicListener);
+                    publicListener = null;
+                }
+                DOM.loggedIn.style.display = 'block';
+                loadFeed();
+                setStatus('welcome ' + username);
+                logConsole('Login: ' + username, 'success');
+                loggingIn = false;
+            }).catch(err => {
+                logConsole('Login error: ' + err.message, 'error');
+                err.textContent = 'Error: ' + err.message;
+                loggingIn = false;
+            });
+        }
+
+        function updateUI(username) {
+            el(DOM.displayUser).textContent = username.toUpperCase();
+            el(DOM.userName).textContent = username.toUpperCase();
+            el(DOM.userInfo).style.display = 'flex';
+            el(DOM.loginBtn).style.display = 'none';
+            el(DOM.logoutBtn).style.display = 'block';
+        }
+
+        function logout() {
+            if (feedListener) {
+                THREADS.off('value', feedListener);
+                feedListener = null;
+            }
+            currentUser = null;
+            userThreads = [];
+            bypassMode = false;
+            el(DOM.loggedIn).style.display = 'none';
+            el(DOM.userInfo).style.display = 'none';
+            el(DOM.loginBtn).style.display = 'block';
+            el(DOM.logoutBtn).style.display = 'none';
+            el(DOM.bypassBtn).classList.remove('active');
+            el(DOM.bypassBtn).textContent = '🔧 BYPASS';
+            setStatus('logged out');
+            loadPublic();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            logConsole('Logged out', 'info');
+        }
+
+        function setStatus(msg, isError = false) {
+            const status = el(DOM.statusText);
+            status.textContent = msg;
+            status.style.color = isError ? '#ff00aa' : 'rgba(0,240,255,.5)';
+            if (!isError) {
+                clearTimeout(statusTimer);
+                statusTimer = setTimeout(() => {
+                    status.textContent = 'online';
+                    status.style.color = 'rgba(0,240,255,.5)';
+                }, 3000);
+            }
+        }
+
+        // ===== PUBLIC THREADS =====
+        function loadPublic() {
+            if (publicListener) {
+                THREADS.off('value', publicListener);
+                publicListener = null;
+            }
+
+            publicListener = function(snap) {
+                try {
+                    if (snap.exists()) {
+                        const data = snap.val();
+                        publicThreads = Object.keys(data).map(key => ({
+                            id: key,
+                            ...data[key]
+                        }));
+                        publicThreads.sort((a, b) => b.timestamp - a.timestamp);
+                    } else {
+                        publicThreads = [];
+                    }
+                    renderPublic();
+                } catch (e) {
+                    logConsole('Public load error: ' + e.message, 'error');
+                }
+            };
+            THREADS.on('value', publicListener);
+            logConsole('Public threads loaded', 'info');
+        }
+
+        function renderPublic() {
+            const list = el(DOM.publicList);
+            const count = el(DOM.publicCount);
+
+            if (!publicThreads.length) {
+                list.innerHTML = '<div class="empty">⍟ no threads yet ⍟</div>';
+                count.textContent = '0 threads';
+                return;
+            }
+
+            let html = '';
+            const max = Math.min(publicThreads.length, 50);
+            for (let i = 0; i < max; i++) {
+                const t = publicThreads[i];
+                const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const likes = t.likes || [];
+                const replies = t.replies || [];
+
+                let replyHtml = '';
+                const rMax = Math.min(replies.length, 5);
+                for (let j = 0; j < rMax; j++) {
+                    const r = replies[j];
+                    const rTime = new Date(r.timestamp).toLocaleTimeString('en-US', {
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    replyHtml += `<div class="reply"><span class="rAuthor">${escapeHtml(r.author).toUpperCase()}</span><span class="rText">${escapeHtml(r.text)}</span><span class="rTime">${rTime}</span></div>`;
+                }
+                if (replies.length > 5) {
+                    replyHtml += `<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length - 5} more</div>`;
+                }
+
+                html += `<div class="item">
+                    <div class="author">${escapeHtml(t.author).toUpperCase()}</div>
+                    <div class="content">${escapeHtml(t.content)}</div>
+                    <div class="footer">
+                        <span>${time}</span>
+                        <div class="actions">
+                            <span class="view">♥ ${likes.length}</span>
+                            <span class="view">⌨ ${replies.length}</span>
+                        </div>
+                    </div>
+                    <div class="replies">${replyHtml}</div>
+                </div>`;
+            }
+
+            list.innerHTML = html;
+            count.textContent = `${publicThreads.length} threads`;
+        }
+
+        // ===== FEED (Logged In) =====
+        function loadFeed() {
+            if (feedListener) {
+                THREADS.off('value', feedListener);
+                feedListener = null;
+            }
+
+            feedListener = function(snap) {
+                try {
+                    if (snap.exists()) {
+                        const data = snap.val();
+                        userThreads = Object.keys(data).map(key => ({
+                            id: key,
+                            ...data[key]
+                        }));
+                        userThreads.sort((a, b) => b.timestamp - a.timestamp);
+                    } else {
+                        userThreads = [];
+                    }
+                    if (renderTimer) cancelAnimationFrame(renderTimer);
+                    renderTimer = requestAnimationFrame(renderFeed);
+                } catch (e) {
+                    logConsole('Feed error: ' + e.message, 'error');
+                    setStatus('error loading', true);
+                }
+            };
+            THREADS.on('value', feedListener);
+        }
+
+        function renderFeed() {
+            const list = el(DOM.feedList);
+            const count = el(DOM.feedCount);
+
+            if (!userThreads.length) {
+                list.innerHTML = '<div class="empty">⍟ no threads yet ⍟</div>';
+                count.textContent = '0 threads';
+                return;
+            }
+
+            let html = '';
+            const max = Math.min(userThreads.length, 50);
+            for (let i = 0; i < max; i++) {
+                const t = userThreads[i];
+                const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const likes = t.likes || [];
+                const liked = likes.includes(currentUser);
+                const replies = t.replies || [];
+
+                let replyHtml = '';
+                const rMax = Math.min(replies.length, 5);
+                for (let j = 0; j < rMax; j++) {
+                    const r = replies[j];
+                    const rTime = new Date(r.timestamp).toLocaleTimeString('en-US', {
+                        hour12: false,
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    replyHtml += `<div class="reply"><span class="rAuthor">${escapeHtml(r.author).toUpperCase()}</span><span class="rText">${escapeHtml(r.text)}</span><span class="rTime">${rTime}</span></div>`;
+                }
+                if (replies.length > 5) {
+                    replyHtml += `<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length - 5} more</div>`;
+                }
+
+                html += `<div class="item" id="thread-${t.id}">
+                    <div class="author">${escapeHtml(t.author).toUpperCase()}</div>
+                    <div class="content">${escapeHtml(t.content)}</div>
+                    <div class="footer">
+                        <span>${time}</span>
+                        <div class="actions">
+                            <button class="${liked ? 'liked' : ''}" onclick="likeThread('${t.id}')" ${liked ? 'style="color:#ff00aa"' : ''}>
+                                ♥ ${likes.length}
+                            </button>
+                            <button onclick="toggleReply('${t.id}')">⌨ ${replies.length}</button>
+                        </div>
+                    </div>
+                    <div class="replies" id="replies-${t.id}">${replyHtml}</div>
+                    <div class="replyInput hidden" id="replyInput-${t.id}">
+                        <input type="text" id="replyText-${t.id}" placeholder="REPLY..." maxlength="200" />
+                        <button onclick="postReply('${t.id}')">SEND</button>
+                    </div>
+                </div>`;
+            }
+
+            list.innerHTML = html;
+            count.textContent = `${userThreads.length} threads`;
+        }
+
+        // ===== HELPERS =====
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function toggleReply(id) {
+            const input = document.getElementById(`replyInput-${id}`);
+            if (input) {
+                input.classList.toggle('hidden');
+                if (!input.classList.contains('hidden')) {
+                    const field = document.getElementById(`replyText-${id}`);
+                    if (field) setTimeout(() => field.focus(), 50);
+                }
+            }
+        }
+
+        // ===== ACTIONS =====
+        function postThread() {
+            if (!currentUser) {
+                alert('You must be logged in.');
+                return;
+            }
+            const input = el(DOM.threadInput);
+            const content = input.value.trim();
+            if (!content) {
+                alert('Please enter content.');
+                return;
+            }
+            if (content.length > 500) {
+                alert('Max 500 characters.');
+                return;
+            }
+
+            if (bypassMode) {
+                guestCount++;
+                const thread = {
+                    author: currentUser,
+                    content: '[BYPASS] ' + content,
+                    timestamp: Date.now(),
+                    likes: [],
+                    replies: []
+                };
+                THREADS.push(thread).then(() => {
+                    input.value = '';
+                    setStatus('🔓 guest post #' + guestCount + ' posted ✓');
+                    logConsole('Bypass post #' + guestCount, 'bypass');
+                }).catch(err => {
+                    alert('Error: ' + err.message);
+                    logConsole('Post error: ' + err.message, 'error');
+                });
+                return;
+            }
+
+            THREADS.push({
+                author: currentUser,
+                content: content,
+                timestamp: Date.now(),
+                likes: [],
+                replies: []
+            }).then(() => {
+                input.value = '';
+                setStatus('thread posted ✓');
+                logConsole('Thread posted', 'success');
+            }).catch(err => {
+                alert('Error: ' + err.message);
+                logConsole('Post error: ' + err.message, 'error');
+            });
+        }
+
+        function likeThread(id) {
+            if (!currentUser) {
+                alert('Login to like.');
+                return;
+            }
+            const thread = userThreads.find(t => t.id === id);
+            if (!thread) return;
+
+            const likes = thread.likes || [];
+            const idx = likes.indexOf(currentUser);
+            if (idx > -1) {
+                likes.splice(idx, 1);
+            } else {
+                likes.push(currentUser);
+            }
+            THREADS.child(id).update({ likes: likes }).catch(err => {
+                logConsole('Like error: ' + err.message, 'error');
+            });
+        }
+
+        function postReply(id) {
+            if (!currentUser) {
+                alert('Login to reply.');
+                return;
+            }
+            const input = document.getElementById(`replyText-${id}`);
+            if (!input) return;
+            const text = input.value.trim();
+            if (!text) return;
+            if (text.length > 200) {
+                alert('Max 200 characters.');
+                return;
+            }
+
+            const thread = userThreads.find(t => t.id === id);
+            if (!thread) return;
+
+            const replies = thread.replies || [];
+            replies.push({
+                author: currentUser,
+                text: text,
+                timestamp: Date.now()
+            });
+
+            THREADS.child(id).update({ replies: replies }).then(() => {
+                input.value = '';
+                const inp = document.getElementById(`replyInput-${id}`);
+                if (inp) inp.classList.add('hidden');
+                setStatus('reply posted ✓');
+                logConsole('Reply posted', 'success');
+            }).catch(err => {
+                alert('Error: ' + err.message);
+                logConsole('Reply error: ' + err.message, 'error');
+            });
+        }
+
+        // ===== KEYBOARD SHORTCUTS =====
+        const threadInput = DOM.threadInput;
+        if (threadInput) {
+            threadInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' && e.ctrlKey) {
+                    e.preventDefault();
+                    postThread();
+                }
+            });
+        }
+
+        const loginPass = DOM.loginPass;
+        if (loginPass) {
+            loginPass.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') login();
+            });
+        }
+
+        // ===== SCROLL TO TOP =====
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ===== CLICK OUTSIDE LOGIN =====
+        const overlay = DOM.overlay;
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeLogin();
+            });
+        }
+
+        // ===== INIT =====
+        loadPublic();
+        logConsole('🚀 ZACK THREADS LOADED', 'info');
+        logConsole('🔧 BYPASS TOOLS ACTIVE', 'bypass');
+        logConsole('📟 Click 📟 for console', 'info');
+
+        // ===== MOBILE OPTIMIZATION =====
+        if (window.innerWidth < 600) {
+            document.querySelectorAll('.particle').forEach((el, i) => {
+                if (i > 5) el.style.display = 'none';
+            });
+        }
+
+        // ===== VISIBILITY =====
+        document.addEventListener('visibilitychange', () => {
+            const hidden = document.hidden;
+            document.querySelectorAll('.particle, .sparkle, body::before, body::after').forEach(el => {
+                if (el.style) {
+                    el.style.animationPlayState = hidden ? 'paused' : 'running';
+                }
+            });
+        });
+
+        console.log('✓ ZACK THREADS • REPAIRED');
         console.log('🔧 Bypass: login bypass, eval mode');
         console.log('📟 Console logger active');
         console.log('⚡ Eval injection ready');
