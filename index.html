@@ -2,212 +2,117 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<title>NEOCHAT</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no">
+<title>Neon Pulse Chat</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
-html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f}
-body{display:flex;justify-content:center;align-items:center}
-#app{width:100%;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:radial-gradient(circle at 20% 30%,#14141e,#08080c);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,255,200,0.08)}
-#app::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,255,200,0.01)30px,rgba(0,200,255,0.01)60px);pointer-events:none}
-.glow-ring{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.25;animation:breath 4s ease-in-out infinite alternate}
-.glow-ring:nth-child(1){width:70%;height:70%;top:-20%;left:-20%;background:conic-gradient(from 0deg,#0ff,#f0f,#0ff);animation-delay:0s}
-.glow-ring:nth-child(2){width:50%;height:50%;bottom:-10%;right:-10%;background:conic-gradient(from 180deg,#f0f,#0ff,#f0f);animation-delay:2s}
-@keyframes breath{0%{transform:scale(0.9)rotate(0deg);opacity:0.2}100%{transform:scale(1.3)rotate(15deg);opacity:0.35}}
-header{position:relative;z-index:10;padding:14px 18px;background:rgba(10,10,18,0.55);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,255,210,0.2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
-header h1{font-weight:300;font-size:1.3rem;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#0ff,#a0f,#0ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;text-shadow:0 0 20px rgba(0,255,200,0.3)}
-@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
-.user-badge{display:flex;align-items:center;gap:10px;color:#8cf;font-size:0.8rem;font-weight:300}
-.user-badge span{background:rgba(0,255,200,0.08);padding:4px 14px;border-radius:40px;border:1px solid rgba(0,255,200,0.25);backdrop-filter:blur(4px);letter-spacing:0.5px}
-#messages{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:5;scroll-behavior:smooth}
-#messages::-webkit-scrollbar{width:3px}
-#messages::-webkit-scrollbar-track{background:transparent}
-#messages::-webkit-scrollbar-thumb{background:rgba(0,255,210,0.3);border-radius:20px}
-.msg{margin-bottom:4px;padding:10px 16px;border-radius:20px;max-width:84%;word-break:break-word;font-size:0.95rem;line-height:1.4;animation:fadeUp 0.25s ease;position:relative;border:1px solid transparent;backdrop-filter:blur(2px)}
-.msg.self{align-self:flex-end;background:rgba(0,255,210,0.08);border-color:rgba(0,255,210,0.25);color:#bffff0;border-bottom-right-radius:4px;box-shadow:0 0 20px rgba(0,255,200,0.05)}
-.msg.other{align-self:flex-start;background:rgba(180,0,255,0.06);border-color:rgba(180,0,255,0.2);color:#e0d0ff;border-bottom-left-radius:4px;box-shadow:0 0 20px rgba(180,0,255,0.05)}
-.msg .name{font-size:0.65rem;font-weight:400;letter-spacing:0.5px;opacity:0.6;margin-bottom:2px;text-transform:uppercase;color:#8cf}
-.msg .time{font-size:0.55rem;opacity:0.3;float:right;margin-left:12px;margin-top:4px}
-.msg .url-link{display:inline-block;color:#7ff;font-weight:500;text-decoration:none;border-bottom:1px dashed rgba(0,255,255,0.25);padding:0 2px;transition:0.2s;animation:urlPulse 2.2s ease-in-out infinite;word-break:break-all}
-.msg .url-link:hover{color:#f7f;border-color:#f7f;text-shadow:0 0 18px #f0f,0 0 40px #0ff}
-@keyframes urlPulse{0%{color:#7ff;text-shadow:0 0 2px rgba(0,255,255,0.3)}50%{color:#f8f;text-shadow:0 0 18px rgba(255,0,255,0.6),0 0 40px rgba(0,255,255,0.3)}100%{color:#7ff;text-shadow:0 0 2px rgba(0,255,255,0.3)}}
-@keyframes fadeUp{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
-#input-area{position:relative;z-index:10;padding:10px 14px 16px;background:rgba(10,10,18,0.5);backdrop-filter:blur(14px);border-top:1px solid rgba(0,255,210,0.12);display:flex;gap:10px;align-items:center;flex-shrink:0}
-#input-area input{flex:1;padding:12px 18px;border-radius:60px;border:1px solid rgba(0,255,210,0.2);background:rgba(0,20,20,0.5);color:#c8fff0;font-size:0.95rem;outline:none;transition:0.25s;backdrop-filter:blur(4px);letter-spacing:0.3px}
-#input-area input::placeholder{color:rgba(180,220,255,0.3);font-weight:300}
-#input-area input:focus{border-color:#0ff;box-shadow:0 0 30px rgba(0,255,200,0.06),inset 0 0 20px rgba(0,255,200,0.03)}
-#send-btn{background:linear-gradient(135deg,#0cf,#a0f);border:none;width:50px;height:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;color:#fff;font-size:1.6rem;font-weight:200;cursor:pointer;transition:0.2s;box-shadow:0 0 30px rgba(0,200,255,0.15);border:1px solid rgba(255,255,255,0.08);flex-shrink:0}
-#send-btn:active{transform:scale(0.92);opacity:0.7}
-#status{text-align:center;font-size:0.6rem;letter-spacing:1px;color:rgba(0,255,210,0.2);padding:4px 0 2px;background:transparent;position:relative;z-index:5}
-@media(max-width:380px){header h1{font-size:1rem}.msg{font-size:0.85rem;padding:8px 12px}}
-@media(min-width:600px){#app{max-width:440px;border-radius:28px;box-shadow:0 0 80px rgba(0,255,200,0.06)}}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
+html,body{width:100%;height:100%;background:#0b0b1a;overflow:hidden;position:relative}
+body{display:flex;align-items:center;justify-content:center}
+#app{width:100%;height:100%;max-width:600px;max-height:900px;background:#111128;border-radius:0;box-shadow:0 0 40px rgba(0,255,255,.3);display:flex;flex-direction:column;position:relative;overflow:hidden;border:1px solid #2affdd55}
+@media(min-width:720px){#app{border-radius:32px;max-height:85vh}}
+.header{background:#0e0e24;padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid #2affdd66;flex-shrink:0;backdrop-filter:blur(4px);position:relative;z-index:2}
+.header .brand{color:#b0faff;font-weight:700;font-size:1.1rem;letter-spacing:2px;text-shadow:0 0 12px #2affdd;flex:1;white-space:nowrap}
+.header .user-area{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.header .user-area input{background:#1f1f3a;border:1px solid #2affdd66;border-radius:30px;padding:6px 14px;color:#f0fcff;font-size:.8rem;width:100px;transition:.3s;outline:0}
+.header .user-area input:focus{width:130px;border-color:#7bf5ff;box-shadow:0 0 16px #2affdd88}
+.header .user-area button{background:0 0;border:1.5px solid #2affdd;color:#2affdd;border-radius:30px;padding:4px 12px;font-size:.75rem;font-weight:600;cursor:pointer;transition:.2s;text-shadow:0 0 8px #2affdd88;letter-spacing:.5px}
+.header .user-area button:active{transform:scale(.92);background:#2affdd22}
+.chat-area{flex:1;overflow-y:auto;padding:12px 12px 8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;background:radial-gradient(circle at 20% 30%,#141433,#0a0a1a);position:relative}
+.chat-area::-webkit-scrollbar{width:4px}
+.chat-area::-webkit-scrollbar-thumb{background:#2affdd88;border-radius:20px}
+.message{background:#191943cc;backdrop-filter:blur(4px);border-radius:16px 16px 16px 4px;padding:10px 14px;border-left:3px solid #2affdd;box-shadow:0 0 18px #2affdd22;animation:fadeIn .2s ease;word-break:break-word;max-width:95%;align-self:flex-start;transition:.2s}
+.message .meta{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px;margin-bottom:4px;font-size:.7rem}
+.message .username{color:#8cf5ff;font-weight:700;text-shadow:0 0 12px #2affdd;letter-spacing:.3px}
+.message .time{color:#7a8b9f;font-size:.6rem;opacity:.8;font-weight:300}
+.message .text{color:#e2f0fa;font-size:.92rem;line-height:1.4;white-space:pre-wrap;word-break:break-word}
+.message .text a{color:#7bf5ff;text-decoration:none;font-weight:500;border-bottom:1px dashed #2affdd88;padding:0 2px;transition:.2s}
+.message .text a:active{color:#fff;background:#2affdd33;border-radius:4px}
+.message.own{align-self:flex-end;border-left-color:#ff7bf0;border-left-width:3px;background:#221d3acc;box-shadow:0 0 22px #ff7bf033}
+.message.own .username{color:#ff91f0;text-shadow:0 0 16px #ff7bf0}
+.neon-pulse{animation:pulseGlow 2.2s infinite alternate}
+@keyframes pulseGlow{0%{border-color:#2affdd44;box-shadow:0 0 20px #2affdd22}100%{border-color:#7bf5ffaa;box-shadow:0 0 48px #7bf5ff66}}
+@keyframes fadeIn{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+.input-area{background:#0e0e24cc;backdrop-filter:blur(8px);padding:10px 12px 14px;display:flex;align-items:flex-end;gap:8px;border-top:2px solid #2affdd55;flex-shrink:0;position:relative;z-index:2}
+.input-area textarea{flex:1;background:#1a1a3a;border:1px solid #2affdd55;border-radius:24px;padding:10px 16px;color:#f0fcff;font-size:.95rem;resize:none;min-height:48px;max-height:120px;outline:0;transition:.25s;line-height:1.3;font-family:inherit}
+.input-area textarea:focus{border-color:#7bf5ff;box-shadow:0 0 30px #2affdd44;background:#12122e}
+.input-area .send-btn{background:linear-gradient(145deg,#2affdd,#00c8b0);border:0;border-radius:50px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:300;color:#0b0b1a;cursor:pointer;transition:.2s;box-shadow:0 0 30px #2affdd66;flex-shrink:0}
+.input-area .send-btn:active{transform:scale(.85);box-shadow:0 0 60px #7bf5ff}
+.banned-overlay{display:none;position:fixed;inset:0;background:#000c;backdrop-filter:blur(12px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:20px;color:#ff6670;font-size:1.4rem;text-align:center;padding:30px;font-weight:600}
+.banned-overlay .icon{font-size:4rem;filter:drop-shadow(0 0 30px #ff4466)}
+@media(max-width:480px){.header .brand{font-size:.9rem}.header .user-area input{width:70px}.header .user-area input:focus{width:100px}.message{padding:8px 12px;font-size:.85rem}}
 </style>
 </head>
 <body>
-<div id="app">
-<div class="glow-ring"></div>
-<div class="glow-ring"></div>
-<header>
-<h1>✦ NEOCHAT</h1>
-<div class="user-badge"><span id="user-label">● ANON</span></div>
-</header>
-<div id="messages"></div>
-<div id="input-area">
-<input id="msg-input" type="text" placeholder="ENTER MESSAGE" autocomplete="off">
-<button id="send-btn">➤</button>
+<div id="app" class="neon-pulse">
+<div class="header">
+<span class="brand">⚡ PULSE</span>
+<div class="user-area">
+<input type="text" id="usernameInput" placeholder="Name" maxlength="20" value="Guest">
+<button id="setNameBtn">✓</button>
 </div>
-<div id="status">⚡ LIVE · BREATHING METALLIC</div>
 </div>
+<div class="chat-area" id="chatContainer"></div>
+<div class="input-area">
+<textarea id="msgInput" rows="1" placeholder="Message..."></textarea>
+<button class="send-btn" id="sendBtn">➤</button>
+</div>
+</div>
+<div class="banned-overlay" id="bannedOverlay"><div class="icon">⛔</div><div>ACCESS DENIED<br><span style="font-size:.9rem;opacity:.7">Android only</span></div></div>
 <script>
-(function(){
+(function(){'use strict';
+const isAndroid = /android/i.test(navigator.userAgent);
+if(!isAndroid){document.getElementById('bannedOverlay').style.display='flex';document.getElementById('app').style.filter='blur(6px)';return;}
 const DB_URL='https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-const MSG_PATH='messages';
-let username='ANON_'+Math.random().toString(36).substring(2,6).toUpperCase();
-document.getElementById('user-label').textContent='● '+username;
-
-const messagesDiv=document.getElementById('messages');
-const inputEl=document.getElementById('msg-input');
-const sendBtn=document.getElementById('send-btn');
-
-let lastMsgCount=0;
-let isFirstLoad=true;
-
-function getTimestamp(){return Date.now();}
-
-function formatTime(ts){const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
-
-function linkify(text){
-const urlRegex=/(https?:\/\/[^\s]+)/g;
-return text.replace(urlRegex,function(match){
-return '<a href="'+match+'" target="_blank" rel="noopener noreferrer" class="url-link">'+match+'</a>';
-});
+let db, messagesRef, nameRef;
+let currentUser='Guest';
+const chat=document.getElementById('chatContainer');
+const msgInput=document.getElementById('msgInput');
+const sendBtn=document.getElementById('sendBtn');
+const usernameInput=document.getElementById('usernameInput');
+const setNameBtn=document.getElementById('setNameBtn');
+let lastScrollHeight=0;
+function initFirebase(){if(typeof firebase!=='undefined'){try{if(!firebase.apps.length){firebase.initializeApp({databaseURL:DB_URL});}db=firebase.database();messagesRef=db.ref('messages');nameRef=db.ref('users/'+currentUser.replace(/[.#$[\]]/g,'_'));}catch(e){console.warn('FB init issue',e);}}else{setTimeout(initFirebase,400);}}
+function loadMessages(){if(!messagesRef)return;messagesRef.orderByChild('timestamp').limitToLast(100).on('child_added',function(snap){const data=snap.val();if(data&&data.text&&data.username){appendMessage(data.username,data.text,data.timestamp,data.userId===currentUser);}});}
+function appendMessage(username,text,timestamp,isOwn){const msgDiv=document.createElement('div');msgDiv.className='message'+(isOwn?' own':'');
+const meta=document.createElement('div');meta.className='meta';
+const uname=document.createElement('span');uname.className='username';uname.textContent=username||'Anon';
+const time=document.createElement('span');time.className='time';if(timestamp){const d=new Date(timestamp);time.textContent=d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}else{time.textContent='now';}
+meta.appendChild(uname);meta.appendChild(time);
+const textDiv=document.createElement('div');textDiv.className='text';
+textDiv.innerHTML=linkify(text);
+msgDiv.appendChild(meta);msgDiv.appendChild(textDiv);
+chat.appendChild(msgDiv);
+chat.scrollTop=chat.scrollHeight;
+lastScrollHeight=chat.scrollHeight;
 }
-
-function renderMessage(data,key){
-const div=document.createElement('div');
-div.className='msg '+(data.user===username?'self':'other');
-const nameSpan=document.createElement('div');
-nameSpan.className='name';
-nameSpan.textContent=data.user||'unknown';
-const textSpan=document.createElement('span');
-textSpan.innerHTML=linkify(data.text||'');
-const timeSpan=document.createElement('span');
-timeSpan.className='time';
-timeSpan.textContent=data.ts?formatTime(data.ts):'';
-div.appendChild(nameSpan);
-div.appendChild(textSpan);
-div.appendChild(timeSpan);
-div.dataset.key=key;
-return div;
+function linkify(txt){if(!txt)return'';const urlPattern=/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;return txt.replace(urlPattern,'<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');}
+function sendMessage(){const text=msgInput.value.trim();if(!text)return;if(!messagesRef){initFirebase();if(!messagesRef){alert('DB not ready');return;}}const userId=currentUser||'Guest';
+const payload={username:userId,text:text,timestamp:Date.now(),userId:userId};
+messagesRef.push(payload).then(()=>{msgInput.value='';msgInput.style.height='auto';chat.scrollTop=chat.scrollHeight;}).catch(e=>{console.warn('send fail',e);});
 }
-
-function appendMessage(data,key){
-const el=renderMessage(data,key);
-messagesDiv.appendChild(el);
-messagesDiv.scrollTop=messagesDiv.scrollHeight;
+function changeUsername(newName){const trimmed=newName.trim().slice(0,20);if(!trimmed){usernameInput.value=currentUser;return;}if(trimmed===currentUser){return;}
+if(trimmed.length<2){alert('Min 2 chars');usernameInput.value=currentUser;return;}
+const oldUser=currentUser;
+currentUser=trimmed;
+usernameInput.value=currentUser;
+if(nameRef){nameRef.remove();}
+nameRef=db.ref('users/'+currentUser.replace(/[.#$[\]]/g,'_'));
+nameRef.set({name:currentUser,updated:Date.now()});
+localStorage.setItem('neonUser',currentUser);
 }
-
-function fetchMessages(){
-fetch(DB_URL+MSG_PATH+'.json')
-.then(r=>{if(!r.ok)throw new Error('DB fetch fail');return r.json();})
-.then(data=>{
-if(!data){if(isFirstLoad){messagesDiv.innerHTML='';}return;}
-const keys=Object.keys(data);
-if(keys.length===0){if(isFirstLoad){messagesDiv.innerHTML='';}return;}
-const sorted=keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
-const currentKeys=new Set();
-sorted.forEach(k=>currentKeys.add(k));
-if(isFirstLoad){
-messagesDiv.innerHTML='';
-sorted.forEach(k=>{
-const item=data[k];
-if(item&&item.text&&item.user){
-appendMessage(item,k);
+function setupListeners(){
+sendBtn.addEventListener('click',sendMessage);
+msgInput.addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
+msgInput.addEventListener('input',function(){this.style.height='auto';this.style.height=Math.min(this.scrollHeight,120)+'px';});
+setNameBtn.addEventListener('click',function(){const val=usernameInput.value.trim();if(val&&val!==currentUser){changeUsername(val);}else{usernameInput.value=currentUser;}});
+usernameInput.addEventListener('keydown',function(e){if(e.key==='Enter'){setNameBtn.click();}});
 }
-});
-lastMsgCount=sorted.length;
-isFirstLoad=false;
-return;
-}
-const existing=Array.from(messagesDiv.querySelectorAll('.msg')).map(el=>el.dataset.key);
-const existingSet=new Set(existing);
-const newKeys=sorted.filter(k=>!existingSet.has(k));
-if(newKeys.length>0){
-newKeys.forEach(k=>{
-const item=data[k];
-if(item&&item.text&&item.user){
-appendMessage(item,k);
-}
-});
-lastMsgCount=sorted.length;
-}
-if(sorted.length<lastMsgCount){
-messagesDiv.innerHTML='';
-sorted.forEach(k=>{
-const item=data[k];
-if(item&&item.text&&item.user){
-appendMessage(item,k);
-}
-});
-lastMsgCount=sorted.length;
-}
-})
-.catch(e=>{console.warn('fetch error',e);});
-}
-
-function pushMessage(text){
-if(!text||text.trim()==='')return;
-const payload={user:username,text:text.trim(),ts:getTimestamp()};
-fetch(DB_URL+MSG_PATH+'.json',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(payload)
-})
-.then(r=>{if(!r.ok)throw new Error('push fail');return r.json();})
-.then(()=>{inputEl.value='';inputEl.focus();fetchMessages();})
-.catch(e=>{console.warn('send error',e);});
-}
-
-function handleSend(){
-const raw=inputEl.value;
-if(raw.trim()==='')return;
-pushMessage(raw);
-}
-
-sendBtn.addEventListener('click',handleSend);
-inputEl.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();handleSend();}});
-
-let pollInterval=null;
-
-function startPolling(){
-fetchMessages();
-if(pollInterval)clearInterval(pollInterval);
-pollInterval=setInterval(fetchMessages,1800);
-}
-
-function blockNonAndroid(){
-const ua=navigator.userAgent||'';
-const isAndroid=/android/i.test(ua);
-if(!isAndroid){
-document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0a0a0f;color:#0ff;font-family:sans-serif;padding:20px;text-align:center;flex-direction:column;"><span style="font-size:3rem;margin-bottom:16px;">⛔</span><h2 style="font-weight:300;letter-spacing:2px;">ANDROID ONLY</h2><p style="opacity:0.4;font-size:0.9rem;margin-top:8px;">this terminal is optimized for android</p></div>';
-return false;
-}
-return true;
-}
-
-if(!blockNonAndroid()){
-throw new Error('non-android blocked');
-}
-
-startPolling();
-
-window.addEventListener('beforeunload',function(){
-if(pollInterval)clearInterval(pollInterval);
-});
-
-inputEl.focus();
-
+function restoreUser(){const saved=localStorage.getItem('neonUser');if(saved){currentUser=saved;usernameInput.value=saved;}}
+(function boot(){restoreUser();initFirebase();setTimeout(()=>{if(!db){initFirebase();}},600);setupListeners();loadMessages();})();
+window.addEventListener('online',function(){if(!db){initFirebase();}});
 })();
 </script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 </body>
 </html>
