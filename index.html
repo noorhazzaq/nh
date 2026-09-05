@@ -1,847 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ZACKGRAM</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box}
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        :root{--cyan:#00ffd0;--purple:#b400ff;--pink:#ff00aa;--gold:#ffd700;--dark:#0a0e1a;--card:rgba(10,14,30,0.85)}
-        html,body{height:100%;background:var(--dark);color:#e0f0ff;font-family:'Orbitron',monospace;overflow-x:hidden}
-        body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,240,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03)1px,transparent 1px);background-size:50px 50px;z-index:0;pointer-events:none;animation:gridPulse 8s infinite alternate}
-        @keyframes gridPulse{0%{opacity:.3}100%{opacity:.8}}
-        body::after{content:'';position:fixed;top:-100%;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),var(--pink),var(--gold),var(--cyan),transparent);box-shadow:0 0 30px var(--cyan);z-index:9999;pointer-events:none;opacity:.3;animation:scan 12s linear infinite}
-        @keyframes scan{0%{top:-5%}100%{top:105%}}
-        .particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
-        .particle{position:absolute;border-radius:50%;animation:float linear infinite;opacity:0}
-        .particle:nth-child(1){left:10%;animation-duration:18s;width:3px;height:3px;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
-        .particle:nth-child(2){left:25%;animation-duration:22s;width:2px;height:2px;background:#00f0ff;box-shadow:0 0 8px #00f0ff}
-        .particle:nth-child(3){left:40%;animation-duration:16s;width:4px;height:4px;background:var(--purple);box-shadow:0 0 12px var(--purple)}
-        .particle:nth-child(4){left:55%;animation-duration:24s;width:2px;height:2px;background:var(--pink);box-shadow:0 0 10px var(--pink)}
-        .particle:nth-child(5){left:70%;animation-duration:20s;width:5px;height:5px;background:var(--gold);box-shadow:0 0 16px var(--gold)}
-        .particle:nth-child(6){left:85%;animation-duration:26s;width:3px;height:3px;background:#ff6a00;box-shadow:0 0 10px #ff6a00}
-        .particle:nth-child(7){left:50%;animation-duration:19s;width:4px;height:4px;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
-        .particle:nth-child(8){left:15%;animation-duration:23s;width:2px;height:2px;background:var(--purple);box-shadow:0 0 8px var(--purple)}
-        .particle:nth-child(9){left:65%;animation-duration:17s;width:3px;height:3px;background:var(--pink);box-shadow:0 0 12px var(--pink)}
-        .particle:nth-child(10){left:35%;animation-duration:21s;width:4px;height:4px;background:var(--gold);box-shadow:0 0 14px var(--gold)}
-        @keyframes float{0%{transform:translateY(110vh) scale(0);opacity:0}10%{opacity:.8}90%{opacity:.8}100%{transform:translateY(-10vh) scale(1);opacity:0}}
-        .sparkle{position:fixed;inset:0;pointer-events:none;z-index:9998;background:radial-gradient(circle at 20% 30%,rgba(0,255,208,.02),transparent 50%),radial-gradient(circle at 80% 70%,rgba(180,0,255,.02),transparent 50%);animation:sparkle 12s infinite alternate}
-        @keyframes sparkle{0%{opacity:.2}50%{opacity:.6}100%{opacity:.2}}
-        .topbar{position:sticky;top:0;z-index:100;background:rgba(10,14,30,.9);backdrop-filter:blur(16px);border-bottom:1px solid rgba(0,240,255,.1);padding:.8rem 1.5rem;display:flex;justify-content:space-between;align-items:center;animation:barGlow 5s infinite alternate}
-        @keyframes barGlow{0%{border-bottom-color:rgba(0,240,255,.1)}50%{border-bottom-color:rgba(180,0,255,.2)}100%{border-bottom-color:rgba(255,215,0,.1)}}
-        .brand{font-size:1.2rem;font-weight:900;letter-spacing:4px;text-transform:uppercase;background:linear-gradient(135deg,var(--cyan),#00f0ff,var(--purple),var(--pink),var(--gold));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradient 5s infinite;cursor:pointer}
-        @keyframes gradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-        .brand small{font-size:.5rem;letter-spacing:6px;-webkit-text-fill-color:rgba(0,240,255,.2);display:block;margin-top:-.2rem}
-        .menu{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap}
-        .menu button{background:none;border:1px solid rgba(0,240,255,.1);color:rgba(0,240,255,.3);font-family:'Orbitron',monospace;font-size:.6rem;padding:.4rem 1rem;border-radius:10px;cursor:pointer;transition:all .3s;letter-spacing:2px;text-transform:uppercase}
-        .menu button:hover{border-color:rgba(0,240,255,.3);color:var(--cyan);box-shadow:0 0 20px rgba(0,240,255,.05);transform:scale(1.05)}
-        .menu .gold{border-color:rgba(255,215,0,.2);color:var(--gold)}
-        .menu .gold:hover{border-color:var(--gold);box-shadow:0 0 30px rgba(255,215,0,.1)}
-        .menu .pink{border-color:rgba(255,0,170,.15);color:var(--pink)}
-        .menu .pink:hover{border-color:var(--pink);box-shadow:0 0 30px rgba(255,0,170,.1)}
-        .menu .bypass{border-color:rgba(255,215,0,.3);color:var(--gold);font-size:.4rem}
-        .menu .bypass.active{border-color:var(--gold);box-shadow:0 0 30px rgba(255,215,0,.2)}
-        .menu .console{font-size:.4rem;color:rgba(0,240,255,.2)}
-        .menu .console:hover{border-color:rgba(0,240,255,.3);color:var(--cyan)}
-        .user{display:flex;align-items:center;gap:.6rem;font-size:.55rem;color:var(--cyan);letter-spacing:2px}
-        .user .dot{width:6px;height:6px;background:var(--cyan);border-radius:50%;box-shadow:0 0 15px var(--cyan);animation:blink 1.5s infinite}
-        @keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.8)}}
-        .user .name{color:var(--purple);text-shadow:0 0 20px rgba(180,0,255,.2)}
-        .overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);z-index:200;display:none;justify-content:center;align-items:center;animation:fadeIn .3s}
-        .overlay.show{display:flex}
-        @keyframes fadeIn{0%{opacity:0;transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
-        .box{max-width:420px;width:90%;padding:2rem;background:var(--card);border:1.5px solid rgba(0,240,255,.2);border-radius:24px;box-shadow:0 0 50px rgba(0,240,255,.08);position:relative}
-        .box .close{position:absolute;top:.8rem;right:1rem;background:none;border:none;color:rgba(0,240,255,.2);font-size:1.2rem;cursor:pointer;transition:.3s}
-        .box .close:hover{color:var(--pink);transform:rotate(90deg)}
-        .box h2{text-align:center;font-size:1.2rem;letter-spacing:6px;color:var(--cyan);margin-bottom:1.5rem;text-transform:uppercase}
-        .box input{width:100%;padding:.9rem 1.2rem;margin-bottom:.8rem;background:rgba(0,0,0,.4);border:1.5px solid rgba(0,240,255,.15);border-radius:12px;color:#e0f0ff;font-family:'Orbitron',monospace;font-size:.8rem;outline:none;transition:.2s}
-        .box input:focus{border-color:var(--cyan);box-shadow:0 0 30px rgba(0,240,255,.1);transform:scale(1.01)}
-        .box input::placeholder{color:rgba(0,240,255,.2);font-size:.65rem;letter-spacing:3px}
-        .box .btn{width:100%;padding:.9rem;font-family:'Orbitron',monospace;font-weight:700;font-size:.7rem;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:12px;cursor:pointer;transition:.2s;background:linear-gradient(135deg,rgba(0,240,255,.12),rgba(180,0,255,.12));color:var(--cyan);border:1.5px solid var(--cyan);position:relative;overflow:hidden}
-        .box .btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 0 40px rgba(0,240,255,.15)}
-        .box .btn-secondary{background:rgba(0,240,255,.02);color:rgba(0,240,255,.4);border-color:rgba(0,240,255,.08);margin-top:.5rem}
-        .box .btn-secondary:hover{background:rgba(0,240,255,.06)}
-        .box .error{color:var(--pink);font-size:.6rem;text-align:center;margin-top:.5rem}
-        .box .link{text-align:center;margin-top:.8rem;font-size:.55rem;color:rgba(0,240,255,.2);letter-spacing:2px}
-        .box .link span{color:var(--gold);cursor:pointer;transition:.3s}
-        .box .link span:hover{color:var(--cyan)}
-        .container{position:relative;z-index:1;max-width:560px;margin:1.5rem auto;padding:1.8rem;background:var(--card);border:1.5px solid rgba(0,240,255,.2);border-radius:28px;box-shadow:0 0 30px rgba(0,240,255,.08);backdrop-filter:blur(16px);animation:glow 5s infinite alternate}
-        @keyframes glow{0%{box-shadow:0 0 20px rgba(0,240,255,.06);border-color:rgba(0,240,255,.15)}50%{box-shadow:0 0 50px rgba(0,240,255,.12);border-color:rgba(180,0,255,.25)}100%{box-shadow:0 0 30px rgba(255,215,0,.06);border-color:rgba(255,215,0,.15)}}
-        .header{text-align:center;padding-bottom:1.2rem;border-bottom:1px solid rgba(0,240,255,.1);position:relative}
-        .header::after{content:'';position:absolute;bottom:-1px;left:20%;width:60%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),var(--gold),transparent);box-shadow:0 0 20px rgba(0,240,255,.15);animation:headerLine 5s infinite alternate}
-        @keyframes headerLine{0%{opacity:.2;transform:scaleX(.7)}100%{opacity:1;transform:scaleX(1.3)}}
-        .header h1{font-size:2.8rem;font-weight:900;letter-spacing:8px;text-transform:uppercase;background:linear-gradient(135deg,var(--cyan),#00f0ff,var(--purple),var(--pink),var(--gold));background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:gradient 5s infinite,titleFlicker 4s infinite;display:inline-block;position:relative}
-        .header h1::before{content:'✦';position:absolute;left:-60px;top:50%;transform:translateY(-50%);-webkit-text-fill-color:initial;color:var(--gold);font-size:2rem;animation:sparkleIcon 2.5s infinite;text-shadow:0 0 30px var(--gold)}
-        .header h1::after{content:'✦';position:absolute;right:-60px;top:50%;transform:translateY(-50%);-webkit-text-fill-color:initial;color:var(--pink);font-size:2rem;animation:sparkleIcon 2.5s infinite 1.25s;text-shadow:0 0 30px var(--pink)}
-        @keyframes sparkleIcon{0%,100%{opacity:1;transform:translateY(-50%) scale(1) rotate(0deg)}50%{opacity:.2;transform:translateY(-50%) scale(1.5) rotate(180deg)}}
-        @keyframes titleFlicker{0%,100%{opacity:1}2%{opacity:.85}4%{opacity:1}50%{opacity:.95}}
-        .subtitle{font-size:.7rem;letter-spacing:10px;color:rgba(0,240,255,.3);margin-top:.3rem;text-transform:uppercase;animation:pulse 4s infinite alternate}
-        @keyframes pulse{0%{opacity:.3;letter-spacing:10px}100%{opacity:.7;letter-spacing:14px}}
-        .badge{text-align:center;padding:.6rem;background:rgba(0,0,0,.2);border-radius:12px;color:var(--cyan);font-size:.8rem;letter-spacing:3px;border:1px solid rgba(0,240,255,.06);margin-bottom:1.2rem}
-        .badge span{color:var(--purple);text-shadow:0 0 20px rgba(180,0,255,.2)}
-        .input-area{margin:1.2rem 0}
-        .input-area textarea{width:100%;padding:1rem 1.4rem;background:rgba(0,0,0,.3);border:1.5px solid rgba(0,240,255,.1);border-radius:14px;color:#e0f0ff;font-family:'Orbitron',monospace;font-size:.85rem;outline:none;resize:vertical;min-height:90px;line-height:1.6;max-height:200px;transition:.2s}
-        .input-area textarea:focus{border-color:var(--cyan);box-shadow:0 0 25px rgba(0,240,255,.08);transform:scale(1.01)}
-        .input-area textarea::placeholder{color:rgba(0,240,255,.15);font-size:.7rem;letter-spacing:3px}
-        .input-area .btn{margin-top:.8rem}
-        .btn{width:100%;padding:1rem;font-family:'Orbitron',monospace;font-weight:700;font-size:.8rem;letter-spacing:3px;text-transform:uppercase;border:none;border-radius:14px;cursor:pointer;transition:.2s;background:linear-gradient(135deg,rgba(0,240,255,.12),rgba(180,0,255,.12));color:var(--cyan);border:1.5px solid var(--cyan);position:relative;overflow:hidden}
-        .btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 0 40px rgba(0,240,255,.15)}
-        .btn:active{transform:scale(.95)}
-        .btn-gold{background:rgba(255,215,0,.08);color:var(--gold);border-color:var(--gold)}
-        .btn-gold:hover{background:rgba(255,215,0,.15);box-shadow:0 0 40px rgba(255,215,0,.15)}
-        .btn-eval{background:rgba(255,215,0,.05);color:var(--gold);border-color:rgba(255,215,0,.15);font-size:.6rem;margin-top:.3rem}
-        .btn-eval:hover{background:rgba(255,215,0,.1);border-color:var(--gold)}
-        .threads{margin-top:1.8rem;padding-top:1.5rem;border-top:1px solid rgba(0,240,255,.06)}
-        .threads .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
-        .threads .head span{font-size:.65rem;letter-spacing:4px;color:rgba(0,240,255,.25);text-transform:uppercase}
-        .threads .head .count{color:var(--gold);text-shadow:0 0 20px var(--gold);font-weight:700}
-        .list{max-height:450px;overflow-y:auto;padding-right:.3rem;scrollbar-width:thin;scrollbar-color:var(--cyan) transparent}
-        .list::-webkit-scrollbar{width:3px}
-        .list::-webkit-scrollbar-track{background:transparent}
-        .list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--cyan),var(--purple));border-radius:10px;box-shadow:0 0 15px var(--cyan)}
-        .item{padding:1.2rem;margin-bottom:1rem;background:rgba(0,0,0,.2);border-radius:16px;border-left:3px solid var(--cyan);transition:.25s;animation:slide .35s;position:relative}
-        .item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,240,255,.01),rgba(180,0,255,.01));pointer-events:none;border-radius:16px}
-        .item:hover{transform:translateX(4px);border-left-color:var(--purple)}
-        @keyframes slide{0%{opacity:0;transform:translateY(-12px) scale(.96)}100%{opacity:1;transform:translateY(0) scale(1)}}
-        .item .author{font-size:.7rem;color:var(--cyan);font-weight:700;letter-spacing:3px;position:relative;z-index:1}
-        .item .author::before{content:'◆ ';color:var(--purple)}
-        .item .content{font-size:.85rem;color:#e8f0ff;margin:.6rem 0;line-height:1.8;word-break:break-word;position:relative;z-index:1}
-        .item .footer{display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:rgba(0,240,255,.2);margin-top:.6rem;position:relative;z-index:1}
-        .item .actions{display:flex;gap:1.2rem}
-        .item .actions button{background:none;border:none;color:rgba(0,240,255,.3);font-family:'Orbitron',monospace;font-size:.6rem;cursor:pointer;transition:.2s;padding:.3rem .6rem;border-radius:8px}
-        .item .actions button:hover{background:rgba(0,240,255,.04);transform:scale(1.05)}
-        .item .actions .liked{color:var(--pink)!important;text-shadow:0 0 25px var(--pink)}
-        .item .actions .view{color:rgba(0,240,255,.2);font-size:.55rem;padding:.3rem .6rem}
-        .replies{margin-top:.8rem;padding-left:1.2rem;border-left:1px solid rgba(180,0,255,.1);position:relative;z-index:1}
-        .replies .reply{padding:.5rem 0;font-size:.7rem;border-bottom:1px solid rgba(0,240,255,.02);animation:replySlide .25s}
-        .replies .reply:last-child{border-bottom:none}
-        @keyframes replySlide{0%{opacity:0;transform:translateX(-8px)}100%{opacity:1;transform:translateX(0)}}
-        .replies .reply .rAuthor{color:var(--purple);font-weight:700;font-size:.6rem;letter-spacing:2px}
-        .replies .reply .rAuthor::before{content:'↳ '}
-        .replies .reply .rText{color:#c0d0e8;margin-left:.5rem}
-        .replies .reply .rTime{font-size:.45rem;color:rgba(0,240,255,.12);float:right}
-        .replyInput{display:flex;gap:.5rem;margin-top:.8rem;position:relative;z-index:1}
-        .replyInput input{flex:1;padding:.5rem .8rem;background:rgba(0,0,0,.3);border:1px solid rgba(180,0,255,.1);border-radius:10px;color:#e0f0ff;font-family:'Orbitron',monospace;font-size:.6rem;outline:none;transition:.2s}
-        .replyInput input:focus{border-color:var(--purple);box-shadow:0 0 20px rgba(180,0,255,.06)}
-        .replyInput input::placeholder{color:rgba(0,240,255,.12);font-size:.5rem;letter-spacing:2px}
-        .replyInput button{padding:.5rem 1rem;background:rgba(180,0,255,.08);border:1px solid var(--purple);border-radius:10px;color:var(--purple);font-family:'Orbitron',monospace;font-size:.5rem;cursor:pointer;transition:.2s;letter-spacing:2px}
-        .replyInput button:hover{background:rgba(180,0,255,.15);box-shadow:0 0 25px rgba(180,0,255,.08);transform:scale(1.05)}
-        .empty{text-align:center;padding:3rem 1rem;color:rgba(0,240,255,.08);font-size:.7rem;letter-spacing:6px;border:1px dashed rgba(0,240,255,.03);border-radius:16px}
-        .empty::before{content:'✦ ';color:var(--gold);opacity:.2}
-        .empty::after{content:' ✦';color:var(--gold);opacity:.2}
-        .status{margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,240,255,.04);display:flex;justify-content:space-between;align-items:center;font-size:.55rem;color:rgba(0,240,255,.15);letter-spacing:3px}
-        .status .dot{width:7px;height:7px;background:var(--cyan);border-radius:50%;box-shadow:0 0 15px var(--cyan);display:inline-block;animation:blink 1.5s infinite}
-        .notice{text-align:center;font-size:.55rem;color:rgba(0,240,255,.15);letter-spacing:2px;padding:.5rem;margin-top:.5rem;border-top:1px solid rgba(0,240,255,.04)}
-        .notice span{color:var(--gold);opacity:.5}
-        .console{position:fixed;bottom:10px;right:10px;z-index:999;background:rgba(10,14,30,.95);border:1px solid rgba(0,240,255,.15);border-radius:12px;padding:10px;width:300px;max-height:250px;overflow-y:auto;font-family:monospace;font-size:10px;color:#e0f0ff;display:none;backdrop-filter:blur(10px);animation:fadeIn .3s}
-        .console.show{display:block}
-        .console .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;border-bottom:1px solid rgba(0,240,255,.05);padding-bottom:5px}
-        .console .head span{font-size:8px;color:rgba(0,240,255,.3);letter-spacing:2px}
-        .console .head button{background:none;border:none;color:rgba(0,240,255,.2);font-size:10px;cursor:pointer}
-        .console .head button:hover{color:var(--pink)}
-        .console .entry{padding:2px 0;border-bottom:1px solid rgba(0,240,255,.02);font-size:9px;color:rgba(0,240,255,.6);word-break:break-all}
-        .console .entry .time{color:rgba(0,240,255,.2);margin-right:5px}
-        .console .entry .level{font-weight:700}
-        .console .entry .level.info{color:var(--cyan)}
-        .console .entry .level.warn{color:var(--gold)}
-        .console .entry .level.error{color:var(--pink)}
-        .console .entry .level.bypass{color:var(--purple)}
-        .console .entry .level.eval{color:#ff6a00}
-        .console .entry .level.success{color:#00ff44}
-        @media(max-width:600px){.topbar{padding:.6rem 1rem}.brand{font-size:.9rem;letter-spacing:2px}.brand small{font-size:.4rem;letter-spacing:4px}.menu button{font-size:.5rem;padding:.3rem .6rem}.user{font-size:.45rem}.container{margin:.6rem;padding:1.2rem}.header h1{font-size:2rem;letter-spacing:4px}.header h1::before,.header h1::after{display:none}.item{padding:.8rem}.content{font-size:.75rem}.box{padding:1.5rem}.box h2{font-size:1rem;letter-spacing:4px}.console{width:90%;right:5%;bottom:5px;max-height:150px}}
-        @media(max-width:400px){.container{padding:.8rem}.header h1{font-size:1.5rem;letter-spacing:2px}.subtitle{font-size:.55rem;letter-spacing:5px}.footer{flex-direction:column;gap:.5rem;align-items:flex-start}.actions{width:100%;justify-content:space-around}.replyInput{flex-direction:column}.replyInput button{width:100%}.head{flex-direction:column;gap:.3rem;align-items:flex-start}.topbar{flex-wrap:wrap;gap:.5rem}.menu{flex-wrap:wrap;justify-content:flex-end}}
-        .container,.item,.btn,.box,.topbar{-webkit-backface-visibility:hidden;backface-visibility:hidden}
-        .list{-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
-        *{-webkit-tap-highlight-color:transparent}
-        .hidden{display:none!important}
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Android Only</title>
+  <!-- Firebase SDKs (free tier compatible) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    /* Sorted & minimal styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f5f7fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 32px 24px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+    h1 {
+      font-size: 1.8rem;
+      color: #1a1a2e;
+      margin: 0 0 8px;
+    }
+    .sub {
+      color: #555;
+      font-size: 0.95rem;
+      margin-bottom: 24px;
+    }
+    .data-box {
+      background: #f0f2f5;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 1rem;
+      color: #222;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      word-break: break-word;
+      margin-bottom: 20px;
+    }
+    .btn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      border-radius: 40px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+      width: 100%;
+    }
+    .btn:active { transform: scale(0.96); }
+    .btn-secondary {
+      background: #e94560;
+      margin-top: 12px;
+    }
+    .status {
+      margin-top: 18px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    .error { color: #d32f2f; }
+    .success { color: #2e7d32; }
+    .android-badge {
+      display: inline-block;
+      background: #3ddc84;
+      color: #000;
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    /* Android only block - hidden by default, shown via JS */
+    .android-only {
+      display: block;
+    }
+  </style>
 </head>
 <body>
-    <div class="particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
-    <div class="sparkle"></div>
-    <div class="topbar">
-        <div class="brand" onclick="scrollToTop()">ZACK<small>◈ gram ◈</small></div>
-        <div class="menu">
-            <div class="user" id="userInfo" style="display:none;"><span class="dot"></span><span class="name" id="userName">USER</span></div>
-            <button class="gold" id="loginBtn" onclick="openLogin()">⚡ LOGIN</button>
-            <button class="pink" id="logoutBtn" style="display:none;" onclick="logout()">✕ EXIT</button>
-            <button class="bypass" id="bypassBtn" onclick="toggleBypass()">🔧 BYPASS</button>
-            <button class="console" onclick="toggleConsole()">📟</button>
-        </div>
-    </div>
-    <div class="overlay" id="overlay">
-        <div class="box">
-            <button class="close" onclick="closeLogin()">✕</button>
-            <h2>⟡ sign in</h2>
-            <input type="text" id="loginUser" placeholder="USERNAME" maxlength="20" />
-            <input type="password" id="loginPass" placeholder="PASSWORD" maxlength="30" />
-            <button class="btn" onclick="login()">⚡ SIGN IN</button>
-            <button class="btn btn-secondary" onclick="register()">⟡ CREATE ACCOUNT</button>
-            <div class="error" id="loginError"></div>
-            <div class="link"><span onclick="register()">create account →</span></div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="header"><h1>Zack Gram</h1><div class="subtitle">◈ social feed ◈</div></div>
-        <div class="threads">
-            <div class="head"><span>⟡ public feed</span><span class="count" id="publicCount">0 posts</span></div>
-            <div class="list" id="publicList"><div class="empty">⍟ loading feed... ⍟</div></div>
-        </div>
-        <div id="loggedIn" style="display:none;">
-            <div class="badge">LOGGED IN AS <span id="displayUser">USER</span></div>
-            <div class="input-area">
-                <textarea id="threadInput" placeholder="WHAT'S HAPPENING?" maxlength="500"></textarea>
-                <button class="btn btn-gold" onclick="postThread()">⟐ POST</button>
-                <button class="btn btn-eval" onclick="evalPost()">⚡ EVAL</button>
-            </div>
-            <div class="threads">
-                <div class="head"><span>⟡ your feed</span><span class="count" id="feedCount">0 posts</span></div>
-                <div class="list" id="feedList"><div class="empty">⍟ no posts yet ⍟</div></div>
-            </div>
-            <div class="status"><span><span class="dot"></span> <span id="statusText">online</span></span></div>
-        </div>
-        <div class="notice"><span>✦</span> login to post, like &amp; reply <span>✦</span></div>
-    </div>
-    <div class="console" id="console">
-        <div class="head"><span>⟡ BYPASS CONSOLE</span><button onclick="toggleConsole()">✕</button></div>
-        <div id="logs"></div>
-    </div>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script>
-        // ===== FIREBASE CONFIG =====
-        const FB_CONFIG = {
-            apiKey: "AIzaSyCv2VrXUJ4fZ0qC1XZ5sJv8fH3eL9qYz0",
-            authDomain: "zack360-2b303.firebaseapp.com",
-            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "zack360-2b303",
-            storageBucket: "zack360-2b303.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:abcdef123456"
-        };
 
-        if (!firebase.apps.length) {
-            firebase.initializeApp(FB_CONFIG);
-        }
+<div class="card" id="app">
+  <!-- Android badge (visible only on Android) -->
+  <div class="android-badge" id="androidBadge">🤖 Android</div>
+  
+  <h1>Firebase + Vercel</h1>
+  <p class="sub">Free tier · Real-time</p>
 
-        const DB = firebase.database();
-        const USERS = DB.ref('/users');
-        const POSTS = DB.ref('/posts');
+  <!-- Data display -->
+  <div class="data-box" id="dataDisplay">Loading...</div>
 
-        // ===== STATE =====
-        let currentUser = null;
-        let userPosts = [];
-        let publicPosts = [];
-        let publicListener = null;
-        let feedListener = null;
-        let renderTimer = null;
-        let statusTimer = null;
-        let bypassMode = false;
-        let guestCount = 0;
-        let loggingIn = false;
+  <!-- Actions -->
+  <button class="btn" id="fetchBtn">📥 Fetch Data</button>
+  <button class="btn btn-secondary" id="updateBtn">✏️ Update Data</button>
 
-        // ===== DOM HELPERS =====
-        const $ = id => document.getElementById(id);
-        const el = id => $(id) || { textContent: '', style: {}, classList: { add: () => {}, remove: () => {}, toggle: () => {} } };
+  <!-- Status messages -->
+  <div class="status" id="statusMsg">Ready</div>
+</div>
 
-        const DOM = {
-            overlay: $('overlay'),
-            loginUser: $('loginUser'),
-            loginPass: $('loginPass'),
-            loginError: $('loginError'),
-            displayUser: $('displayUser'),
-            userName: $('userName'),
-            userInfo: $('userInfo'),
-            loginBtn: $('loginBtn'),
-            logoutBtn: $('logoutBtn'),
-            threadInput: $('threadInput'),
-            feedList: $('feedList'),
-            feedCount: $('feedCount'),
-            publicList: $('publicList'),
-            publicCount: $('publicCount'),
-            statusText: $('statusText'),
-            loggedIn: $('loggedIn'),
-            bypassBtn: $('bypassBtn'),
-            consoleBox: $('console'),
-            consoleLogs: $('logs')
-        };
+<script>
+  (function() {
+    "use strict";
 
-        // ===== CONSOLE LOGGER =====
-        function logConsole(msg, level = 'info') {
-            const logs = el(DOM.consoleLogs);
-            const time = new Date().toLocaleTimeString();
-            const entry = document.createElement('div');
-            entry.className = 'entry';
-            entry.innerHTML = `<span class="time">[${time}]</span><span class="level ${level}">${level.toUpperCase()}</span> ${msg}`;
-            logs.appendChild(entry);
-            logs.scrollTop = logs.scrollHeight;
-            if (logs.children.length > 100) logs.removeChild(logs.firstChild);
-        }
+    // ---------- SORTED: Firebase config (Vercel env vars or hardcoded) ----------
+    // For security, use environment variables on Vercel (server-side).
+    // But this is a single HTML, so we put it here (free tier safe with rules).
+    const firebaseConfig = {
+      apiKey: "AIzaSyDemoKeyReplaceMe",          // <-- REPLACE with your own
+      authDomain: "zack360-2b303.firebaseapp.com",
+      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "zack360-2b303",
+      storageBucket: "zack360-2b303.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abcdef123456"
+    };
 
-        function toggleConsole() {
-            const box = el(DOM.consoleBox);
-            box.classList.toggle('show');
-            if (box.classList.contains('show')) logConsole('Console opened', 'info');
-        }
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const dbRef = database.ref('testData'); // path
 
-        // ===== BYPASS =====
-        function toggleBypass() {
-            bypassMode = !bypassMode;
-            const btn = el(DOM.bypassBtn);
-            if (bypassMode) {
-                btn.classList.add('active');
-                btn.textContent = '🔧 BYPASS ON';
-                logConsole('🔧 BYPASS ENABLED', 'bypass');
-                if (!currentUser) bypassLogin();
-            } else {
-                btn.classList.remove('active');
-                btn.textContent = '🔧 BYPASS';
-                logConsole('🔧 BYPASS DISABLED', 'bypass');
-                if (!currentUser) logout();
-            }
-        }
+    // DOM refs
+    const dataDisplay = document.getElementById('dataDisplay');
+    const statusMsg = document.getElementById('statusMsg');
+    const fetchBtn = document.getElementById('fetchBtn');
+    const updateBtn = document.getElementById('updateBtn');
+    const androidBadge = document.getElementById('androidBadge');
 
-        function bypassLogin() {
-            const username = 'bypass_' + Math.random().toString(36).substring(2, 8);
-            currentUser = username;
-            guestCount = 0;
-            updateUI(username);
-            closeLogin();
-            if (publicListener) {
-                POSTS.off('value', publicListener);
-                publicListener = null;
-            }
-            DOM.loggedIn.style.display = 'block';
-            loadFeed();
-            setStatus('🔓 BYPASS: ' + username);
-            logConsole('🔓 BYPASS LOGIN: ' + username, 'bypass');
-        }
+    // ---------- SORTED: Android-only detection ----------
+    function isAndroid() {
+      const ua = navigator.userAgent || navigator.vendor || window.opera;
+      // Check for Android in userAgent
+      return /android/i.test(ua);
+    }
 
-        // ===== EVAL =====
-        function evalPost() {
-            if (!currentUser) {
-                logConsole('❌ No user logged in', 'error');
-                return;
-            }
-            const input = el(DOM.threadInput);
-            const code = input.value.trim();
-            if (!code) {
-                logConsole('❌ Empty code', 'error');
-                return;
-            }
-            try {
-                const result = eval(code);
-                logConsole('⚡ EVAL: ' + JSON.stringify(result), 'eval');
-                input.value = '';
-                setStatus('⚡ eval executed');
-            } catch (e) {
-                logConsole('❌ EVAL ERROR: ' + e.message, 'error');
-            }
-        }
+    // ---------- SORTED: Ban non-Android browsers ----------
+    function enforceAndroidOnly() {
+      if (!isAndroid()) {
+        // Override entire body with a blocking message
+        document.body.innerHTML = `
+          <div style="display:flex;justify-content:center;align-items:center;min-height:100vh;background:#1a1a2e;color:white;font-family:sans-serif;padding:20px;text-align:center;flex-direction:column;">
+            <h1 style="font-size:2.5rem;margin:0;">🚫</h1>
+            <h2>Access Denied</h2>
+            <p style="max-width:300px;color:#ccc;">This page is optimized for <strong>Android</strong> browsers only. Please open on an Android device.</p>
+            <small style="margin-top:30px;color:#888;">User-Agent: ${navigator.userAgent}</small>
+          </div>
+        `;
+        return false; // blocked
+      }
+      // Show badge
+      if (androidBadge) androidBadge.style.display = 'inline-block';
+      return true; // allowed
+    }
 
-        // ===== LOGIN =====
-        function openLogin() {
-            el(DOM.overlay).classList.add('show');
-            setTimeout(() => el(DOM.loginUser).focus(), 100);
-            el(DOM.loginError).textContent = '';
-            logConsole('Login opened', 'info');
-        }
+    // ---------- SORTED: Helper to set status ----------
+    function setStatus(msg, isError = false) {
+      if (statusMsg) {
+        statusMsg.textContent = msg;
+        statusMsg.className = 'status ' + (isError ? 'error' : 'success');
+      }
+    }
 
-        function closeLogin() {
-            el(DOM.overlay).classList.remove('show');
-            el(DOM.loginUser).value = '';
-            el(DOM.loginPass).value = '';
-            el(DOM.loginError).textContent = '';
-        }
-
-        function register() {
-            const err = el(DOM.loginError);
-            const username = el(DOM.loginUser).value.trim();
-            const password = el(DOM.loginPass).value;
-
-            if (!username || !password) {
-                err.textContent = 'All fields required';
-                return;
-            }
-            if (password.length < 4) {
-                err.textContent = 'Password min 4 chars';
-                return;
-            }
-
-            USERS.child(username).once('value').then(snap => {
-                if (snap.exists()) {
-                    err.textContent = 'Username taken';
-                    return;
-                }
-                return USERS.child(username).set({
-                    password: password,
-                    created: Date.now()
-                }).then(() => {
-                    err.textContent = '';
-                    err.style.color = 'var(--cyan)';
-                    err.textContent = '✓ Account created!';
-                    logConsole('Account created: ' + username, 'success');
-                    setTimeout(() => {
-                        err.style.color = '';
-                        err.textContent = '';
-                    }, 3000);
-                });
-            }).catch(err => {
-                logConsole('Register error: ' + err.message, 'error');
-                err.textContent = 'Error: ' + err.message;
-            });
-        }
-
-        function login() {
-            if (loggingIn) return;
-            loggingIn = true;
-
-            const username = el(DOM.loginUser).value.trim();
-            const password = el(DOM.loginPass).value;
-            const err = el(DOM.loginError);
-
-            if (!username || !password) {
-                err.textContent = 'Enter username and password';
-                loggingIn = false;
-                return;
-            }
-
-            USERS.child(username).once('value').then(snap => {
-                if (!snap.exists()) {
-                    err.textContent = 'User not found';
-                    loggingIn = false;
-                    return;
-                }
-                const data = snap.val();
-                if (data.password !== password) {
-                    err.textContent = 'Wrong password';
-                    loggingIn = false;
-                    return;
-                }
-                err.textContent = '';
-                currentUser = username;
-                updateUI(username);
-                closeLogin();
-                if (publicListener) {
-                    POSTS.off('value', publicListener);
-                    publicListener = null;
-                }
-                DOM.loggedIn.style.display = 'block';
-                loadFeed();
-                setStatus('welcome ' + username);
-                logConsole('Login: ' + username, 'success');
-                loggingIn = false;
-            }).catch(err => {
-                logConsole('Login error: ' + err.message, 'error');
-                err.textContent = 'Error: ' + err.message;
-                loggingIn = false;
-            });
-        }
-
-        function updateUI(username) {
-            el(DOM.displayUser).textContent = username.toUpperCase();
-            el(DOM.userName).textContent = username.toUpperCase();
-            el(DOM.userInfo).style.display = 'flex';
-            el(DOM.loginBtn).style.display = 'none';
-            el(DOM.logoutBtn).style.display = 'block';
-        }
-
-        function logout() {
-            if (feedListener) {
-                POSTS.off('value', feedListener);
-                feedListener = null;
-            }
-            currentUser = null;
-            userPosts = [];
-            bypassMode = false;
-            el(DOM.loggedIn).style.display = 'none';
-            el(DOM.userInfo).style.display = 'none';
-            el(DOM.loginBtn).style.display = 'block';
-            el(DOM.logoutBtn).style.display = 'none';
-            el(DOM.bypassBtn).classList.remove('active');
-            el(DOM.bypassBtn).textContent = '🔧 BYPASS';
-            setStatus('logged out');
-            loadPublic();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            logConsole('Logged out', 'info');
-        }
-
-        function setStatus(msg, isError = false) {
-            const status = el(DOM.statusText);
-            status.textContent = msg;
-            status.style.color = isError ? '#ff00aa' : 'rgba(0,240,255,.5)';
-            if (!isError) {
-                clearTimeout(statusTimer);
-                statusTimer = setTimeout(() => {
-                    status.textContent = 'online';
-                    status.style.color = 'rgba(0,240,255,.5)';
-                }, 3000);
-            }
-        }
-
-        // ===== PUBLIC POSTS =====
-        function loadPublic() {
-            if (publicListener) {
-                POSTS.off('value', publicListener);
-                publicListener = null;
-            }
-
-            publicListener = function(snap) {
-                try {
-                    if (snap.exists()) {
-                        const data = snap.val();
-                        publicPosts = Object.keys(data).map(key => ({
-                            id: key,
-                            ...data[key]
-                        }));
-                        publicPosts.sort((a, b) => b.timestamp - a.timestamp);
-                    } else {
-                        publicPosts = [];
-                    }
-                    renderPublic();
-                } catch (e) {
-                    logConsole('Public load error: ' + e.message, 'error');
-                }
-            };
-            POSTS.on('value', publicListener);
-            logConsole('Public feed loaded', 'info');
-        }
-
-        function renderPublic() {
-            const list = el(DOM.publicList);
-            const count = el(DOM.publicCount);
-
-            if (!publicPosts.length) {
-                list.innerHTML = '<div class="empty">⍟ no posts yet ⍟</div>';
-                count.textContent = '0 posts';
-                return;
-            }
-
-            let html = '';
-            const max = Math.min(publicPosts.length, 50);
-            for (let i = 0; i < max; i++) {
-                const t = publicPosts[i];
-                const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                const likes = t.likes || [];
-                const replies = t.replies || [];
-
-                let replyHtml = '';
-                const rMax = Math.min(replies.length, 5);
-                for (let j = 0; j < rMax; j++) {
-                    const r = replies[j];
-                    const rTime = new Date(r.timestamp).toLocaleTimeString('en-US', {
-                        hour12: false,
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                    replyHtml += `<div class="reply"><span class="rAuthor">${escapeHtml(r.author).toUpperCase()}</span><span class="rText">${escapeHtml(r.text)}</span><span class="rTime">${rTime}</span></div>`;
-                }
-                if (replies.length > 5) {
-                    replyHtml += `<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length - 5} more</div>`;
-                }
-
-                html += `<div class="item">
-                    <div class="author">${escapeHtml(t.author).toUpperCase()}</div>
-                    <div class="content">${escapeHtml(t.content)}</div>
-                    <div class="footer">
-                        <span>${time}</span>
-                        <div class="actions">
-                            <span class="view">♥ ${likes.length}</span>
-                            <span class="view">⌨ ${replies.length}</span>
-                        </div>
-                    </div>
-                    <div class="replies">${replyHtml}</div>
-                </div>`;
-            }
-
-            list.innerHTML = html;
-            count.textContent = `${publicPosts.length} posts`;
-        }
-
-        // ===== FEED (Logged In) =====
-        function loadFeed() {
-            if (feedListener) {
-                POSTS.off('value', feedListener);
-                feedListener = null;
-            }
-
-            feedListener = function(snap) {
-                try {
-                    if (snap.exists()) {
-                        const data = snap.val();
-                        userPosts = Object.keys(data).map(key => ({
-                            id: key,
-                            ...data[key]
-                        }));
-                        userPosts.sort((a, b) => b.timestamp - a.timestamp);
-                    } else {
-                        userPosts = [];
-                    }
-                    if (renderTimer) cancelAnimationFrame(renderTimer);
-                    renderTimer = requestAnimationFrame(renderFeed);
-                } catch (e) {
-                    logConsole('Feed error: ' + e.message, 'error');
-                    setStatus('error loading', true);
-                }
-            };
-            POSTS.on('value', feedListener);
-        }
-
-        function renderFeed() {
-            const list = el(DOM.feedList);
-            const count = el(DOM.feedCount);
-
-            if (!userPosts.length) {
-                list.innerHTML = '<div class="empty">⍟ no posts yet ⍟</div>';
-                count.textContent = '0 posts';
-                return;
-            }
-
-            let html = '';
-            const max = Math.min(userPosts.length, 50);
-            for (let i = 0; i < max; i++) {
-                const t = userPosts[i];
-                const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
-                    hour12: false,
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-                const likes = t.likes || [];
-                const liked = likes.includes(currentUser);
-                const replies = t.replies || [];
-
-                let replyHtml = '';
-                const rMax = Math.min(replies.length, 5);
-                for (let j = 0; j < rMax; j++) {
-                    const r = replies[j];
-                    const rTime = new Date(r.timestamp).toLocaleTimeString('en-US', {
-                        hour12: false,
-                        hour: '2-digit',
-                        minute: '2-digit'
-                    });
-                    replyHtml += `<div class="reply"><span class="rAuthor">${escapeHtml(r.author).toUpperCase()}</span><span class="rText">${escapeHtml(r.text)}</span><span class="rTime">${rTime}</span></div>`;
-                }
-                if (replies.length > 5) {
-                    replyHtml += `<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length - 5} more</div>`;
-                }
-
-                html += `<div class="item" id="post-${t.id}">
-                    <div class="author">${escapeHtml(t.author).toUpperCase()}</div>
-                    <div class="content">${escapeHtml(t.content)}</div>
-                    <div class="footer">
-                        <span>${time}</span>
-                        <div class="actions">
-                            <button class="${liked ? 'liked' : ''}" onclick="likePost('${t.id}')" ${liked ? 'style="color:#ff00aa"' : ''}>
-                                ♥ ${likes.length}
-                            </button>
-                            <button onclick="toggleReply('${t.id}')">⌨ ${replies.length}</button>
-                        </div>
-                    </div>
-                    <div class="replies" id="replies-${t.id}">${replyHtml}</div>
-                    <div class="replyInput hidden" id="replyInput-${t.id}">
-                        <input type="text" id="replyText-${t.id}" placeholder="REPLY..." maxlength="200" />
-                        <button onclick="postReply('${t.id}')">SEND</button>
-                    </div>
-                </div>`;
-            }
-
-            list.innerHTML = html;
-            count.textContent = `${userPosts.length} posts`;
-        }
-
-        // ===== HELPERS =====
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function toggleReply(id) {
-            const input = document.getElementById(`replyInput-${id}`);
-            if (input) {
-                input.classList.toggle('hidden');
-                if (!input.classList.contains('hidden')) {
-                    const field = document.getElementById(`replyText-${id}`);
-                    if (field) setTimeout(() => field.focus(), 50);
-                }
-            }
-        }
-
-        // ===== ACTIONS =====
-        function postThread() {
-            if (!currentUser) {
-                alert('You must be logged in.');
-                return;
-            }
-            const input = el(DOM.threadInput);
-            const content = input.value.trim();
-            if (!content) {
-                alert('Please enter content.');
-                return;
-            }
-            if (content.length > 500) {
-                alert('Max 500 characters.');
-                return;
-            }
-
-            if (bypassMode) {
-                guestCount++;
-                const post = {
-                    author: currentUser,
-                    content: '[BYPASS] ' + content,
-                    timestamp: Date.now(),
-                    likes: [],
-                    replies: []
-                };
-                POSTS.push(post).then(() => {
-                    input.value = '';
-                    setStatus('🔓 guest post #' + guestCount + ' posted ✓');
-                    logConsole('Bypass post #' + guestCount, 'bypass');
-                }).catch(err => {
-                    alert('Error: ' + err.message);
-                    logConsole('Post error: ' + err.message, 'error');
-                });
-                return;
-            }
-
-            POSTS.push({
-                author: currentUser,
-                content: content,
-                timestamp: Date.now(),
-                likes: [],
-                replies: []
-            }).then(() => {
-                input.value = '';
-                setStatus('post posted ✓');
-                logConsole('Post posted', 'success');
-            }).catch(err => {
-                alert('Error: ' + err.message);
-                logConsole('Post error: ' + err.message, 'error');
-            });
-        }
-
-        function likePost(id) {
-            if (!currentUser) {
-                alert('Login to like.');
-                return;
-            }
-            const post = userPosts.find(t => t.id === id);
-            if (!post) return;
-
-            const likes = post.likes || [];
-            const idx = likes.indexOf(currentUser);
-            if (idx > -1) {
-                likes.splice(idx, 1);
-            } else {
-                likes.push(currentUser);
-            }
-            POSTS.child(id).update({ likes: likes }).catch(err => {
-                logConsole('Like error: ' + err.message, 'error');
-            });
-        }
-
-        function postReply(id) {
-            if (!currentUser) {
-                alert('Login to reply.');
-                return;
-            }
-            const input = document.getElementById(`replyText-${id}`);
-            if (!input) return;
-            const text = input.value.trim();
-            if (!text) return;
-            if (text.length > 200) {
-                alert('Max 200 characters.');
-                return;
-            }
-
-            const post = userPosts.find(t => t.id === id);
-            if (!post) return;
-
-            const replies = post.replies || [];
-            replies.push({
-                author: currentUser,
-                text: text,
-                timestamp: Date.now()
-            });
-
-            POSTS.child(id).update({ replies: replies }).then(() => {
-                input.value = '';
-                const inp = document.getElementById(`replyInput-${id}`);
-                if (inp) inp.classList.add('hidden');
-                setStatus('reply posted ✓');
-                logConsole('Reply posted', 'success');
-            }).catch(err => {
-                alert('Error: ' + err.message);
-                logConsole('Reply error: ' + err.message, 'error');
-            });
-        }
-
-        // ===== KEYBOARD SHORTCUTS =====
-        const threadInput = DOM.threadInput;
-        if (threadInput) {
-            threadInput.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && e.ctrlKey) {
-                    e.preventDefault();
-                    postThread();
-                }
-            });
-        }
-
-        const loginPass = DOM.loginPass;
-        if (loginPass) {
-            loginPass.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter') login();
-            });
-        }
-
-        // ===== SCROLL TO TOP =====
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // ===== CLICK OUTSIDE LOGIN =====
-        const overlay = DOM.overlay;
-        if (overlay) {
-            overlay.addEventListener('click', (e) => {
-                if (e.target === overlay) closeLogin();
-            });
-        }
-
-        // ===== INIT =====
-        loadPublic();
-        logConsole('🚀 ZACKGRAM LOADED', 'info');
-        logConsole('🔧 BYPASS TOOLS ACTIVE', 'bypass');
-        logConsole('📟 Click 📟 for console', 'info');
-
-        // ===== MOBILE OPTIMIZATION =====
-        if (window.innerWidth < 600) {
-            document.querySelectorAll('.particle').forEach((el, i) => {
-                if (i > 5) el.style.display = 'none';
-            });
-        }
-
-        // ===== VISIBILITY =====
-        document.addEventListener('visibilitychange', () => {
-            const hidden = document.hidden;
-            document.querySelectorAll('.particle, .sparkle, body::before, body::after').forEach(el => {
-                if (el.style) {
-                    el.style.animationPlayState = hidden ? 'paused' : 'running';
-                }
-            });
+    // ---------- SORTED: Fetch data from Firebase ----------
+    function fetchData() {
+      setStatus('Fetching...', false);
+      dataDisplay.textContent = '⏳';
+      
+      dbRef.once('value')
+        .then((snapshot) => {
+          const val = snapshot.val();
+          if (val === null || val === undefined) {
+            dataDisplay.textContent = '📭 No data yet';
+            setStatus('Empty node', false);
+          } else {
+            // If it's an object, stringify nicely
+            const display = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+            dataDisplay.textContent = display;
+            setStatus('✅ Data loaded', false);
+          }
+        })
+        .catch((err) => {
+          console.error('Fetch error:', err);
+          dataDisplay.textContent = '⚠️ Error';
+          setStatus('❌ ' + err.message, true);
         });
+    }
 
-        console.log('✓ ZACKGRAM • FULL INSTAGRAM CLONE');
-        console.log('🔧 Features: Posts, Likes, Replies, Feed');
-        console.log('🔧 Bypass: login bypass, eval mode');
-        console.log('📟 Console logger active');
-        console.log('⚡ Eval injection ready');
-        console.log('✓ All features functional');
-    </script>
+    // ---------- SORTED: Update data (write) ----------
+    function updateData() {
+      const newValue = {
+        timestamp: Date.now(),
+        message: 'Hello from Android!',
+        random: Math.floor(Math.random() * 1000)
+      };
+      
+      setStatus('Updating...', false);
+      dataDisplay.textContent = '⏳';
+      
+      dbRef.set(newValue)
+        .then(() => {
+          setStatus('✅ Updated successfully', false);
+          // Refresh display
+          return dbRef.once('value');
+        })
+        .then((snapshot) => {
+          const val = snapshot.val();
+          const display = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+          dataDisplay.textContent = display;
+        })
+        .catch((err) => {
+          console.error('Update error:', err);
+          dataDisplay.textContent = '⚠️ Error';
+          setStatus('❌ ' + err.message, true);
+        });
+    }
+
+    // ---------- SORTED: Init ----------
+    function init() {
+      // 1. Enforce Android only (blocks if not)
+      const allowed = enforceAndroidOnly();
+      if (!allowed) return;
+
+      // 2. Load initial data
+      fetchData();
+
+      // 3. Event listeners
+      if (fetchBtn) fetchBtn.addEventListener('click', fetchData);
+      if (updateBtn) updateBtn.addEventListener('click', updateData);
+
+      // 4. Listen for real-time updates (optional - for demo)
+      // We use once() above, but you can also use on() for live updates.
+      // For free tier, once() is more economical.
+      // But we add a listener to show real-time changes (optional)
+      // Uncomment if you want live updates:
+      /*
+      dbRef.on('value', (snapshot) => {
+        const val = snapshot.val();
+        if (val !== null && val !== undefined) {
+          const display = typeof val === 'object' ? JSON.stringify(val, null, 2) : String(val);
+          dataDisplay.textContent = display;
+        }
+      });
+      */
+    }
+
+    // Run when DOM ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+
+  })();
+</script>
+
 </body>
 </html>
