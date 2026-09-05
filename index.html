@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ZACK THREADS • X11 ULTRA</title>
-    
+    <title>ZACK THREADS</title>
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -20,12 +20,9 @@
             --neon-cyan: #00ffd0;
             --neon-pink: #ff00aa;
             --neon-gold: #ffd700;
-            --neon-orange: #ff6a00;
-            --neon-red: #ff0040;
             --dark-bg: #0a0e1a;
             --card-bg: rgba(10, 14, 30, 0.85);
             --theme-color: #00ffd0;
-            --theme-glow: 0 0 30px rgba(0, 255, 208, 0.3);
         }
 
         html, body {
@@ -34,9 +31,6 @@
             color: #e0f0ff;
             font-family: 'Orbitron', 'Segoe UI', monospace;
             overflow-x: hidden;
-            will-change: transform;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
 
         body::before {
@@ -54,7 +48,6 @@
             background-size: 60px 60px, 60px 60px, 100% 100%, 100% 100%;
             z-index: 0;
             pointer-events: none;
-            will-change: opacity;
             animation: gridPulse 8s infinite alternate ease-in-out;
         }
 
@@ -75,7 +68,6 @@
             z-index: 9999;
             pointer-events: none;
             opacity: 0.3;
-            will-change: top;
             animation: scanLine 12s linear infinite;
         }
 
@@ -93,13 +85,11 @@
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
-            will-change: transform;
         }
 
         .particle {
             position: absolute;
             border-radius: 50%;
-            will-change: transform, opacity;
             animation: floatParticle linear infinite;
             opacity: 0;
         }
@@ -136,7 +126,6 @@
                 radial-gradient(circle at 20% 30%, rgba(0, 255, 208, 0.02) 0%, transparent 50%),
                 radial-gradient(circle at 80% 70%, rgba(180, 0, 255, 0.02) 0%, transparent 50%),
                 radial-gradient(circle at 50% 50%, rgba(255, 0, 170, 0.01) 0%, transparent 70%);
-            will-change: opacity;
             animation: sparkleBg 12s infinite alternate ease-in-out;
         }
 
@@ -161,9 +150,7 @@
                 inset 0 0 30px rgba(0, 240, 255, 0.02);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            will-change: box-shadow, border-color;
             animation: containerGlow 5s infinite alternate ease-in-out;
-            transform: translateZ(0);
         }
 
         @keyframes containerGlow {
@@ -197,7 +184,6 @@
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--neon-cyan), var(--neon-purple), var(--neon-gold), transparent);
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
-            will-change: transform, opacity;
             animation: headerLine 5s infinite alternate ease-in-out;
         }
 
@@ -216,11 +202,8 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            will-change: background-position;
             animation: gradientShift 5s ease-in-out infinite, titleFlicker 4s infinite;
-            position: relative;
             display: inline-block;
-            transform: translateZ(0);
         }
 
         @keyframes gradientShift {
@@ -238,7 +221,6 @@
             -webkit-text-fill-color: initial;
             color: var(--neon-gold);
             font-size: 2rem;
-            will-change: transform, opacity;
             animation: sparkleIcon 2.5s infinite;
             text-shadow: 0 0 30px var(--neon-gold);
         }
@@ -252,7 +234,6 @@
             -webkit-text-fill-color: initial;
             color: var(--neon-pink);
             font-size: 2rem;
-            will-change: transform, opacity;
             animation: sparkleIcon 2.5s infinite 1.25s;
             text-shadow: 0 0 30px var(--neon-pink);
         }
@@ -276,7 +257,6 @@
             margin-top: 0.3rem;
             font-weight: 400;
             text-transform: uppercase;
-            will-change: opacity, letter-spacing;
             animation: subtitlePulse 4s infinite alternate ease-in-out;
         }
 
@@ -301,8 +281,6 @@
             font-size: 0.9rem;
             transition: all 0.2s;
             outline: none;
-            will-change: transform, box-shadow;
-            transform: translateZ(0);
         }
 
         .form-group input:focus {
@@ -335,8 +313,6 @@
             box-shadow: 0 0 20px rgba(0, 240, 255, 0.03);
             position: relative;
             overflow: hidden;
-            will-change: transform, box-shadow;
-            transform: translateZ(0);
         }
 
         .btn::before {
@@ -352,7 +328,6 @@
             opacity: 0;
             transition: opacity 0.3s;
             background-size: 300% 300%;
-            will-change: background-position;
             animation: gradientShift 3s ease-in-out infinite;
         }
 
@@ -391,31 +366,6 @@
             box-shadow: 0 0 40px rgba(255, 215, 0, 0.15);
         }
 
-        .btn-small {
-            padding: 0.4rem 0.8rem;
-            font-family: 'Orbitron', monospace;
-            font-size: 0.45rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border: 1px solid rgba(0, 240, 255, 0.1);
-            border-radius: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            color: rgba(0, 240, 255, 0.4);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .btn-small:hover {
-            background: rgba(0, 240, 255, 0.05);
-            border-color: rgba(0, 240, 255, 0.2);
-        }
-
-        .btn-small.active {
-            border-color: var(--neon-cyan);
-            color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
-        }
-
         .hidden {
             display: none !important;
         }
@@ -426,7 +376,6 @@
             text-align: center;
             margin-top: 0.5rem;
             text-shadow: 0 0 20px var(--neon-pink);
-            will-change: opacity;
             animation: errorPulse 1s infinite alternate;
         }
 
@@ -435,176 +384,21 @@
             100% { opacity: 1; }
         }
 
-        .profile-section {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 16px;
-            padding: 1.2rem;
-            margin-bottom: 1.2rem;
-            border: 1px solid rgba(0, 240, 255, 0.06);
-        }
-
-        .profile-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-        }
-
-        .profile-username {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--neon-cyan);
-            text-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
-            letter-spacing: 2px;
-        }
-
-        .profile-status {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.55rem;
-            color: rgba(0, 240, 255, 0.4);
-        }
-
-        .profile-status .status-dot-small {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-            animation: dotBlink 1.5s infinite;
-        }
-
-        .status-dot-small.online {
-            background: var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan);
-        }
-
-        .status-dot-small.offline {
-            background: var(--neon-red);
-            box-shadow: 0 0 15px var(--neon-red);
-            animation: none;
-        }
-
-        .profile-details {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.5rem;
-            font-size: 0.6rem;
-            color: rgba(0, 240, 255, 0.3);
-        }
-
-        .profile-details .detail-item {
-            display: flex;
-            flex-direction: column;
-            gap: 0.1rem;
-        }
-
-        .profile-details .detail-label {
-            font-size: 0.45rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(0, 240, 255, 0.15);
-        }
-
-        .profile-details .detail-value {
-            color: rgba(0, 240, 255, 0.6);
-            font-size: 0.55rem;
-            word-break: break-all;
-        }
-
-        .profile-stats {
-            display: flex;
-            gap: 1rem;
-            margin-top: 0.8rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(0, 240, 255, 0.05);
-        }
-
-        .profile-stats .stat-item {
-            flex: 1;
+        .user-badge {
             text-align: center;
-        }
-
-        .profile-stats .stat-number {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--neon-gold);
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
-        }
-
-        .profile-stats .stat-label {
-            font-size: 0.45rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: rgba(0, 240, 255, 0.2);
-            margin-top: 0.1rem;
-        }
-
-        .profile-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-            flex-wrap: wrap;
-        }
-
-        .theme-settings {
-            margin: 1.2rem 0;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.15);
+            padding: 0.6rem;
+            background: rgba(0, 0, 0, 0.2);
             border-radius: 12px;
-            border: 1px solid rgba(0, 240, 255, 0.04);
-        }
-
-        .theme-settings .theme-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.8rem;
-        }
-
-        .theme-settings .theme-header span {
-            font-size: 0.55rem;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
             letter-spacing: 3px;
-            color: rgba(0, 240, 255, 0.2);
-            text-transform: uppercase;
+            border: 1px solid rgba(0, 240, 255, 0.06);
+            margin-bottom: 1.2rem;
         }
 
-        .theme-colors {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .theme-colors .color-option {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-        }
-
-        .theme-colors .color-option:hover {
-            transform: scale(1.15);
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .theme-colors .color-option.active {
-            border-color: #fff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .theme-colors .color-option.active::after {
-            content: '✓';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #fff;
-            font-size: 0.6rem;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        .user-badge span {
+            color: var(--neon-purple);
+            text-shadow: 0 0 20px var(--neon-purple);
         }
 
         .thread-input {
@@ -625,8 +419,6 @@
             resize: vertical;
             min-height: 90px;
             line-height: 1.6;
-            will-change: transform, box-shadow;
-            transform: translateZ(0);
         }
 
         .thread-input textarea:focus {
@@ -677,7 +469,6 @@
             padding-right: 0.3rem;
             scrollbar-width: thin;
             scrollbar-color: var(--neon-cyan) transparent;
-            will-change: scroll-position;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -702,11 +493,9 @@
             border-radius: 16px;
             border-left: 3px solid var(--neon-cyan);
             transition: all 0.25s;
-            will-change: transform, box-shadow, border-color;
             animation: threadIn 0.35s ease-out;
             position: relative;
             overflow: hidden;
-            transform: translateZ(0);
         }
 
         .thread-item::before {
@@ -721,7 +510,7 @@
         }
 
         .thread-item:hover {
-            transform: translateX(4px) translateZ(0);
+            transform: translateX(4px);
             border-left-color: var(--neon-purple);
             box-shadow: 0 0 25px rgba(0, 240, 255, 0.02);
         }
@@ -739,16 +528,11 @@
             letter-spacing: 3px;
             position: relative;
             z-index: 1;
-            cursor: pointer;
         }
 
         .thread-item .thread-author::before {
             content: '◆ ';
             color: var(--neon-purple);
-        }
-
-        .thread-item .thread-author:hover {
-            color: var(--neon-gold);
         }
 
         .thread-item .thread-content {
@@ -787,7 +571,6 @@
             transition: all 0.2s;
             padding: 0.3rem 0.6rem;
             border-radius: 8px;
-            will-change: transform;
         }
 
         .thread-item .thread-actions button:hover {
@@ -874,7 +657,6 @@
             font-size: 0.6rem;
             outline: none;
             transition: all 0.2s;
-            will-change: border-color, box-shadow;
         }
 
         .thread-item .reply-input-group input:focus {
@@ -899,7 +681,6 @@
             cursor: pointer;
             transition: all 0.2s;
             letter-spacing: 2px;
-            will-change: transform, box-shadow;
         }
 
         .thread-item .reply-input-group button:hover {
@@ -942,31 +723,19 @@
             letter-spacing: 3px;
         }
 
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-        }
-
         .status-dot {
             width: 7px;
             height: 7px;
             background: var(--neon-cyan);
             border-radius: 50%;
             box-shadow: 0 0 15px var(--neon-cyan);
-            will-change: transform, opacity;
+            display: inline-block;
             animation: dotBlink 1.5s infinite;
         }
 
         @keyframes dotBlink {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.2; transform: scale(0.8); }
-        }
-
-        .status-text {
-            font-size: 0.55rem;
-            letter-spacing: 3px;
-            transition: color 0.2s;
         }
 
         .exit-btn {
@@ -980,7 +749,6 @@
             cursor: pointer;
             transition: all 0.2s;
             letter-spacing: 2px;
-            will-change: transform, box-shadow;
         }
 
         .exit-btn:hover {
@@ -997,10 +765,6 @@
             .thread-item .thread-content { font-size: 0.75rem; }
             .form-group input { font-size: 0.8rem; padding: 0.8rem 1rem; }
             .btn { font-size: 0.7rem; padding: 0.8rem; }
-            .profile-details { grid-template-columns: 1fr; }
-            .profile-stats { flex-direction: column; gap: 0.5rem; }
-            .theme-colors { gap: 0.3rem; }
-            .theme-colors .color-option { width: 24px; height: 24px; }
         }
 
         @media (max-width: 400px) {
@@ -1012,7 +776,6 @@
             .thread-item .reply-input-group { flex-direction: column; }
             .thread-item .reply-input-group button { width: 100%; }
             .threads-header { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
-            .profile-actions { flex-direction: column; }
         }
 
         .container, .header, .thread-item, .btn, .form-group input, .thread-input textarea {
@@ -1081,79 +844,8 @@
             <div class="subtitle">◈ cyber social ◈</div>
         </div>
 
-        <!-- PROFILE SECTION -->
-        <div class="profile-section" id="profileSection">
-            <div class="profile-header">
-                <div class="profile-username" id="profileUsername">USER</div>
-                <div class="profile-status">
-                    <span class="status-dot-small online" id="profileStatusDot"></span>
-                    <span id="profileStatusText">online</span>
-                </div>
-            </div>
-            <div class="profile-details">
-                <div class="detail-item">
-                    <span class="detail-label">IP Address</span>
-                    <span class="detail-value" id="profileIP">Loading...</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Location</span>
-                    <span class="detail-value" id="profileLocation">Detecting...</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Registered</span>
-                    <span class="detail-value" id="profileRegistered">Loading...</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Last Active</span>
-                    <span class="detail-value" id="profileLastActive">Just now</span>
-                </div>
-            </div>
-            <div class="profile-stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="statThreads">0</div>
-                    <div class="stat-label">Threads</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="statLikes">0</div>
-                    <div class="stat-label">Likes</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="statReplies">0</div>
-                    <div class="stat-label">Replies</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="statFollowers">0</div>
-                    <div class="stat-label">Followers</div>
-                </div>
-            </div>
-            <div class="profile-actions">
-                <button class="btn-small active" onclick="viewProfile()">👤 Profile</button>
-                <button class="btn-small" onclick="toggleThemeSettings()">🎨 Theme</button>
-                <button class="btn-small" onclick="viewFollowers()">👥 Followers</button>
-                <button class="btn-small" onclick="viewFollowing()">📋 Following</button>
-            </div>
-        </div>
-
-        <!-- THEME SETTINGS -->
-        <div class="theme-settings hidden" id="themeSettings">
-            <div class="theme-header">
-                <span>⟡ theme settings</span>
-                <button class="btn-small" onclick="toggleThemeSettings()" style="padding:0.2rem 0.6rem;font-size:0.4rem;">✕</button>
-            </div>
-            <div class="theme-colors">
-                <div class="color-option active" style="background:#00ffd0;" onclick="setTheme('#00ffd0')"></div>
-                <div class="color-option" style="background:#00f0ff;" onclick="setTheme('#00f0ff')"></div>
-                <div class="color-option" style="background:#b400ff;" onclick="setTheme('#b400ff')"></div>
-                <div class="color-option" style="background:#ff00aa;" onclick="setTheme('#ff00aa')"></div>
-                <div class="color-option" style="background:#ffd700;" onclick="setTheme('#ffd700')"></div>
-                <div class="color-option" style="background:#ff6a00;" onclick="setTheme('#ff6a00')"></div>
-                <div class="color-option" style="background:#00ff44;" onclick="setTheme('#00ff44')"></div>
-                <div class="color-option" style="background:#ff0040;" onclick="setTheme('#ff0040')"></div>
-                <div class="color-option" style="background:#ffffff;" onclick="setTheme('#ffffff')"></div>
-                <div class="color-option" style="background:#ff8800;" onclick="setTheme('#ff8800')"></div>
-                <div class="color-option" style="background:#00ccff;" onclick="setTheme('#00ccff')"></div>
-                <div class="color-option" style="background:#ff44ff;" onclick="setTheme('#ff44ff')"></div>
-            </div>
+        <div class="user-badge">
+            LOGGED IN AS <span id="displayUsername">USER</span>
         </div>
 
         <div class="thread-input">
@@ -1163,7 +855,7 @@
 
         <div class="threads-container">
             <div class="threads-header">
-                <span>⟡ recent threads</span>
+                <span>⟡ public threads</span>
                 <span class="thread-count" id="threadCount">0 threads</span>
             </div>
             <div class="threads-list" id="threadsList">
@@ -1172,10 +864,7 @@
         </div>
 
         <div class="status-bar">
-            <div class="status-indicator">
-                <span class="status-dot"></span>
-                <span class="status-text" id="statusText">online</span>
-            </div>
+            <span><span class="status-dot"></span> online</span>
             <button class="exit-btn" onclick="logout()">⬅ EXIT</button>
         </div>
     </div>
@@ -1203,13 +892,8 @@
 
         let currentUser = null;
         let threads = [];
-        let isLoading = false;
-        let renderTimeout = null;
-        let userData = {};
-        let themeColor = '#00ffd0';
         let listenerActive = false;
-        let statusUpdateInterval = null;
-        let locationWatchId = null;
+        let renderTimeout = null;
 
         // ===== DOM REFS =====
         const loginPage = document.getElementById('loginPage');
@@ -1222,22 +906,10 @@
         const regPassword = document.getElementById('regPassword');
         const regConfirm = document.getElementById('regConfirm');
         const regError = document.getElementById('regError');
-        const profileUsername = document.getElementById('profileUsername');
-        const profileIP = document.getElementById('profileIP');
-        const profileLocation = document.getElementById('profileLocation');
-        const profileRegistered = document.getElementById('profileRegistered');
-        const profileLastActive = document.getElementById('profileLastActive');
-        const profileStatusDot = document.getElementById('profileStatusDot');
-        const profileStatusText = document.getElementById('profileStatusText');
-        const statThreads = document.getElementById('statThreads');
-        const statLikes = document.getElementById('statLikes');
-        const statReplies = document.getElementById('statReplies');
-        const statFollowers = document.getElementById('statFollowers');
+        const displayUsername = document.getElementById('displayUsername');
         const threadContent = document.getElementById('threadContent');
         const threadsList = document.getElementById('threadsList');
         const threadCount = document.getElementById('threadCount');
-        const statusText = document.getElementById('statusText');
-        const themeSettings = document.getElementById('themeSettings');
 
         // ===== PAGE NAVIGATION =====
         function showLogin() {
@@ -1282,90 +954,20 @@
                     regError.textContent = 'Username already taken';
                     return;
                 }
-                
-                // Get real IP
-                fetch('https://api.ipify.org?format=json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const ip = data.ip || 'Unknown';
-                        usersRef.child(username).set({
-                            password: password,
-                            created: Date.now(),
-                            lastActive: Date.now(),
-                            ip: ip,
-                            location: 'Detecting...',
-                            followers: [],
-                            following: [],
-                            threads: 0,
-                            likes: 0,
-                            replies: 0,
-                            online: false,
-                            theme: '#00ffd0'
-                        }).then(() => {
-                            regError.textContent = '';
-                            regUsername.value = '';
-                            regPassword.value = '';
-                            regConfirm.value = '';
-                            showLogin();
-                            loginError.textContent = 'Account created! Sign in.';
-                        }).catch(err => {
-                            regError.textContent = 'Error: ' + err.message;
-                        });
-                    })
-                    .catch(() => {
-                        // Fallback if IP API fails
-                        usersRef.child(username).set({
-                            password: password,
-                            created: Date.now(),
-                            lastActive: Date.now(),
-                            ip: 'Unknown',
-                            location: 'Unknown',
-                            followers: [],
-                            following: [],
-                            threads: 0,
-                            likes: 0,
-                            replies: 0,
-                            online: false,
-                            theme: '#00ffd0'
-                        }).then(() => {
-                            regError.textContent = '';
-                            regUsername.value = '';
-                            regPassword.value = '';
-                            regConfirm.value = '';
-                            showLogin();
-                            loginError.textContent = 'Account created! Sign in.';
-                        }).catch(err => {
-                            regError.textContent = 'Error: ' + err.message;
-                        });
-                    });
+                usersRef.child(username).set({
+                    password: password,
+                    created: Date.now()
+                }).then(() => {
+                    regError.textContent = '';
+                    regUsername.value = '';
+                    regPassword.value = '';
+                    regConfirm.value = '';
+                    showLogin();
+                    loginError.textContent = 'Account created! Sign in.';
+                }).catch(err => {
+                    regError.textContent = 'Error: ' + err.message;
+                });
             });
-        }
-
-        // ===== GET LOCATION =====
-        function getLocation() {
-            if (navigator.geolocation) {
-                if (locationWatchId !== null) {
-                    navigator.geolocation.clearWatch(locationWatchId);
-                }
-                locationWatchId = navigator.geolocation.watchPosition(
-                    pos => {
-                        const lat = pos.coords.latitude;
-                        const lng = pos.coords.longitude;
-                        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-                            .then(res => res.json())
-                            .then(data => {
-                                const loc = data.display_name || 'Unknown';
-                                profileLocation.textContent = loc;
-                                if (currentUser) {
-                                    usersRef.child(currentUser).update({ location: loc });
-                                }
-                            })
-                            .catch(() => {});
-                    },
-                    () => {},
-                    { timeout: 10000, maximumAge: 600000, enableHighAccuracy: false }
-                );
-            }
         }
 
         // ===== LOGIN =====
@@ -1390,63 +992,16 @@
                 }
                 loginError.textContent = '';
                 currentUser = username;
-                userData = data;
+                displayUsername.textContent = username.toUpperCase();
                 loginUsername.value = '';
                 loginPassword.value = '';
-                
-                // Update profile
-                profileUsername.textContent = username.toUpperCase();
-                profileIP.textContent = data.ip || 'Unknown';
-                profileLocation.textContent = data.location || 'Detecting...';
-                profileRegistered.textContent = data.created ? new Date(data.created).toLocaleDateString() : 'Unknown';
-                profileLastActive.textContent = 'Just now';
-                statThreads.textContent = data.threads || 0;
-                statLikes.textContent = data.likes || 0;
-                statReplies.textContent = data.replies || 0;
-                statFollowers.textContent = (data.followers || []).length;
-                
-                // Set saved theme
-                if (data.theme) {
-                    setTheme(data.theme);
-                }
-                
-                // Start location detection
-                getLocation();
-                
-                // Update online status
-                updateOnlineStatus(true);
-                
-                // Load threads
                 loadThreads();
-                
                 showThreads();
-                setStatus('welcome ' + username);
-                usersRef.child(currentUser).update({ lastActive: Date.now() });
-                
-                // Start status update interval
-                if (statusUpdateInterval) {
-                    clearInterval(statusUpdateInterval);
-                }
-                statusUpdateInterval = setInterval(() => {
-                    if (currentUser) {
-                        usersRef.child(currentUser).update({ lastActive: Date.now() });
-                        profileLastActive.textContent = 'Just now';
-                    }
-                }, 60000);
             });
         }
 
         // ===== LOGOUT =====
         function logout() {
-            updateOnlineStatus(false);
-            if (statusUpdateInterval) {
-                clearInterval(statusUpdateInterval);
-                statusUpdateInterval = null;
-            }
-            if (locationWatchId !== null) {
-                navigator.geolocation.clearWatch(locationWatchId);
-                locationWatchId = null;
-            }
             if (listenerActive) {
                 threadsRef.off();
                 listenerActive = false;
@@ -1455,124 +1010,14 @@
             threads = [];
             showLogin();
             loginError.textContent = '';
-            setStatus('logged out');
-        }
-
-        // ===== ONLINE STATUS =====
-        let statusUpdateDebounce = null;
-
-        function updateOnlineStatus(online) {
-            if (!currentUser) return;
-            if (statusUpdateDebounce) {
-                clearTimeout(statusUpdateDebounce);
-            }
-            statusUpdateDebounce = setTimeout(() => {
-                usersRef.child(currentUser).update({ 
-                    online: online, 
-                    lastActive: Date.now() 
-                });
-                if (online) {
-                    profileStatusDot.className = 'status-dot-small online';
-                    profileStatusText.textContent = 'online';
-                } else {
-                    profileStatusDot.className = 'status-dot-small offline';
-                    profileStatusText.textContent = 'offline';
-                }
-                statusUpdateDebounce = null;
-            }, 500);
-        }
-
-        // ===== VIEW PROFILE =====
-        function viewProfile() {
-            setStatus('viewing profile');
-            usersRef.child(currentUser).once('value').then(snapshot => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    statThreads.textContent = data.threads || 0;
-                    statLikes.textContent = data.likes || 0;
-                    statReplies.textContent = data.replies || 0;
-                    statFollowers.textContent = (data.followers || []).length;
-                    profileIP.textContent = data.ip || 'Unknown';
-                    profileLocation.textContent = data.location || 'Unknown';
-                    setStatus('profile updated');
-                }
-            });
-        }
-
-        // ===== VIEW FOLLOWERS =====
-        function viewFollowers() {
-            usersRef.child(currentUser).child('followers').once('value').then(snapshot => {
-                const followers = snapshot.val() || [];
-                if (followers.length === 0) {
-                    setStatus('no followers yet');
-                } else {
-                    setStatus('followers: ' + followers.join(', '));
-                }
-            });
-        }
-
-        // ===== VIEW FOLLOWING =====
-        function viewFollowing() {
-            usersRef.child(currentUser).child('following').once('value').then(snapshot => {
-                const following = snapshot.val() || [];
-                if (following.length === 0) {
-                    setStatus('not following anyone');
-                } else {
-                    setStatus('following: ' + following.join(', '));
-                }
-            });
-        }
-
-        // ===== THEME SETTINGS =====
-        function toggleThemeSettings() {
-            themeSettings.classList.toggle('hidden');
-        }
-
-        function setTheme(color) {
-            themeColor = color;
-            document.documentElement.style.setProperty('--theme-color', color);
-            document.documentElement.style.setProperty('--neon-cyan', color);
-            document.documentElement.style.setProperty('--neon-blue', color);
-            
-            document.querySelectorAll('.color-option').forEach(el => {
-                el.classList.remove('active');
-                const bgColor = el.style.backgroundColor || el.style.background;
-                if (bgColor === color || bgColor === color + '') {
-                    el.classList.add('active');
-                }
-            });
-            
-            // Update all themed elements
-            document.querySelectorAll('.thread-item').forEach(el => {
-                el.style.borderLeftColor = color;
-            });
-            document.querySelectorAll('.like-btn.liked').forEach(el => {
-                el.style.color = color;
-            });
-            document.querySelectorAll('.profile-username').forEach(el => {
-                el.style.color = color;
-            });
-            document.querySelectorAll('.btn').forEach(el => {
-                if (!el.classList.contains('btn-secondary') && !el.classList.contains('btn-gold')) {
-                    el.style.borderColor = color;
-                    el.style.color = color;
-                }
-            });
-            
-            if (currentUser) {
-                usersRef.child(currentUser).update({ theme: color });
-            }
-            setStatus('theme updated');
         }
 
         // ===== LOAD THREADS =====
         function loadThreads() {
-            if (isLoading) return;
             if (listenerActive) {
                 threadsRef.off();
                 listenerActive = false;
             }
-            isLoading = true;
 
             threadsRef.on('value', snapshot => {
                 try {
@@ -1592,17 +1037,12 @@
                     }
                     renderTimeout = requestAnimationFrame(() => {
                         renderThreads();
-                        isLoading = false;
                     });
                 } catch (err) {
                     console.error('Load error:', err);
-                    isLoading = false;
-                    setStatus('error loading', true);
                 }
             }, error => {
                 console.error('Firebase error:', error);
-                isLoading = false;
-                setStatus('connection error', true);
             });
             listenerActive = true;
         }
@@ -1619,9 +1059,6 @@
 
             let html = '';
             const len = threads.length;
-            let userThreads = 0;
-            let userLikes = 0;
-            let userReplies = 0;
             
             for (let i = 0; i < len; i++) {
                 const thread = threads[i];
@@ -1634,13 +1071,6 @@
                 const liked = likes.includes(currentUser);
                 const replies = thread.replies || [];
                 const replyCount = replies.length;
-                
-                // Only count stats for user's own threads
-                if (thread.author === currentUser) {
-                    userThreads++;
-                    userLikes += likes.length;
-                    userReplies += replyCount;
-                }
                 
                 let repliesHtml = '';
                 if (replyCount > 0) {
@@ -1664,19 +1094,17 @@
 
                 html += `
                     <div class="thread-item" id="thread-${thread.id}">
-                        <div class="thread-author" onclick="viewUserProfile('${escapeHtml(thread.author)}')">${escapeHtml(thread.author).toUpperCase()}</div>
+                        <div class="thread-author">${escapeHtml(thread.author).toUpperCase()}</div>
                         <div class="thread-content">${escapeHtml(thread.content)}</div>
                         <div class="thread-footer">
                             <span>${time}</span>
                             <div class="thread-actions">
-                                <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeThread('${thread.id}')" ${liked ? 'style="color:'+themeColor+'"' : ''}>
+                                <button class="like-btn ${liked ? 'liked' : ''}" onclick="likeThread('${thread.id}')" ${liked ? 'style="color:#ff00aa"' : ''}>
                                     ♥ ${likes.length}
                                 </button>
                                 <button class="reply-btn" onclick="toggleReply('${thread.id}')">
                                     ⌨ ${replyCount}
                                 </button>
-                                <button onclick="shareThread('${thread.id}')">↗</button>
-                                ${thread.author === currentUser ? `<button onclick="deleteThread('${thread.id}')" style="color:var(--neon-red)">✕</button>` : ''}
                             </div>
                         </div>
                         <div class="replies-container" id="replies-${thread.id}">
@@ -1692,74 +1120,6 @@
 
             threadsList.innerHTML = html;
             threadCount.textContent = `${len} threads`;
-            
-            // Update stats only if changed
-            const currentThreads = parseInt(statThreads.textContent) || 0;
-            const currentLikes = parseInt(statLikes.textContent) || 0;
-            const currentReplies = parseInt(statReplies.textContent) || 0;
-            
-            if (currentThreads !== userThreads || currentLikes !== userLikes || currentReplies !== userReplies) {
-                statThreads.textContent = userThreads;
-                statLikes.textContent = userLikes;
-                statReplies.textContent = userReplies;
-                if (currentUser) {
-                    usersRef.child(currentUser).update({ 
-                        threads: userThreads, 
-                        likes: userLikes, 
-                        replies: userReplies 
-                    });
-                }
-            }
-        }
-
-        // ===== VIEW USER PROFILE =====
-        function viewUserProfile(username) {
-            if (username === currentUser) {
-                viewProfile();
-                return;
-            }
-            usersRef.child(username).once('value').then(snapshot => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    setStatus(`👤 ${username} • threads: ${data.threads || 0} • likes: ${data.likes || 0}`);
-                }
-            });
-        }
-
-        // ===== SHARE THREAD =====
-        function shareThread(threadId) {
-            const url = window.location.href + '?thread=' + threadId;
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Zack Threads',
-                    text: 'Check out this thread!',
-                    url: url
-                }).catch(() => {});
-            } else {
-                navigator.clipboard.writeText(url).then(() => {
-                    setStatus('link copied to clipboard');
-                }).catch(() => {
-                    setStatus('share: ' + url);
-                });
-            }
-        }
-
-        // ===== DELETE THREAD =====
-        function deleteThread(threadId) {
-            if (!currentUser) return;
-            if (!confirm('Delete this thread?')) return;
-            
-            const thread = threads.find(t => t.id === threadId);
-            if (!thread || thread.author !== currentUser) {
-                setStatus('cannot delete', true);
-                return;
-            }
-            
-            threadsRef.child(threadId).remove().then(() => {
-                setStatus('thread deleted');
-            }).catch(err => {
-                setStatus('error: ' + err.message, true);
-            });
         }
 
         // ===== ESCAPE HTML =====
@@ -1788,10 +1148,13 @@
         function postThread() {
             const content = threadContent.value.trim();
             if (!content) {
-                setStatus('enter thread content', true);
+                alert('Please enter thread content.');
                 return;
             }
-            if (!currentUser) return;
+            if (!currentUser) {
+                alert('You must be logged in to post.');
+                return;
+            }
 
             const newThread = {
                 author: currentUser,
@@ -1803,15 +1166,17 @@
 
             threadsRef.push(newThread).then(() => {
                 threadContent.value = '';
-                setStatus('thread posted ✓');
             }).catch(err => {
-                setStatus('error: ' + err.message, true);
+                alert('Error: ' + err.message);
             });
         }
 
         // ===== LIKE THREAD =====
         function likeThread(threadId) {
-            if (!currentUser) return;
+            if (!currentUser) {
+                alert('You must be logged in to like.');
+                return;
+            }
             const thread = threads.find(t => t.id === threadId);
             if (!thread) return;
 
@@ -1824,17 +1189,20 @@
             }
 
             threadsRef.child(threadId).update({ likes: likes }).catch(err => {
-                setStatus('error: ' + err.message, true);
+                alert('Error: ' + err.message);
             });
         }
 
         // ===== POST REPLY =====
         function postReply(threadId) {
+            if (!currentUser) {
+                alert('You must be logged in to reply.');
+                return;
+            }
             const input = document.getElementById(`replyText-${threadId}`);
             if (!input) return;
             const text = input.value.trim();
             if (!text) return;
-            if (!currentUser) return;
 
             const thread = threads.find(t => t.id === threadId);
             if (!thread) return;
@@ -1852,26 +1220,9 @@
                 if (replyInput) {
                     replyInput.classList.add('hidden');
                 }
-                setStatus('reply posted ✓');
             }).catch(err => {
-                setStatus('error: ' + err.message, true);
+                alert('Error: ' + err.message);
             });
-        }
-
-        // ===== SET STATUS =====
-        function setStatus(msg, isError = false) {
-            if (!statusText) return;
-            statusText.textContent = msg;
-            statusText.style.color = isError ? '#ff00aa' : 'rgba(0,240,255,0.5)';
-            if (!isError) {
-                clearTimeout(window.statusTimeout);
-                window.statusTimeout = setTimeout(() => {
-                    if (statusText) {
-                        statusText.textContent = 'online';
-                        statusText.style.color = 'rgba(0,240,255,0.5)';
-                    }
-                }, 3000);
-            }
         }
 
         // ===== KEYBOARD SHORTCUTS =====
@@ -1895,68 +1246,11 @@
         // ===== INIT =====
         showLogin();
 
-        // ===== PERFORMANCE OPTIMIZATIONS =====
-        try {
-            if ('getBattery' in navigator) {
-                navigator.getBattery().then(battery => {
-                    if (battery.level < 0.2 && battery.charging === false) {
-                        document.querySelectorAll('.particle').forEach(el => {
-                            el.style.animationDuration = (parseFloat(el.style.animationDuration) || 20) * 2 + 's';
-                        });
-                    }
-                }).catch(() => {});
-            }
-        } catch (e) {}
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                document.querySelectorAll('.particle, .sparkle-overlay, body::before, body::after').forEach(el => {
-                    if (el.style) {
-                        el.style.animationPlayState = 'paused';
-                    }
-                });
-                if (currentUser) {
-                    updateOnlineStatus(false);
-                }
-            } else {
-                document.querySelectorAll('.particle, .sparkle-overlay, body::before, body::after').forEach(el => {
-                    if (el.style) {
-                        el.style.animationPlayState = 'running';
-                    }
-                });
-                if (currentUser) {
-                    updateOnlineStatus(true);
-                    usersRef.child(currentUser).update({ lastActive: Date.now() });
-                    profileLastActive.textContent = 'Just now';
-                }
-            }
-        });
-
-        // ===== CLICK OUTSIDE THEME SETTINGS =====
-        document.addEventListener('click', (e) => {
-            if (themeSettings && !themeSettings.classList.contains('hidden')) {
-                const isClickInside = themeSettings.contains(e.target) || 
-                                     e.target.closest('.profile-actions') ||
-                                     e.target.closest('.btn-small');
-                if (!isClickInside) {
-                    themeSettings.classList.add('hidden');
-                }
-            }
-        });
-
-        console.log('ZACK THREADS ULTRA • All bugs fixed');
-        console.log('✓ 20+ critical fixes applied');
-        console.log('✓ Performance optimized');
-        console.log('✓ Memory leaks fixed');
-        console.log('✓ Infinite loops resolved');
-        console.log('✓ Theme saving fixed');
-        console.log('✓ Stats updating fixed');
-        console.log('✓ Delete thread added');
-        console.log('✓ Share fixed');
-        console.log('✓ IP detection fixed');
-        console.log('✓ Location detection fixed');
-        console.log('✓ Status update optimized');
-        console.log('✓ All features functional');
+        console.log('ZACK THREADS • Clean version');
+        console.log('✓ Theme preserved');
+        console.log('✓ Public threads');
+        console.log('✓ Account required to post');
+        console.log('✓ All extra features removed');
     </script>
 </body>
 </html>
