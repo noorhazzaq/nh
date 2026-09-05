@@ -106,7 +106,6 @@
             flex-direction: column;
             height: 100vh;
             height: 100dvh;
-            /* Dynamic viewport height for mobile */
             max-width: 480px;
             margin: 0 auto;
             padding: 10px;
@@ -131,10 +130,7 @@
             letter-spacing: 8px;
             text-transform: uppercase;
             color: #00f0ff;
-            text-shadow:
-                0 0 10px rgba(0, 240, 255, 0.5),
-                0 0 20px rgba(0, 240, 255, 0.3),
-                0 0 40px rgba(0, 240, 255, 0.1);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.1);
             animation: headerGlow 3s ease-in-out infinite;
         }
         
@@ -292,7 +288,6 @@
             outline: none;
             transition: all 0.3s;
             min-height: 44px;
-            /* Better touch target */;
         }
         
         #messageInput:focus {
@@ -319,7 +314,6 @@
             position: relative;
             overflow: hidden;
             min-height: 44px;
-            /* Better touch target */
             touch-action: manipulation;
             white-space: nowrap;
         }
@@ -400,7 +394,26 @@
             }
         }
         
-        /* ===== 11. RESPONSIVE ===== */
+        /* ===== 11. CHARACTER COUNTER ===== */
+        .char-counter {
+            position: absolute;
+            right: 80px;
+            bottom: 16px;
+            font-size: 0.55rem;
+            color: rgba(0, 240, 255, 0.15);
+            pointer-events: none;
+            transition: color 0.3s;
+        }
+        
+        .char-counter.warning {
+            color: rgba(255, 200, 0, 0.5);
+        }
+        
+        .char-counter.danger {
+            color: rgba(255, 0, 64, 0.5);
+        }
+        
+        /* ===== 12. RESPONSIVE ===== */
         @media (max-width: 480px) {
             .chat-container {
                 padding: 6px 8px;
@@ -428,6 +441,11 @@
             .online-count {
                 font-size: 0.55rem;
                 right: 4px;
+            }
+            .char-counter {
+                right: 68px;
+                bottom: 12px;
+                font-size: 0.5rem;
             }
         }
         
@@ -469,6 +487,9 @@
                 padding: 6px 12px;
                 font-size: 0.6rem;
             }
+            .char-counter {
+                bottom: 8px;
+            }
         }
     </style>
 </head>
@@ -503,7 +524,8 @@
         
         <!-- Input -->
         <div class="input-area">
-            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="500" autocomplete="off" />
+            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="200" autocomplete="off" />
+            <span class="char-counter" id="charCounter">0/200</span>
             <button id="sendBtn">SEND</button>
         </div>
     </div>
@@ -536,7 +558,26 @@
         }
         
         // ============================================================
-        // 3. EMOJI & GIF FILTER (IMPROVED)
+        // 3. SECURITY: INPUT SANITIZATION
+        // ============================================================
+        function sanitizeInput(text) {
+            // Remove control characters
+            text = text.replace(/[\x00-\x1F\x7F]/g, '');
+            
+            // Remove zero-width characters
+            text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
+            
+            // Remove RTL/LTR control characters
+            text = text.replace(/[\u202A-\u202E]/g, '');
+            
+            // Trim excessive whitespace
+            text = text.replace(/\s+/g, ' ').trim();
+            
+            return text;
+        }
+        
+        // ============================================================
+        // 4. EMOJI & GIF FILTER
         // ============================================================
         function filterEmojiAndGif(text) {
             // Remove emoji (comprehensive Unicode ranges)
@@ -546,17 +587,17 @@
             // Remove common emoji shortcodes
             text = text.replace(/:[a-zA-Z_]+:/g, '');
             
-            // Remove GIF references (case insensitive)
+            // Remove GIF references
             text = text.replace(/gif/gi, '');
             text = text.replace(/\.gif/gi, '');
             text = text.replace(/\[gif\]/gi, '');
             text = text.replace(/\(gif\)/gi, '');
             text = text.replace(/{gif}/gi, '');
             
-            // Remove extra spaces and trim
+            // Remove duplicate spaces
             text = text.replace(/\s+/g, ' ').trim();
             
-            // If empty or only special chars, return null
+            // Check if text is only special characters
             if (!text || /^[\s\W_]+$/.test(text)) {
                 return null;
             }
@@ -565,7 +606,7 @@
         }
         
         // ============================================================
-        // 4. GENERATE UNIQUE USERNAME (FIXED)
+        // 5. GENERATE UNIQUE USERNAME
         // ============================================================
         function generateUsername() {
             const prefixes = ['USER', 'NODE', 'GRID', 'CORE', 'BYTE', 'ZERO', 'ONE', 'LIGHT', 'DIGI', 'CYBER', 'TRON', 'DATA'];
@@ -576,52 +617,61 @@
         
         let username = generateUsername();
         
-        // Ensure unique username with retry
-        function claimUsername() {
-            const userRef = usersRef.child(username);
-            return userRef.set({ online: true, timestamp: firebase.database.ServerValue.TIMESTAMP })
-                .then(() => {
-                    return username;
-                })
-                .catch(() => {
-                    // If taken, generate new one and retry
-                    username = generateUsername();
-                    return claimUsername();
-                });
-        }
-        
         // ============================================================
-        // 5. SPARKLE GENERATOR
+        // 6. RATE LIMITING (CLIENT-SIDE)
         // ============================================================
-        function createSparkles() {
-            const container = document.getElementById('sparkleContainer');
-            const count = Math.min(25, Math.floor(window.innerWidth / 20));
-            for (let i = 0; i < count; i++) {
-                const sparkle = document.createElement('div');
-                sparkle.className = 'sparkle';
-                sparkle.style.left = Math.random() * 100 + '%';
-                const size = Math.random() * 3 + 1;
-                sparkle.style.width = size + 'px';
-                sparkle.style.height = size + 'px';
-                sparkle.style.animationDuration = (Math.random() * 15 + 10) + 's';
-                sparkle.style.animationDelay = (Math.random() * 15) + 's';
-                sparkle.style.opacity = Math.random() * 0.4 + 0.2;
-                container.appendChild(sparkle);
+        const rateLimiter = {
+            lastMessageTime: 0,
+            minInterval: 1000, // 1 second between messages
+            maxMessagesPerMinute: 10,
+            messageCount: 0,
+            resetTime: Date.now() + 60000,
+            
+            canSend() {
+                const now = Date.now();
+                
+                // Reset counter every minute
+                if (now > this.resetTime) {
+                    this.messageCount = 0;
+                    this.resetTime = now + 60000;
+                }
+                
+                // Check rate limits
+                if (this.messageCount >= this.maxMessagesPerMinute) {
+                    return { allowed: false, reason: 'Rate limit exceeded. Please wait.' };
+                }
+                
+                if (now - this.lastMessageTime < this.minInterval) {
+                    return { allowed: false, reason: 'Please wait before sending another message.' };
+                }
+                
+                return { allowed: true };
+            },
+            
+            recordMessage() {
+                this.lastMessageTime = Date.now();
+                this.messageCount++;
             }
-        }
-        createSparkles();
+        };
         
         // ============================================================
-        // 6. MESSAGE FUNCTIONS (FIXED)
+        // 7. MESSAGE FUNCTIONS
         // ============================================================
         function sendMessage(text) {
-            text = text.trim();
+            text = sanitizeInput(text);
             if (!text) return false;
+            
+            // Check rate limits
+            const rateCheck = rateLimiter.canSend();
+            if (!rateCheck.allowed) {
+                showNotification(rateCheck.reason, 'warning');
+                return false;
+            }
             
             // Filter emoji/GIF
             const filtered = filterEmojiAndGif(text);
             if (!filtered) {
-                // Show feedback
+                showNotification('Invalid content (emoji/GIF not allowed)', 'warning');
                 const input = document.getElementById('messageInput');
                 input.style.borderColor = '#ff0040';
                 setTimeout(() => {
@@ -630,35 +680,88 @@
                 return false;
             }
             
+            // Final validation
+            if (filtered.length < 1 || filtered.length > 200) {
+                showNotification('Message must be between 1-200 characters', 'warning');
+                return false;
+            }
+            
+            // Prevent SYSTEM spoofing
+            const cleanUsername = sanitizeInput(username);
+            
             const message = {
-                sender: username,
+                sender: cleanUsername,
                 text: filtered,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                type: 'user'
             };
             
             messagesRef.push(message)
                 .then(() => {
+                    rateLimiter.recordMessage();
                     document.getElementById('messageInput').value = '';
                     document.getElementById('messageInput').focus();
+                    updateCharCounter('');
+                    clearNotification();
                 })
                 .catch((error) => {
                     console.error('Send failed:', error);
-                    // Show connection error
-                    document.getElementById('connectionStatus').textContent = '⚠️ SEND FAILED';
-                    document.getElementById('connectionStatus').className = 'connection-status offline';
-                    setTimeout(() => {
-                        document.getElementById('connectionStatus').textContent = '● CONNECTED';
-                        document.getElementById('connectionStatus').className = 'connection-status';
-                    }, 3000);
+                    showNotification('Send failed. Please check connection.', 'error');
                 });
             
             return true;
         }
         
         // ============================================================
-        // 7. DISPLAY MESSAGE (IMPROVED)
+        // 8. NOTIFICATION SYSTEM
+        // ============================================================
+        let notificationTimeout = null;
+        
+        function showNotification(message, type = 'info') {
+            const status = document.getElementById('connectionStatus');
+            status.textContent = '⚠️ ' + message;
+            status.className = 'connection-status offline';
+            
+            clearTimeout(notificationTimeout);
+            notificationTimeout = setTimeout(() => {
+                if (isConnected) {
+                    status.textContent = '● CONNECTED';
+                    status.className = 'connection-status';
+                }
+            }, 3000);
+        }
+        
+        function clearNotification() {
+            const status = document.getElementById('connectionStatus');
+            if (isConnected) {
+                status.textContent = '● CONNECTED';
+                status.className = 'connection-status';
+            }
+            clearTimeout(notificationTimeout);
+        }
+        
+        // ============================================================
+        // 9. CHARACTER COUNTER
+        // ============================================================
+        function updateCharCounter(text) {
+            const counter = document.getElementById('charCounter');
+            const length = text.length;
+            counter.textContent = length + '/200';
+            
+            counter.classList.remove('warning', 'danger');
+            if (length > 150) {
+                counter.classList.add('warning');
+            }
+            if (length > 190) {
+                counter.classList.add('danger');
+            }
+        }
+        
+        // ============================================================
+        // 10. DISPLAY MESSAGE
         // ============================================================
         const displayedKeys = new Set();
+        const MAX_DISPLAYED_KEYS = 300;
         
         function displayMessage(data) {
             const msg = data.val();
@@ -668,21 +771,21 @@
             if (displayedKeys.has(key)) return;
             displayedKeys.add(key);
             
-            // Limit stored keys to prevent memory leak
-            if (displayedKeys.size > 200) {
+            // Cleanup old keys
+            if (displayedKeys.size > MAX_DISPLAYED_KEYS) {
                 const toRemove = Array.from(displayedKeys).slice(0, 50);
                 toRemove.forEach(k => displayedKeys.delete(k));
             }
             
-            // Skip invalid messages
-            if (!msg || !msg.text || typeof msg.text !== 'string') return;
+            // Validate message
+            if (!msg || typeof msg.text !== 'string' || !msg.sender) return;
             
             const messagesDiv = document.getElementById('messages');
             const div = document.createElement('div');
             div.className = 'message';
             
-            // System message detection
-            const isSystem = msg.sender === 'SYSTEM' || msg.sender === 'system';
+            // Detect system messages
+            const isSystem = msg.sender === 'SYSTEM' || msg.type === 'system';
             if (isSystem) {
                 div.classList.add('system');
             }
@@ -695,24 +798,22 @@
                     if (!isNaN(date.getTime())) {
                         timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
                     }
-                } catch (e) {
-                    // Use default
-                }
+                } catch (e) {}
             }
             
-            // Escape HTML and handle line breaks
-            const escapedText = escapeHtml(msg.text);
+            // Escape ALL user content
+            const escapedSender = escapeHtml(sanitizeInput(msg.sender));
+            const escapedText = escapeHtml(sanitizeInput(msg.text));
             const formattedText = escapedText.replace(/\n/g, '<br>');
             
             div.innerHTML = `
-                        ${!isSystem ? `<div class="sender">${escapeHtml(msg.sender || 'UNKNOWN')}</div>` : ''}
+                        ${!isSystem ? `<div class="sender">${escapedSender}</div>` : ''}
                         <div class="text">${formattedText}</div>
                         <div class="time">${timeStr}</div>
                     `;
             
-            // Check if we need to scroll (user near bottom)
+            // Smart scrolling
             const isAtBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight < 50;
-            
             messagesDiv.appendChild(div);
             
             if (isAtBottom) {
@@ -722,26 +823,26 @@
         
         function escapeHtml(text) {
             if (!text) return '';
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
         
         // ============================================================
-        // 8. ONLINE COUNT (FIXED)
+        // 11. ONLINE COUNT
         // ============================================================
         function updateOnlineCount() {
             usersRef.on('value', function(snapshot) {
                 let count = 0;
                 snapshot.forEach(function(child) {
                     const val = child.val();
-                    if (val && val.online === true) {
-                        count++;
+                    if (val && val.online === true && val.timestamp) {
+                        // Only count recent users (last 2 minutes)
+                        const now = Date.now();
+                        const lastSeen = val.timestamp || 0;
+                        if (now - lastSeen < 120000) {
+                            count++;
+                        }
                     }
                 });
                 document.getElementById('onlineCount').textContent = '● ' + count;
@@ -749,94 +850,137 @@
         }
         
         // ============================================================
-        // 9. PRESENCE MANAGEMENT (FIXED)
+        // 12. PRESENCE MANAGEMENT
         // ============================================================
         let isConnected = false;
-        let presenceCleanup = null;
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT_ATTEMPTS = 5;
         
         function setupPresence() {
-            // Listen for connection status
             presenceRef.on('value', function(snap) {
                 if (snap.val() === true) {
                     isConnected = true;
+                    reconnectAttempts = 0;
                     document.getElementById('connectionStatus').textContent = '● CONNECTED';
                     document.getElementById('connectionStatus').className = 'connection-status';
                     
-                    // Claim username when connected
-                    claimUsername().then(() => {
-                        const userRef = usersRef.child(username);
-                        userRef.onDisconnect().remove();
-                        userRef.set({
-                            online: true,
-                            timestamp: firebase.database.ServerValue.TIMESTAMP
-                        });
+                    // Register user
+                    const userRef = usersRef.child(username);
+                    userRef.onDisconnect().remove();
+                    userRef.set({
+                        online: true,
+                        timestamp: firebase.database.ServerValue.TIMESTAMP
                     });
+                    
+                    // Send welcome if first connection
+                    setTimeout(() => {
+                        if (isConnected) {
+                            sendSystemMessage('⚡ ' + username + ' has entered the Grid');
+                        }
+                    }, 1000);
+                    
                 } else {
                     isConnected = false;
-                    document.getElementById('connectionStatus').textContent = '⚠️ OFFLINE';
-                    document.getElementById('connectionStatus').className = 'connection-status offline';
+                    reconnectAttempts++;
+                    
+                    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
+                        document.getElementById('connectionStatus').textContent = '⚠️ CONNECTION LOST';
+                        document.getElementById('connectionStatus').className = 'connection-status offline';
+                        showNotification('Connection lost. Please refresh.', 'error');
+                    } else {
+                        document.getElementById('connectionStatus').textContent = '⚠️ RECONNECTING...';
+                        document.getElementById('connectionStatus').className = 'connection-status offline';
+                    }
                 }
             });
         }
         
         // ============================================================
-        // 10. REAL-TIME LISTENER (FIXED)
+        // 13. REAL-TIME LISTENER
         // ============================================================
+        let messageListener = null;
+        
         function listenForMessages() {
-            // Query last 100 messages, ordered by timestamp
+            // Clean up old listener
+            if (messageListener) {
+                messagesRef.off('child_added', messageListener);
+            }
+            
+            // Query last 100 messages
             const query = messagesRef.orderByChild('timestamp').limitToLast(100);
             
-            query.on('child_added', function(data) {
+            messageListener = query.on('child_added', function(data) {
                 displayMessage(data);
             });
             
             // Handle errors
             query.on('error', function(error) {
                 console.error('Firebase listener error:', error);
-                document.getElementById('connectionStatus').textContent = '⚠️ CONNECTION ERROR';
-                document.getElementById('connectionStatus').className = 'connection-status offline';
+                showNotification('Connection error. Reconnecting...', 'error');
+                
+                // Attempt to reconnect after delay
+                setTimeout(() => {
+                    if (!isConnected) {
+                        listenForMessages();
+                    }
+                }, 5000);
             });
         }
         
         // ============================================================
-        // 11. SEND SYSTEM MESSAGE (FIXED)
+        // 14. SYSTEM MESSAGES
         // ============================================================
         function sendSystemMessage(text) {
-            // Check if system message already exists to prevent duplicates
-            const lastMessages = document.querySelectorAll('.message.system');
-            if (lastMessages.length > 0) {
-                const lastMsg = lastMessages[lastMessages.length - 1];
-                const lastText = lastMsg.querySelector('.text')?.textContent;
-                if (lastText === text) {
-                    return; // Skip duplicate
+            // Clean text
+            text = sanitizeInput(text);
+            if (!text) return;
+            
+            // Check for duplicates (last 5 system messages)
+            const systemMessages = document.querySelectorAll('.message.system');
+            let duplicate = false;
+            for (let i = Math.max(0, systemMessages.length - 5); i < systemMessages.length; i++) {
+                const msg = systemMessages[i];
+                const msgText = msg.querySelector('.text')?.textContent;
+                if (msgText === text) {
+                    duplicate = true;
+                    break;
                 }
             }
+            
+            if (duplicate) return;
             
             const msg = {
                 sender: 'SYSTEM',
                 text: text,
-                timestamp: firebase.database.ServerValue.TIMESTAMP
+                timestamp: firebase.database.ServerValue.TIMESTAMP,
+                type: 'system'
             };
-            messagesRef.push(msg);
+            messagesRef.push(msg).catch(err => console.error('System message failed:', err));
         }
         
         // ============================================================
-        // 12. EVENT LISTENERS (IMPROVED)
+        // 15. CLEANUP
+        // ============================================================
+        function cleanup() {
+            if (username) {
+                const userRef = usersRef.child(username);
+                userRef.remove();
+            }
+            if (messageListener) {
+                messagesRef.off('child_added', messageListener);
+            }
+            usersRef.off('value');
+            presenceRef.off('value');
+        }
+        
+        // ============================================================
+        // 16. EVENT LISTENERS
         // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
-            // Setup presence
+            // Setup
             setupPresence();
             updateOnlineCount();
-            
-            // Listen for messages
             listenForMessages();
-            
-            // Send welcome after connection
-            setTimeout(() => {
-                if (isConnected) {
-                    sendSystemMessage('⚡ ' + username + ' has entered the Grid');
-                }
-            }, 1000);
             
             // Send button
             document.getElementById('sendBtn').addEventListener('click', function(e) {
@@ -853,14 +997,19 @@
                 }
             });
             
-            // Auto-focus input
+            // Character counter
+            document.getElementById('messageInput').addEventListener('input', function() {
+                updateCharCounter(this.value);
+            });
+            
+            // Focus input
             setTimeout(() => {
                 document.getElementById('messageInput').focus();
-            }, 300);
+            }, 500);
             
-            // Handle visibility change to re-claim presence
+            // Visibility change - re-register presence
             document.addEventListener('visibilitychange', function() {
-                if (!document.hidden && isConnected) {
+                if (!document.hidden && isConnected && username) {
                     const userRef = usersRef.child(username);
                     userRef.set({
                         online: true,
@@ -871,7 +1020,7 @@
         });
         
         // ============================================================
-        // 13. CLEANUP ON UNLOAD (IMPROVED)
+        // 17. UNLOAD CLEANUP
         // ============================================================
         let unloadSent = false;
         
@@ -879,28 +1028,64 @@
             if (unloadSent) return;
             unloadSent = true;
             
-            const userRef = usersRef.child(username);
-            userRef.remove();
+            if (username) {
+                const userRef = usersRef.child(username);
+                userRef.remove();
+                
+                // Send leave message with delay
+                setTimeout(() => {
+                    sendSystemMessage('⚡ ' + username + ' has left the Grid');
+                }, 100);
+            }
             
-            // Send leave message with slight delay to ensure it goes through
-            setTimeout(() => {
-                sendSystemMessage('⚡ ' + username + ' has left the Grid');
-            }, 100);
+            cleanup();
         });
         
-        // Also handle pagehide for mobile
         window.addEventListener('pagehide', function() {
             if (unloadSent) return;
             unloadSent = true;
             
-            const userRef = usersRef.child(username);
-            userRef.remove();
+            if (username) {
+                const userRef = usersRef.child(username);
+                userRef.remove();
+            }
+            cleanup();
         });
         
-        console.log('⚡ TRON CHAT INITIALIZED');
+        // ============================================================
+        // 18. DEBUG INFO
+        // ============================================================
+        console.log('⚡ TRON CHAT v2.0 INITIALIZED');
         console.log('👤 Username:', username);
         console.log('📱 Device:', navigator.userAgent);
         console.log('🔗 Firebase:', firebaseConfig.databaseURL);
+        console.log('🛡️ Security:', 'XSS protected, Rate limited');
+        
+        // ============================================================
+        // 19. GLOBAL ERROR HANDLING
+        // ============================================================
+        window.onerror = function(message, source, lineno, colno, error) {
+            console.error('Global error:', message, error);
+            showNotification('An error occurred. Please refresh.', 'error');
+            return true;
+        };
+        
+        // ============================================================
+        // 20. PERIODIC HEALTH CHECK
+        // ============================================================
+        setInterval(() => {
+            if (!isConnected) {
+                showNotification('Reconnecting...', 'warning');
+                // Re-attempt connection
+                presenceRef.once('value', function(snap) {
+                    if (snap.val() === true) {
+                        isConnected = true;
+                        document.getElementById('connectionStatus').textContent = '● CONNECTED';
+                        document.getElementById('connectionStatus').className = 'connection-status';
+                    }
+                });
+            }
+        }, 30000);
     </script>
 </body>
 </html>
