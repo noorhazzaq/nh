@@ -1,128 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#0a0f1d">
-    <title>ZACK360 | Modern Chat</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="app.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0a0f1d">
+<title>ZACK360 | Modern Chat Platform</title>
+<style>
+:root {
+  --bg-dark: #0a0f1d;
+  --sheet-bg: rgba(15, 23, 42, 0.92);
+  --card-glass: rgba(15, 23, 42, 0.75);
+  --glass-border: rgba(0, 243, 255, 0.25);
+  --neon: #00f3ff;
+  --pink: #ff007f;
+  --purple: #a855f7;
+  --gold: #eab308;
+  --text-white: #f8fafc;
+  --text-muted: #94a3b8;
+  --radius-sheet: 28px;
+  --radius-pill: 9999px;
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent;user-select:none;}
+html,body{width:100%;height:100%;height:100dvh;overflow:hidden;background:var(--bg-dark);color:var(--text-white);-webkit-font-smoothing:antialiased;}
+
+#blocker{display:none;position:fixed;inset:0;background:#000;z-index:99999;justify-content:center;align-items:center;text-align:center;padding:20px;color:var(--pink);font-size:1.2rem;font-weight:bold;text-shadow:0 0 10px var(--pink);}
+
+.screen{display:none;width:100%;height:100dvh;flex-direction:column;position:relative;z-index:10;overflow:hidden;}
+.active{display:flex;}
+
+/* Background Glow */
+.bg-glow{position:absolute;width:350px;height:350px;background:radial-gradient(circle,rgba(0,243,255,0.12) 0%,transparent 70%);top:40%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:pulse 6s infinite ease-in-out;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3;}50%{transform:translate(-50%,-50%) scale(1.4);opacity:0.6;}}
+
+/* Auth Screen */
+.auth-box{margin:auto;width:90%;max-width:360px;padding:28px 22px;background:rgba(15,23,42,0.92);border:1px solid var(--glass-border);border-radius:24px;box-shadow:0 0 35px rgba(0,243,255,0.2);backdrop-filter:blur(20px);display:flex;flex-direction:column;gap:16px;}
+.auth-box h2{text-align:center;color:var(--neon);text-shadow:0 0 10px var(--neon);letter-spacing:2px;font-size:1.6rem;}
+input[type="text"], input[type="password"]{width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid var(--glass-border);border-radius:14px;color:#fff;outline:none;font-size:0.9rem;transition:0.3s;user-select:text;}
+input:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.5);}
+.btn-primary{width:100%;padding:12px;background:transparent;border:1px solid var(--neon);border-radius:14px;color:var(--neon);font-weight:bold;font-size:0.9rem;cursor:pointer;text-shadow:0 0 6px var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.2);transition:0.2s;}
+.btn-primary:active{transform:scale(0.97);background:var(--neon);color:#000;}
+.toggle-btn{background:none;border:none;box-shadow:none;color:var(--pink);text-shadow:0 0 6px var(--pink);font-size:0.85rem;cursor:pointer;}
+
+/* Floating Header Island */
+.floating-header {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  left: 12px; right: 12px;
+  height: 52px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-pill);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px; z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.icon-btn-pill { background: transparent; border: none; color: var(--neon); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; font-size: 1.2rem; }
+.channel-title-pill { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 2px; }
+.channel-hash { color: var(--neon); }
+.status-indicator-ring.online { position: relative; }
+.status-indicator-ring.online::after { content: ''; position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; background-color: #10b981; border-radius: 50%; border: 2px solid var(--bg-dark); }
+.header-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(45deg, var(--neon), var(--pink)); color: #000; font-weight: bold; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; cursor: pointer; }
+
+/* Pinned Rules Banner */
+.pinned-banner {
+  position: absolute; top: 72px; left: 16px; right: 16px;
+  background: rgba(234, 179, 8, 0.12); border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 12px; color: var(--gold); font-size: 0.68rem;
+  padding: 6px 12px; backdrop-filter: blur(8px); z-index: 90;
+}
+
+/* Chat Main View Canvas */
+.chat-canvas { flex: 1; width: 100%; height: 100%; padding-top: 105px; padding-bottom: 84px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth; }
+.content-list { display: flex; flex-direction: column; gap: 10px; padding: 10px 14px; }
+
+/* Message Cards */
+.msg-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:2px;}
+.msg-row.me{justify-content:flex-end;}
+.msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:bold;color:#fff;box-shadow:0 0 6px var(--pink);flex-shrink:0;cursor:pointer;}
+.msg-card{max-width:82%;padding:8px 12px;border-radius:16px;background:var(--card-glass);border:1px solid rgba(255,255,255,0.08);font-size:0.85rem;word-break:break-word;position:relative;backdrop-filter:blur(8px);user-select:text;}
+.msg-row.me .msg-card{background:linear-gradient(135deg,rgba(0,243,255,0.18),rgba(168,85,247,0.18));border-color:var(--neon);box-shadow:0 4px 15px rgba(0,243,255,0.15);border-bottom-right-radius:4px;}
+.msg-row:not(.me) .msg-card{border-bottom-left-radius:4px;}
+.msg-header{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
+.msg-user{font-size:0.68rem;color:var(--neon);font-weight:bold;text-shadow:0 0 4px var(--neon);cursor:pointer;}
+.rank-tag{font-size:0.5rem;padding:1px 4px;border-radius:4px;background:rgba(234,179,8,0.2);color:var(--gold);border:1px solid var(--gold);font-weight:bold;}
+.msg-body{line-height:1.3;}
+.msg-body a { color: #00ffff !important; background: rgba(0, 243, 255, 0.12); padding: 1px 5px; border-radius: 4px; border-bottom: 1px solid var(--neon); text-decoration: none; word-break: break-all; }
+.msg-img{max-width:100%;max-height:160px;border-radius:8px;margin-top:4px;border:1px solid var(--glass-border);cursor:pointer;object-fit:cover;}
+.msg-audio{width:100%;margin-top:4px;height:30px;}
+.msg-footer{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:2px;}
+.msg-time{font-size:0.58rem;color:#64748b;}
+.ticks{font-size:0.6rem;color:var(--neon);}
+.reactions{display:flex;gap:6px;margin-top:6px;}
+.react-btn{font-size:0.68rem;padding:2px 8px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid var(--glass-border);color:#fff;cursor:pointer;}
+.react-btn.voted{border-color:var(--neon);background:rgba(0,243,255,0.2);}
+
+.typing-bar{position:absolute;bottom:68px;left:20px;font-size:0.62rem;color:var(--neon);font-style:italic;}
+
+/* Floating Input Dock */
+.floating-dock {
+  position: absolute; bottom: max(10px, env(safe-area-inset-bottom));
+  left: 10px; right: 10px; height: 52px;
+  background: var(--card-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius-pill);
+  display: flex; align-items: center; padding: 0 8px; gap: 6px; z-index: 100;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+}
+.dock-input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-white); font-size: 0.88rem; padding: 0 6px; user-select: text; }
+.dock-action-btn { width: 34px; height: 34px; min-width: 34px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: var(--neon); font-size: 0.9rem; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.dock-send-btn { width: 36px; height: 36px; min-width: 36px; border-radius: 50%; background: linear-gradient(45deg,var(--neon),var(--pink)); border: none; color: #000; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 0 10px var(--neon); }
+
+/* Backdrop Overlay */
+.sheet-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; z-index: 200; }
+.sheet-backdrop.active { opacity: 1; pointer-events: auto; }
+
+/* Option A: Bottom Sheet Drawer */
+.bottom-sheet {
+  position: fixed; left: 0; right: 0; bottom: 0; height: 82vh;
+  background: var(--sheet-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border-top-left-radius: var(--radius-sheet); border-top-right-radius: var(--radius-sheet);
+  border-top: 1px solid rgba(0, 243, 255, 0.4); box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+  transform: translateY(100%); transition: transform 0.4s var(--ease-spring);
+  will-change: transform; z-index: 201; display: flex; flex-direction: column;
+}
+.bottom-sheet.open { transform: translateY(0%); }
+
+.sheet-handle-zone { width: 100%; padding: 12px 0; display: flex; justify-content: center; align-items: center; cursor: grab; touch-action: none; }
+.sheet-handle { width: 42px; height: 5px; background: #64748b; border-radius: var(--radius-pill); }
+.sheet-content-scroll { flex: 1; overflow-y: auto; padding: 0 18px max(24px, env(safe-area-inset-bottom)) 18px; display: flex; flex-direction: column; gap: 16px; }
+
+.sheet-search-wrapper { position: relative; width: 100%; }
+.sheet-search-input { width: 100%; height: 42px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: 12px; padding: 0 12px; color: var(--text-white); outline: none; font-size: 0.85rem; }
+
+.section-badge { font-size: 0.65rem; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
+.two-col-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.channel-card { height: 46px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 12px; display: flex; align-items: center; padding: 0 12px; gap: 8px; color: var(--text-white); font-weight: 500; font-size: 0.85rem; cursor: pointer; }
+.channel-card.active { background: rgba(0, 243, 255, 0.15); border-color: var(--neon); color: var(--neon); box-shadow: 0 0 12px rgba(0, 243, 255, 0.2); }
+.card-hash { color: var(--neon); }
+
+.nav-stack { display: flex; flex-direction: column; gap: 8px; }
+.nav-row-btn { height: 46px; background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border); border-radius: 12px; display: flex; align-items: center; padding: 0 14px; gap: 10px; color: var(--text-white); font-size: 0.85rem; cursor: pointer; }
+
+.bottom-actions { display: flex; gap: 10px; margin-top: auto; }
+.pill-action-btn { flex: 1; height: 44px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); border-radius: var(--radius-pill); display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-white); font-size: 0.82rem; cursor: pointer; font-weight: bold; }
+.pill-action-btn.destructive { border-color: var(--pink); color: var(--pink); }
+
+/* Modals */
+#imgModal, #profileModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; padding:15px; backdrop-filter:blur(6px); }
+#imgModal img { max-width:100%; max-height:80vh; border-radius:16px; border:1px solid var(--neon); box-shadow:0 0 25px var(--neon); }
+.modal-card { width:90%; max-width:320px; padding:24px 20px; background:rgba(15,23,42,0.95); border:1px solid var(--glass-border); border-radius:20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
+
+/* Leaderboard Rows */
+.lb-item{padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--glass-border);border-radius:12px;display:flex;justify-content:space-between;align-items:center;}
+.lb-left{display:flex;align-items:center;gap:10px;}
+.lb-rank{font-size:0.85rem;font-weight:bold;color:var(--gold);width:20px;}
+.lb-name{color:var(--neon);font-weight:bold;font-size:0.85rem;cursor:pointer;}
+.lb-count{font-size:0.75rem;color:var(--pink);font-weight:bold;}
+</style>
 </head>
 <body>
-    <div id="app" class="app-viewport">
-        <!-- Floating Header Island -->
-        <header class="floating-header">
-            <div class="header-left">
-                <button id="sheetToggleBtn" class="icon-btn-pill" aria-label="Open Menu" aria-expanded="false">
-                    <svg class="icon" viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
-                </button>
-                <div class="channel-title-pill">
-                    <span class="channel-hash">#</span>
-                    <span id="activeChannelName">general</span>
-                </div>
-            </div>
-            <div class="header-right">
-                <div class="status-indicator-ring online">
-                    <img src="https://via.placeholder.com/32" alt="Avatar" class="header-avatar">
-                </div>
-            </div>
-        </header>
 
-        <!-- Main Chat Area Container -->
-        <main id="chatCanvas" class="chat-canvas">
-            <div id="messageList" class="message-list" role="log" aria-live="polite">
-                <div class="date-divider"><span>Today</span></div>
-                <!-- Chat Bubbles Render Here -->
-                <div class="msg-row incoming">
-                    <div class="msg-bubble">
-                        <span class="msg-sender">System</span>
-                        <p class="msg-text">Welcome to ZACK360 modern 2026 bottom sheet interface!</p>
-                        <span class="msg-time">04:16 AM</span>
-                    </div>
-                </div>
-            </div>
-        </main>
+<div id="blocker">ACCESS DENIED: ANDROID DEVICES ONLY</div>
+<div class="bg-glow"></div>
 
-        <!-- Floating Input Dock -->
-        <div class="floating-dock">
-            <button class="dock-action-btn" aria-label="Attach File">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
-            </button>
-            <input type="text" id="chatInput" class="dock-input" placeholder="Message #general..." autocomplete="off">
-            <button id="sendBtn" class="dock-send-btn" aria-label="Send Message">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-            </button>
-        </div>
+<div id="imgModal"><img id="modalImg" src=""></div>
 
-        <!-- Dimmed Backdrop Overlay -->
-        <div id="sheetBackdrop" class="sheet-backdrop" aria-hidden="true"></div>
+<div id="profileModal">
+  <div class="modal-card">
+    <h3 id="profUser" style="color:var(--neon);margin-bottom:8px;">USER</h3>
+    <p id="profMsgs" style="font-size:0.85rem;color:var(--text-white);margin-bottom:6px;">Msgs: 0</p>
+    <button id="dmBtn" class="btn-primary" style="margin-bottom:8px;">DIRECT MESSAGE</button>
+    <button id="closeProfBtn" class="btn-primary" style="border-color:var(--pink);color:var(--pink);">CLOSE</button>
+  </div>
+</div>
 
-        <!-- Option A: Modern Bottom Sheet Drawer -->
-        <div id="bottomSheet" class="bottom-sheet" role="dialog" aria-modal="true" aria-hidden="true">
-            <!-- Drag Handle Bar Zone -->
-            <div id="sheetHandleZone" class="sheet-handle-zone">
-                <div class="sheet-handle"></div>
-            </div>
+<div id="authScreen" class="screen active">
+  <div class="auth-box">
+    <h2 id="authTitle">ZACK360</h2>
+    <input type="text" id="username" placeholder="Username" autocomplete="off" maxlength="15">
+    <input type="password" id="password" placeholder="Password">
+    <button id="authBtn" class="btn-primary">LOGIN</button>
+    <button class="toggle-btn" id="toggleAuth">Need an account? Register</button>
+  </div>
+</div>
 
-            <div class="sheet-content-scroll">
-                <!-- Inline Quick Search -->
-                <div class="sheet-search-wrapper">
-                    <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    <input type="text" id="channelSearch" placeholder="Search channels..." class="sheet-search-input">
-                </div>
-
-                <!-- Channels Grid Section -->
-                <section class="sheet-section">
-                    <h3 class="section-badge">CHANNELS</h3>
-                    <div class="two-col-grid" id="channelGrid">
-                        <button class="channel-card active" data-channel="general">
-                            <span class="card-hash">#</span>
-                            <span class="card-label">general</span>
-                            <span class="unread-badge">3</span>
-                        </button>
-                        <button class="channel-card" data-channel="gaming">
-                            <span class="card-hash">#</span>
-                            <span class="card-label">gaming</span>
-                        </button>
-                        <button class="channel-card" data-channel="media">
-                            <span class="card-hash">#</span>
-                            <span class="card-label">media</span>
-                        </button>
-                        <button class="channel-card" data-channel="dev">
-                            <span class="card-hash">#</span>
-                            <span class="card-label">dev-talk</span>
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Navigation List Section -->
-                <section class="sheet-section">
-                    <h3 class="section-badge">NAVIGATION</h3>
-                    <div class="nav-stack">
-                        <button class="nav-row-btn">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                            <span>Direct Message</span>
-                        </button>
-                        <button class="nav-row-btn">
-                            <svg class="icon" viewBox="0 0 24 24"><path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2z"/></svg>
-                            <span>Leaderboard</span>
-                        </button>
-                    </div>
-                </section>
-
-                <!-- Bottom Actions -->
-                <section class="sheet-section bottom-actions">
-                    <button id="muteBtn" class="pill-action-btn">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4L9.91 6.09 12 8.18V4zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3z"/></svg>
-                        <span>Mute Audio</span>
-                    </button>
-                    <button id="logoutBtn" class="pill-action-btn destructive">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
-                        <span>Logout</span>
-                    </button>
-                </section>
-            </div>
-        </div>
+<div id="appScreen" class="screen">
+  <header class="floating-header">
+    <div class="header-left">
+      <button id="sheetToggleBtn" class="icon-btn-pill" aria-label="Open Menu">☰</button>
+      <div class="channel-title-pill">
+        <span class="channel-hash">#</span>
+        <span id="activeChannelName">general</span>
+      </div>
     </div>
+    <div class="header-right">
+      <div class="status-indicator-ring online">
+        <div id="headerAvatar" class="header-avatar">?</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="pinned-banner">📌 Rules: Respect members & no spamming.</div>
+
+  <main id="chatCanvas" class="chat-canvas">
+    <div id="chatView" class="content-list"></div>
+    <div id="lbView" class="content-list" style="display:none;"></div>
+    <div id="typingArea" class="typing-bar"></div>
+  </main>
+
+  <div id="chatControls" class="floating-dock">
+    <label class="dock-action-btn" for="imgInput">📷</label>
+    <input type="file" id="imgInput" accept="image/*" style="display:none;">
+    <button class="dock-action-btn" id="gifBtn">👾</button>
+    <button class="dock-action-btn" id="audioRecBtn">🎙️</button>
+    <input type="text" id="msgInput" class="dock-input" placeholder="Message..." autocomplete="off" maxlength="500">
+    <button id="sendBtn" class="dock-send-btn">➤</button>
+  </div>
+
+  <div id="sheetBackdrop" class="sheet-backdrop"></div>
+
+  <div id="bottomSheet" class="bottom-sheet">
+    <div id="sheetHandleZone" class="sheet-handle-zone">
+      <div class="sheet-handle"></div>
+    </div>
+
+    <div class="sheet-content-scroll">
+      <div class="sheet-search-wrapper">
+        <input type="text" id="channelSearch" placeholder="Search channels..." class="sheet-search-input">
+      </div>
+
+      <section>
+        <div class="section-badge">CHANNELS</div>
+        <div class="two-col-grid" id="channelGrid">
+          <button class="channel-card active" data-chan="general"><span class="card-hash">#</span>general</button>
+          <button class="channel-card" data-chan="gaming"><span class="card-hash">#</span>gaming</button>
+          <button class="channel-card" data-chan="media"><span class="card-hash">#</span>media</button>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-badge">NAVIGATION</div>
+        <div class="nav-stack">
+          <button class="nav-row-btn" id="drawerDmBtn">📩 Direct Message</button>
+          <button class="nav-row-btn" id="drawerLbBtn">🏆 Leaderboard</button>
+        </div>
+      </section>
+
+      <section class="bottom-actions">
+        <button id="soundBtn" class="pill-action-btn">🔊 Mute Audio</button>
+        <button id="logoutBtn" class="pill-action-btn destructive">🚪 Logout</button>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, get, push, onValue, off, serverTimestamp, onDisconnect, remove, query, limitToLast } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+if (!/Android/i.test(navigator.userAgent)) {
+  document.getElementById('blocker').style.display = 'flex';
+  document.querySelectorAll('.screen').forEach(s => s.remove());
+}
+
+const db = getDatabase(initializeApp({ databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/" }));
+
+let currentUser = null;
+let isRegistering = false;
+let typingTimeout = null;
+let isTyping = false;
+let currentChan = "general";
+let targetDM = null;
+let activeMode = "chat";
+let soundEnabled = true;
+let lastMsgTime = 0;
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+let selectedProfileUser = null;
+let activeChatQuery = null;
+let activeTypingRef = null;
+let usersListenerRef = null;
+
+// UI Elements
+const sheetToggleBtn = document.getElementById('sheetToggleBtn');
+const bottomSheet = document.getElementById('bottomSheet');
+const sheetBackdrop = document.getElementById('sheetBackdrop');
+const sheetHandleZone = document.getElementById('sheetHandleZone');
+const authScreen = document.getElementById('authScreen');
+const appScreen = document.getElementById('appScreen');
+const usernameIn = document.getElementById('username');
+const passwordIn = document.getElementById('password');
+const authBtn = document.getElementById('authBtn');
+const toggleAuth = document.getElementById('toggleAuth');
+const authTitle = document.getElementById('authTitle');
+const chatView = document.getElementById('chatView');
+const lbView = document.getElementById('lbView');
+const msgInput = document.getElementById('msgInput');
+const imgInput = document.getElementById('imgInput');
+const sendBtn = document.getElementById('sendBtn');
+const chatControls = document.getElementById('chatControls');
+const typingArea = document.getElementById('typingArea');
+const soundBtn = document.getElementById('soundBtn');
+
+/* Bottom Sheet Open / Close Handlers */
+function openSheet() {
+  bottomSheet.classList.add('open');
+  sheetBackdrop.classList.add('active');
+  if (navigator.vibrate) navigator.vibrate(12);
+}
+
+function closeSheet() {
+  bottomSheet.classList.remove('open');
+  sheetBackdrop.classList.remove('active');
+  bottomSheet.style.transform = '';
+}
+
+sheetToggleBtn.onclick = openSheet;
+sheetBackdrop.onclick = closeSheet;
+
+/* Drag Gesture Mechanics */
+let startY = 0, currentY = 0;
+sheetHandleZone.addEventListener('touchstart', (e) => {
+  startY = e.touches[0].clientY;
+  bottomSheet.style.transition = 'none';
+}, { passive: true });
+
+sheetHandleZone.addEventListener('touchmove', (e) => {
+  currentY = e.touches[0].clientY;
+  const deltaY = currentY - startY;
+  if (deltaY > 0) bottomSheet.style.transform = `translateY(${deltaY}px)`;
+}, { passive: true });
+
+sheetHandleZone.addEventListener('touchend', () => {
+  bottomSheet.style.transition = '';
+  if (currentY - startY > 120) closeSheet();
+  else bottomSheet.style.transform = 'translateY(0%)';
+  startY = 0; currentY = 0;
+});
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str + "_zack360_salt"));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function validatePayloadSize(base64Str, maxBytes = 150000) {
+  const padding = (base64Str.match(/=/g) || []).length;
+  const sizeInBytes = (base64Str.length * (3 / 4)) - padding;
+  if (sizeInBytes > maxBytes) {
+    alert(`Payload size (${Math.round(sizeInBytes / 1024)}KB) exceeds allowed 150KB limit.`);
+    return false;
+  }
+  return true;
+}
+
+const playAudio = () => {
+  if(!soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 520; gain.gain.value = 0.04;
+    osc.start(); osc.stop(ctx.currentTime + 0.08);
+  } catch(e){}
+};
+
+soundBtn.onclick = () => {
+  soundEnabled = !soundEnabled;
+  soundBtn.innerText = soundEnabled ? "🔊 Mute Audio" : "🔇 Unmute Audio";
+  closeSheet();
+};
+
+toggleAuth.onclick = () => {
+  isRegistering = !isRegistering;
+  authTitle.innerText = isRegistering ? "REGISTER" : "ZACK360";
+  authBtn.innerText = isRegistering ? "CREATE ACCOUNT" : "LOGIN";
+  toggleAuth.innerText = isRegistering ? "Have an account? Login" : "Need an account? Register";
+};
+
+authBtn.onclick = async () => {
+  const u = usernameIn.value.trim().toLowerCase();
+  const p = passwordIn.value.trim();
+  if(!u || !p) return alert("Fill all fields");
+  const hashedP = await sha256(p);
+  const userRef = ref(db, `users/${u}`);
+  try {
+    const snap = await get(userRef);
+    if(isRegistering){
+      if(snap.exists()) return alert("Username taken");
+      await set(userRef, { password: hashedP, msgCount: 0, joined: serverTimestamp() });
+      login(u);
+    }else{
+      if(!snap.exists() || snap.val().password !== hashedP) return alert("Invalid credentials");
+      login(u);
+    }
+  } catch(e) { alert("Network Error"); }
+};
+
+function login(u){
+  currentUser = u;
+  document.getElementById('headerAvatar').innerText = u.charAt(0).toUpperCase();
+  authScreen.classList.remove('active');
+  appScreen.classList.add('active');
+  setupPresence();
+  initChat();
+  initLeaderboard();
+  initTyping();
+}
+
+function setupPresence(){
+  const pRef = ref(db, `online/${currentUser}`);
+  set(pRef, true);
+  onDisconnect(pRef).remove();
+}
+
+function clearTypingState() {
+  if(activeTypingRef) {
+    remove(activeTypingRef);
+    off(ref(db, `typing/${currentChan}`));
+  }
+  isTyping = false;
+  clearTimeout(typingTimeout);
+}
+
+function initTyping(){
+  clearTypingState();
+  activeTypingRef = ref(db, `typing/${currentChan}/${currentUser}`);
+  onDisconnect(activeTypingRef).remove();
+
+  msgInput.oninput = () => {
+    if(!isTyping) {
+      set(activeTypingRef, true);
+      isTyping = true;
+    }
+    clearTimeout(typingTimeout);
+    typingTimeout = setTimeout(() => {
+      remove(activeTypingRef);
+      isTyping = false;
+    }, 1800);
+  };
+
+  onValue(ref(db, `typing/${currentChan}`), snap => {
+    const data = snap.val() || {};
+    const typers = Object.keys(data).filter(k => k !== currentUser);
+    typingArea.innerText = typers.length ? `${typers.join(', ')} is typing...` : '';
+  });
+}
+
+document.getElementById('logoutBtn').onclick = () => location.reload();
+
+document.querySelectorAll('.channel-card[data-chan]').forEach(btn => {
+  btn.onclick = (e) => {
+    clearTypingState();
+    const targetCard = e.target.closest('.channel-card');
+    currentChan = targetCard.dataset.chan;
+    targetDM = null;
+    activeMode = "chat";
+    document.querySelectorAll('.channel-card').forEach(b => b.classList.remove('active'));
+    targetCard.classList.add('active');
+    document.getElementById('activeChannelName').innerText = currentChan;
+    chatView.style.display = 'flex';
+    lbView.style.display = 'none';
+    chatControls.style.display = 'flex';
+    closeSheet();
+    initChat();
+    initTyping();
+  };
+});
+
+document.getElementById('drawerDmBtn').onclick = () => {
+  const target = prompt("Enter username for DM:");
+  if(!target) return;
+  clearTypingState();
+  activeMode = "dm";
+  targetDM = target.toLowerCase();
+  document.getElementById('activeChannelName').innerText = `@${targetDM}`;
+  chatView.style.display = 'flex';
+  lbView.style.display = 'none';
+  chatControls.style.display = 'flex';
+  closeSheet();
+  initChat();
+};
+
+document.getElementById('drawerLbBtn').onclick = () => {
+  chatView.style.display = 'none';
+  lbView.style.display = 'flex';
+  chatControls.style.display = 'none';
+  closeSheet();
+};
+
+/* Channel Search Filter */
+document.getElementById('channelSearch').oninput = (e) => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('.channel-card').forEach(card => {
+    const name = card.dataset.chan;
+    card.style.display = name.includes(q) ? 'flex' : 'none';
+  });
+};
+
+function escapeHTML(str) {
+  return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
+}
+
+function linkify(text) {
+  if (!text) return '';
+  const cleanText = escapeHTML(text);
+  const urlRegex = /(https?:\/\/[^\s<]+)/gi;
+  return cleanText.replace(urlRegex, (url) => {
+    const cleanUrl = url.replace(/[.,;!?]+$/, '');
+    return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer">${cleanUrl}</a>`;
+  });
+}
+
+function formatTime(ts){
+  if(!ts) return '';
+  const d = new Date(ts);
+  return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+document.getElementById('imgModal').onclick = () => {
+  document.getElementById('imgModal').style.display = 'none';
+};
+
+document.getElementById('closeProfBtn').onclick = () => {
+  document.getElementById('profileModal').style.display = 'none';
+};
+
+document.getElementById('headerAvatar').onclick = () => window.openProfile(currentUser);
+
+window.openImg = src => {
+  document.getElementById('modalImg').src = src;
+  document.getElementById('imgModal').style.display = 'flex';
+};
+
+window.openProfile = async (u) => {
+  selectedProfileUser = u;
+  document.getElementById('profUser').innerText = u.toUpperCase();
+  const snap = await get(ref(db, `users/${u}`));
+  const data = snap.val() || {};
+  document.getElementById('profMsgs').innerText = `Msgs: ${data.msgCount || 0}`;
+  document.getElementById('profileModal').style.display = 'flex';
+};
+
+document.getElementById('dmBtn').onclick = () => {
+  document.getElementById('profileModal').style.display = 'none';
+  clearTypingState();
+  activeMode = "dm";
+  targetDM = selectedProfileUser;
+  document.getElementById('activeChannelName').innerText = `@${targetDM}`;
+  initChat();
+};
+
+function getDBPath(){
+  if(activeMode === "dm"){
+    const pair = [currentUser, targetDM].sort().join('_');
+    return `dms/${pair}`;
+  }
+  return `channels/${currentChan}`;
+}
+
+chatView.addEventListener('click', (e) => {
+  const avatar = e.target.closest('.msg-avatar, .msg-user');
+  if (avatar && avatar.dataset.username) {
+    window.openProfile(avatar.dataset.username);
+  }
+});
+
+function initChat(){
+  if(activeChatQuery) off(activeChatQuery);
+  const path = getDBPath();
+  activeChatQuery = query(ref(db, path), limitToLast(50));
+  
+  onValue(activeChatQuery, snap => {
+    chatView.innerHTML = '';
+    const data = snap.val();
+    if(!data) return;
+    Object.keys(data).forEach(id => {
+      const m = data[id];
+      const isMe = m.user === currentUser;
+      const div = document.createElement('div');
+      div.className = `msg-row ${isMe ? 'me' : ''}`;
+      
+      let mediaHtml = '';
+      if(m.image) mediaHtml += `<img src="${m.image}" class="msg-img" onclick="window.openImg('${m.image}')">`;
+      if(m.audio) mediaHtml += `<audio src="${m.audio}" controls class="msg-audio"></audio>`;
+
+      const heartCount = m.reacts?.['❤️'] ? Object.keys(m.reacts['❤️']).length : 0;
+      const fireCount = m.reacts?.['🔥'] ? Object.keys(m.reacts['🔥']).length : 0;
+      const hasHeart = m.reacts?.['❤️']?.[currentUser] ? 'voted' : '';
+      const hasFire = m.reacts?.['🔥']?.[currentUser] ? 'voted' : '';
+
+      let rxHtml = `
+        <div class="reactions">
+          <button class="react-btn ${hasHeart}" onclick="window.addReact('${id}','❤️')">❤️ ${heartCount}</button>
+          <button class="react-btn ${hasFire}" onclick="window.addReact('${id}','🔥')">🔥 ${fireCount}</button>
+        </div>
+      `;
+
+      const avatarHtml = !isMe ? `<div class="msg-avatar" data-username="${escapeHTML(m.user)}">${escapeHTML(m.user.charAt(0).toUpperCase())}</div>` : '';
+
+      div.innerHTML = `
+        ${avatarHtml}
+        <div class="msg-card">
+          <div class="msg-header">
+            <span class="msg-user" data-username="${escapeHTML(m.user)}">${escapeHTML(m.user)}</span>
+            <span class="rank-tag">PRO</span>
+          </div>
+          <div class="msg-body">${m.text ? linkify(m.text) : ''}${mediaHtml}</div>
+          ${rxHtml}
+          <div class="msg-footer">
+            <span class="msg-time">${formatTime(m.time)}</span>
+            ${isMe ? '<span class="ticks">✓✓</span>' : ''}
+          </div>
+        </div>
+      `;
+      chatView.appendChild(div);
+    });
+    const canvas = document.getElementById('chatCanvas');
+    canvas.scrollTop = canvas.scrollHeight;
+  });
+}
+
+window.addReact = async (msgId, emoji) => {
+  const rRef = ref(db, `${getDBPath()}/${msgId}/reacts/${emoji}/${currentUser}`);
+  const snap = await get(rRef);
+  if(snap.exists()){ await remove(rRef); } else { await set(rRef, true); }
+};
+
+async function sendMessage(extraData = {}){
+  const now = Date.now();
+  if(now - lastMsgTime < 1500) return alert("Rate limit: Wait 1.5s");
+  const text = msgInput.value.trim();
+  if(!text && !extraData.image && !extraData.audio) return;
+  msgInput.value = '';
+  lastMsgTime = Date.now();
+  clearTypingState();
+  playAudio();
+  await push(ref(db, getDBPath()), { user: currentUser, text: text, ...extraData, time: serverTimestamp() });
+  const countRef = ref(db, `users/${currentUser}/msgCount`);
+  const snap = await get(countRef);
+  await set(countRef, (snap.val() || 0) + 1);
+}
+
+sendBtn.onclick = () => sendMessage();
+msgInput.onkeypress = e => { if(e.key === 'Enter') sendMessage(); };
+
+document.getElementById('gifBtn').onclick = () => {
+  const mockGifs = [
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3p0eDZ3eXp4ZnByaXZhdGUmZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PWc/cE02lboc8JPO/giphy.gif",
+    "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3p0eDZ3eXp4ZnByaXZhdGUmZXA9djFfaW50ZXJuYWxfZ2lmX2J5X2lkJmN0PWc/julfEI43BXY08/giphy.gif"
+  ];
+  sendMessage({ image: mockGifs[Math.floor(Math.random() * mockGifs.length)] });
+};
+
+const audioRecBtn = document.getElementById('audioRecBtn');
+audioRecBtn.onclick = async () => {
+  if(!isRecording){
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      mediaRecorder.ondataavailable = e => { audioChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunks, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.onload = ev => {
+          if (validatePayloadSize(ev.target.result)) {
+            sendMessage({ audio: ev.target.result });
+          }
+        };
+        reader.readAsDataURL(blob);
+      };
+      mediaRecorder.start(250);
+      isRecording = true;
+      audioRecBtn.style.color = "var(--pink)";
+    } catch(e){ alert("Mic permission denied"); }
+  } else {
+    if(mediaRecorder) mediaRecorder.stop();
+    isRecording = false;
+    audioRecBtn.style.color = "var(--neon)";
+  }
+};
+
+imgInput.onchange = e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const maxDim = 800;
+      let w = img.width, h = img.height;
+      if(w > maxDim || h > maxDim){
+        if(w > h){ h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+      }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+      if (validatePayloadSize(dataUrl)) {
+        sendMessage({ image: dataUrl });
+      }
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+};
+
+function initLeaderboard(){
+  const usersRef = ref(db, 'users');
+  if (usersListenerRef) off(usersRef);
+  
+  usersListenerRef = onValue(usersRef, snap => {
+    lbView.innerHTML = '';
+    const data = snap.val();
+    if(!data) return;
+    const users = Object.keys(data).map(k => ({ name: k, count: data[k].msgCount || 0 }));
+    users.sort((a,b) => b.count - a.count);
+    users.forEach((u, i) => {
+      const div = document.createElement('div');
+      div.className = 'lb-item';
+      
+      const left = document.createElement('div');
+      left.className = 'lb-left';
+      
+      const rank = document.createElement('span');
+      rank.className = 'lb-rank';
+      rank.textContent = `#${i+1}`;
+      
+      const avatar = document.createElement('div');
+      avatar.className = 'msg-avatar';
+      avatar.style.cssText = 'width:24px;height:24px;font-size:0.6rem';
+      avatar.textContent = u.name.charAt(0).toUpperCase();
+      avatar.addEventListener('click', () => window.openProfile(u.name));
+      
+      const name = document.createElement('span');
+      name.className = 'lb-name';
+      name.textContent = u.name;
+      name.addEventListener('click', () => window.openProfile(u.name));
+      
+      left.append(rank, avatar, name);
+      
+      const count = document.createElement('span');
+      count.className = 'lb-count';
+      count.textContent = `${u.count} msgs`;
+      
+      div.append(left, count);
+      lbView.appendChild(div);
+    });
+  });
+}
+</script>
 </body>
 </html>
