@@ -3,55 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>ZACK360 MASTER PLATFORM</title>
+<title>ZACK360 MODERN PLATFORM</title>
 <link rel="manifest" href="data:application/manifest+json;utf8,{\"name\":\"ZACK360\",\"short_name\":\"ZACK360\",\"start_url\":\".\",\"display\":\"standalone\",\"background_color\":\"#030712\",\"theme_color\":\"#00f3ff\"}">
 <style>
-:root{--bg:#030712;--card:rgba(15,23,42,0.95);--border:rgba(0,243,255,0.3);--neon:#00f3ff;--pink:#ff007f;--purple:#a855f7;--gold:#eab308;--text:#f8fafc;}
+:root {
+  --bg: #030712;
+  --card: rgba(15, 23, 42, 0.75);
+  --card-solid: rgba(15, 23, 42, 0.95);
+  --border: rgba(0, 243, 255, 0.25);
+  --neon: #00f3ff;
+  --pink: #ff007f;
+  --purple: #a855f7;
+  --gold: #eab308;
+  --text: #f8fafc;
+}
 *{box-sizing:border-box;margin:0;padding:0;font-family:system-ui,-apple-system,sans-serif;-webkit-tap-highlight-color:transparent;}
 html,body{width:100%;height:100%;background:var(--bg);color:var(--text);overflow:hidden;}
+
 #blocker{display:none;position:fixed;inset:0;background:#000;z-index:99999;justify-content:center;align-items:center;text-align:center;padding:20px;color:var(--pink);font-size:1.2rem;font-weight:bold;text-shadow:0 0 10px var(--pink);}
 .screen{display:none;width:100%;height:100dvh;flex-direction:column;position:relative;z-index:10;overflow:hidden;}
 .active{display:flex;}
-.bg-glow{position:absolute;width:320px;height:320px;background:radial-gradient(circle,rgba(0,243,255,0.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:pulse 4s infinite ease-in-out;}
-@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3;}50%{transform:translate(-50%,-50%) scale(1.3);opacity:0.7;}}
 
-/* Auth Screen */
-.auth-box{margin:auto;width:90%;max-width:360px;padding:25px 20px;background:var(--card);border:1px solid var(--border);border-radius:20px;box-shadow:0 0 30px rgba(0,243,255,0.2);backdrop-filter:blur(16px);display:flex;flex-direction:column;gap:15px;}
-.auth-box h2{text-align:center;color:var(--neon);text-shadow:0 0 10px var(--neon);letter-spacing:2px;font-size:1.6rem;}
-input{width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;outline:none;font-size:0.9rem;transition:0.3s;}
-input:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.5);}
-button{width:100%;padding:10px;background:transparent;border:1px solid var(--neon);border-radius:12px;color:var(--neon);font-weight:bold;font-size:0.9rem;cursor:pointer;text-shadow:0 0 6px var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.2);transition:0.2s;}
-button:active{transform:scale(0.97);background:var(--neon);color:#000;}
-.toggle-btn{background:none;border:none;box-shadow:none;color:var(--pink);text-shadow:0 0 6px var(--pink);font-size:0.85rem;}
+/* Animated Background Ambient Glow */
+.bg-glow{position:absolute;width:350px;height:350px;background:radial-gradient(circle,rgba(0,243,255,0.12) 0%,transparent 70%);top:40%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:pulse 6s infinite ease-in-out;}
+@keyframes pulse{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:0.3;}50%{transform:translate(-50%,-50%) scale(1.4);opacity:0.6;}}
 
-/* Header UI Optimizations */
-header{height:48px;min-height:48px;padding:0 8px;background:var(--card);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);}
-.brand{display:flex;align-items:center;gap:6px;}
-.avatar-header{width:28px;height:28px;border-radius:50%;background:linear-gradient(45deg,var(--neon),var(--pink));display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.8rem;color:#000;box-shadow:0 0 8px var(--neon);cursor:pointer;}
-header h1{font-size:0.85rem;color:var(--neon);text-shadow:0 0 6px var(--neon);}
-.online-badge{font-size:0.58rem;color:#10b981;display:flex;align-items:center;gap:4px;font-weight:bold;}
-.online-dot{width:5px;height:5px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;}
+/* Floating App Header */
+header {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  height: 50px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  backdrop-filter: blur(16px);
+  z-index: 100;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.menu-trigger{width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--neon);display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;}
+.avatar-header{width:30px;height:30px;border-radius:50%;background:linear-gradient(45deg,var(--neon),var(--pink));display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:0.8rem;color:#000;box-shadow:0 0 8px var(--neon);cursor:pointer;}
+header h1{font-size:0.9rem;color:var(--neon);letter-spacing:1px;text-shadow:0 0 6px var(--neon);}
+.online-badge{font-size:0.6rem;color:#10b981;display:flex;align-items:center;gap:4px;font-weight:bold;}
+.online-dot{width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;}
 
-.sub-bar{height:30px;background:rgba(0,0,0,0.4);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 6px;gap:6px;overflow-x:auto;}
-.chan-btn{padding:2px 10px;font-size:0.68rem;border-radius:10px;border:1px solid var(--border);background:transparent;color:#fff;white-space:nowrap;}
-.chan-btn.active{background:var(--neon);color:#000;font-weight:bold;}
+/* Slide-out Navigation Drawer */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 260px;
+  height: 100%;
+  background: var(--card-solid);
+  border-right: 1px solid var(--border);
+  z-index: 201;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 10px 0 30px rgba(0,0,0,0.5);
+}
+.drawer.open {
+  transform: translateX(280px);
+}
+.drawer-title {
+  color: var(--neon);
+  font-size: 1.1rem;
+  font-weight: bold;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
+}
+.drawer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.drawer-label {
+  font-size: 0.65rem;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: bold;
+}
+.drawer-btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: var(--text);
+  text-align: left;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.drawer-btn.active {
+  background: rgba(0,243,255,0.15);
+  border-color: var(--neon);
+  color: var(--neon);
+  font-weight: bold;
+}
 
-.pinned-banner{height:22px;background:rgba(234,179,8,0.12);border-bottom:1px solid rgba(234,179,8,0.4);color:var(--gold);font-size:0.65rem;display:flex;align-items:center;padding:0 8px;font-weight:bold;}
+/* Floating Banner */
+.pinned-banner {
+  position: absolute;
+  top: 68px;
+  left: 14px;
+  right: 14px;
+  background: rgba(234, 179, 8, 0.12);
+  border: 1px solid rgba(234, 179, 8, 0.3);
+  border-radius: 10px;
+  color: var(--gold);
+  font-size: 0.68rem;
+  padding: 6px 12px;
+  backdrop-filter: blur(8px);
+  z-index: 90;
+}
 
-.tabs{display:flex;gap:3px;}
-.tab-btn{width:auto;padding:3px 7px;font-size:0.65rem;border-radius:10px;border-color:var(--border);}
-.tab-btn.active-tab{background:linear-gradient(90deg,var(--neon),var(--purple));color:#000;border:none;box-shadow:0 0 8px var(--neon);font-weight:bold;}
+/* Chat Main Screen Space */
+.main-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;padding-top:105px;padding-bottom:70px;}
+.content{flex:1;overflow-y:auto;padding:10px 14px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth;}
 
-/* Main Body & Chat Cards */
-.main-body{flex:1;display:flex;flex-direction:column;overflow:hidden;position:relative;}
-.content{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:8px;scroll-behavior:smooth;}
-
-.msg-row{display:flex;gap:6px;align-items:flex-end;margin-bottom:2px;}
+/* Message Cards */
+.msg-row{display:flex;gap:8px;align-items:flex-end;margin-bottom:2px;}
 .msg-row.me{justify-content:flex-end;}
 .msg-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:bold;color:#fff;box-shadow:0 0 6px var(--pink);flex-shrink:0;cursor:pointer;}
-.msg-card{max-width:82%;padding:6px 10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);font-size:0.82rem;word-break:break-word;position:relative;}
-.msg-row.me .msg-card{background:linear-gradient(135deg,rgba(0,243,255,0.15),rgba(168,85,247,0.15));border-color:var(--neon);box-shadow:0 0 8px rgba(0,243,255,0.2);border-bottom-right-radius:2px;}
-.msg-row:not(.me) .msg-card{border-bottom-left-radius:2px;}
+.msg-card{max-width:82%;padding:8px 12px;border-radius:16px;background:var(--card);border:1px solid rgba(255,255,255,0.08);font-size:0.85rem;word-break:break-word;position:relative;backdrop-filter:blur(8px);}
+.msg-row.me .msg-card{background:linear-gradient(135deg,rgba(0,243,255,0.18),rgba(168,85,247,0.18));border-color:var(--neon);box-shadow:0 4px 15px rgba(0,243,255,0.15);border-bottom-right-radius:4px;}
+.msg-row:not(.me) .msg-card{border-bottom-left-radius:4px;}
 .msg-header{display:flex;align-items:center;gap:6px;margin-bottom:2px;}
 .msg-user{font-size:0.68rem;color:var(--neon);font-weight:bold;text-shadow:0 0 4px var(--neon);cursor:pointer;}
 .rank-tag{font-size:0.5rem;padding:1px 4px;border-radius:4px;background:rgba(234,179,8,0.2);color:var(--gold);border:1px solid var(--gold);font-weight:bold;}
@@ -60,19 +163,15 @@ header h1{font-size:0.85rem;color:var(--neon);text-shadow:0 0 6px var(--neon);}
 /* High-Contrast Readable Neon Links */
 .msg-body a {
   color: #00ffff !important;
-  background: rgba(0, 243, 255, 0.1);
-  padding: 1px 4px;
+  background: rgba(0, 243, 255, 0.12);
+  padding: 1px 5px;
   border-radius: 4px;
   border-bottom: 1px solid var(--neon);
   text-shadow: none !important;
   word-break: break-all;
   text-decoration: none;
-  transition: all 0.2s ease-in-out;
 }
-.msg-body a:hover, .msg-body a:focus {
-  background: rgba(0, 243, 255, 0.25);
-  color: #ffffff !important;
-}
+.msg-body a:hover { background: rgba(0, 243, 255, 0.25); color: #fff !important; }
 
 .msg-img{max-width:100%;max-height:160px;border-radius:8px;margin-top:4px;border:1px solid var(--border);cursor:pointer;object-fit:cover;}
 .msg-audio{width:100%;margin-top:4px;height:30px;}
@@ -80,33 +179,115 @@ header h1{font-size:0.85rem;color:var(--neon);text-shadow:0 0 6px var(--neon);}
 .msg-time{font-size:0.58rem;color:#64748b;}
 .ticks{font-size:0.6rem;color:var(--neon);}
 
-/* Compact Reactions Bar */
 .reactions{display:flex;gap:6px;margin-top:6px;}
 .react-btn{font-size:0.68rem;padding:2px 8px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:#fff;cursor:pointer;}
 .react-btn.voted{border-color:var(--neon);background:rgba(0,243,255,0.2);}
 
-.typing-bar{font-size:0.62rem;color:var(--neon);padding:2px 10px;height:12px;font-style:italic;}
+.typing-bar{position:absolute;bottom:62px;left:20px;font-size:0.62rem;color:var(--neon);font-style:italic;}
 
-/* Optically Aligned Bottom Control Bar */
-.chat-input-bar{height:52px;min-height:52px;padding:4px 6px;background:var(--card);border-top:1px solid var(--border);display:flex;gap:4px;align-items:center;backdrop-filter:blur(12px);}
-.chat-input-bar input{border-radius:16px;padding:8px 12px;font-size:0.82rem;}
-.icon-btn{width:32px;height:32px;min-width:32px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid var(--border);color:var(--neon);font-size:0.85rem;display:flex;align-items:center;justify-content:center;cursor:pointer;}
-.send-btn{width:34px;height:34px;min-width:34px;border-radius:50%;background:linear-gradient(45deg,var(--neon),var(--pink));border:none;color:#000;font-size:0.85rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px var(--neon);padding:0;}
+/* Floating Pill Input Bar */
+.chat-input-bar {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  height: 52px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 0 8px;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  z-index: 100;
+}
+.chat-input-bar input {
+  border: none;
+  background: transparent;
+  padding: 8px 6px;
+  font-size: 0.85rem;
+}
+.chat-input-bar input:focus { box-shadow: none; }
+.icon-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--neon);
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.send-btn {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 50%;
+  background: linear-gradient(45deg,var(--neon),var(--pink));
+  border: none;
+  color: #000;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px var(--neon);
+  padding: 0;
+}
 
-.lb-item{padding:8px 12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;display:flex;justify-content:space-between;align-items:center;}
-.lb-left{display:flex;align-items:center;gap:8px;}
-.lb-rank{font-size:0.8rem;font-weight:bold;color:var(--gold);width:18px;}
-.lb-name{color:var(--neon);font-weight:bold;font-size:0.82rem;cursor:pointer;}
-.lb-count{font-size:0.7rem;color:var(--pink);font-weight:bold;}
+/* Modals & Popups */
+#imgModal, #profileModal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.8); z-index:9999; justify-content:center; align-items:center; padding:15px; backdrop-filter:blur(6px); }
+#imgModal img { max-width:100%; max-height:80vh; border-radius:16px; border:1px solid var(--neon); box-shadow:0 0 25px var(--neon); }
+.modal-card { width:90%; max-width:320px; padding:24px 20px; background:var(--card-solid); border:1px solid var(--border); border-radius:20px; text-align:center; box-shadow:0 10px 30px rgba(0,0,0,0.5); }
 
-#imgModal, #profileModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:9999;justify-content:center;align-items:center;padding:15px;}
-#imgModal img{max-width:100%;max-height:80vh;border-radius:12px;border:1px solid var(--neon);box-shadow:0 0 20px var(--neon);}
-.modal-card{width:90%;max-width:320px;padding:20px;background:var(--card);border:1px solid var(--border);border-radius:16px;text-align:center;backdrop-filter:blur(16px);}
+/* Auth Box */
+.auth-box{margin:auto;width:90%;max-width:360px;padding:25px 20px;background:var(--card-solid);border:1px solid var(--border);border-radius:20px;box-shadow:0 0 30px rgba(0,243,255,0.2);backdrop-filter:blur(16px);display:flex;flex-direction:column;gap:15px;}
+.auth-box h2{text-align:center;color:var(--neon);text-shadow:0 0 10px var(--neon);letter-spacing:2px;font-size:1.6rem;}
+input{width:100%;padding:10px 14px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:12px;color:#fff;outline:none;font-size:0.9rem;transition:0.3s;}
+input:focus{border-color:var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.5);}
+button{width:100%;padding:10px;background:transparent;border:1px solid var(--neon);border-radius:12px;color:var(--neon);font-weight:bold;font-size:0.9rem;cursor:pointer;text-shadow:0 0 6px var(--neon);box-shadow:0 0 12px rgba(0,243,255,0.2);transition:0.2s;}
+button:active{transform:scale(0.97);background:var(--neon);color:#000;}
+.toggle-btn{background:none;border:none;box-shadow:none;color:var(--pink);text-shadow:0 0 6px var(--pink);font-size:0.85rem;}
+
+.lb-item{padding:10px 14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:12px;display:flex;justify-content:space-between;align-items:center;}
+.lb-left{display:flex;align-items:center;gap:10px;}
+.lb-rank{font-size:0.85rem;font-weight:bold;color:var(--gold);width:20px;}
+.lb-name{color:var(--neon);font-weight:bold;font-size:0.85rem;cursor:pointer;}
+.lb-count{font-size:0.75rem;color:var(--pink);font-weight:bold;}
 </style>
 </head>
 <body>
+
 <div id="blocker">ACCESS DENIED: ANDROID DEVICES ONLY</div>
 <div class="bg-glow"></div>
+
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="navDrawer">
+  <div class="drawer-title">ZACK360 MENU</div>
+  
+  <div class="drawer-section">
+    <div class="drawer-label">Channels</div>
+    <button class="drawer-btn active" data-chan="general">💬 #general</button>
+    <button class="drawer-btn" data-chan="gaming">🎮 #gaming</button>
+    <button class="drawer-btn" data-chan="media">📷 #media</button>
+  </div>
+
+  <div class="drawer-section">
+    <div class="drawer-label">Navigation</div>
+    <button class="drawer-btn" id="drawerDmBtn">📩 Direct Message</button>
+    <button class="drawer-btn" id="drawerLbBtn">🏆 Leaderboard</button>
+  </div>
+
+  <div class="drawer-section" style="margin-top:auto;">
+    <button class="drawer-btn" id="soundBtn">🔊 Mute Audio</button>
+    <button class="drawer-btn" id="logoutBtn" style="border-color:var(--pink);color:var(--pink);">🚪 Logout</button>
+  </div>
+</div>
 
 <div id="imgModal"><img id="modalImg" src=""></div>
 
@@ -133,26 +314,14 @@ header h1{font-size:0.85rem;color:var(--neon);text-shadow:0 0 6px var(--neon);}
 <div id="appScreen" class="screen">
   <header>
     <div class="brand">
+      <button class="menu-trigger" id="menuBtn">☰</button>
       <div class="avatar-header" id="headerAvatar">?</div>
       <div>
         <h1 id="userDisplay">ZACK360</h1>
         <div class="online-badge"><div class="online-dot"></div><span id="onlineCount">1 online</span></div>
       </div>
     </div>
-    <div class="tabs">
-      <button class="tab-btn" id="soundBtn">🔊</button>
-      <button class="tab-btn active-tab" id="chatTabBtn">Chat</button>
-      <button class="tab-btn" id="dmTabBtn">DMs</button>
-      <button class="tab-btn" id="lbTabBtn">Board</button>
-      <button class="tab-btn" id="logoutBtn" style="border-color:var(--pink);color:var(--pink)">X</button>
-    </div>
   </header>
-  
-  <div class="sub-bar" id="chanBar">
-    <button class="chan-btn active" data-chan="general">#general</button>
-    <button class="chan-btn" data-chan="gaming">#gaming</button>
-    <button class="chan-btn" data-chan="media">#media</button>
-  </div>
 
   <div class="pinned-banner">📌 Rules: Respect members & no spamming.</div>
 
@@ -160,6 +329,7 @@ header h1{font-size:0.85rem;color:var(--neon);text-shadow:0 0 6px var(--neon);}
     <div id="chatView" class="content"></div>
     <div id="lbView" class="content" style="display:none;"></div>
     <div id="typingArea" class="typing-bar"></div>
+    
     <div id="chatControls" class="chat-input-bar">
       <label class="icon-btn" for="imgInput">📷</label>
       <input type="file" id="imgInput" accept="image/*" style="display:none;">
@@ -199,6 +369,10 @@ let activeChatQuery = null;
 let activeTypingRef = null;
 let usersListenerRef = null;
 
+// UI Elements
+const menuBtn = document.getElementById('menuBtn');
+const navDrawer = document.getElementById('navDrawer');
+const drawerOverlay = document.getElementById('drawerOverlay');
 const authScreen = document.getElementById('authScreen');
 const appScreen = document.getElementById('appScreen');
 const usernameIn = document.getElementById('username');
@@ -211,12 +385,22 @@ const lbView = document.getElementById('lbView');
 const msgInput = document.getElementById('msgInput');
 const imgInput = document.getElementById('imgInput');
 const sendBtn = document.getElementById('sendBtn');
-const chatTabBtn = document.getElementById('chatTabBtn');
-const dmTabBtn = document.getElementById('dmTabBtn');
-const lbTabBtn = document.getElementById('lbTabBtn');
 const chatControls = document.getElementById('chatControls');
 const typingArea = document.getElementById('typingArea');
 const soundBtn = document.getElementById('soundBtn');
+
+/* Drawer Toggle Controls */
+function toggleDrawer(open) {
+  if(open) {
+    navDrawer.classList.add('open');
+    drawerOverlay.classList.add('open');
+  } else {
+    navDrawer.classList.remove('open');
+    drawerOverlay.classList.remove('open');
+  }
+}
+menuBtn.onclick = () => toggleDrawer(true);
+drawerOverlay.onclick = () => toggleDrawer(false);
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str + "_zack360_salt"));
@@ -247,7 +431,8 @@ const playAudio = () => {
 
 soundBtn.onclick = () => {
   soundEnabled = !soundEnabled;
-  soundBtn.innerText = soundEnabled ? "🔊" : "🔇";
+  soundBtn.innerText = soundEnabled ? "🔊 Mute Audio" : "🔇 Unmute Audio";
+  toggleDrawer(false);
 };
 
 toggleAuth.onclick = () => {
@@ -334,32 +519,24 @@ function initTyping(){
 
 document.getElementById('logoutBtn').onclick = () => location.reload();
 
-document.querySelectorAll('.chan-btn').forEach(btn => {
+document.querySelectorAll('.drawer-btn[data-chan]').forEach(btn => {
   btn.onclick = (e) => {
     clearTypingState();
     currentChan = e.target.dataset.chan;
     targetDM = null;
     activeMode = "chat";
-    document.querySelectorAll('.chan-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.drawer-btn[data-chan]').forEach(b => b.classList.remove('active'));
     e.target.classList.add('active');
+    chatView.style.display = 'flex';
+    lbView.style.display = 'none';
+    chatControls.style.display = 'flex';
+    toggleDrawer(false);
     initChat();
     initTyping();
   };
 });
 
-chatTabBtn.onclick = () => {
-  activeMode = "chat";
-  chatView.style.display = 'flex';
-  lbView.style.display = 'none';
-  chatControls.style.display = 'flex';
-  document.getElementById('chanBar').style.display = 'flex';
-  chatTabBtn.classList.add('active-tab');
-  dmTabBtn.classList.remove('active-tab');
-  lbTabBtn.classList.remove('active-tab');
-  initChat();
-};
-
-dmTabBtn.onclick = () => {
+document.getElementById('drawerDmBtn').onclick = () => {
   const target = prompt("Enter username for DM:");
   if(!target) return;
   clearTypingState();
@@ -368,20 +545,15 @@ dmTabBtn.onclick = () => {
   chatView.style.display = 'flex';
   lbView.style.display = 'none';
   chatControls.style.display = 'flex';
-  document.getElementById('chanBar').style.display = 'none';
-  dmTabBtn.classList.add('active-tab');
-  chatTabBtn.classList.remove('active-tab');
-  lbTabBtn.classList.remove('active-tab');
+  toggleDrawer(false);
   initChat();
 };
 
-lbTabBtn.onclick = () => {
+document.getElementById('drawerLbBtn').onclick = () => {
   chatView.style.display = 'none';
   lbView.style.display = 'flex';
   chatControls.style.display = 'none';
-  lbTabBtn.classList.add('active-tab');
-  chatTabBtn.classList.remove('active-tab');
-  dmTabBtn.classList.remove('active-tab');
+  toggleDrawer(false);
 };
 
 function escapeHTML(str) {
@@ -434,9 +606,6 @@ document.getElementById('dmBtn').onclick = () => {
   clearTypingState();
   activeMode = "dm";
   targetDM = selectedProfileUser;
-  document.getElementById('chanBar').style.display = 'none';
-  dmTabBtn.classList.add('active-tab');
-  chatTabBtn.classList.remove('active-tab');
   initChat();
 };
 
@@ -486,7 +655,6 @@ function initChat(){
         </div>
       `;
 
-      // Cleaned duplicate avatar for 'me' messages
       const avatarHtml = !isMe ? `<div class="msg-avatar" data-username="${escapeHTML(m.user)}">${escapeHTML(m.user.charAt(0).toUpperCase())}</div>` : '';
 
       div.innerHTML = `
