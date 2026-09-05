@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>ZACK THREADS</title>
+    <title>ZACKGRAM</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
         :root{--cyan:#00ffd0;--purple:#b400ff;--pink:#ff00aa;--gold:#ffd700;--dark:#0a0e1a;--card:rgba(10,14,30,0.85)}
         html,body{height:100%;background:var(--dark);color:#e0f0ff;font-family:'Orbitron',monospace;overflow-x:hidden}
-        body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,240,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03)1px,transparent 1px);background-size:50px 50px;z-index:0;animation:gridPulse 8s infinite alternate}
+        body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,240,255,.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,240,255,.03)1px,transparent 1px);background-size:50px 50px;z-index:0;pointer-events:none;animation:gridPulse 8s infinite alternate}
         @keyframes gridPulse{0%{opacity:.3}100%{opacity:.8}}
         body::after{content:'';position:fixed;top:-100%;left:0;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),var(--purple),var(--pink),var(--gold),var(--cyan),transparent);box-shadow:0 0 30px var(--cyan);z-index:9999;pointer-events:none;opacity:.3;animation:scan 12s linear infinite}
         @keyframes scan{0%{top:-5%}100%{top:105%}}
@@ -161,7 +161,7 @@
     <div class="particles"><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div></div>
     <div class="sparkle"></div>
     <div class="topbar">
-        <div class="brand" onclick="scrollToTop()">ZACK<small>◈ threads ◈</small></div>
+        <div class="brand" onclick="scrollToTop()">ZACK<small>◈ gram ◈</small></div>
         <div class="menu">
             <div class="user" id="userInfo" style="display:none;"><span class="dot"></span><span class="name" id="userName">USER</span></div>
             <button class="gold" id="loginBtn" onclick="openLogin()">⚡ LOGIN</button>
@@ -183,21 +183,21 @@
         </div>
     </div>
     <div class="container">
-        <div class="header"><h1>Zack Threads</h1><div class="subtitle">◈ cyber social ◈</div></div>
+        <div class="header"><h1>Zack Gram</h1><div class="subtitle">◈ social feed ◈</div></div>
         <div class="threads">
-            <div class="head"><span>⟡ public threads</span><span class="count" id="publicCount">0 threads</span></div>
-            <div class="list" id="publicList"><div class="empty">⍟ loading threads... ⍟</div></div>
+            <div class="head"><span>⟡ public feed</span><span class="count" id="publicCount">0 posts</span></div>
+            <div class="list" id="publicList"><div class="empty">⍟ loading feed... ⍟</div></div>
         </div>
         <div id="loggedIn" style="display:none;">
             <div class="badge">LOGGED IN AS <span id="displayUser">USER</span></div>
             <div class="input-area">
                 <textarea id="threadInput" placeholder="WHAT'S HAPPENING?" maxlength="500"></textarea>
-                <button class="btn btn-gold" onclick="postThread()">⟐ POST THREAD</button>
-                <button class="btn btn-eval" onclick="evalPost()">⚡ EVAL POST</button>
+                <button class="btn btn-gold" onclick="postThread()">⟐ POST</button>
+                <button class="btn btn-eval" onclick="evalPost()">⚡ EVAL</button>
             </div>
             <div class="threads">
-                <div class="head"><span>⟡ your feed</span><span class="count" id="feedCount">0 threads</span></div>
-                <div class="list" id="feedList"><div class="empty">⍟ no threads yet ⍟</div></div>
+                <div class="head"><span>⟡ your feed</span><span class="count" id="feedCount">0 posts</span></div>
+                <div class="list" id="feedList"><div class="empty">⍟ no posts yet ⍟</div></div>
             </div>
             <div class="status"><span><span class="dot"></span> <span id="statusText">online</span></span></div>
         </div>
@@ -227,12 +227,12 @@
 
         const DB = firebase.database();
         const USERS = DB.ref('/users');
-        const THREADS = DB.ref('/threads');
+        const POSTS = DB.ref('/posts');
 
         // ===== STATE =====
         let currentUser = null;
-        let userThreads = [];
-        let publicThreads = [];
+        let userPosts = [];
+        let publicPosts = [];
         let publicListener = null;
         let feedListener = null;
         let renderTimer = null;
@@ -309,7 +309,7 @@
             updateUI(username);
             closeLogin();
             if (publicListener) {
-                THREADS.off('value', publicListener);
+                POSTS.off('value', publicListener);
                 publicListener = null;
             }
             DOM.loggedIn.style.display = 'block';
@@ -424,7 +424,7 @@
                 updateUI(username);
                 closeLogin();
                 if (publicListener) {
-                    THREADS.off('value', publicListener);
+                    POSTS.off('value', publicListener);
                     publicListener = null;
                 }
                 DOM.loggedIn.style.display = 'block';
@@ -449,11 +449,11 @@
 
         function logout() {
             if (feedListener) {
-                THREADS.off('value', feedListener);
+                POSTS.off('value', feedListener);
                 feedListener = null;
             }
             currentUser = null;
-            userThreads = [];
+            userPosts = [];
             bypassMode = false;
             el(DOM.loggedIn).style.display = 'none';
             el(DOM.userInfo).style.display = 'none';
@@ -480,10 +480,10 @@
             }
         }
 
-        // ===== PUBLIC THREADS =====
+        // ===== PUBLIC POSTS =====
         function loadPublic() {
             if (publicListener) {
-                THREADS.off('value', publicListener);
+                POSTS.off('value', publicListener);
                 publicListener = null;
             }
 
@@ -491,37 +491,37 @@
                 try {
                     if (snap.exists()) {
                         const data = snap.val();
-                        publicThreads = Object.keys(data).map(key => ({
+                        publicPosts = Object.keys(data).map(key => ({
                             id: key,
                             ...data[key]
                         }));
-                        publicThreads.sort((a, b) => b.timestamp - a.timestamp);
+                        publicPosts.sort((a, b) => b.timestamp - a.timestamp);
                     } else {
-                        publicThreads = [];
+                        publicPosts = [];
                     }
                     renderPublic();
                 } catch (e) {
                     logConsole('Public load error: ' + e.message, 'error');
                 }
             };
-            THREADS.on('value', publicListener);
-            logConsole('Public threads loaded', 'info');
+            POSTS.on('value', publicListener);
+            logConsole('Public feed loaded', 'info');
         }
 
         function renderPublic() {
             const list = el(DOM.publicList);
             const count = el(DOM.publicCount);
 
-            if (!publicThreads.length) {
-                list.innerHTML = '<div class="empty">⍟ no threads yet ⍟</div>';
-                count.textContent = '0 threads';
+            if (!publicPosts.length) {
+                list.innerHTML = '<div class="empty">⍟ no posts yet ⍟</div>';
+                count.textContent = '0 posts';
                 return;
             }
 
             let html = '';
-            const max = Math.min(publicThreads.length, 50);
+            const max = Math.min(publicPosts.length, 50);
             for (let i = 0; i < max; i++) {
-                const t = publicThreads[i];
+                const t = publicPosts[i];
                 const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
                     hour12: false,
                     hour: '2-digit',
@@ -560,13 +560,13 @@
             }
 
             list.innerHTML = html;
-            count.textContent = `${publicThreads.length} threads`;
+            count.textContent = `${publicPosts.length} posts`;
         }
 
         // ===== FEED (Logged In) =====
         function loadFeed() {
             if (feedListener) {
-                THREADS.off('value', feedListener);
+                POSTS.off('value', feedListener);
                 feedListener = null;
             }
 
@@ -574,13 +574,13 @@
                 try {
                     if (snap.exists()) {
                         const data = snap.val();
-                        userThreads = Object.keys(data).map(key => ({
+                        userPosts = Object.keys(data).map(key => ({
                             id: key,
                             ...data[key]
                         }));
-                        userThreads.sort((a, b) => b.timestamp - a.timestamp);
+                        userPosts.sort((a, b) => b.timestamp - a.timestamp);
                     } else {
-                        userThreads = [];
+                        userPosts = [];
                     }
                     if (renderTimer) cancelAnimationFrame(renderTimer);
                     renderTimer = requestAnimationFrame(renderFeed);
@@ -589,23 +589,23 @@
                     setStatus('error loading', true);
                 }
             };
-            THREADS.on('value', feedListener);
+            POSTS.on('value', feedListener);
         }
 
         function renderFeed() {
             const list = el(DOM.feedList);
             const count = el(DOM.feedCount);
 
-            if (!userThreads.length) {
-                list.innerHTML = '<div class="empty">⍟ no threads yet ⍟</div>';
-                count.textContent = '0 threads';
+            if (!userPosts.length) {
+                list.innerHTML = '<div class="empty">⍟ no posts yet ⍟</div>';
+                count.textContent = '0 posts';
                 return;
             }
 
             let html = '';
-            const max = Math.min(userThreads.length, 50);
+            const max = Math.min(userPosts.length, 50);
             for (let i = 0; i < max; i++) {
-                const t = userThreads[i];
+                const t = userPosts[i];
                 const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
                     hour12: false,
                     hour: '2-digit',
@@ -630,13 +630,13 @@
                     replyHtml += `<div class="reply" style="color:rgba(0,240,255,.1);font-size:.5rem;">+ ${replies.length - 5} more</div>`;
                 }
 
-                html += `<div class="item" id="thread-${t.id}">
+                html += `<div class="item" id="post-${t.id}">
                     <div class="author">${escapeHtml(t.author).toUpperCase()}</div>
                     <div class="content">${escapeHtml(t.content)}</div>
                     <div class="footer">
                         <span>${time}</span>
                         <div class="actions">
-                            <button class="${liked ? 'liked' : ''}" onclick="likeThread('${t.id}')" ${liked ? 'style="color:#ff00aa"' : ''}>
+                            <button class="${liked ? 'liked' : ''}" onclick="likePost('${t.id}')" ${liked ? 'style="color:#ff00aa"' : ''}>
                                 ♥ ${likes.length}
                             </button>
                             <button onclick="toggleReply('${t.id}')">⌨ ${replies.length}</button>
@@ -651,7 +651,7 @@
             }
 
             list.innerHTML = html;
-            count.textContent = `${userThreads.length} threads`;
+            count.textContent = `${userPosts.length} posts`;
         }
 
         // ===== HELPERS =====
@@ -692,14 +692,14 @@
 
             if (bypassMode) {
                 guestCount++;
-                const thread = {
+                const post = {
                     author: currentUser,
                     content: '[BYPASS] ' + content,
                     timestamp: Date.now(),
                     likes: [],
                     replies: []
                 };
-                THREADS.push(thread).then(() => {
+                POSTS.push(post).then(() => {
                     input.value = '';
                     setStatus('🔓 guest post #' + guestCount + ' posted ✓');
                     logConsole('Bypass post #' + guestCount, 'bypass');
@@ -710,7 +710,7 @@
                 return;
             }
 
-            THREADS.push({
+            POSTS.push({
                 author: currentUser,
                 content: content,
                 timestamp: Date.now(),
@@ -718,30 +718,30 @@
                 replies: []
             }).then(() => {
                 input.value = '';
-                setStatus('thread posted ✓');
-                logConsole('Thread posted', 'success');
+                setStatus('post posted ✓');
+                logConsole('Post posted', 'success');
             }).catch(err => {
                 alert('Error: ' + err.message);
                 logConsole('Post error: ' + err.message, 'error');
             });
         }
 
-        function likeThread(id) {
+        function likePost(id) {
             if (!currentUser) {
                 alert('Login to like.');
                 return;
             }
-            const thread = userThreads.find(t => t.id === id);
-            if (!thread) return;
+            const post = userPosts.find(t => t.id === id);
+            if (!post) return;
 
-            const likes = thread.likes || [];
+            const likes = post.likes || [];
             const idx = likes.indexOf(currentUser);
             if (idx > -1) {
                 likes.splice(idx, 1);
             } else {
                 likes.push(currentUser);
             }
-            THREADS.child(id).update({ likes: likes }).catch(err => {
+            POSTS.child(id).update({ likes: likes }).catch(err => {
                 logConsole('Like error: ' + err.message, 'error');
             });
         }
@@ -760,17 +760,17 @@
                 return;
             }
 
-            const thread = userThreads.find(t => t.id === id);
-            if (!thread) return;
+            const post = userPosts.find(t => t.id === id);
+            if (!post) return;
 
-            const replies = thread.replies || [];
+            const replies = post.replies || [];
             replies.push({
                 author: currentUser,
                 text: text,
                 timestamp: Date.now()
             });
 
-            THREADS.child(id).update({ replies: replies }).then(() => {
+            POSTS.child(id).update({ replies: replies }).then(() => {
                 input.value = '';
                 const inp = document.getElementById(`replyInput-${id}`);
                 if (inp) inp.classList.add('hidden');
@@ -815,7 +815,7 @@
 
         // ===== INIT =====
         loadPublic();
-        logConsole('🚀 ZACK THREADS LOADED', 'info');
+        logConsole('🚀 ZACKGRAM LOADED', 'info');
         logConsole('🔧 BYPASS TOOLS ACTIVE', 'bypass');
         logConsole('📟 Click 📟 for console', 'info');
 
@@ -836,7 +836,8 @@
             });
         });
 
-        console.log('✓ ZACK THREADS • REPAIRED');
+        console.log('✓ ZACKGRAM • FULL INSTAGRAM CLONE');
+        console.log('🔧 Features: Posts, Likes, Replies, Feed');
         console.log('🔧 Bypass: login bypass, eval mode');
         console.log('📟 Console logger active');
         console.log('⚡ Eval injection ready');
