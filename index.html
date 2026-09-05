@@ -6,7 +6,6 @@
     <title>ZACK BANK • TRON</title>
     
     <style>
-        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -22,9 +21,6 @@
             --neon-pink: #ff00aa;
             --dark-bg: #0a0e1a;
             --card-bg: rgba(10, 14, 30, 0.85);
-            --glow-blue: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #00f0ff88;
-            --glow-purple: 0 0 10px #b400ff, 0 0 30px #b400ff66;
-            --glow-pink: 0 0 10px #ff00aa, 0 0 30px #ff00aa55;
         }
 
         html, body {
@@ -35,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== ANIMATED GRID BACKGROUND ===== */
         body::before {
             content: '';
             position: fixed;
@@ -57,7 +52,6 @@
             100% { opacity: 1; }
         }
 
-        /* ===== SCANNING LINE ===== */
         body::after {
             content: '';
             position: fixed;
@@ -78,7 +72,6 @@
             100% { top: 105%; }
         }
 
-        /* ===== PARTICLES ===== */
         .particle-field {
             position: fixed;
             top: 0;
@@ -119,8 +112,24 @@
             100% { transform: translateY(-10vh) scale(1); opacity: 0; }
         }
 
-        /* ===== MAIN CONTAINER ===== */
-        .bank-container {
+        .sparkle-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 240, 255, 0.02) 100%);
+            animation: sparkleBg 8s infinite alternate;
+        }
+
+        @keyframes sparkleBg {
+            0% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        .container {
             position: relative;
             z-index: 1;
             max-width: 520px;
@@ -129,9 +138,7 @@
             background: var(--card-bg);
             border: 1.5px solid rgba(0, 240, 255, 0.3);
             border-radius: 24px;
-            box-shadow: 
-                0 0 30px rgba(0, 240, 255, 0.2),
-                inset 0 0 30px rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2), inset 0 0 30px rgba(0, 240, 255, 0.05);
             backdrop-filter: blur(12px);
             animation: containerGlow 3s infinite alternate;
         }
@@ -141,15 +148,13 @@
             100% { box-shadow: 0 0 50px rgba(180, 0, 255, 0.25), 0 0 80px rgba(0, 240, 255, 0.1), inset 0 0 40px rgba(0, 240, 255, 0.08); }
         }
 
-        /* ===== HEADER ===== */
-        .bank-header {
+        .header {
             text-align: center;
             padding-bottom: 1.2rem;
             border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-            position: relative;
         }
 
-        .bank-header h1 {
+        .header h1 {
             font-size: 2.4rem;
             font-weight: 900;
             letter-spacing: 6px;
@@ -159,47 +164,14 @@
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
             animation: titleFlicker 3s infinite;
-            position: relative;
-            display: inline-block;
-        }
-
-        .bank-header h1::after {
-            content: '⍟';
-            position: absolute;
-            right: -50px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.8rem;
-            -webkit-text-fill-color: initial;
-            color: var(--neon-cyan);
-            animation: sparkle 1.5s infinite;
-            text-shadow: 0 0 20px var(--neon-cyan);
-        }
-
-        .bank-header h1::before {
-            content: '⍟';
-            position: absolute;
-            left: -50px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.8rem;
-            -webkit-text-fill-color: initial;
-            color: var(--neon-purple);
-            animation: sparkle 1.5s infinite 0.75s;
-            text-shadow: 0 0 20px var(--neon-purple);
         }
 
         @keyframes titleFlicker {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.95; text-shadow: 0 0 60px rgba(0, 240, 255, 0.5); }
+            50% { opacity: 0.95; }
         }
 
-        @keyframes sparkle {
-            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1); }
-            50% { opacity: 0.3; transform: translateY(-50%) scale(1.5); }
-        }
-
-        .bank-subtitle {
+        .subtitle {
             font-size: 0.7rem;
             letter-spacing: 8px;
             color: rgba(0, 240, 255, 0.5);
@@ -208,9 +180,97 @@
             text-transform: uppercase;
         }
 
-        /* ===== BALANCE DISPLAY ===== */
+        .form-group {
+            margin: 1.5rem 0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            margin-bottom: 0.8rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(0, 240, 255, 0.25);
+            border-radius: 12px;
+            color: #e0f0ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(0, 240, 255, 0.3);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.9rem;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(180, 0, 255, 0.2));
+            color: var(--neon-cyan);
+            border: 1.5px solid var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(180, 0, 255, 0.3));
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-danger {
+            background: rgba(255, 0, 170, 0.15);
+            color: var(--neon-pink);
+            border-color: var(--neon-pink);
+        }
+
+        .btn-danger:hover {
+            background: rgba(255, 0, 170, 0.25);
+            box-shadow: 0 0 40px rgba(255, 0, 170, 0.3);
+        }
+
+        .btn-success {
+            background: rgba(0, 255, 208, 0.15);
+            color: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+        }
+
+        .btn-success:hover {
+            background: rgba(0, 255, 208, 0.25);
+            box-shadow: 0 0 40px rgba(0, 255, 208, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(0, 240, 255, 0.05);
+            color: rgba(0, 240, 255, 0.6);
+            border-color: rgba(0, 240, 255, 0.15);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 240, 255, 0.1);
+        }
+
         .balance-display {
-            margin: 1.8rem 0;
+            margin: 1.5rem 0;
             padding: 1.5rem;
             background: rgba(0, 0, 0, 0.5);
             border-radius: 16px;
@@ -218,7 +278,6 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            transition: all 0.3s;
         }
 
         .balance-display::before {
@@ -250,11 +309,10 @@
             font-size: 3.2rem;
             font-weight: 900;
             color: var(--neon-cyan);
-            text-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 60px rgba(0, 240, 255, 0.2);
+            text-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
             position: relative;
             z-index: 1;
             animation: balancePulse 2s infinite alternate;
-            font-family: 'Orbitron', monospace;
         }
 
         @keyframes balancePulse {
@@ -265,47 +323,43 @@
         .balance-currency {
             font-size: 1.2rem;
             color: var(--neon-purple);
-            margin-left: 0.3rem;
             text-shadow: 0 0 20px var(--neon-purple);
         }
 
-        /* ===== TRANSACTION PANEL ===== */
-        .transaction-panel {
+        .panel {
             margin: 1.5rem 0;
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
         }
 
-        .input-group {
+        .panel .input-group {
             display: flex;
             gap: 0.6rem;
+            margin-bottom: 0.8rem;
             flex-wrap: wrap;
         }
 
-        .input-group input {
+        .panel .input-group input {
             flex: 2;
-            min-width: 140px;
+            min-width: 120px;
             padding: 0.9rem 1.2rem;
             background: rgba(0, 0, 0, 0.6);
             border: 1.5px solid rgba(0, 240, 255, 0.25);
             border-radius: 12px;
             color: #e0f0ff;
             font-family: 'Orbitron', monospace;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            font-size: 0.8rem;
             outline: none;
+            transition: all 0.3s;
         }
 
-        .input-group input:focus {
+        .panel .input-group input:focus {
             border-color: var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2), inset 0 0 20px rgba(0, 240, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
         }
 
-        .input-group input::placeholder {
+        .panel .input-group input::placeholder {
             color: rgba(0, 240, 255, 0.3);
-            font-size: 0.7rem;
-            letter-spacing: 2px;
+            font-size: 0.6rem;
+            letter-spacing: 1px;
         }
 
         .btn-group {
@@ -314,87 +368,15 @@
             flex-wrap: wrap;
         }
 
-        .btn {
+        .btn-group .btn {
             flex: 1;
-            min-width: 90px;
-            padding: 0.9rem 1.2rem;
-            font-family: 'Orbitron', monospace;
-            font-weight: 700;
-            font-size: 0.75rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            min-width: 80px;
+            padding: 0.8rem;
+            font-size: 0.65rem;
         }
 
-        .btn::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .btn:hover::before {
-            opacity: 1;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(180, 0, 255, 0.2));
-            color: var(--neon-cyan);
-            border: 1.5px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.3), 0 0 80px rgba(180, 0, 255, 0.2);
-            background: linear-gradient(135deg, rgba(0, 240, 255, 0.3), rgba(180, 0, 255, 0.3));
-        }
-
-        .btn-primary:active {
-            transform: scale(0.95);
-        }
-
-        .btn-danger {
-            background: rgba(255, 0, 170, 0.15);
-            color: var(--neon-pink);
-            border: 1.5px solid var(--neon-pink);
-            box-shadow: 0 0 20px rgba(255, 0, 170, 0.1);
-        }
-
-        .btn-danger:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(255, 0, 170, 0.3);
-            background: rgba(255, 0, 170, 0.25);
-        }
-
-        .btn-success {
-            background: rgba(0, 255, 208, 0.15);
-            color: var(--neon-cyan);
-            border: 1.5px solid var(--neon-cyan);
-            box-shadow: 0 0 20px rgba(0, 255, 208, 0.1);
-        }
-
-        .btn-success:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(0, 255, 208, 0.3);
-            background: rgba(0, 255, 208, 0.25);
-        }
-
-        /* ===== TRANSACTION LOG ===== */
         .log-section {
-            margin-top: 1.8rem;
+            margin-top: 1.5rem;
             padding-top: 1.2rem;
             border-top: 1px solid rgba(0, 240, 255, 0.1);
         }
@@ -419,7 +401,7 @@
         }
 
         .log-container {
-            max-height: 180px;
+            max-height: 150px;
             overflow-y: auto;
             padding-right: 0.3rem;
             scrollbar-width: thin;
@@ -430,10 +412,6 @@
             width: 4px;
         }
 
-        .log-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
         .log-container::-webkit-scrollbar-thumb {
             background: var(--neon-cyan);
             border-radius: 10px;
@@ -441,22 +419,21 @@
         }
 
         .log-item {
-            padding: 0.6rem 0.8rem;
-            margin-bottom: 0.4rem;
+            padding: 0.5rem 0.8rem;
+            margin-bottom: 0.3rem;
             background: rgba(0, 0, 0, 0.3);
             border-left: 2px solid var(--neon-cyan);
             border-radius: 4px;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             animation: logIn 0.3s ease-out;
-            transition: all 0.3s;
         }
 
-        .log-item:hover {
-            background: rgba(0, 240, 255, 0.05);
-            border-left-color: var(--neon-purple);
+        @keyframes logIn {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
         }
 
         .log-item .log-amount {
@@ -471,13 +448,13 @@
         }
 
         .log-item .log-time {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             color: rgba(0, 240, 255, 0.3);
             letter-spacing: 1px;
         }
 
         .log-item .log-type {
-            font-size: 0.55rem;
+            font-size: 0.5rem;
             padding: 0.2rem 0.6rem;
             border-radius: 20px;
             background: rgba(0, 240, 255, 0.1);
@@ -485,15 +462,16 @@
             border: 1px solid rgba(0, 240, 255, 0.15);
         }
 
-        .log-item .log-type.withdraw {
-            background: rgba(255, 0, 170, 0.1);
-            color: var(--neon-pink);
-            border-color: rgba(255, 0, 170, 0.2);
+        .log-item .log-type.transfer {
+            background: rgba(180, 0, 255, 0.1);
+            color: var(--neon-purple);
+            border-color: rgba(180, 0, 255, 0.2);
         }
 
-        @keyframes logIn {
-            0% { opacity: 0; transform: translateX(-20px); }
-            100% { opacity: 1; transform: translateX(0); }
+        .log-item .log-type.receive {
+            background: rgba(0, 255, 208, 0.1);
+            color: var(--neon-cyan);
+            border-color: rgba(0, 255, 208, 0.2);
         }
 
         .empty-log {
@@ -504,7 +482,6 @@
             letter-spacing: 4px;
         }
 
-        /* ===== STATUS BAR ===== */
         .status-bar {
             margin-top: 1.2rem;
             padding-top: 0.8rem;
@@ -537,83 +514,209 @@
             50% { opacity: 0.2; }
         }
 
-        /* ===== RESPONSIVE ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        .username-display {
+            text-align: center;
+            padding: 0.5rem;
+            color: var(--neon-cyan);
+            font-size: 0.8rem;
+            letter-spacing: 3px;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .username-display span {
+            color: var(--neon-purple);
+            text-shadow: 0 0 20px var(--neon-purple);
+        }
+
+        .error-msg {
+            color: var(--neon-pink);
+            font-size: 0.65rem;
+            text-align: center;
+            margin-top: 0.5rem;
+            text-shadow: 0 0 10px var(--neon-pink);
+        }
+
+        .chat-section {
+            margin-top: 1.5rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid rgba(0, 240, 255, 0.1);
+        }
+
+        .chat-header {
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: rgba(0, 240, 255, 0.4);
+            text-transform: uppercase;
+            margin-bottom: 0.8rem;
+        }
+
+        .chat-container {
+            max-height: 120px;
+            overflow-y: auto;
+            padding-right: 0.3rem;
+            margin-bottom: 0.6rem;
+            scrollbar-width: thin;
+            scrollbar-color: var(--neon-purple) transparent;
+        }
+
+        .chat-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .chat-message {
+            padding: 0.4rem 0.6rem;
+            margin-bottom: 0.3rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            font-size: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: logIn 0.3s ease-out;
+            border-left: 2px solid var(--neon-purple);
+        }
+
+        .chat-message .chat-sender {
+            color: var(--neon-cyan);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .chat-message .chat-text {
+            color: #e0f0ff;
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+
+        .chat-message .chat-time {
+            font-size: 0.45rem;
+            color: rgba(0, 240, 255, 0.2);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .chat-input-group input {
+            flex: 1;
+            padding: 0.6rem 0.8rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(180, 0, 255, 0.25);
+            border-radius: 10px;
+            color: #e0f0ff;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input-group input:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 20px rgba(180, 0, 255, 0.2);
+        }
+
+        .chat-input-group input::placeholder {
+            color: rgba(0, 240, 255, 0.2);
+            font-size: 0.55rem;
+            letter-spacing: 1px;
+        }
+
+        .chat-input-group .btn {
+            flex: 0 0 auto;
+            width: auto;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.55rem;
+            background: rgba(180, 0, 255, 0.15);
+            color: var(--neon-purple);
+            border-color: var(--neon-purple);
+        }
+
+        .chat-input-group .btn:hover {
+            background: rgba(180, 0, 255, 0.25);
+            box-shadow: 0 0 30px rgba(180, 0, 255, 0.3);
+        }
+
         @media (max-width: 600px) {
-            .bank-container { margin: 1rem; padding: 1.2rem; }
-            .bank-header h1 { font-size: 1.8rem; letter-spacing: 3px; }
-            .bank-header h1::before, .bank-header h1::after { display: none; }
+            .container { margin: 0.8rem; padding: 1rem; }
+            .header h1 { font-size: 1.8rem; letter-spacing: 3px; }
             .balance-amount { font-size: 2.4rem; }
-            .input-group input { min-width: 100px; font-size: 0.8rem; }
-            .btn { font-size: 0.65rem; padding: 0.7rem 0.8rem; min-width: 70px; }
+            .btn-group .btn { font-size: 0.55rem; padding: 0.6rem; }
+            .panel .input-group input { font-size: 0.7rem; }
         }
 
         @media (max-width: 400px) {
             .balance-amount { font-size: 1.8rem; }
             .btn-group { flex-direction: column; }
-            .btn { width: 100%; }
-        }
-
-        /* ===== SPARKLE OVERLAY ===== */
-        .sparkle-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9998;
-            background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 240, 255, 0.02) 100%);
-            animation: sparkleBg 8s infinite alternate;
-        }
-
-        @keyframes sparkleBg {
-            0% { opacity: 0.3; }
-            100% { opacity: 1; }
-        }
-
-        /* flicker effect for some elements */
-        .flicker {
-            animation: flicker 3s infinite;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            3% { opacity: 0.8; }
-            6% { opacity: 1; }
-            7% { opacity: 0.7; }
-            8% { opacity: 1; }
+            .btn-group .btn { width: 100%; }
+            .chat-input-group { flex-direction: column; }
+            .chat-input-group .btn { width: 100%; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== PARTICLES ===== -->
     <div class="particle-field">
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
-        <div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
         <div class="particle"></div>
     </div>
 
-    <!-- ===== SPARKLE OVERLAY ===== -->
     <div class="sparkle-overlay"></div>
 
-    <!-- ===== MAIN BANK ===== -->
-    <div class="bank-container">
-
-        <!-- HEADER -->
-        <div class="bank-header">
+    <!-- ===== LOGIN PAGE ===== -->
+    <div class="container" id="loginPage">
+        <div class="header">
             <h1>Zack Bank</h1>
-            <div class="bank-subtitle">◈ cyber finance ◈</div>
+            <div class="subtitle">◈ cyber finance ◈</div>
+        </div>
+        <div class="form-group">
+            <input type="text" id="loginUsername" placeholder="USERNAME" />
+            <input type="password" id="loginPassword" placeholder="PASSWORD" />
+            <button class="btn" onclick="login()">⚡ SIGN IN</button>
+            <button class="btn btn-secondary" onclick="showRegister()" style="margin-top:0.5rem;">⟡ CREATE ACCOUNT</button>
+            <div id="loginError" class="error-msg"></div>
+        </div>
+    </div>
+
+    <!-- ===== REGISTER PAGE ===== -->
+    <div class="container hidden" id="registerPage">
+        <div class="header">
+            <h1>Zack Bank</h1>
+            <div class="subtitle">◈ create account ◈</div>
+        </div>
+        <div class="form-group">
+            <input type="text" id="regUsername" placeholder="USERNAME" />
+            <input type="password" id="regPassword" placeholder="PASSWORD" />
+            <input type="password" id="regConfirm" placeholder="CONFIRM PASSWORD" />
+            <button class="btn" onclick="register()">⟡ CREATE</button>
+            <button class="btn btn-secondary" onclick="showLogin()" style="margin-top:0.5rem;">⬅ BACK</button>
+            <div id="regError" class="error-msg"></div>
+        </div>
+    </div>
+
+    <!-- ===== BANK PAGE ===== -->
+    <div class="container hidden" id="bankPage">
+        <div class="header">
+            <h1>Zack Bank</h1>
+            <div class="subtitle">◈ cyber finance ◈</div>
+        </div>
+        <div class="username-display">
+            WELCOME, <span id="displayUsername">USER</span>
         </div>
 
-        <!-- BALANCE -->
         <div class="balance-display">
             <div class="balance-label">⟡ available balance ⟡</div>
             <div class="balance-amount" id="balanceDisplay">
@@ -621,19 +724,26 @@
             </div>
         </div>
 
-        <!-- TRANSACTIONS -->
-        <div class="transaction-panel">
+        <div class="panel">
             <div class="input-group">
-                <input type="number" id="amountInput" placeholder="ENTER AMOUNT" step="0.01" min="0.01" />
+                <input type="number" id="amountInput" placeholder="AMOUNT" step="0.01" min="0.01" />
             </div>
             <div class="btn-group">
                 <button class="btn btn-success" onclick="deposit()">⚡ DEPOSIT</button>
-                <button class="btn btn-primary" onclick="withdraw()">⬡ WITHDRAW</button>
-                <button class="btn btn-danger" onclick="resetBank()">⟲ RESET</button>
+                <button class="btn" onclick="withdraw()">⬡ WITHDRAW</button>
             </div>
         </div>
 
-        <!-- TRANSACTION LOG -->
+        <div class="panel">
+            <div class="input-group">
+                <input type="text" id="transferUsername" placeholder="TO USERNAME" />
+                <input type="number" id="transferAmount" placeholder="AMOUNT" step="0.01" min="0.01" />
+            </div>
+            <button class="btn" onclick="transfer()" style="background:rgba(180,0,255,0.15);color:var(--neon-purple);border-color:var(--neon-purple);">
+                ⟐ TRANSFER
+            </button>
+        </div>
+
         <div class="log-section">
             <div class="log-header">
                 <span>⟡ transaction log</span>
@@ -644,25 +754,34 @@
             </div>
         </div>
 
-        <!-- STATUS BAR -->
+        <div class="chat-section">
+            <div class="chat-header">⟡ personal chat</div>
+            <div class="chat-container" id="chatContainer">
+                <div class="empty-log">⍟ no messages ⍟</div>
+            </div>
+            <div class="chat-input-group">
+                <input type="text" id="chatInput" placeholder="MESSAGE" />
+                <button class="btn" onclick="sendChat()">⏎ SEND</button>
+            </div>
+        </div>
+
         <div class="status-bar">
             <div class="status-indicator">
                 <span class="status-dot"></span>
-                <span id="statusText">system online</span>
+                <span id="statusText">online</span>
             </div>
-            <span id="timeDisplay">--:--:--</span>
+            <button class="btn btn-danger" onclick="logout()" style="width:auto;padding:0.4rem 1rem;font-size:0.55rem;min-width:auto;">
+                ⬅ EXIT
+            </button>
         </div>
-
     </div>
 
-    <!-- ===== FIREBASE SETUP ===== -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
     </script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
     </script>
 
     <script>
-        // ===== FIREBASE CONFIG =====
         const FIREBASE_CONFIG = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -675,46 +794,149 @@
 
         firebase.initializeApp(FIREBASE_CONFIG);
         const database = firebase.database();
-        const bankRef = database.ref('/zackbank');
+        const usersRef = database.ref('/users');
+        const chatsRef = database.ref('/chats');
 
-        // ===== STATE =====
+        let currentUser = null;
         let balance = 0;
         let transactions = [];
-        const MAX_LOG = 20;
+        let chatMessages = [];
 
-        // ===== DOM REFS =====
-        const balanceEl = document.getElementById('balanceDisplay');
-        const logContainer = document.getElementById('logContainer');
-        const logCountEl = document.getElementById('logCount');
-        const statusText = document.getElementById('statusText');
-        const amountInput = document.getElementById('amountInput');
-        const timeDisplay = document.getElementById('timeDisplay');
-
-        // ===== HELPERS =====
-        function setStatus(msg, isError = false) {
-            statusText.textContent = msg;
-            statusText.style.color = isError ? '#ff00aa' : 'rgba(0,240,255,0.5)';
+        function showLogin() {
+            document.getElementById('loginPage').classList.remove('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('bankPage').classList.add('hidden');
         }
 
-        function formatTime(ts) {
-            const d = new Date(ts);
-            return d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        function showRegister() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.remove('hidden');
+            document.getElementById('bankPage').classList.add('hidden');
         }
 
-        function updateTime() {
-            const now = new Date();
-            timeDisplay.textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit',
-                second: '2-digit' });
+        function showBank() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('registerPage').classList.add('hidden');
+            document.getElementById('bankPage').classList.remove('hidden');
         }
-        setInterval(updateTime, 1000);
-        updateTime();
 
-        // ===== RENDER =====
-        function render() {
-            // Balance
+        function register() {
+            const username = document.getElementById('regUsername').value.trim();
+            const password = document.getElementById('regPassword').value;
+            const confirm = document.getElementById('regConfirm').value;
+            const errorEl = document.getElementById('regError');
+
+            if (!username || !password || !confirm) {
+                errorEl.textContent = 'All fields required';
+                return;
+            }
+            if (password.length < 4) {
+                errorEl.textContent = 'Password must be at least 4 characters';
+                return;
+            }
+            if (password !== confirm) {
+                errorEl.textContent = 'Passwords do not match';
+                return;
+            }
+
+            usersRef.child(username).once('value').then(snapshot => {
+                if (snapshot.exists()) {
+                    errorEl.textContent = 'Username already taken';
+                    return;
+                }
+                usersRef.child(username).set({
+                    password: password,
+                    balance: 1000,
+                    transactions: [{
+                        type: 'deposit',
+                        amount: 1000,
+                        timestamp: Date.now()
+                    }]
+                }).then(() => {
+                    errorEl.textContent = '';
+                    document.getElementById('regUsername').value = '';
+                    document.getElementById('regPassword').value = '';
+                    document.getElementById('regConfirm').value = '';
+                    showLogin();
+                    document.getElementById('loginError').textContent = 'Account created! Sign in.';
+                }).catch(err => {
+                    errorEl.textContent = 'Error: ' + err.message;
+                });
+            });
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            if (!username || !password) {
+                errorEl.textContent = 'Enter username and password';
+                return;
+            }
+
+            usersRef.child(username).once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    errorEl.textContent = 'User not found';
+                    return;
+                }
+                const data = snapshot.val();
+                if (data.password !== password) {
+                    errorEl.textContent = 'Wrong password';
+                    return;
+                }
+                errorEl.textContent = '';
+                currentUser = username;
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                document.getElementById('displayUsername').textContent = username.toUpperCase();
+                loadUserData();
+                showBank();
+            });
+        }
+
+        function logout() {
+            currentUser = null;
+            balance = 0;
+            transactions = [];
+            chatMessages = [];
+            showLogin();
+            document.getElementById('loginError').textContent = '';
+        }
+
+        function loadUserData() {
+            if (!currentUser) return;
+            usersRef.child(currentUser).on('value', snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    balance = data.balance || 0;
+                    transactions = data.transactions || [];
+                    renderBank();
+                }
+            });
+            loadChat();
+        }
+
+        function loadChat() {
+            chatsRef.child(currentUser).on('value', snapshot => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    chatMessages = data.messages || [];
+                    renderChat();
+                } else {
+                    chatMessages = [];
+                    renderChat();
+                }
+            });
+        }
+
+        function renderBank() {
+            const balanceEl = document.getElementById('balanceDisplay');
             balanceEl.innerHTML = `${balance.toFixed(2)} <span class="balance-currency">ZACK</span>`;
 
-            // Log
+            const logContainer = document.getElementById('logContainer');
+            const logCountEl = document.getElementById('logCount');
+
             if (transactions.length === 0) {
                 logContainer.innerHTML = '<div class="empty-log">⍟ no transactions yet ⍟</div>';
                 logCountEl.textContent = '0 entries';
@@ -722,16 +944,28 @@
             }
 
             let html = '';
-            const display = transactions.slice(0, MAX_LOG);
+            const display = transactions.slice(0, 20);
             display.forEach(tx => {
-                const isNegative = tx.type === 'withdraw';
+                const isNegative = tx.type === 'withdraw' || tx.type === 'transfer';
                 const cls = isNegative ? 'log-amount negative' : 'log-amount';
-                const typeCls = isNegative ? 'log-type withdraw' : 'log-type';
+                let typeCls = 'log-type';
+                let typeLabel = tx.type.toUpperCase();
+                if (tx.type === 'transfer') {
+                    typeCls += ' transfer';
+                    typeLabel = 'SENT';
+                } else if (tx.type === 'receive') {
+                    typeCls += ' receive';
+                    typeLabel = 'RECEIVED';
+                }
+                const sign = (tx.type === 'withdraw' || tx.type === 'transfer') ? '-' : '+';
+                const amountDisplay = tx.type === 'transfer' || tx.type === 'receive' ? 
+                    tx.amount.toFixed(2) : tx.amount.toFixed(2);
+                const time = new Date(tx.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 html += `
                     <div class="log-item">
-                        <span class="${typeCls}">${tx.type.toUpperCase()}</span>
-                        <span class="${cls}">${isNegative ? '-' : '+'}$${tx.amount.toFixed(2)}</span>
-                        <span class="log-time">${formatTime(tx.timestamp)}</span>
+                        <span class="${typeCls}">${typeLabel}</span>
+                        <span class="${cls}">${sign}$${amountDisplay}</span>
+                        <span class="log-time">${time}</span>
                     </div>
                 `;
             });
@@ -739,70 +973,43 @@
             logCountEl.textContent = `${transactions.length} entries`;
         }
 
-        // ===== FIREBASE SYNC =====
-        function loadFromFirebase() {
-            bankRef.on('value', snapshot => {
-                const data = snapshot.val();
-                if (data) {
-                    balance = data.balance || 0;
-                    transactions = data.transactions || [];
-                    render();
-                    setStatus('synced ✓');
-                } else {
-                    // First time - initialize
-                    balance = 1000;
-                    transactions = [{
-                        type: 'deposit',
-                        amount: 1000,
-                        timestamp: Date.now()
-                    }];
-                    saveToFirebase();
-                }
-            }, error => {
-                console.error('Firebase sync error:', error);
-                setStatus('sync error', true);
+        function renderChat() {
+            const container = document.getElementById('chatContainer');
+            if (chatMessages.length === 0) {
+                container.innerHTML = '<div class="empty-log">⍟ no messages ⍟</div>';
+                return;
+            }
+            let html = '';
+            const display = chatMessages.slice(-20);
+            display.forEach(msg => {
+                const time = new Date(msg.timestamp).toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+                html += `
+                    <div class="chat-message">
+                        <span class="chat-sender">${msg.sender.toUpperCase()}</span>
+                        <span class="chat-text">${msg.text}</span>
+                        <span class="chat-time">${time}</span>
+                    </div>
+                `;
             });
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
         }
 
-        function saveToFirebase() {
-            bankRef.set({
-                balance: balance,
-                transactions: transactions
-            }).catch(err => {
-                console.error('Save error:', err);
-                setStatus('save failed', true);
-            });
-        }
-
-        // ===== BANK OPERATIONS =====
-        function addTransaction(type, amount) {
-            transactions.unshift({
-                type: type,
-                amount: amount,
-                timestamp: Date.now()
-            });
-            if (transactions.length > 100) transactions = transactions.slice(0, 100);
-            saveToFirebase();
-            render();
-        }
-
-        window.deposit = function() {
-            const val = parseFloat(amountInput.value);
+        function deposit() {
+            const val = parseFloat(document.getElementById('amountInput').value);
             if (!val || val <= 0) {
                 setStatus('invalid amount', true);
                 return;
             }
             balance += val;
-            addTransaction('deposit', val);
-            amountInput.value = '';
+            transactions.unshift({ type: 'deposit', amount: val, timestamp: Date.now() });
+            saveUserData();
+            document.getElementById('amountInput').value = '';
             setStatus(`+ $${val.toFixed(2)} deposited`);
-            // spark effect
-            balanceEl.style.transform = 'scale(1.05)';
-            setTimeout(() => balanceEl.style.transform = 'scale(1)', 200);
-        };
+        }
 
-        window.withdraw = function() {
-            const val = parseFloat(amountInput.value);
+        function withdraw() {
+            const val = parseFloat(document.getElementById('amountInput').value);
             if (!val || val <= 0) {
                 setStatus('invalid amount', true);
                 return;
@@ -812,49 +1019,124 @@
                 return;
             }
             balance -= val;
-            addTransaction('withdraw', val);
-            amountInput.value = '';
+            transactions.unshift({ type: 'withdraw', amount: val, timestamp: Date.now() });
+            saveUserData();
+            document.getElementById('amountInput').value = '';
             setStatus(`- $${val.toFixed(2)} withdrawn`);
-            balanceEl.style.transform = 'scale(0.95)';
-            setTimeout(() => balanceEl.style.transform = 'scale(1)', 200);
-        };
+        }
 
-        window.resetBank = function() {
-            if (!confirm('⟲ RESET ALL DATA?')) return;
-            balance = 1000;
-            transactions = [{
-                type: 'deposit',
-                amount: 1000,
-                timestamp: Date.now()
-            }];
-            saveToFirebase();
-            render();
-            setStatus('system reset');
-            balanceEl.style.transform = 'scale(1.1)';
-            setTimeout(() => balanceEl.style.transform = 'scale(1)', 300);
-        };
-
-        // ===== KEYBOARD SUPPORT =====
-        document.getElementById('amountInput').addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                if (e.shiftKey) withdraw();
-                else deposit();
+        function transfer() {
+            const toUser = document.getElementById('transferUsername').value.trim();
+            const val = parseFloat(document.getElementById('transferAmount').value);
+            if (!toUser) {
+                setStatus('enter recipient username', true);
+                return;
             }
+            if (!val || val <= 0) {
+                setStatus('invalid amount', true);
+                return;
+            }
+            if (val > balance) {
+                setStatus('insufficient funds', true);
+                return;
+            }
+            if (toUser === currentUser) {
+                setStatus('cannot transfer to self', true);
+                return;
+            }
+
+            usersRef.child(toUser).once('value').then(snapshot => {
+                if (!snapshot.exists()) {
+                    setStatus('recipient not found', true);
+                    return;
+                }
+                const recipientData = snapshot.val();
+                const newRecipientBalance = (recipientData.balance || 0) + val;
+                const recipientTxs = recipientData.transactions || [];
+                recipientTxs.unshift({ type: 'receive', amount: val, from: currentUser, timestamp: Date.now() });
+
+                balance -= val;
+                transactions.unshift({ type: 'transfer', amount: val, to: toUser, timestamp: Date.now() });
+
+                const updates = {};
+                updates[`/users/${currentUser}/balance`] = balance;
+                updates[`/users/${currentUser}/transactions`] = transactions;
+                updates[`/users/${toUser}/balance`] = newRecipientBalance;
+                updates[`/users/${toUser}/transactions`] = recipientTxs;
+
+                database.ref().update(updates).then(() => {
+                    document.getElementById('transferUsername').value = '';
+                    document.getElementById('transferAmount').value = '';
+                    setStatus(`⟐ $${val.toFixed(2)} sent to ${toUser}`);
+                    renderBank();
+                }).catch(err => {
+                    setStatus('transfer failed: ' + err.message, true);
+                });
+            });
+        }
+
+        function sendChat() {
+            const text = document.getElementById('chatInput').value.trim();
+            if (!text) return;
+            if (!currentUser) return;
+
+            const msg = {
+                sender: currentUser,
+                text: text,
+                timestamp: Date.now()
+            };
+
+            chatMessages.push(msg);
+            chatsRef.child(currentUser).set({ messages: chatMessages }).then(() => {
+                document.getElementById('chatInput').value = '';
+                renderChat();
+            }).catch(err => {
+                setStatus('chat error: ' + err.message, true);
+            });
+        }
+
+        function saveUserData() {
+            usersRef.child(currentUser).update({
+                balance: balance,
+                transactions: transactions
+            }).catch(err => {
+                setStatus('save error: ' + err.message, true);
+            });
+        }
+
+        function setStatus(msg, isError = false) {
+            const el = document.getElementById('statusText');
+            el.textContent = msg;
+            el.style.color = isError ? '#ff00aa' : 'rgba(0,240,255,0.5)';
+            if (!isError) {
+                setTimeout(() => {
+                    el.textContent = 'online';
+                    el.style.color = 'rgba(0,240,255,0.5)';
+                }, 3000);
+            }
+        }
+
+        document.getElementById('amountInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') deposit();
         });
 
-        // ===== INIT =====
-        loadFromFirebase();
-        setStatus('initializing...');
+        document.getElementById('transferAmount').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') transfer();
+        });
 
-        // Extra sparkle: random glow on balance
-        setInterval(() => {
-            if (Math.random() > 0.7) {
-                balanceEl.style.textShadow = '0 0 60px rgba(0,240,255,0.6), 0 0 120px rgba(180,0,255,0.3)';
-                setTimeout(() => {
-                    balanceEl.style.textShadow = '0 0 30px rgba(0,240,255,0.4), 0 0 60px rgba(0,240,255,0.2)';
-                }, 300);
-            }
-        }, 2000);
+        document.getElementById('chatInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendChat();
+        });
+
+        document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') login();
+        });
+
+        document.getElementById('regConfirm').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') register();
+        });
+
+        showLogin();
     </script>
 </body>
 </html>
