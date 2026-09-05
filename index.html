@@ -2,1618 +2,476 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="robots" content="noindex,nofollow">
-<title>Real Lives - Ultimate</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Terminal RPG</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg-primary:#0a0a1a;--bg-secondary:#16213e;--bg-card:#1a1a40;--bg-event:#0f3460;--text-primary:#eee;--text-secondary:#aaa;--accent:#e94560;--gold:#fdcb6e;--success:#6bcb77;--warning:#f5a623;--danger:#e94560}
-body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg-primary);color:var(--text-primary);min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
-#app{width:100%;max-width:520px;min-height:100vh;background:var(--bg-secondary);padding:8px;position:relative;display:flex;flex-direction:column}
-.header{display:flex;justify-content:space-between;align-items:center;padding:3px 0;border-bottom:2px solid var(--bg-event);margin-bottom:4px;flex-wrap:wrap}
-.header h1{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:0.5px}
-.quick-stats{display:flex;gap:3px;font-size:7px;color:var(--text-secondary);flex-wrap:wrap}
-.quick-stats span{background:var(--bg-card);padding:1px 4px;border-radius:2px;white-space:nowrap}
-.quick-stats .good{color:var(--success)}
-.quick-stats .bad{color:var(--danger)}
-.quick-stats .warning{color:var(--warning)}
-.prison-banner{background:#6a1a2a;color:#fff;text-align:center;padding:3px;border-radius:3px;font-size:10px;font-weight:700;margin-bottom:4px;display:none}
-.prison-banner.show{display:block}
-.tabs{display:flex;gap:2px;margin-bottom:4px;flex-wrap:wrap}
-.tabs button{flex:1;min-width:35px;background:var(--bg-event);border:none;color:var(--text-secondary);padding:3px 2px;border-radius:3px;font-size:7px;font-weight:600;cursor:pointer;transition:all .15s}
-.tabs button.active{background:var(--accent);color:#fff}
-.tabs button:active{transform:scale(.95)}
-.tab-content{display:block}
-.tab-content.hidden{display:none}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:2px;margin-bottom:4px}
-.stat-card{background:var(--bg-card);padding:2px 4px;border-radius:3px;border-left:2px solid var(--accent)}
-.stat-card .top{display:flex;justify-content:space-between;align-items:center}
-.stat-card .label{font-size:7px;color:var(--text-secondary);text-transform:uppercase;font-weight:600}
-.stat-card .value{font-size:8px;font-weight:700;color:#fff}
-.stat-bar{height:2px;background:#2a2a4a;border-radius:2px;margin-top:1px;overflow:hidden}
-.stat-bar .fill{height:100%;border-radius:2px;transition:width .8s ease}
-.fill-health{background:var(--danger)}
-.fill-happiness{background:var(--warning)}
-.fill-intelligence{background:#4ecdc4}
-.fill-wealth{background:#ffd93d}
-.fill-fitness{background:var(--success)}
-.fill-social{background:#a29bfe}
-.fill-career{background:#fd79a8}
-.fill-spirit{background:#fdcb6e}
-.fill-law{background:#74b9ff}
-.fill-crime{background:#ff7675}
-.event-area{background:var(--bg-event);border-radius:4px;padding:6px;min-height:65px;margin-bottom:4px;display:flex;flex-direction:column;justify-content:center}
-.event-area .event-title{font-size:11px;font-weight:700;color:var(--accent);margin-bottom:2px}
-.event-area .event-desc{font-size:9px;color:#ccc;line-height:1.3;margin-bottom:4px}
-.event-area .event-choice{display:flex;gap:3px;flex-wrap:wrap}
-.event-area .event-choice button{flex:1;min-width:45px;background:var(--bg-card);border:1px solid #2a2a5a;color:#fff;padding:4px 2px;border-radius:3px;font-size:8px;font-weight:600;cursor:pointer;transition:all .15s}
-.event-area .event-choice button:active{transform:scale(.95);background:#2a2a5a}
-.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-bottom:4px}
-.action-btn{background:var(--bg-event);border:none;color:#fff;padding:4px 0;border-radius:3px;font-size:7px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
-.action-btn:active{transform:scale(.94);background:#1a4a7a}
-.action-btn .icon{font-size:11px;display:block;margin-bottom:1px}
-.action-btn.disabled{opacity:.3;pointer-events:none}
-.log-area{background:var(--bg-primary);border-radius:3px;padding:3px 4px;max-height:75px;overflow-y:auto;flex:1;min-height:45px;font-size:8px;color:#888;border:1px solid #1a1a3a}
-.log-area .log-entry{padding:1px 0;border-bottom:1px solid #111;color:#bbb;animation:fadeIn .3s}
-.log-area .log-entry .year{color:var(--accent);font-weight:700;margin-right:2px}
-.log-area .log-entry .type{display:inline-block;padding:0 2px;border-radius:2px;font-size:6px;margin-right:2px}
-.type-history{background:#2d3436;color:#dfe6e9}.type-law{background:#0984e3;color:#fff}.type-crime{background:#d63031;color:#fff}.type-prison{background:#6c5ce7;color:#fff}.type-career{background:#00b894;color:#fff}.type-chat{background:#fdcb6e;color:#2d3436}.type-event{background:#e17055;color:#fff}.type-relationship{background:#fd79a8;color:#fff}.type-finance{background:#ffd93d;color:#2d3436}.type-education{background:#4ecdc4;color:#2d3436}.type-health{background:var(--danger);color:#fff}.type-achievement{background:#fdcb6e;color:#2d3436}
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:3px}
-.info-card{background:var(--bg-card);padding:3px 4px;border-radius:3px;font-size:8px}
-.info-card .label{color:var(--text-secondary);font-size:6px;text-transform:uppercase}
-.info-card .value{color:#fff;font-weight:700}
-.footer{display:flex;gap:2px;margin-top:4px;padding-top:4px;border-top:1px solid #1a1a3a;flex-wrap:wrap}
-.footer button{flex:1;min-width:30px;background:var(--bg-event);border:none;color:#fff;padding:3px;border-radius:3px;font-size:8px;font-weight:600;cursor:pointer}
-.footer button:active{transform:scale(.95)}
-.footer .save-btn{background:#1a6a3a}
-.footer .load-btn{background:#6a3a1a}
-.footer .reset-btn{background:#6a1a2a}
-.footer .chat-btn{background:#6c5ce7}
-.dead-overlay{position:absolute;inset:0;background:rgba(0,0,0,.96);display:none;flex-direction:column;justify-content:center;align-items:center;z-index:100;border-radius:4px;padding:12px;text-align:center}
-.dead-overlay.show{display:flex}
-.dead-overlay h2{font-size:18px;color:var(--accent);margin-bottom:2px}
-.dead-overlay .legacy-score{font-size:20px;color:var(--gold);font-weight:700;margin-bottom:2px}
-.dead-overlay p{font-size:10px;color:#ccc;margin-bottom:4px;line-height:1.2}
-.dead-overlay .stats-final{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;max-width:200px;margin-bottom:4px}
-.dead-overlay .stats-final div{background:var(--bg-card);padding:2px 3px;border-radius:2px;display:flex;justify-content:space-between;font-size:8px}
-.dead-overlay .restart-btn{background:var(--accent);border:none;color:#fff;padding:5px 16px;border-radius:30px;font-size:11px;font-weight:700;cursor:pointer}
-.dead-overlay .legacy-breakdown{font-size:8px;color:#888;margin-bottom:4px}
-.chat-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:200;padding:8px}
-.chat-modal.show{display:flex}
-.chat-box{background:var(--bg-card);border-radius:6px;width:100%;max-width:340px;max-height:80vh;display:flex;flex-direction:column;padding:6px;border:1px solid #2a2a5a}
-.chat-box .chat-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:3px;border-bottom:1px solid #2a2a5a;margin-bottom:3px}
-.chat-box .chat-header h3{color:var(--accent);font-size:12px}
-.chat-box .chat-header .close-btn{background:#6a1a2a;border:none;color:#fff;padding:2px 6px;border-radius:2px;font-size:10px;cursor:pointer}
-.chat-box .chat-messages{flex:1;overflow-y:auto;max-height:180px;margin-bottom:3px;padding:2px}
-.chat-box .chat-messages .msg{padding:2px 4px;margin-bottom:2px;border-radius:2px;font-size:9px;background:var(--bg-event);color:#eee}
-.chat-box .chat-messages .msg .who{color:var(--gold);font-weight:700;margin-right:2px}
-.chat-box .chat-messages .msg.system{background:#2d3436;color:#dfe6e9;font-style:italic}
-.chat-box .chat-input{display:flex;gap:2px}
-.chat-box .chat-input input{flex:1;padding:3px 5px;border-radius:2px;border:1px solid #2a2a5a;background:var(--bg-primary);color:#fff;font-size:9px}
-.chat-box .chat-input button{background:#6c5ce7;border:none;color:#fff;padding:3px 8px;border-radius:2px;font-weight:600;cursor:pointer}
-.hidden{display:none!important}
-@keyframes fadeIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:translateY(0)}}
-::-webkit-scrollbar{width:2px}
-::-webkit-scrollbar-track{background:var(--bg-primary)}
-::-webkit-scrollbar-thumb{background:#2a2a5a;border-radius:2px}
-@media(max-width:360px){#app{padding:4px}.stat-card{padding:1px 2px}.stat-card .label{font-size:6px}.stat-card .value{font-size:6px}.action-btn{font-size:6px;padding:2px 0}.action-btn .icon{font-size:9px}.event-area{min-height:50px;padding:4px}.info-card{font-size:7px}.quick-stats{font-size:6px}}
-@media(min-width:481px){#app{max-width:600px;border-radius:6px;margin:6px;min-height:auto}}
+*{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;min-height:100vh;background:#0a0a0a;display:flex;align-items:center;justify-content:center;font-family:'Courier New',monospace;overflow:hidden}body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,255,0,0.03) 0px,rgba(0,255,0,0.03) 2px,transparent 2px,transparent 4px);pointer-events:none}#game{width:100%;max-width:800px;height:100vh;max-height:900px;padding:16px;display:flex;flex-direction:column;background:#0d0d0d;border:1px solid #1a3a1a;box-shadow:0 0 30px rgba(0,255,0,0.1)}#output{flex:1;overflow-y:auto;padding:12px 8px;background:#050505;border:1px solid #1f3f1f;border-radius:4px;margin-bottom:12px;color:#33ff33;font-size:clamp(14px,2.5vw,20px);line-height:1.6;white-space:pre-wrap;word-break:break-word;scroll-behavior:smooth;min-height:200px}#output::-webkit-scrollbar{width:6px}#output::-webkit-scrollbar-track{background:#0a0a0a}#output::-webkit-scrollbar-thumb{background:#1f4f1f;border-radius:3px}#choices{display:flex;flex-direction:column;gap:8px;padding:4px 0;max-height:45vh;overflow-y:auto}#choices::-webkit-scrollbar{width:5px}#choices::-webkit-scrollbar-track{background:#0a0a0a}#choices::-webkit-scrollbar-thumb{background:#1f4f1f;border-radius:3px}.choice-btn{background:#0f1f0f;border:1px solid #1a4a1a;color:#55ff55;padding:clamp(10px,2vh,16px) clamp(12px,2.5vw,18px);font-family:'Courier New',monospace;font-size:clamp(13px,2vw,17px);text-align:left;border-radius:4px;cursor:pointer;transition:all 0.15s;word-break:break-word;letter-spacing:0.3px;width:100%}.choice-btn:active{background:#1a3a1a;border-color:#33ff33;transform:scale(0.99);box-shadow:0 0 12px rgba(0,255,0,0.2)}.choice-btn:disabled{opacity:0.3;filter:grayscale(0.8);pointer-events:none}.status-bar{display:flex;justify-content:space-between;padding:8px 12px;background:#060e06;border:1px solid #1a3a1a;border-radius:4px;margin-bottom:10px;color:#33cc33;font-size:clamp(12px,2vw,16px);flex-wrap:wrap;gap:4px 12px}.status-bar span{white-space:nowrap}#input-area{display:flex;gap:8px;margin-top:6px}#cmd-input{flex:1;background:#0a0a0a;border:1px solid #1f4f1f;color:#33ff33;padding:10px 14px;font-family:'Courier New',monospace;font-size:clamp(13px,2vw,17px);border-radius:4px;outline:none;min-width:0}#cmd-input:focus{border-color:#33ff33;box-shadow:0 0 8px rgba(0,255,0,0.15)}#cmd-btn{background:#0f1f0f;border:1px solid #1a4a1a;color:#55ff55;padding:10px 18px;font-family:'Courier New',monospace;font-size:clamp(13px,2vw,17px);border-radius:4px;cursor:pointer;transition:0.12s;white-space:nowrap}#cmd-btn:active{background:#1a3a1a;border-color:#33ff33;transform:scale(0.96)}.hidden{display:none!important}@media(max-width:480px){#game{padding:10px;max-height:100vh;border:none;border-radius:0}#output{padding:10px 6px;font-size:clamp(13px,2.2vw,16px)}.choice-btn{padding:8px 12px;font-size:clamp(12px,1.8vw,15px)}.status-bar{font-size:clamp(11px,1.6vw,14px);padding:6px 10px}#cmd-input,#cmd-btn{font-size:clamp(12px,1.8vw,15px);padding:8px 12px}}
 </style>
 </head>
 <body>
-<div id="app">
-<div class="header">
-<h1>REAL LIVES</h1>
-<div class="quick-stats"><span id="quickAge">0</span><span id="quickCareer">Unemployed</span><span id="quickStatus">✅</span><span id="quickWealth">$0</span><span id="quickHealth">❤️50%</span></div>
+<div id="game">
+<div class="status-bar">
+<span id="hp">❤️ 100</span>
+<span id="location">📍 Terminal</span>
+<span id="turn">⏳ 0</span>
 </div>
-<div class="prison-banner" id="prisonBanner">🔒 PRISON - Sentence: 0 years remaining</div>
-<div class="tabs">
-<button class="tab-btn active" data-tab="main">Main</button>
-<button class="tab-btn" data-tab="career">Career</button>
-<button class="tab-btn" data-tab="family">Family</button>
-<button class="tab-btn" data-tab="finance">Finance</button>
-<button class="tab-btn" data-tab="health">Health</button>
-<button class="tab-btn" data-tab="achievements">🏆</button>
-</div>
-<div id="tabMain" class="tab-content">
-<div class="stats-grid" id="statsGrid"></div>
-<div class="event-area" id="eventArea">
-<div class="event-title">Welcome</div>
-<div class="event-desc">Your ultimate life simulation.</div>
-<div class="event-choice"><button id="beginBtn">Begin Life</button></div>
-</div>
-<div class="action-grid" id="actionGrid">
-<button class="action-btn" data-action="work"><span class="icon">💼</span>Work</button>
-<button class="action-btn" data-action="study"><span class="icon">📚</span>Study</button>
-<button class="action-btn" data-action="social"><span class="icon">🤝</span>Social</button>
-<button class="action-btn" data-action="exercise"><span class="icon">🏃</span>Exercise</button>
-<button class="action-btn" data-action="rest"><span class="icon">😴</span>Rest</button>
-<button class="action-btn" data-action="invest"><span class="icon">💰</span>Invest</button>
-<button class="action-btn" data-action="crime"><span class="icon">🔫</span>Crime</button>
-<button class="action-btn" data-action="law"><span class="icon">⚖️</span>Law</button>
-<button class="action-btn" data-action="prison_work"><span class="icon">🔧</span>Prison Work</button>
-<button class="action-btn" data-action="prison_edu"><span class="icon">📖</span>Prison Edu</button>
-<button class="action-btn" data-action="parole"><span class="icon">🕊️</span>Parole</button>
-<button class="action-btn" data-action="next"><span class="icon">⏭️</span>Next</button>
-</div>
-</div>
-<div id="tabCareer" class="tab-content hidden">
-<div class="info-grid">
-<div class="info-card"><div class="label">Current Career</div><div class="value" id="careerName">Unemployed</div></div>
-<div class="info-card"><div class="label">Career Level</div><div class="value" id="careerLevel">0</div></div>
-<div class="info-card"><div class="label">Salary</div><div class="value" id="careerSalary">$0</div></div>
-<div class="info-card"><div class="label">Satisfaction</div><div class="value" id="careerSatisfaction">0%</div></div>
-<div class="info-card"><div class="label">Burnout</div><div class="value" id="careerBurnout">0%</div></div>
-<div class="info-card"><div class="label">Work-Life Balance</div><div class="value" id="careerBalance">0%</div></div>
-</div>
-<div class="log-area" id="careerLog" style="max-height:100px;min-height:60px"><div class="log-entry">Career history will appear here.</div></div>
-</div>
-<div id="tabFamily" class="tab-content hidden">
-<div class="info-grid">
-<div class="info-card"><div class="label">Partner</div><div class="value" id="familyPartner">None</div></div>
-<div class="info-card"><div class="label">Children</div><div class="value" id="familyChildren">0</div></div>
-<div class="info-card"><div class="label">Relationship Quality</div><div class="value" id="familyQuality">0%</div></div>
-<div class="info-card"><div class="label">Family Status</div><div class="value" id="familyStatus">Single</div></div>
-<div class="info-card"><div class="label">Friends</div><div class="value" id="familyFriends">0</div></div>
-<div class="info-card"><div class="label">Social Circle Quality</div><div class="value" id="familyCircleQuality">0%</div></div>
-</div>
-<div class="log-area" id="familyLog" style="max-height:100px;min-height:60px"><div class="log-entry">Family history will appear here.</div></div>
-</div>
-<div id="tabFinance" class="tab-content hidden">
-<div class="info-grid">
-<div class="info-card"><div class="label">Wealth</div><div class="value" id="financeWealth">$0</div></div>
-<div class="info-card"><div class="label">Savings</div><div class="value" id="financeSavings">$0</div></div>
-<div class="info-card"><div class="label">Debt</div><div class="value" id="financeDebt">$0</div></div>
-<div class="info-card"><div class="label">Net Worth</div><div class="value" id="financeNetWorth">$0</div></div>
-<div class="info-card"><div class="label">Monthly Income</div><div class="value" id="financeIncome">$0</div></div>
-<div class="info-card"><div class="label">Monthly Expenses</div><div class="value" id="financeExpenses">$0</div></div>
-</div>
-<div class="log-area" id="financeLog" style="max-height:100px;min-height:60px"><div class="log-entry">Financial history will appear here.</div></div>
-</div>
-<div id="tabHealth" class="tab-content hidden">
-<div class="info-grid">
-<div class="info-card"><div class="label">Health Conditions</div><div class="value" id="healthConditions">None</div></div>
-<div class="info-card"><div class="label">Mental Health</div><div class="value" id="healthMental">0%</div></div>
-<div class="info-card"><div class="label">Diet Quality</div><div class="value" id="healthDiet">0%</div></div>
-<div class="info-card"><div class="label">Sleep Quality</div><div class="value" id="healthSleep">0%</div></div>
-<div class="info-card"><div class="label">Fitness Level</div><div class="value" id="healthFitness">0%</div></div>
-<div class="info-card"><div class="label">Addictions</div><div class="value" id="healthAddictions">None</div></div>
-</div>
-<div class="log-area" id="healthLog" style="max-height:100px;min-height:60px"><div class="log-entry">Health history will appear here.</div></div>
-</div>
-<div id="tabAchievements" class="tab-content hidden">
-<div class="log-area" id="achievementLog" style="max-height:200px;min-height:100px"><div class="log-entry">Achievements will appear here as you unlock them.</div></div>
-</div>
-<div class="log-area" id="logArea"><div class="log-entry"><span class="year">[0]</span>Welcome to Real Lives Ultimate.</div></div>
-<div class="footer">
-<button class="save-btn" id="saveBtn">💾 Save</button>
-<button class="load-btn" id="loadBtn">📂 Load</button>
-<button class="reset-btn" id="resetBtn">🔄 Reset</button>
-<button class="chat-btn" id="chatToggleBtn">💬 Chat</button>
-</div>
-<div class="dead-overlay" id="deadOverlay">
-<h2>💀 GAME OVER</h2>
-<div class="legacy-score" id="legacyScore">0</div>
-<div class="legacy-breakdown" id="legacyBreakdown"></div>
-<p id="deathMessage">Your life has ended.</p>
-<div class="stats-final" id="finalStats"></div>
-<button class="restart-btn" id="restartBtn">🔄 New Life</button>
-</div>
-<div class="chat-modal" id="chatModal">
-<div class="chat-box">
-<div class="chat-header"><h3>💬 Social Chat</h3><button class="close-btn" id="chatCloseBtn">✕</button></div>
-<div class="chat-messages" id="chatMessages"><div class="msg system">Welcome to the social hub.</div></div>
-<div class="chat-input"><input id="chatInput" placeholder="Type a message..."><button id="chatSendBtn">Send</button></div>
-</div>
+<div id="output"></div>
+<div id="choices"></div>
+<div id="input-area">
+<input type="text" id="cmd-input" placeholder="> type command..." autocomplete="off">
+<button id="cmd-btn">⏎</button>
 </div>
 </div>
 <script>
 (function(){
-'use strict';
+const STATE={hp:100,maxHp:100,turn:0,location:'Terminal',flags:{},path:[],inCombat:false,enemyHp:0,enemyMax:0,enemyName:''};
+const output=document.getElementById('output');
+const choicesDiv=document.getElementById('choices');
+const hpSpan=document.getElementById('hp');
+const locSpan=document.getElementById('location');
+const turnSpan=document.getElementById('turn');
+const cmdInput=document.getElementById('cmd-input');
+const cmdBtn=document.getElementById('cmd-btn');
+let blocked=false;
 
-// =============================================
-// CONFIGURATION
-// =============================================
-const FIREBASE_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-const VERSION = '2.0.0';
-const MAX_LOG = 50;
-const MAX_HISTORY = 40;
-
-// =============================================
-// STATS DEFINITION
-// =============================================
-const STATS = ['health','happiness','intelligence','wealth','fitness','social','career','spirit','law','crime'];
-const LABELS = {health:'❤️',happiness:'😊',intelligence:'🧠',wealth:'💰',fitness:'💪',social:'👥',career:'📈',spirit:'✨',law:'⚖️',crime:'🔫'};
-const DISEASES = ['Diabetes','Heart Disease','Cancer','Arthritis','Asthma','High Blood Pressure','Depression','Anxiety','Obesity','Migraine'];
-
-const CAREER_BRANCHES = [
-{name:'Unemployed',salary:0,level:0,branch:'None',req:0},
-{name:'Retail',salary:28000,level:1,branch:'Service',req:0},
-{name:'Clerk',salary:38000,level:2,branch:'Service',req:20},
-{name:'Teacher',salary:48000,level:3,branch:'Service',req:40},
-{name:'Nurse',salary:58000,level:4,branch:'Service',req:50},
-{name:'Engineer',salary:72000,level:5,branch:'Technical',req:60},
-{name:'Doctor',salary:125000,level:6,branch:'Technical',req:70},
-{name:'Lawyer',salary:155000,level:7,branch:'Corporate',req:65},
-{name:'Judge',salary:205000,level:8,branch:'Corporate',req:75},
-{name:'Artist',salary:62000,level:5,branch:'Creative',req:50},
-{name:'Scientist',salary:92000,level:6,branch:'Technical',req:75},
-{name:'CEO',salary:310000,level:9,branch:'Corporate',req:80},
-{name:'Professor',salary:105000,level:7,branch:'Service',req:70},
-{name:'Architect',salary:82000,level:6,branch:'Creative',req:60},
-{name:'Chef',salary:52000,level:4,branch:'Creative',req:40},
-{name:'Pilot',salary:115000,level:7,branch:'Technical',req:65},
-{name:'Journalist',salary:58000,level:4,branch:'Creative',req:40},
-{name:'Politician',salary:185000,level:8,branch:'Corporate',req:70},
-{name:'Police',salary:68000,level:5,branch:'Service',req:45},
-{name:'Military',salary:73000,level:6,branch:'Service',req:50}
-];
-
-const ACHIEVEMENTS = {
-FIRST_JOB:{name:'First Job',desc:'Get your first job',category:'Career',reward:{happiness:5}},
-MARRIED:{name:'Married',desc:'Get married',category:'Family',reward:{happiness:10}},
-PARENT:{name:'Parent',desc:'Have a child',category:'Family',reward:{happiness:8}},
-MILLIONAIRE:{name:'Millionaire',desc:'Reach $1M net worth',category:'Finance',reward:{wealth:5}},
-CAREER_MASTER:{name:'Career Master',desc:'Reach career level 8',category:'Career',reward:{career:10}},
-LONG_LIFE:{name:'Long Life',desc:'Live to 80',category:'Health',reward:{health:5}},
-CENTURY:{name:'Century',desc:'Live to 100',category:'Health',reward:{health:10}},
-CRIME_BOSS:{name:'Crime Boss',desc:'Reach 90 crime',category:'Crime',reward:{wealth:10}},
-LAW_MASTER:{name:'Law Master',desc:'Reach 90 law',category:'Law',reward:{law:10}},
-BURNOUT_SURVIVOR:{name:'Burnout Survivor',desc:'Recover from burnout',category:'Career',reward:{happiness:8}},
-FITNESS_GURU:{name:'Fitness Guru',desc:'Reach 90 fitness',category:'Health',reward:{health:8}},
-SOCIAL_BUTTERFLY:{name:'Social Butterfly',desc:'Reach 90 social',category:'Social',reward:{happiness:8}},
-WEALTHY:{name:'Wealthy',desc:'Reach $500k net worth',category:'Finance',reward:{wealth:3}},
-GRADUATE:{name:'Graduate',desc:'Complete higher education',category:'Education',reward:{intelligence:5}},
-PRISON_ESCAPE:{name:'Prison Escape',desc:'Survive prison and be released',category:'Crime',reward:{law:5}},
-RETIREMENT:{name:'Retirement',desc:'Reach retirement age 65',category:'Career',reward:{happiness:5}},
-PHILANTHROPIST:{name:'Philanthropist',desc:'Donate $100k to charity',category:'Finance',reward:{happiness:10}},
-INVESTOR:{name:'Investor',desc:'Make $100k from investments',category:'Finance',reward:{wealth:5}},
-MENTOR:{name:'Mentor',desc:'Become a career mentor',category:'Career',reward:{happiness:8}},
-LIFE_LEGACY:{name:'Life Legacy',desc:'Reach legacy score 80+',category:'Achievement',reward:{spirit:10}},
-FRIENDSHIP:{name:'Friendship',desc:'Make 5 friends',category:'Social',reward:{social:5}},
-FAMILY_LEGACY:{name:'Family Legacy',desc:'Have 3 children',category:'Family',reward:{happiness:6}},
-HOME_OWNER:{name:'Home Owner',desc:'Buy a house worth $500k+',category:'Finance',reward:{happiness:5}},
-MENTAL_STRENGTH:{name:'Mental Strength',desc:'Reach 90 mental health',category:'Health',reward:{spirit:8}},
-CAREER_CHANGE:{name:'Career Change',desc:'Switch careers 3 times',category:'Career',reward:{intelligence:5}}
-};
-
-const EVENTS = [
-{min:0,max:5,title:'Childhood',desc:'Your early years shape your foundation.',eff:{health:3,happiness:4,intelligence:3,social:2},opts:['Play','Learn','Explore']},
-{min:6,max:12,title:'School Years',desc:'Education and social development.',eff:{intelligence:5,social:4,happiness:3},opts:['Study Hard','Make Friends','Play Sports']},
-{min:13,max:17,title:'Teenage Years',desc:'Identity and rebellion.',eff:{social:4,intelligence:3,fitness:3,crime:-2},opts:['Focus Grades','Join Clubs','Part-Time Job','Rebel']},
-{min:18,max:22,title:'Young Adult',desc:'College or career path.',eff:{intelligence:6,social:4,career:5,wealth:3},opts:['University','Trade School','Work','Travel']},
-{min:23,max:30,title:'Career Building',desc:'Establishing your professional life.',eff:{career:6,wealth:5,social:3,law:2},opts:['Corporate Climb','Entrepreneur','Work Abroad','Specialize']},
-{min:31,max:45,title:'Midlife',desc:'Peak career and family decisions.',eff:{career:5,wealth:6,health:-2,happiness:4,law:3},opts:['Focus Family','Career Push','Balance Life','Start Business']},
-{min:46,max:60,title:'Late Career',desc:'Experience and influence.',eff:{career:4,wealth:5,intelligence:4,health:-3,law:4},opts:['Mentor','Consult','Semi-Retire','Politics']},
-{min:61,max:75,title:'Retirement',desc:'Golden years.',eff:{happiness:5,social:4,health:-4,wealth:-2,spirit:4},opts:['Travel','Volunteer','Hobbies','Write Memoir']},
-{min:76,max:100,title:'Elder Years',desc:'Legacy and reflection.',eff:{health:-6,social:3,happiness:3,intelligence:3,spirit:5},opts:['Teach','Family Time','Rest','Reflect']}
-];
-
-const RANDOM_EVENTS = [
-{title:'Windfall',desc:'Unexpected inheritance!',eff:{wealth:8,happiness:3},prob:.08,minAge:18},
-{title:'Car Accident',desc:'Minor car accident.',eff:{health:-5,fitness:-4,wealth:-2},prob:.06,minAge:16},
-{title:'Romance',desc:'Met someone special.',eff:{happiness:7,social:6},prob:.06,minAge:16},
-{title:'Serious Illness',desc:'Health setback.',eff:{health:-8,fitness:-5},prob:.05,minAge:20},
-{title:'Job Promotion',desc:'Career advancement!',eff:{career:6,wealth:7,happiness:5},prob:.04,minAge:22},
-{title:'Friendship',desc:'Deep friendship formed.',eff:{social:6,happiness:5},prob:.05,minAge:12},
-{title:'Loss',desc:'Personal loss.',eff:{happiness:-8,social:-5,spirit:4},prob:.03,minAge:18},
-{title:'Life Purpose',desc:'Found life purpose.',eff:{happiness:6,intelligence:4,spirit:6},prob:.04,minAge:25},
-{title:'Market Crash',desc:'Stock market crash!',eff:{wealth:-8,happiness:-4},prob:.03,minAge:25},
-{title:'Natural Disaster',desc:'Natural disaster strikes.',eff:{wealth:-5,happiness:-3,health:-2},prob:.02,minAge:10},
-{title:'Heroic Act',desc:'Saved someone!',eff:{happiness:8,social:6,law:5},prob:.02,minAge:18},
-{title:'Fame',desc:'Famous for achievement!',eff:{happiness:7,social:5},prob:.02,minAge:20},
-{title:'Religious Awakening',desc:'Spiritual experience.',eff:{spirit:8,happiness:4},prob:.03,minAge:20},
-{title:'Travel Opportunity',desc:'Travel the world.',eff:{happiness:6,social:4,spirit:3},prob:.03,minAge:18},
-{title:'Career Crisis',desc:'Midlife career crisis.',eff:{happiness:-5,career:-3},prob:.03,minAge:35},
-{title:'Mental Health Crisis',desc:'Mental health setback.',eff:{mentalHealth:-10,happiness:-5},prob:.03,minAge:18},
-{title:'Financial Recovery',desc:'Bounced back from debt.',eff:{happiness:5,wealth:3},prob:.02,minAge:25},
-{title:'New Skill',desc:'Learned a valuable skill.',eff:{intelligence:4,career:3},prob:.04,minAge:15},
-{title:'Family Reunion',desc:'Reconnected with family.',eff:{happiness:5,social:4},prob:.03,minAge:20},
-{title:'Pet Adoption',desc:'Adopted a pet!',eff:{happiness:6,social:3},prob:.02,minAge:18}
-];
-
-// =============================================
-// STATE INITIALIZATION
-// =============================================
-function createDefaultState() {
-    return {
-        version: VERSION,
-        age: 0,
-        health: 50,
-        happiness: 50,
-        intelligence: 40,
-        wealth: 30,
-        fitness: 50,
-        social: 40,
-        career: 20,
-        spirit: 30,
-        law: 50,
-        crime: 10,
-        mentalHealth: 70,
-        dietQuality: 60,
-        sleepQuality: 70,
-        alive: true,
-        gameStarted: false,
-        
-        // Relationships
-        partner: false,
-        partnerName: '',
-        partnerQuality: 40,
-        children: 0,
-        childNames: [],
-        friends: 0,
-        socialCircleQuality: 50,
-        
-        // Career
-        careerIdx: 0,
-        careerHistory: [],
-        careerChanges: 0,
-        lastCareerAdvance: 0,
-        mentor: false,
-        burnout: 0,
-        workLifeBalance: 50,
-        
-        // Education
-        education: 0,
-        educationLevel: 'None',
-        
-        // Prison
-        prison: false,
-        prisonSentence: 0,
-        prisonCrime: '',
-        prisonReputation: 50,
-        criminalRecord: [],
-        
-        // Finance
-        savings: 0,
-        debt: 0,
-        monthlyIncome: 0,
-        monthlyExpenses: 0,
-        charityDonated: 0,
-        investProfit: 0,
-        lawsuits: [],
-        
-        // Health
-        healthConditions: [],
-        addictions: 'None',
-        
-        // Logs
-        log: [],
-        history: [],
-        familyLog: [],
-        financeLog: [],
-        careerLog: [],
-        healthLog: [],
-        
-        // State
-        waiting: false,
-        turn: 0,
-        legacyPoints: 0,
-        chatLog: [],
-        achievements: {}
-    };
+function updateUI(){
+hpSpan.textContent='❤️ '+STATE.hp+'/'+STATE.maxHp;
+locSpan.textContent='📍 '+STATE.location;
+turnSpan.textContent='⏳ '+STATE.turn;
 }
 
-// =============================================
-// UTILITY FUNCTIONS
-// =============================================
-function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
-function rnd(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-function getStat(state, key) { return state[key] || 0; }
-function setStat(state, key, value) { state[key] = clamp(Math.round(value), 0, 100); }
-function modStat(state, key, delta) { setStat(state, key, getStat(state, key) + delta); }
-function ageGroup(age) {
-    if (age <= 5) return 0;
-    if (age <= 12) return 1;
-    if (age <= 17) return 2;
-    if (age <= 22) return 3;
-    if (age <= 30) return 4;
-    if (age <= 45) return 5;
-    if (age <= 60) return 6;
-    if (age <= 75) return 7;
-    return 8;
+function typeText(text,callback){
+output.textContent+=text+'\n';
+output.scrollTop=output.scrollHeight;
+if(callback)setTimeout(callback,80);
 }
 
-// =============================================
-// GAME STATE
-// =============================================
-let state = null;
-let chatHistory = [];
-let saveTimer = null;
-let actionLock = false;
+function clearChoices(){choicesDiv.innerHTML='';}
 
-// =============================================
-// ACHIEVEMENT SYSTEM
-// =============================================
-function applyAchievementReward(ach) {
-    Object.keys(ach.reward || {}).forEach(key => {
-        if (key === 'mentalHealth') {
-            state.mentalHealth = clamp(state.mentalHealth + ach.reward[key], 0, 100);
-        } else {
-            modStat(state, key, ach.reward[key]);
-        }
-    });
-    addLog('🎁 Achievement reward: +' + ach.reward[key] + ' ' + key, 'achievement');
+function addChoice(label,action,disabled){
+const btn=document.createElement('button');
+btn.className='choice-btn';
+btn.textContent=label;
+if(disabled)btn.disabled=true;
+btn.addEventListener('click',function(e){
+e.preventDefault();
+if(blocked||this.disabled)return;
+blocked=true;
+clearChoices();
+const old=output.textContent;
+output.textContent=old+'> '+label+'\n';
+action();
+});
+choicesDiv.appendChild(btn);
 }
 
-function checkAchievements() {
-    let changed = false;
-    const a = state.achievements;
-    const net = (getStat(state, 'wealth') * 1000) + (state.savings || 0) - (state.debt || 0);
-    
-    // Career achievements
-    if (state.careerIdx > 0 && !a.FIRST_JOB) { a.FIRST_JOB = true; applyAchievementReward(ACHIEVEMENTS.FIRST_JOB); changed = true; }
-    if (state.careerIdx >= 8 && !a.CAREER_MASTER) { a.CAREER_MASTER = true; applyAchievementReward(ACHIEVEMENTS.CAREER_MASTER); changed = true; }
-    if (state.age >= 65 && !a.RETIREMENT) { a.RETIREMENT = true; applyAchievementReward(ACHIEVEMENTS.RETIREMENT); changed = true; }
-    if (state.mentor && !a.MENTOR) { a.MENTOR = true; applyAchievementReward(ACHIEVEMENTS.MENTOR); changed = true; }
-    if (state.careerChanges >= 3 && !a.CAREER_CHANGE) { a.CAREER_CHANGE = true; applyAchievementReward(ACHIEVEMENTS.CAREER_CHANGE); changed = true; }
-    if (state.burnout >= 80 && state.burnout < 30 && !a.BURNOUT_SURVIVOR) { a.BURNOUT_SURVIVOR = true; applyAchievementReward(ACHIEVEMENTS.BURNOUT_SURVIVOR); changed = true; }
-    
-    // Family achievements
-    if (state.partner && !a.MARRIED) { a.MARRIED = true; applyAchievementReward(ACHIEVEMENTS.MARRIED); changed = true; }
-    if (state.children > 0 && !a.PARENT) { a.PARENT = true; applyAchievementReward(ACHIEVEMENTS.PARENT); changed = true; }
-    if (state.children >= 3 && !a.FAMILY_LEGACY) { a.FAMILY_LEGACY = true; applyAchievementReward(ACHIEVEMENTS.FAMILY_LEGACY); changed = true; }
-    if ((state.friends || 0) >= 5 && !a.FRIENDSHIP) { a.FRIENDSHIP = true; applyAchievementReward(ACHIEVEMENTS.FRIENDSHIP); changed = true; }
-    
-    // Finance achievements
-    if (net >= 1000000 && !a.MILLIONAIRE) { a.MILLIONAIRE = true; applyAchievementReward(ACHIEVEMENTS.MILLIONAIRE); changed = true; }
-    if (net >= 500000 && !a.WEALTHY) { a.WEALTHY = true; applyAchievementReward(ACHIEVEMENTS.WEALTHY); changed = true; }
-    if (state.investProfit >= 100000 && !a.INVESTOR) { a.INVESTOR = true; applyAchievementReward(ACHIEVEMENTS.INVESTOR); changed = true; }
-    if (state.charityDonated >= 100000 && !a.PHILANTHROPIST) { a.PHILANTHROPIST = true; applyAchievementReward(ACHIEVEMENTS.PHILANTHROPIST); changed = true; }
-    if (net >= 500000 && !a.HOME_OWNER) { a.HOME_OWNER = true; applyAchievementReward(ACHIEVEMENTS.HOME_OWNER); changed = true; }
-    
-    // Health achievements
-    if (state.age >= 80 && !a.LONG_LIFE) { a.LONG_LIFE = true; applyAchievementReward(ACHIEVEMENTS.LONG_LIFE); changed = true; }
-    if (state.age >= 100 && !a.CENTURY) { a.CENTURY = true; applyAchievementReward(ACHIEVEMENTS.CENTURY); changed = true; }
-    if (getStat(state, 'fitness') >= 90 && !a.FITNESS_GURU) { a.FITNESS_GURU = true; applyAchievementReward(ACHIEVEMENTS.FITNESS_GURU); changed = true; }
-    if (state.mentalHealth >= 90 && !a.MENTAL_STRENGTH) { a.MENTAL_STRENGTH = true; applyAchievementReward(ACHIEVEMENTS.MENTAL_STRENGTH); changed = true; }
-    
-    // Crime/Law achievements
-    if (getStat(state, 'crime') >= 90 && !a.CRIME_BOSS) { a.CRIME_BOSS = true; applyAchievementReward(ACHIEVEMENTS.CRIME_BOSS); changed = true; }
-    if (getStat(state, 'law') >= 90 && !a.LAW_MASTER) { a.LAW_MASTER = true; applyAchievementReward(ACHIEVEMENTS.LAW_MASTER); changed = true; }
-    if (state.prison && !state.prison && !a.PRISON_ESCAPE) { a.PRISON_ESCAPE = true; applyAchievementReward(ACHIEVEMENTS.PRISON_ESCAPE); changed = true; }
-    
-    // Education achievements
-    if (state.educationLevel !== 'None' && !a.GRADUATE) { a.GRADUATE = true; applyAchievementReward(ACHIEVEMENTS.GRADUATE); changed = true; }
-    
-    // Social achievements
-    if (getStat(state, 'social') >= 90 && !a.SOCIAL_BUTTERFLY) { a.SOCIAL_BUTTERFLY = true; applyAchievementReward(ACHIEVEMENTS.SOCIAL_BUTTERFLY); changed = true; }
-    
-    // Legacy achievement
-    const legacy = Math.round((getStat(state, 'health') + getStat(state, 'happiness') + getStat(state, 'intelligence') + 
-        getStat(state, 'wealth') + getStat(state, 'social') + getStat(state, 'career') + getStat(state, 'spirit')) / 7);
-    if (legacy >= 80 && !a.LIFE_LEGACY) { a.LIFE_LEGACY = true; applyAchievementReward(ACHIEVEMENTS.LIFE_LEGACY); changed = true; }
-    
-    if (changed) { renderAll(); }
-    renderAchievements();
+function endTurn(){
+STATE.turn++;
+updateUI();
+blocked=false;
 }
 
-// =============================================
-// LOGGING SYSTEM
-// =============================================
-function addLog(text, type) {
-    if (!state) return;
-    state.log.push({ y: state.age, t: text, type: type || 'event' });
-    if (state.log.length > MAX_LOG) state.log.shift();
-    renderLog();
+function damage(amount){
+STATE.hp=Math.max(0,STATE.hp-amount);
+updateUI();
+if(STATE.hp<=0){gameOver('You have been defeated...');return true;}
+return false;
 }
 
-function addHistory(text) {
-    if (!state) return;
-    state.history.push({ y: state.age, t: text });
-    if (state.history.length > MAX_HISTORY) state.history.shift();
+function heal(amount){STATE.hp=Math.min(STATE.maxHp,STATE.hp+amount);updateUI();}
+
+function gameOver(msg){
+blocked=true;
+clearChoices();
+output.textContent+=msg+'\n\n--- GAME OVER ---\n';
+addChoice('↺ Restart',function(){location.reload();});
 }
 
-function addCareerLog(text) {
-    if (!state) return;
-    state.careerHistory.push({ y: state.age, t: text });
-    if (state.careerHistory.length > 30) state.careerHistory.shift();
+function goTo(location,text,callback){
+STATE.location=location;
+output.textContent+=text+'\n';
+updateUI();
+if(callback)setTimeout(callback,120);
 }
 
-function addFamilyLog(text) {
-    if (!state) return;
-    if (!state.familyLog) state.familyLog = [];
-    state.familyLog.push({ y: state.age, t: text });
-    if (state.familyLog.length > 30) state.familyLog.shift();
+function combatRound(playerAction){
+if(!STATE.inCombat)return;
+let msg='';
+const enemy=STATE.enemyName;
+const eHp=STATE.enemyHp;
+if(playerAction==='attack'){
+const dmg=Math.floor(Math.random()*18)+8;
+STATE.enemyHp=Math.max(0,STATE.enemyHp-dmg);
+msg='⚔️ You strike '+enemy+' for '+dmg+' damage.';
+if(STATE.enemyHp<=0){
+msg+='\n💀 '+enemy+' is destroyed!';
+STATE.inCombat=false;
+output.textContent+=msg+'\n';
+endTurn();
+resolveCombatWin();
+return;
+}
+}else if(playerAction==='defend'){
+const block=Math.floor(Math.random()*12)+5;
+msg='🛡️ You brace for impact.';
+const eDmg=Math.max(0,Math.floor(Math.random()*14)+4-block);
+if(eDmg>0){msg+='\n💢 '+enemy+' hits for '+eDmg+' damage.';damage(eDmg);}
+else msg+='\n✅ You block the attack completely.';
+output.textContent+=msg+'\n';
+if(STATE.hp<=0){endTurn();return;}
+endTurn();
+startEnemyTurn();
+return;
+}else if(playerAction==='flee'){
+if(Math.random()<0.45){msg='🏃 You escape from '+enemy+'!';STATE.inCombat=false;output.textContent+=msg+'\n';endTurn();resolveFlee();return;}
+else{msg='🚫 Cannot escape!';output.textContent+=msg+'\n';}
+}
+if(STATE.inCombat){
+const eDmg=Math.floor(Math.random()*12)+5;
+msg+='\n💢 '+enemy+' attacks for '+eDmg+' damage.';
+damage(eDmg);
+output.textContent+=msg+'\n';
+if(STATE.hp<=0){endTurn();return;}
+endTurn();
+startEnemyTurn();
+}
 }
 
-function addFinanceLog(text) {
-    if (!state) return;
-    if (!state.financeLog) state.financeLog = [];
-    state.financeLog.push({ y: state.age, t: text });
-    if (state.financeLog.length > 30) state.financeLog.shift();
+function startEnemyTurn(){
+if(!STATE.inCombat||STATE.hp<=0)return;
+clearChoices();
+addChoice('⚔️ Attack',function(){combatRound('attack');});
+addChoice('🛡️ Defend',function(){combatRound('defend');});
+addChoice('🏃 Flee',function(){combatRound('flee');});
 }
 
-function addHealthLog(text) {
-    if (!state) return;
-    if (!state.healthLog) state.healthLog = [];
-    state.healthLog.push({ y: state.age, t: text });
-    if (state.healthLog.length > 30) state.healthLog.shift();
+function resolveCombatWin(){
+STATE.flags.enemyDefeated=true;
+clearChoices();
+output.textContent+='🏆 You gained experience.\n';
+addChoice('Continue',function(){enterZone('clearing');});
 }
 
-// =============================================
-// RENDER FUNCTIONS
-// =============================================
-function renderStats() {
-    if (!state) return;
-    const grid = document.getElementById('statsGrid');
-    grid.innerHTML = '';
-    STATS.forEach(key => {
-        const val = getStat(state, key);
-        const pct = Math.round(val);
-        const card = document.createElement('div');
-        card.className = 'stat-card';
-        card.innerHTML = `
-            <div class="top">
-                <span class="label">${LABELS[key]}</span>
-                <span class="value">${pct}%</span>
-            </div>
-            <div class="stat-bar">
-                <div class="fill fill-${key}" style="width:${pct}%"></div>
-            </div>
-        `;
-        grid.appendChild(card);
-    });
-    
-    const career = CAREER_BRANCHES[state.careerIdx] || CAREER_BRANCHES[0];
-    document.getElementById('quickAge').textContent = state.age + 'y';
-    document.getElementById('quickCareer').textContent = career.name;
-    document.getElementById('quickStatus').textContent = state.prison ? '🔒' : '✅';
-    document.getElementById('quickWealth').textContent = '$' + Math.round(getStat(state, 'wealth') * 1000).toLocaleString();
-    document.getElementById('quickHealth').textContent = '❤️' + Math.round(getStat(state, 'health')) + '%';
-    
-    const pb = document.getElementById('prisonBanner');
-    if (state.prison) {
-        pb.className = 'prison-banner show';
-        pb.textContent = '🔒 PRISON - ' + state.prisonCrime + ' - ' + state.prisonSentence + ' years remaining';
-    } else {
-        pb.className = 'prison-banner';
-    }
+function resolveFlee(){
+clearChoices();
+addChoice('Catch breath',function(){enterZone('clearing');});
 }
 
-function renderLog() {
-    if (!state) return;
-    const container = document.getElementById('logArea');
-    container.innerHTML = '';
-    const entries = state.log.slice(-15);
-    entries.forEach(entry => {
-        const div = document.createElement('div');
-        div.className = 'log-entry';
-        const typeClass = entry.type ? 'type-' + entry.type : '';
-        div.innerHTML = `
-            <span class="year">[${entry.y}]</span>
-            ${entry.type ? `<span class="type ${typeClass}">${entry.type.toUpperCase()}</span>` : ''}
-            ${entry.t}
-        `;
-        container.appendChild(div);
-    });
-    container.scrollTop = container.scrollHeight;
+function enterZone(zone){
+if(zone==='clearing'){
+goTo('Clearing','🌿 You stand in a moonlit forest clearing. A path splits three ways.');
+updateUI();
+clearChoices();
+addChoice('🔦 Follow the northern trail',function(){enterZone('north');});
+addChoice('🌲 Enter the eastern woods',function(){enterZone('east');});
+addChoice('🪨 Climb the western ridge',function(){enterZone('west');});
+if(STATE.flags.enemyDefeated&&!STATE.flags.talkedToWanderer){
+addChoice('💬 Speak with the wanderer',function(){talkWanderer();});
+}
+endTurn();
+}else if(zone==='north'){
+goTo('North Trail','❄️ The trail leads to a frozen lake. A figure stands in the distance.');
+updateUI();
+clearChoices();
+addChoice('Approach the figure',function(){northEncounter();});
+addChoice('Turn back',function(){enterZone('clearing');});
+endTurn();
+}else if(zone==='east'){
+goTo('Eastern Woods','🌳 Dense trees. You hear growling.');
+updateUI();
+if(!STATE.flags.eastCleared){
+clearChoices();
+addChoice('⚔️ Fight the beast',function(){eastCombat();});
+addChoice('Sneak past',function(){eastSneak();});
+}else{
+clearChoices();
+addChoice('Search the area',function(){eastSearch();});
+addChoice('Return to clearing',function(){enterZone('clearing');});
+}
+endTurn();
+}else if(zone==='west'){
+goTo('Western Ridge','⛰️ A narrow path along the cliff. A cave entrance glows.');
+updateUI();
+clearChoices();
+addChoice('Enter the cave',function(){westCave();});
+addChoice('Examine the cliff',function(){westCliff();});
+addChoice('Go back',function(){enterZone('clearing');});
+endTurn();
+}
 }
 
-function renderCareerTab() {
-    if (!state) return;
-    const c = CAREER_BRANCHES[state.careerIdx] || CAREER_BRANCHES[0];
-    document.getElementById('careerName').textContent = c.name + ' (' + c.branch + ')';
-    document.getElementById('careerLevel').textContent = 'Level ' + c.level;
-    document.getElementById('careerSalary').textContent = '$' + c.salary.toLocaleString();
-    const sat = Math.round(getStat(state, 'career') * 0.6 + getStat(state, 'happiness') * 0.4);
-    document.getElementById('careerSatisfaction').textContent = sat + '%';
-    document.getElementById('careerBurnout').textContent = Math.round(state.burnout || 0) + '%';
-    document.getElementById('careerBalance').textContent = Math.round(state.workLifeBalance || 50) + '%';
-    
-    const container = document.getElementById('careerLog');
-    container.innerHTML = '';
-    const entries = state.careerHistory.slice(-10);
-    if (entries.length === 0) {
-        container.innerHTML = '<div class="log-entry">No career history yet.</div>';
-    } else {
-        entries.forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerHTML = `<span class="year">[${entry.y}]</span>${entry.t}`;
-            container.appendChild(div);
-        });
-    }
+function northEncounter(){
+goTo('Frozen Lake','🧊 The figure is a guardian spirit.');
+updateUI();
+if(!STATE.flags.northSpirit){
+clearChoices();
+addChoice('❄️ Offer a tribute',function(){spiritTribute();});
+addChoice('⚔️ Challenge the spirit',function(){spiritCombat();});
+addChoice('Retreat',function(){enterZone('clearing');});
+}else{
+clearChoices();
+addChoice('🗡️ Receive blessing',function(){spiritBlessing();});
+addChoice('Return',function(){enterZone('clearing');});
+}
+endTurn();
 }
 
-function renderFamilyTab() {
-    if (!state) return;
-    document.getElementById('familyPartner').textContent = state.partner ? state.partnerName + ' (' + Math.round(state.partnerQuality) + '%)' : 'None';
-    document.getElementById('familyChildren').textContent = state.children + (state.children > 0 ? ': ' + state.childNames.join(', ') : '');
-    document.getElementById('familyQuality').textContent = state.partner ? Math.round(state.partnerQuality) + '%' : '0%';
-    document.getElementById('familyStatus').textContent = state.partner ? 'Married/Partnered' : 'Single';
-    document.getElementById('familyFriends').textContent = state.friends || 0;
-    document.getElementById('familyCircleQuality').textContent = Math.round(state.socialCircleQuality || 50) + '%';
-    
-    const container = document.getElementById('familyLog');
-    container.innerHTML = '';
-    const entries = state.familyLog || [];
-    if (entries.length === 0) {
-        container.innerHTML = '<div class="log-entry">No family history yet.</div>';
-    } else {
-        entries.slice(-10).forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerHTML = `<span class="year">[${entry.y}]</span>${entry.t}`;
-            container.appendChild(div);
-        });
-    }
+function spiritTribute(){
+if(STATE.flags.tributeGiven){output.textContent+='You already gave tribute.\n';return;}
+STATE.flags.tributeGiven=true;
+heal(20);
+output.textContent+='🌟 Spirit accepts your offering. You feel restored.\n';
+STATE.flags.northSpirit=true;
+endTurn();
+clearChoices();
+addChoice('Continue',function(){enterZone('clearing');});
 }
 
-function renderFinanceTab() {
-    if (!state) return;
-    document.getElementById('financeWealth').textContent = '$' + Math.round(getStat(state, 'wealth') * 1000).toLocaleString();
-    document.getElementById('financeSavings').textContent = '$' + Math.round(state.savings || 0).toLocaleString();
-    document.getElementById('financeDebt').textContent = '$' + Math.round(state.debt || 0).toLocaleString();
-    const net = (getStat(state, 'wealth') * 1000) + (state.savings || 0) - (state.debt || 0);
-    document.getElementById('financeNetWorth').textContent = '$' + Math.round(net).toLocaleString();
-    document.getElementById('financeIncome').textContent = '$' + Math.round(state.monthlyIncome || 0).toLocaleString();
-    document.getElementById('financeExpenses').textContent = '$' + Math.round(state.monthlyExpenses || 0).toLocaleString();
-    
-    const container = document.getElementById('financeLog');
-    container.innerHTML = '';
-    const entries = state.financeLog || [];
-    if (entries.length === 0) {
-        container.innerHTML = '<div class="log-entry">No financial history yet.</div>';
-    } else {
-        entries.slice(-10).forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerHTML = `<span class="year">[${entry.y}]</span>${entry.t}`;
-            container.appendChild(div);
-        });
-    }
+function spiritCombat(){
+output.textContent+='⚡ You attack the spirit! It defends with ice.\n';
+STATE.inCombat=true;STATE.enemyName='Ice Spirit';STATE.enemyHp=35;STATE.enemyMax=35;
+clearChoices();
+addChoice('⚔️ Attack',function(){combatRound('attack');});
+addChoice('🛡️ Defend',function(){combatRound('defend');});
+addChoice('🏃 Flee',function(){combatRound('flee');});
 }
 
-function renderHealthTab() {
-    if (!state) return;
-    document.getElementById('healthConditions').textContent = state.healthConditions.length > 0 ? state.healthConditions.join(', ') : 'None';
-    document.getElementById('healthMental').textContent = Math.round(state.mentalHealth || 70) + '%';
-    document.getElementById('healthDiet').textContent = Math.round(state.dietQuality || 60) + '%';
-    document.getElementById('healthSleep').textContent = Math.round(state.sleepQuality || 70) + '%';
-    document.getElementById('healthFitness').textContent = Math.round(getStat(state, 'fitness')) + '%';
-    document.getElementById('healthAddictions').textContent = state.addictions || 'None';
-    
-    const container = document.getElementById('healthLog');
-    container.innerHTML = '';
-    const entries = state.healthLog || [];
-    if (entries.length === 0) {
-        container.innerHTML = '<div class="log-entry">No health history yet.</div>';
-    } else {
-        entries.slice(-10).forEach(entry => {
-            const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.innerHTML = `<span class="year">[${entry.y}]</span>${entry.t}`;
-            container.appendChild(div);
-        });
-    }
+function spiritBlessing(){
+output.textContent+='✨ Spirit grants you +15 max HP.\n';
+STATE.maxHp+=15;STATE.hp=Math.min(STATE.hp+15,STATE.maxHp);updateUI();
+endTurn();
+clearChoices();
+addChoice('Return',function(){enterZone('clearing');});
 }
 
-function renderAchievements() {
-    const container = document.getElementById('achievementLog');
-    container.innerHTML = '';
-    let found = false;
-    Object.keys(ACHIEVEMENTS).forEach(key => {
-        const ach = ACHIEVEMENTS[key];
-        if (state.achievements && state.achievements[key]) {
-            found = true;
-            const div = document.createElement('div');
-            div.className = 'log-entry';
-            div.style.color = '#fdcb6e';
-            div.innerHTML = '🏆 ' + ach.name + ' (' + ach.category + ') - ' + ach.desc;
-            container.appendChild(div);
-        }
-    });
-    if (!found) {
-        container.innerHTML = '<div class="log-entry">No achievements yet. Keep playing!</div>';
-    }
+function eastCombat(){
+output.textContent+='🐺 A dire wolf charges!\n';
+STATE.inCombat=true;STATE.enemyName='Dire Wolf';STATE.enemyHp=40;STATE.enemyMax=40;
+clearChoices();
+addChoice('⚔️ Attack',function(){combatRound('attack');});
+addChoice('🛡️ Defend',function(){combatRound('defend');});
+addChoice('🏃 Flee',function(){combatRound('flee');});
 }
 
-function renderEvent(title, desc, opts, callback) {
-    if (!state) return;
-    const container = document.getElementById('eventArea');
-    container.innerHTML = `
-        <div class="event-title">${title}</div>
-        <div class="event-desc">${desc}</div>
-    `;
-    const choiceDiv = document.createElement('div');
-    choiceDiv.className = 'event-choice';
-    (opts || ['Continue']).forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.textContent = opt;
-        btn.dataset.idx = idx;
-        btn.onclick = function(e) {
-            e.stopPropagation();
-            if (state.waiting || actionLock) return;
-            callback(parseInt(this.dataset.idx));
-        };
-        choiceDiv.appendChild(btn);
-    });
-    container.appendChild(choiceDiv);
+function eastSneak(){
+if(Math.random()<0.55){
+output.textContent+='🕵️ You slip past the wolf unnoticed.\n';
+STATE.flags.eastCleared=true;
+endTurn();
+clearChoices();
+addChoice('Explore deeper',function(){eastSearch();});
+addChoice('Go back',function(){enterZone('clearing');});
+}else{
+output.textContent+='🐺 The wolf catches you!\n';
+damage(15);
+if(STATE.hp>0){
+endTurn();
+clearChoices();
+addChoice('⚔️ Fight',function(){eastCombat();});
+addChoice('Flee again',function(){eastSneak();});
+}
+}
 }
 
-function renderAll() {
-    renderStats();
-    renderLog();
-    renderCareerTab();
-    renderFamilyTab();
-    renderFinanceTab();
-    renderHealthTab();
-    renderAchievements();
+function eastSearch(){
+if(STATE.flags.eastTreasure){output.textContent+='You already found the treasure.\n';clearChoices();addChoice('Return',function(){enterZone('clearing');});return;}
+STATE.flags.eastTreasure=true;
+output.textContent+='💎 You find a hidden gem! +10 gold (but gold is glory).\n';
+heal(10);
+endTurn();
+clearChoices();
+addChoice('Return',function(){enterZone('clearing');});
 }
 
-// =============================================
-// GAME LOGIC
-// =============================================
-function updatePrison() {
-    if (!state.prison) return false;
-    state.prisonSentence--;
-    state.prisonReputation = Math.min(100, state.prisonReputation + 2);
-    if (state.prisonSentence <= 0) {
-        state.prison = false;
-        state.prisonSentence = 0;
-        state.prisonCrime = '';
-        state.prisonReputation = 50;
-        addLog('🔓 Released from prison!', 'prison');
-        renderAll();
-        return true;
-    }
-    return false;
+function westCave(){
+goTo('Cave','🕯️ Inside the cave, you see a sleeping dragon.');
+updateUI();
+if(!STATE.flags.caveCleared){
+clearChoices();
+addChoice('🐉 Sneak past the dragon',function(){caveSneak();});
+addChoice('⚔️ Wake and fight',function(){caveFight();});
+addChoice('Retreat',function(){enterZone('clearing');});
+}else{
+clearChoices();
+addChoice('Collect dragon scale',function(){caveScale();});
+addChoice('Leave',function(){enterZone('clearing');});
+}
+endTurn();
 }
 
-function applyMonthlyBudget() {
-    if (state.age <= 0 || state.age >= 120) return;
-    const income = state.monthlyIncome || 0;
-    const expenses = state.monthlyExpenses || 0;
-    const netMonthly = (income - expenses) / 12;
-    if (netMonthly > 0) {
-        state.savings = (state.savings || 0) + netMonthly * 1000;
-    } else if (netMonthly < 0) {
-        state.debt = (state.debt || 0) + Math.abs(netMonthly) * 1000;
-    }
-    if (state.savings > 0) {
-        const interest = state.savings * 0.02 / 12;
-        state.savings += interest;
-    }
+function caveSneak(){
+if(Math.random()<0.5){
+output.textContent+='🤫 You sneak past and find a treasure hoard.\n';
+STATE.flags.caveCleared=true;STATE.flags.caveTreasure=true;
+heal(25);
+endTurn();
+clearChoices();
+addChoice('Grab treasure',function(){caveTreasure();});
+addChoice('Leave quietly',function(){enterZone('clearing');});
+}else{
+output.textContent+='🐉 Dragon wakes! It attacks!\n';
+damage(20);
+if(STATE.hp>0){
+STATE.inCombat=true;STATE.enemyName='Dragon';STATE.enemyHp=60;STATE.enemyMax=60;
+clearChoices();
+addChoice('⚔️ Fight',function(){combatRound('attack');});
+addChoice('🛡️ Defend',function(){combatRound('defend');});
+addChoice('🏃 Flee',function(){combatRound('flee');});
+}
+}
 }
 
-function applyAging() {
-    const age = state.age;
-    
-    // Age-based health effects
-    if (age > 70) {
-        modStat(state, 'health', -5);
-        modStat(state, 'fitness', -4);
-        if (Math.random() < 0.1) {
-            const disease = pick(DISEASES);
-            if (!state.healthConditions.includes(disease)) {
-                state.healthConditions.push(disease);
-                addHealthLog('Developed ' + disease);
-            }
-        }
-    } else if (age > 50) {
-        modStat(state, 'health', -3);
-        modStat(state, 'fitness', -2);
-        if (Math.random() < 0.05) {
-            const disease = pick(DISEASES.slice(0, 5));
-            if (!state.healthConditions.includes(disease)) {
-                state.healthConditions.push(disease);
-                addHealthLog('Developed ' + disease);
-            }
-        }
-    } else if (age > 30) {
-        modStat(state, 'health', -1);
-    }
-    
-    // Relationship development
-    if (age > 18 && !state.partner && Math.random() < 0.025) {
-        const names = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Riley', 'Avery', 'Quinn', 'Parker', 'Cameron', 'Logan'];
-        state.partner = true;
-        state.partnerName = pick(names);
-        state.partnerQuality = rnd(40, 80);
-        addLog('💕 Found life partner: ' + state.partnerName + '!', 'relationship');
-        addFamilyLog('Found partner: ' + state.partnerName);
-    }
-    
-    if (age > 25 && state.children < 3 && state.partner && Math.random() < 0.015) {
-        const names = ['Emma', 'Liam', 'Olivia', 'Noah', 'Ava', 'James', 'Sophia', 'Oliver', 'Mia', 'Ethan'];
-        state.children++;
-        state.childNames.push(pick(names) + ' ' + pick(['Jr.', 'II', 'III']));
-        addLog('👶 Welcomed child: ' + state.childNames[state.childNames.length - 1] + '!', 'relationship');
-        addFamilyLog('Child born: ' + state.childNames[state.childNames.length - 1]);
-    }
-    
-    // Relationship quality decay
-    if (state.partner && state.partnerQuality < 100) {
-        const decay = rnd(-4, 3);
-        state.partnerQuality = Math.min(100, state.partnerQuality + decay);
-        if (state.partnerQuality < 10 && Math.random() < 0.03) {
-            state.partner = false;
-            addLog('💔 Relationship ended with ' + state.partnerName, 'relationship');
-            addFamilyLog('Relationship ended with ' + state.partnerName);
-        }
-        if (state.partnerQuality > 80 && Math.random() < 0.01) {
-            addLog('💕 Relationship with ' + state.partnerName + ' is amazing!', 'relationship');
-        }
-    }
-    
-    // Burnout and work-life balance
-    if (state.burnout > 0 && state.burnout < 100) {
-        state.burnout = Math.max(0, state.burnout + rnd(-1, 2));
-    }
-    if (state.workLifeBalance < 100) {
-        state.workLifeBalance = Math.min(100, state.workLifeBalance + rnd(-2, 2));
-    }
-    
-    // Prison effects
-    if (state.prison) {
-        if (updatePrison()) {
-            renderAll();
-        } else {
-            modStat(state, 'happiness', -2);
-            modStat(state, 'social', -1);
-        }
-    }
-    
-    // Mortality
-    if (age > 80) {
-        const mortality = 0.05 + (age - 80) * 0.01;
-        if (Math.random() < mortality) {
-            state.alive = false;
-            addLog('💀 Passed away at ' + state.age + ' from natural causes.', 'event');
-        }
-    }
-    
-    // Stat-based death
-    if (getStat(state, 'health') <= 0) {
-        state.alive = false;
-        addLog('💀 Health reached zero.', 'event');
-    }
-    if (getStat(state, 'happiness') <= 0) {
-        state.alive = false;
-        addLog('💀 Happiness reached zero.', 'event');
-    }
-    
-    // Random prison sentencing
-    if (getStat(state, 'crime') > 75 && !state.prison && Math.random() < 0.06) {
-        const crimes = ['Theft', 'Assault', 'Robbery', 'Burglary', 'Fraud', 'Hacking'];
-        state.prison = true;
-        state.prisonSentence = rnd(2, 6);
-        state.prisonCrime = pick(crimes);
-        state.prisonReputation = 30;
-        modStat(state, 'law', -10);
-        addLog('🔒 Sentenced to ' + state.prisonSentence + ' years for ' + state.prisonCrime + '!', 'crime');
-    }
-    
-    // Maximum age
-    if (age > 110) {
-        state.alive = false;
-        addLog('💀 Natural end at 110.', 'event');
-    }
-    
-    // Friends
-    if (state.friends < 10 && state.age > 18 && state.age < 60 && Math.random() < 0.015) {
-        state.friends = Math.min(10, state.friends + 1);
-        addLog('🤝 Made a new friend! (' + state.friends + ' friends)', 'social');
-    }
-    
-    // Mental health recovery
-    if (state.mentalHealth < 30 && Math.random() < 0.02) {
-        state.mentalHealth = Math.min(100, state.mentalHealth + 5);
-        addHealthLog('Mental health improving.');
-    }
-    
-    // Diet and sleep adjustments
-    if (state.dietQuality < 100) {
-        state.dietQuality = Math.min(100, state.dietQuality + rnd(-1, 1));
-    }
-    if (state.sleepQuality < 100) {
-        state.sleepQuality = Math.min(100, state.sleepQuality + rnd(-1, 1));
-    }
-    
-    applyMonthlyBudget();
-    checkAchievements();
+function caveFight(){
+output.textContent+='🐉 You engage the dragon!\n';
+STATE.inCombat=true;STATE.enemyName='Dragon';STATE.enemyHp=60;STATE.enemyMax=60;
+clearChoices();
+addChoice('⚔️ Attack',function(){combatRound('attack');});
+addChoice('🛡️ Defend',function(){combatRound('defend');});
+addChoice('🏃 Flee',function(){combatRound('flee');});
 }
 
-function randomEvent() {
-    if (Math.random() < 0.10 && state.age > 5 && !state.prison) {
-        const valid = RANDOM_EVENTS.filter(e => state.age >= e.minAge);
-        if (valid.length > 0) {
-            const event = pick(valid);
-            if (Math.random() < event.prob) {
-                Object.keys(event.eff).forEach(key => {
-                    if (key === 'mentalHealth') {
-                        state.mentalHealth = clamp(state.mentalHealth + event.eff[key], 0, 100);
-                    } else {
-                        modStat(state, key, event.eff[key]);
-                    }
-                });
-                addLog('⚡ ' + event.title + ': ' + event.desc, 'event');
-                addHistory(event.title + ' - ' + event.desc);
-                return true;
-            }
-        }
-    }
-    return false;
+function caveTreasure(){
+if(STATE.flags.caveTreasure){
+output.textContent+='🏅 You claim ancient relics. Power surges through you.\n';
+STATE.maxHp+=20;STATE.hp=Math.min(STATE.hp+20,STATE.maxHp);
+updateUI();
+STATE.flags.caveTreasure=false;
+}
+endTurn();
+clearChoices();
+addChoice('Return',function(){enterZone('clearing');});
 }
 
-function processLifeEvent() {
-    if (state.prison) return false;
-    const group = ageGroup(state.age);
-    const event = EVENTS[group];
-    if (event && state.age % 2 === 0) {
-        const opts = event.opts || ['Continue'];
-        renderEvent(event.title, event.desc, opts, function(idx) {
-            if (state.waiting || actionLock) return;
-            state.waiting = true;
-            Object.keys(event.eff || {}).forEach(key => modStat(state, key, event.eff[key]));
-            if (opts.length > 1) {
-                addLog('📌 Chose: ' + opts[idx], 'history');
-                addHistory('Chose: ' + opts[idx]);
-                if (idx === 0) modStat(state, 'intelligence', 3);
-                else if (idx === 1) modStat(state, 'social', 3);
-                else if (idx === 2) modStat(state, 'fitness', 3);
-            } else {
-                addLog(event.title + ' - ' + event.desc, 'event');
-            }
-            state.age++;
-            applyAging();
-            randomEvent();
-            renderAll();
-            state.waiting = false;
-            if (!state.alive) { showDeath(); return; }
-            renderEvent('Year ' + state.age, 'Choose your path forward.', ['Continue'], function() {
-                state.waiting = false;
-            });
-        });
-        return true;
-    }
-    return false;
+function caveScale(){
+output.textContent+='🐉 You take a glowing scale. +5 HP.\n';
+heal(5);
+endTurn();
+clearChoices();
+addChoice('Leave',function(){enterZone('clearing');});
 }
 
-// =============================================
-// ACTION HANDLERS
-// =============================================
-function validateAction() {
-    if (!state) { addLog('⚠️ Game not initialized.', 'event'); return false; }
-    if (!state.gameStarted) { addLog('⚠️ Start life first! Click Begin Life.', 'event'); return false; }
-    if (!state.alive) { addLog('💀 You are no longer alive.', 'event'); return false; }
-    if (state.waiting || actionLock) { return false; }
-    return true;
+function westCliff(){
+goTo('Cliff Edge','🌄 A breathtaking view. You see a distant tower.');
+updateUI();
+clearChoices();
+addChoice('🔭 Study the tower',function(){cliffTower();});
+addChoice('Return',function(){enterZone('clearing');});
+endTurn();
 }
 
-function doCrime() {
-    if (!validateAction()) return;
-    if (state.prison) { addLog('🚫 Cannot commit crime in prison.', 'crime'); return; }
-    if (state.age < 12) { addLog('🚫 Too young for serious crime.', 'crime'); return; }
-    
-    const crimes = ['Petty Theft', 'Fraud', 'Assault', 'Robbery', 'Burglary', 'Hacking'];
-    const crime = pick(crimes);
-    const lawBonus = getStat(state, 'law') / 100;
-    const success = Math.random() < 0.35 + lawBonus * 0.1;
-    
-    actionLock = true;
-    if (success) {
-        const gain = rnd(2, 12);
-        modStat(state, 'wealth', gain);
-        modStat(state, 'crime', 7);
-        modStat(state, 'law', -6);
-        modStat(state, 'happiness', 2);
-        addLog('🔫 Committed ' + crime + ' - Gained $' + gain + 'k.', 'crime');
-        addHistory('Committed ' + crime);
-        if (getStat(state, 'crime') > 75 && Math.random() < 0.30) {
-            state.prison = true;
-            state.prisonSentence = rnd(2, 5);
-            state.prisonCrime = crime;
-            state.prisonReputation = 20;
-            modStat(state, 'law', -10);
-            addLog('🔒 Arrested for ' + crime + '! Sentenced to ' + state.prisonSentence + ' years.', 'crime');
-        }
-    } else {
-        modStat(state, 'law', -8);
-        modStat(state, 'happiness', -7);
-        modStat(state, 'crime', 6);
-        addLog('🚨 Failed ' + crime + ' - Got caught!', 'crime');
-        if (Math.random() < 0.50) {
-            state.prison = true;
-            state.prisonSentence = rnd(1, 4);
-            state.prisonCrime = crime;
-            state.prisonReputation = 20;
-            addLog('🔒 Sentenced to ' + state.prisonSentence + ' years for ' + crime + '!', 'crime');
-        }
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && !state.prison && !processLifeEvent()) {
-        renderEvent('Year ' + state.age, 'Choose your action.', ['Continue'], function() { state.waiting = false; });
-    }
+function cliffTower(){
+output.textContent+='🏰 The tower seems to be the source of the anomaly.\n';
+if(!STATE.flags.towerSeen){STATE.flags.towerSeen=true;heal(10);}
+endTurn();
+clearChoices();
+addChoice('Head toward tower',function(){towerApproach();});
+addChoice('Go back',function(){enterZone('clearing');});
 }
 
-function doLaw() {
-    if (!validateAction()) return;
-    if (state.prison) { addLog('🚫 Cannot practice law in prison.', 'law'); return; }
-    
-    const actions = ['File Lawsuit', 'Report Crime', 'Community Service', 'Legal Advice', 'Court Case', 'Police Report'];
-    const action = pick(actions);
-    const success = Math.random() < 0.3 + getStat(state, 'law') / 120;
-    
-    actionLock = true;
-    if (success) {
-        modStat(state, 'law', 7);
-        modStat(state, 'social', 3);
-        modStat(state, 'happiness', 3);
-        if (action === 'File Lawsuit' || action === 'Court Case') {
-            const gain = rnd(2, 8);
-            modStat(state, 'wealth', gain);
-            addLog('⚖️ ' + action + ' successful! Gained $' + gain + 'k.', 'law');
-        } else if (action === 'Report Crime') {
-            modStat(state, 'crime', -5);
-            addLog('⚖️ ' + action + ' helped reduce crime.', 'law');
-        } else {
-            addLog('⚖️ ' + action + ' went well.', 'law');
-        }
-        addHistory('Legal: ' + action);
-    } else {
-        modStat(state, 'law', -6);
-        modStat(state, 'happiness', -5);
-        addLog('⚖️ ' + action + ' failed.', 'law');
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && !state.prison && !processLifeEvent()) {
-        renderEvent('Year ' + state.age, 'Choose your action.', ['Continue'], function() { state.waiting = false; });
-    }
+function towerApproach(){
+goTo('Tower','🔮 You arrive at the obsidian tower. The door opens.');
+updateUI();
+clearChoices();
+addChoice('Enter the tower',function(){towerInside();});
+addChoice('Examine runes',function(){towerRunes();});
+addChoice('Retreat',function(){enterZone('clearing');});
+endTurn();
 }
 
-function doPrisonWork() {
-    if (!validateAction()) return;
-    if (!state.prison) { addLog('🚫 Not in prison.', 'prison'); return; }
-    
-    actionLock = true;
-    modStat(state, 'happiness', -1);
-    modStat(state, 'fitness', 2);
-    modStat(state, 'law', 2);
-    modStat(state, 'crime', -2);
-    state.prisonReputation = Math.min(100, state.prisonReputation + 5);
-    const earn = rnd(1, 2);
-    modStat(state, 'wealth', earn);
-    addLog('🔧 Prison work - Earned $' + earn + 'k. Reputation +5', 'prison');
-    state.prisonSentence = Math.max(0, state.prisonSentence - 1);
-    if (state.prisonSentence <= 0) {
-        state.prison = false;
-        state.prisonCrime = '';
-        state.prisonReputation = 50;
-        addLog('🔓 Released early for good behavior!', 'prison');
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && state.prison) {
-        renderEvent('🔒 Prison Life', 'Serve your time.', ['Continue'], function() { state.waiting = false; });
-    } else if (state.alive && !state.prison) {
-        processLifeEvent();
-    }
+function towerInside(){
+goTo('Tower Interior','⚡ A floating crystal pulses with energy.');
+updateUI();
+if(!STATE.flags.towerCleared){
+clearChoices();
+addChoice('💥 Touch the crystal',function(){towerCrystal();});
+addChoice('🔮 Channel energy',function(){towerChannel();});
+addChoice('Flee',function(){enterZone('clearing');});
+}else{
+clearChoices();
+addChoice('Take fragment',function(){towerFragment();});
+addChoice('Leave',function(){enterZone('clearing');});
+}
+endTurn();
 }
 
-function doPrisonEdu() {
-    if (!validateAction()) return;
-    if (!state.prison) { addLog('🚫 Not in prison.', 'prison'); return; }
-    
-    actionLock = true;
-    modStat(state, 'intelligence', 6);
-    modStat(state, 'law', 4);
-    modStat(state, 'crime', -2);
-    modStat(state, 'happiness', 1);
-    state.prisonReputation = Math.min(100, state.prisonReputation + 3);
-    addLog('📖 Prison education - Gained knowledge. Reputation +3', 'prison');
-    state.prisonSentence = Math.max(0, state.prisonSentence - 1);
-    if (state.prisonSentence <= 0) {
-        state.prison = false;
-        state.prisonCrime = '';
-        state.prisonReputation = 50;
-        addLog('🔓 Released early for good behavior!', 'prison');
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && state.prison) {
-        renderEvent('🔒 Prison Life', 'Serve your time.', ['Continue'], function() { state.waiting = false; });
-    } else if (state.alive && !state.prison) {
-        processLifeEvent();
-    }
+function towerCrystal(){
+output.textContent+='💫 The crystal explodes with light! You are empowered.\n';
+STATE.maxHp+=30;STATE.hp=Math.min(STATE.hp+30,STATE.maxHp);
+STATE.flags.towerCleared=true;
+updateUI();
+endTurn();
+clearChoices();
+addChoice('Continue',function(){enterZone('clearing');});
 }
 
-function doParole() {
-    if (!validateAction()) return;
-    if (!state.prison) { addLog('🚫 Not in prison.', 'prison'); return; }
-    if (state.prisonSentence > 3) {
-        addLog('🕊️ Parole denied - Sentence too long.', 'prison');
-        return;
-    }
-    
-    const requirements = state.prisonReputation > 60 && getStat(state, 'law') > 50 && getStat(state, 'social') > 40;
-    if (!requirements) {
-        addLog('🕊️ Parole denied - Need reputation >60, law >50, social >40', 'prison');
-        return;
-    }
-    
-    actionLock = true;
-    const success = Math.random() < 0.15 + getStat(state, 'law') / 150 + getStat(state, 'social') / 150 + state.prisonReputation / 300;
-    if (success) {
-        state.prison = false;
-        state.prisonCrime = '';
-        state.prisonSentence = 0;
-        state.prisonReputation = 50;
-        addLog('🕊️ Granted parole! Released from prison.', 'prison');
-        renderAll();
-    } else {
-        addLog('🕊️ Parole denied. Try again later.', 'prison');
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && state.prison) {
-        renderEvent('🔒 Prison Life', 'Serve your time.', ['Continue'], function() { state.waiting = false; });
-    } else if (state.alive && !state.prison) {
-        processLifeEvent();
-    }
+function towerChannel(){
+if(STATE.flags.channeled){output.textContent+='You already channeled.\n';return;}
+STATE.flags.channeled=true;
+damage(10);
+if(STATE.hp<=0)return;
+output.textContent+='🌀 You harness the energy. +20 max HP.\n';
+STATE.maxHp+=20;STATE.hp=Math.min(STATE.hp+20,STATE.maxHp);
+updateUI();
+endTurn();
+clearChoices();
+addChoice('Continue',function(){enterZone('clearing');});
 }
 
-function doCareerAction() {
-    if (!validateAction()) return;
-    if (state.prison) { addLog('🚫 Cannot advance career in prison.', 'career'); return; }
-    if (state.burnout >= 80) { addLog('🔥 Burnout! Rest and recover first.', 'career'); return; }
-    if (state.age - state.lastCareerAdvance < 2) {
-        addLog('⏳ Career actions have a 2-year cooldown.', 'career');
-        return;
-    }
-    
-    const paths = ['Get Certified', 'Network', 'Apply Promotion', 'Switch Field', 'Start Side Business'];
-    const path = pick(paths);
-    const current = CAREER_BRANCHES[state.careerIdx] || CAREER_BRANCHES[0];
-    const nextIdx = Math.min(state.careerIdx + 1, CAREER_BRANCHES.length - 1);
-    const next = CAREER_BRANCHES[nextIdx];
-    const reqMet = getStat(state, 'intelligence') >= next.req;
-    
-    if (!reqMet) {
-        addLog('📊 Need ' + next.req + ' intelligence to advance. Current: ' + Math.round(getStat(state, 'intelligence')), 'career');
-        return;
-    }
-    
-    actionLock = true;
-    const success = Math.random() < 0.2 + getStat(state, 'intelligence') / 120 + getStat(state, 'career') / 120;
-    if (success) {
-        state.careerIdx = nextIdx;
-        modStat(state, 'career', 7);
-        modStat(state, 'wealth', 6);
-        modStat(state, 'happiness', 3);
-        state.lastCareerAdvance = state.age;
-        state.careerChanges++;
-        const newCareer = CAREER_BRANCHES[state.careerIdx];
-        const salaryIncrease = newCareer.salary - current.salary;
-        state.monthlyIncome = Math.round(newCareer.salary / 12);
-        state.monthlyExpenses = Math.round(state.monthlyIncome * 0.6);
-        addLog('📊 ' + path + ' - Career advanced to ' + newCareer.name + '! (+$' + salaryIncrease.toLocaleString() + ')', 'career');
-        addHistory('Career: ' + path + ' -> ' + newCareer.name);
-        addCareerLog('Advanced to ' + newCareer.name + ' (Salary: $' + newCareer.salary.toLocaleString() + ')');
-        addFinanceLog('Salary increased to $' + newCareer.salary.toLocaleString());
-        if (state.careerIdx >= 5 && !state.mentor) {
-            state.mentor = true;
-            addLog('🌟 Became a career mentor!', 'career');
-        }
-        state.burnout = Math.min(100, state.burnout + 12);
-        state.workLifeBalance = Math.max(0, state.workLifeBalance - 6);
-    } else {
-        modStat(state, 'career', 2);
-        modStat(state, 'happiness', -2);
-        addLog('📊 ' + path + ' - No progress.', 'career');
-    }
-    actionLock = false;
-    renderAll();
-    if (state.alive && !state.prison && !processLifeEvent()) {
-        renderEvent('Year ' + state.age, 'Choose your action.', ['Continue'], function() { state.waiting = false; });
-    }
+function towerFragment(){
+output.textContent+='💎 You collect a crystal shard. +5 HP.\n';
+heal(5);
+endTurn();
+clearChoices();
+addChoice('Leave',function(){enterZone('clearing');});
 }
 
-function doAction(action) {
-    if (!validateAction()) return;
-    
-    actionLock = true;
-    let msg = '';
-    let type = 'event';
-    
-    switch (action) {
-        case 'work': {
-            if (state.age < 14) { msg = 'Too young to work.'; actionLock = false; break; }
-            if (state.prison) { msg = 'Cannot work in prison.'; actionLock = false; break; }
-            if (state.burnout >= 80) { msg = 'Too burned out to work. Rest!'; actionLock = false; break; }
-            const career = CAREER_BRANCHES[state.careerIdx] || CAREER_BRANCHES[0];
-            const earn = 3 + Math.floor(career.level * 1.2) + Math.floor(getStat(state, 'career') / 10);
-            modStat(state, 'wealth', earn);
-            modStat(state, 'career', 2);
-            modStat(state, 'happiness', -1);
-            modStat(state, 'fitness', -2);
-            state.monthlyIncome = Math.round(career.salary / 12);
-            state.monthlyExpenses = Math.round(state.monthlyIncome * 0.6);
-            state.burnout = Math.min(100, state.burnout + 6);
-            state.workLifeBalance = Math.max(0, state.workLifeBalance - 4);
-            msg = 'Worked +$' + earn + 'k.';
-            if (Math.random() < 0.04) { modStat(state, 'wealth', 3); msg += ' Bonus!'; }
-            addFinanceLog('Worked - Earned $' + (earn * 1000).toLocaleString());
-            type = 'career';
-            break;
-        }
-        case 'study': {
-            if (state.prison) { msg = 'Cannot study effectively in prison.'; actionLock = false; break; }
-            if (state.age < 5) { msg = 'Too young.'; actionLock = false; break; }
-            modStat(state, 'intelligence', 6);
-            modStat(state, 'career', 2);
-            modStat(state, 'happiness', -1);
-            modStat(state, 'social', -1);
-            msg = 'Studied.';
-            if (Math.random() < 0.02) { modStat(state, 'intelligence', 7); msg = 'Academic breakthrough!'; }
-            if (state.educationLevel === 'None' && state.intelligence >= 60) {
-                state.educationLevel = 'High School';
-                addLog('🎓 Completed High School!', 'education');
-            }
-            if (state.educationLevel === 'High School' && state.intelligence >= 75) {
-                state.educationLevel = 'Bachelor\'s';
-                addLog('🎓 Earned Bachelor\'s Degree!', 'education');
-            }
-            if (state.educationLevel === 'Bachelor\'s' && state.intelligence >= 85) {
-                state.educationLevel = 'Master\'s';
-                addLog('🎓 Earned Master\'s Degree!', 'education');
-            }
-            type = 'education';
-            break;
-        }
-        case 'social': {
-            if (state.prison) {
-                modStat(state, 'social', 1);
-                modStat(state, 'happiness', 1);
-                msg = 'Prison socializing.';
-                type = 'event';
-                break;
-            }
-            modStat(state, 'social', 6);
-            modStat(state, 'happiness', 5);
-            modStat(state, 'health', 1);
-            state.socialCircleQuality = Math.min(100, state.socialCircleQuality + 3);
-            msg = 'Socialized.';
-            if (Math.random() < 0.04) {
-                state.friends = Math.min(10, state.friends + 1);
-                modStat(state, 'social', 4);
-                msg = 'Made a close friend! (' + state.friends + ' friends)';
-            }
-            type = 'event';
-            break;
-        }
-        case 'exercise': {
-            if (state.prison) {
-                modStat(state, 'fitness', 3);
-                modStat(state, 'health', 2);
-                msg = 'Prison workout.';
-                type = 'fitness';
-                break;
-            }
-            modStat(state, 'fitness', 7);
-            modStat(state, 'health', 5);
-            modStat(state, 'happiness', 2);
-            state.dietQuality = Math.min(100, state.dietQuality + 1);
-            msg = 'Exercised.';
-            if (Math.random() < 0.02) { modStat(state, 'fitness', 6); msg = 'Fitness milestone!'; }
-            type = 'fitness';
-            break;
-        }
-        case 'rest': {
-            modStat(state, 'health', 6);
-            modStat(state, 'happiness', 4);
-            modStat(state, 'fitness', 3);
-            state.sleepQuality = Math.min(100, state.sleepQuality + 6);
-            state.burnout = Math.max(0, state.burnout - 18);
-            state.workLifeBalance = Math.min(100, state.workLifeBalance + 6);
-            state.mentalHealth = Math.min(100, state.mentalHealth + 4);
-            msg = 'Rested and recovered.';
-            type = 'event';
-            break;
-        }
-        case 'invest': {
-            if (state.prison) { msg = 'Cannot invest in prison.'; actionLock = false; break; }
-            if (getStat(state, 'wealth') < 8) { msg = 'Need $8k to invest.'; actionLock = false; break; }
-            const roll = Math.random();
-            if (roll < 0.20) {
-                const gain = Math.floor(getStat(state, 'wealth') * 0.08);
-                modStat(state, 'wealth', gain);
-                state.investProfit = (state.investProfit || 0) + (gain * 1000);
-                msg = 'Invest +$' + gain + 'k.';
-                addFinanceLog('Investment gained $' + (gain * 1000).toLocaleString());
-                type = 'finance';
-            } else if (roll < 0.50) {
-                const loss = Math.floor(getStat(state, 'wealth') * 0.03);
-                modStat(state, 'wealth', -loss);
-                msg = 'Invest -$' + loss + 'k.';
-                addFinanceLog('Investment lost $' + (loss * 1000).toLocaleString());
-                type = 'finance';
-            } else {
-                const boom = Math.floor(getStat(state, 'wealth') * 0.15);
-                modStat(state, 'wealth', boom);
-                state.investProfit = (state.investProfit || 0) + (boom * 1000);
-                msg = 'Great investment +$' + boom + 'k!';
-                addFinanceLog('Investment boomed +$' + (boom * 1000).toLocaleString());
-                type = 'finance';
-            }
-            break;
-        }
-        case 'next': {
-            state.age++;
-            applyAging();
-            randomEvent();
-            renderAll();
-            actionLock = false;
-            if (!state.alive) { showDeath(); return; }
-            if (!processLifeEvent()) {
-                renderEvent('Year ' + state.age, 'Choose your path.', ['Continue'], function() { state.waiting = false; });
-            }
-            return;
-        }
-        default: {
-            actionLock = false;
-            return;
-        }
-    }
-    
-    if (msg) { addLog('▶ ' + msg, type); }
-    actionLock = false;
-    renderAll();
-    
-    if (state.alive && !state.prison) {
-        if (!processLifeEvent()) {
-            renderEvent('Year ' + state.age, 'Choose your action.', ['Continue'], function() { state.waiting = false; });
-        }
-    } else if (state.alive && state.prison) {
-        renderEvent('🔒 Prison Life', 'You are incarcerated. Serve your time.', ['Continue'], function() { state.waiting = false; });
-    } else {
-        showDeath();
-    }
+function towerRunes(){
+output.textContent+='📜 Runes tell of a champion who must unite the shards.\n';
+if(!STATE.flags.runesRead){STATE.flags.runesRead=true;heal(5);}
+endTurn();
+clearChoices();
+addChoice('Enter tower',function(){towerInside();});
+addChoice('Return',function(){enterZone('clearing');});
 }
 
-// =============================================
-// DEATH & GAME OVER
-// =============================================
-function showDeath() {
-    const overlay = document.getElementById('deadOverlay');
-    overlay.className = 'dead-overlay show';
-    const legacy = Math.round((getStat(state, 'health') + getStat(state, 'happiness') + getStat(state, 'intelligence') +
-        getStat(state, 'wealth') + getStat(state, 'social') + getStat(state, 'career') + getStat(state, 'spirit')) / 7);
-    document.getElementById('legacyScore').textContent = '🏆 Legacy Score: ' + legacy;
-    const breakdown = 'Health: ' + Math.round(getStat(state, 'health')) + '% | Happiness: ' + Math.round(getStat(state, 'happiness')) +
-        '% | Intelligence: ' + Math.round(getStat(state, 'intelligence')) + '% | Wealth: ' + Math.round(getStat(state, 'wealth')) +
-        '% | Social: ' + Math.round(getStat(state, 'social')) + '% | Career: ' + Math.round(getStat(state, 'career')) +
-        '% | Spirit: ' + Math.round(getStat(state, 'spirit')) + '%';
-    document.getElementById('legacyBreakdown').textContent = breakdown;
-    const career = CAREER_BRANCHES[state.careerIdx] || CAREER_BRANCHES[0];
-    document.getElementById('deathMessage').textContent = 'Lived to ' + state.age + ' years. Career: ' + career.name +
-        ' | Partner: ' + (state.partner ? state.partnerName : 'None') + ' | Children: ' + state.children +
-        ' | Friends: ' + (state.friends || 0);
-    const container = document.getElementById('finalStats');
-    container.innerHTML = '';
-    STATS.forEach(key => {
-        const div = document.createElement('div');
-        div.innerHTML = '<span>' + LABELS[key] + '</span><span>' + Math.round(getStat(state, key)) + '%</span>';
-        container.appendChild(div);
-    });
-    addLog('🏁 Life completed at ' + state.age, 'event');
-    autoSave();
+function talkWanderer(){
+if(STATE.flags.talkedToWanderer)return;
+STATE.flags.talkedToWanderer=true;
+output.textContent+='🧙 Wanderer: "You seek the shards. The tower holds the key."\n';
+heal(15);
+endTurn();
+clearChoices();
+addChoice('Continue',function(){enterZone('clearing');});
 }
 
-// =============================================
-// SAVE/LOAD SYSTEM
-// =============================================
-function autoSave() {
-    if (!state) return;
-    try {
-        const data = JSON.stringify(state);
-        fetch(FIREBASE_URL + '/save.json', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: data
-        }).catch(function() {});
-    } catch (e) {}
+function initGame(){
+output.textContent='=== TERMINAL RPG ===\nA dark fantasy unfolds...\n\n';
+updateUI();
+clearChoices();
+addChoice('▶️ Start adventure',function(){
+output.textContent+='You wake in a misty forest. A wanderer approaches.\n';
+enterZone('clearing');
+});
 }
+initGame();
 
-function saveGame() {
-    if (!state || !state.alive) { alert('No active life to save.'); return; }
-    try {
-        const data = JSON.stringify(state);
-        fetch(FIREBASE_URL + '/save.json', {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: data
-        })
-        .then(function(r) { return r.json(); })
-        .then(function() {
-            addLog('💾 Game saved.', 'event');
-            alert('Game saved successfully!');
-        })
-        .catch(function() { alert('Save failed. Check network.'); });
-    } catch (e) { alert('Error: ' + e.message); }
+cmdBtn.addEventListener('click',function(){
+const val=cmdInput.value.trim();
+if(!val||blocked)return;
+cmdInput.value='';
+output.textContent+='> '+val+'\n';
+if(val.toLowerCase()==='help'){
+output.textContent+='Commands: help, status, clear\n';
+}else if(val.toLowerCase()==='status'){
+output.textContent+='HP: '+STATE.hp+'/'+STATE.maxHp+' | Turn: '+STATE.turn+' | Location: '+STATE.location+'\n';
+}else if(val.toLowerCase()==='clear'){
+output.textContent='';
+}else{
+output.textContent+='Unknown command. Try help.\n';
 }
-
-function loadGame() {
-    fetch(FIREBASE_URL + '/save.json')
-    .then(function(r) {
-        if (!r.ok) throw new Error('No save found');
-        return r.json();
-    })
-    .then(function(data) {
-        if (!data || !data.age) { alert('No valid save data.'); return; }
-        state = data;
-        state.gameStarted = true;
-        document.getElementById('deadOverlay').className = 'dead-overlay';
-        renderAll();
-        addLog('📂 Game loaded.', 'event');
-        if (!state.alive) {
-            showDeath();
-        } else if (state.prison) {
-            renderEvent('🔒 Prison Life', 'You are incarcerated. Serve your time.', ['Continue'], function() {
-                state.waiting = false;
-            });
-        } else {
-            renderEvent('Loaded', 'Continue your journey.', ['Continue'], function() {
-                state.waiting = false;
-            });
-        }
-    })
-    .catch(function() { alert('No save found. Start a new life first.'); });
-}
-
-function resetGame() {
-    if (!confirm('Start a new life? Current progress will be lost.')) return;
-    state = createDefaultState();
-    document.getElementById('deadOverlay').className = 'dead-overlay';
-    renderAll();
-    addLog('🔄 New life ready.', 'event');
-    renderEvent('Welcome', 'Your ultimate life simulation awaits. Click Begin Life to start.', ['Begin Life'], function() {
-        startLife();
-    });
-}
-
-// =============================================
-// CHAT SYSTEM
-// =============================================
-function openChat() {
-    const modal = document.getElementById('chatModal');
-    modal.classList.add('show');
-    document.getElementById('chatInput').focus();
-    renderChat();
-}
-
-function closeChat() {
-    document.getElementById('chatModal').classList.remove('show');
-}
-
-function renderChat() {
-    const container = document.getElementById('chatMessages');
-    container.innerHTML = '';
-    const entries = chatHistory.slice(-20);
-    entries.forEach(entry => {
-        const div = document.createElement('div');
-        div.className = 'msg' + (entry.system ? ' system' : '');
-        div.innerHTML = (entry.who ? '<span class="who">' + entry.who + ':</span>' : '') + entry.text;
-        container.appendChild(div);
-    });
-    container.scrollTop = container.scrollHeight;
-}
-
-function sendChat() {
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (!text) return;
-    
-    const responses = [
-        'That\'s interesting!', 'I agree with you.', 'Tell me more.', 'That\'s deep.',
-        'Really? Wow!', 'I see what you mean.', 'That makes sense.', 'You\'re right!',
-        'Interesting perspective.', 'I never thought of that.', 'That\'s cool!',
-        'Yeah, totally.', 'Hmm, good point.', 'I feel the same.', 'That\'s wild!',
-        'For real?', 'No way!', 'That\'s awesome.', 'I understand.', 'Keep going.'
-    ];
-    const names = ['Alex', 'Jordan', 'Taylor', 'Morgan', 'Riley', 'Avery', 'Quinn', 'Parker', 'Cameron', 'Logan'];
-    
-    chatHistory.push({ who: 'You', text: text, time: Date.now() });
-    const reply = pick(responses);
-    const name = pick(names);
-    
-    setTimeout(function() {
-        chatHistory.push({ who: name, text: reply, time: Date.now() });
-        renderChat();
-        if (state && state.alive) {
-            addLog('💬 Chat: ' + name + ' said "' + reply + '"', 'chat');
-        }
-    }, 500 + Math.random() * 800);
-    
-    chatHistory.push({ who: 'System', text: '...', system: true, time: Date.now() });
-    renderChat();
-    input.value = '';
-    if (state && state.alive) {
-        addLog('💬 You: ' + text, 'chat');
-        addHistory('Chat: ' + text);
-    }
-}
-
-// =============================================
-// GAME INITIALIZATION
-// =============================================
-function startLife() {
-    if (!state) { state = createDefaultState(); }
-    if (state.gameStarted) return;
-    state.age = 1;
-    state.gameStarted = true;
-    state.monthlyIncome = 0;
-    state.monthlyExpenses = 0;
-    state.lastCareerAdvance = 0;
-    addLog('🌟 Life begins at age 1.', 'event');
-    renderAll();
-    renderEvent('Year 1', 'Your ultimate journey starts now. Choose your first action.', ['Continue'], function() {
-        state.waiting = false;
-    });
-}
-
-function init() {
-    state = createDefaultState();
-    chatHistory = [
-        { who: 'System', text: 'Welcome to the Social Hub. Connect with others.', system: true }
-    ];
-    renderAll();
-    addLog('🌟 Welcome to Real Lives Ultimate.', 'event');
-    
-    // Begin button
-    document.getElementById('beginBtn').onclick = startLife;
-    
-    // Action buttons
-    document.querySelectorAll('.action-btn').forEach(function(btn) {
-        btn.onclick = function() {
-            doAction(this.dataset.action);
-        };
-    });
-    
-    // Tab buttons
-    document.querySelectorAll('.tab-btn').forEach(function(btn) {
-        btn.onclick = function() {
-            const tab = this.dataset.tab;
-            document.querySelectorAll('.tab-content').forEach(function(t) {
-                t.classList.add('hidden');
-            });
-            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
-            document.querySelectorAll('.tab-btn').forEach(function(t) {
-                t.classList.remove('active');
-            });
-            this.classList.add('active');
-        };
-    });
-    
-    // Footer buttons
-    document.getElementById('saveBtn').onclick = saveGame;
-    document.getElementById('loadBtn').onclick = loadGame;
-    document.getElementById('resetBtn').onclick = resetGame;
-    document.getElementById('restartBtn').onclick = resetGame;
-    document.getElementById('chatToggleBtn').onclick = openChat;
-    document.getElementById('chatCloseBtn').onclick = closeChat;
-    document.getElementById('chatSendBtn').onclick = sendChat;
-    document.getElementById('chatInput').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') sendChat();
-    });
-    document.addEventListener('click', function(e) {
-        const modal = document.getElementById('chatModal');
-        if (e.target === modal) closeChat();
-    });
-    
-    // Auto-save every 30 seconds
-    setInterval(autoSave, 30000);
-}
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-} else {
-    init();
-}
+output.scrollTop=output.scrollHeight;
+});
+cmdInput.addEventListener('keydown',function(e){if(e.key==='Enter')cmdBtn.click();});
 })();
 </script>
 </body>
