@@ -1,1204 +1,241 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>PRESIDENT SIMULATOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Enterprise</title>
     <style>
-        :root {
-            --bg: #0a0a0a;
-            --bg2: #111111;
-            --panel: rgba(20, 20, 20, 0.95);
-            --panel-border: #2a2a2a;
-            --text: #e0e0e0;
-            --text-dim: #888888;
-            --accent: #c8a84e;
-            --accent2: #8b0000;
-            --green: #2e7d32;
-            --red: #b71c1c;
-            --blue: #1565c0;
-            --gold: #ffd700;
-            --font: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-            --safe-top: env(safe-area-inset-top, 0px);
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            user-select: none;
-            -webkit-user-select: none;
         }
-
-        html,
         body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: var(--bg);
-            font-family: var(--font);
-            color: var(--text);
-            position: fixed;
-            top: 0;
-            left: 0;
-            touch-action: manipulation;
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body {
-            padding-top: var(--safe-top);
-            padding-bottom: var(--safe-bottom);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0e17;
+            color: #e0e6ed;
             display: flex;
-            flex-direction: column;
-        }
-
-        .screen {
-            display: none;
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-            left: 0;
-            flex-direction: column;
-            background: var(--bg);
-            z-index: 1;
-            overflow: hidden;
-        }
-        .screen.active {
-            display: flex;
-            z-index: 10;
-        }
-
-        ::-webkit-scrollbar {
-            width: 0;
-            height: 0;
-            display: none;
-        }
-
-        .scanline-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-            background: repeating-linear-gradient(0deg,
-                    rgba(0, 0, 0, 0.03) 0px,
-                    rgba(0, 0, 0, 0.03) 1px,
-                    transparent 1px,
-                    transparent 3px);
-        }
-
-        .vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9998;
-            background: radial-gradient(ellipse at center, transparent 50%, rgba(0, 0, 0, 0.7) 100%);
-        }
-
-        #menu-screen {
             justify-content: center;
             align-items: center;
-            background: radial-gradient(ellipse at center, #1a1a1a 0%, #050505 70%);
-            position: relative;
+            min-height: 100vh;
+            padding: 1rem;
         }
-        #menu-screen::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .container {
+            background: #141b2b;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
             width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 20% 30%, rgba(200, 168, 78, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.08) 0%, transparent 40%);
-            pointer-events: none;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            border: 1px solid #1e2a3a;
         }
-
-        .menu-title {
-            font-size: clamp(28px, 8vw, 56px);
-            font-weight: 900;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(200, 168, 78, 0.5), 0 4px 15px rgba(0, 0, 0, 0.8);
-            margin-bottom: 5px;
-            text-align: center;
-            animation: titlePulse 2s ease-in-out infinite;
-        }
-        .menu-subtitle {
-            font-size: clamp(11px, 3vw, 16px);
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            color: var(--accent);
-            text-align: center;
-            margin-bottom: 40px;
+        h1 {
             font-weight: 300;
-        }
-        @keyframes titlePulse {
-            0%,
-            100% {
-                text-shadow: 0 0 30px rgba(200, 168, 78, 0.5), 0 4px 15px rgba(0, 0, 0, 0.8);
-            }
-            50% {
-                text-shadow: 0 0 50px rgba(200, 168, 78, 0.8), 0 4px 20px rgba(0, 0, 0, 0.9);
-            }
-        }
-
-        .menu-btn {
-            background: rgba(30, 30, 30, 0.9);
-            border: 1px solid var(--panel-border);
-            color: var(--text);
-            padding: 16px 40px;
-            font-size: 16px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 8px 0;
-            width: min(80%, 320px);
-            text-align: center;
-            font-weight: 600;
-            position: relative;
-            overflow: hidden;
-            border-radius: 2px;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .menu-btn::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(200, 168, 78, 0.15), transparent);
-            transition: left 0.5s ease;
-        }
-        .menu-btn:active {
-            background: rgba(50, 50, 50, 0.95);
-            border-color: var(--accent);
-            transform: scale(0.97);
-        }
-        .menu-btn:active::after {
-            left: 100%;
-        }
-        .menu-btn.primary {
-            border-color: var(--accent);
-            color: var(--accent);
-            font-weight: 700;
-        }
-        .menu-btn.danger {
-            border-color: var(--accent2);
-            color: #d32f2f;
-        }
-
-        .menu-version {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 10px;
-            color: #444;
+            font-size: 1.8rem;
             letter-spacing: 1px;
-            text-transform: uppercase;
+            color: #64ffda;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #1e2a3a;
+            padding-bottom: 0.75rem;
         }
-
-        #country-screen {
-            background: var(--bg);
-        }
-        .screen-header {
+        .field-group {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--panel-border);
-            background: var(--bg2);
-            min-height: 56px;
-            flex-shrink: 0;
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
         }
-        .screen-header h2 {
-            font-size: 16px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            font-weight: 700;
-        }
-        .back-btn {
-            background: none;
-            border: 1px solid var(--panel-border);
-            color: var(--text-dim);
-            padding: 8px 16px;
-            font-size: 13px;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border-radius: 2px;
-            min-height: 40px;
-            transition: all 0.2s;
-            text-transform: uppercase;
-        }
-        .back-btn:active {
-            border-color: var(--accent);
-            color: var(--accent);
-            background: rgba(200, 168, 78, 0.1);
-        }
-
-        .country-list {
+        input {
             flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            -webkit-overflow-scrolling: touch;
+            padding: 0.75rem 1rem;
+            background: #0d1524;
+            border: 1px solid #1e2a3a;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 1rem;
+            transition: border 0.2s;
+            min-width: 180px;
         }
-        .country-item {
+        input:focus {
+            outline: none;
+            border-color: #64ffda;
+        }
+        .btn-group {
             display: flex;
-            align-items: center;
-            padding: 14px 12px;
-            border-bottom: 1px solid rgba(40, 40, 40, 0.5);
-            cursor: pointer;
-            transition: all 0.2s;
-            min-height: 56px;
-            border-radius: 2px;
-            margin-bottom: 2px;
-            background: rgba(15, 15, 15, 0.6);
+            gap: 0.75rem;
+            flex-wrap: wrap;
         }
-        .country-item:active {
-            background: rgba(200, 168, 78, 0.15);
-            border-left: 3px solid var(--accent);
-            padding-left: 10px;
-        }
-        .country-flag {
-            font-size: 28px;
-            margin-right: 14px;
-            flex-shrink: 0;
-            width: 36px;
-            text-align: center;
-        }
-        .country-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .country-name {
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
-            letter-spacing: 0.5px;
-        }
-        .country-region {
-            font-size: 11px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-top: 2px;
-        }
-        .country-pop {
-            font-size: 11px;
-            color: var(--accent);
-            margin-top: 2px;
-            font-weight: 500;
-        }
-        .loading-text {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-dim);
-            letter-spacing: 2px;
-            font-size: 14px;
-            animation: blink 1.5s infinite;
-        }
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        #game-screen {
-            background: var(--bg);
-            position: relative;
-        }
-        #game-screen::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background:
-                radial-gradient(circle at 50% 0%, rgba(200, 168, 78, 0.04) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(139, 0, 0, 0.06) 0%, transparent 40%);
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .hud-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: rgba(10, 10, 10, 0.95);
-            border-bottom: 1px solid var(--panel-border);
-            z-index: 5;
-            flex-shrink: 0;
-            min-height: 52px;
-            position: relative;
-        }
-        .hud-country {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #fff;
-            text-transform: uppercase;
-        }
-        .hud-flag {
-            font-size: 22px;
-        }
-        .hud-term {
-            font-size: 11px;
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        .hud-approval {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--accent);
-            letter-spacing: 0.5px;
-        }
-        .approval-bar-bg {
-            width: 80px;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .approval-bar-fill {
-            height: 100%;
-            background: var(--accent);
-            border-radius: 3px;
-            transition: width 0.5s ease;
-        }
-
-        .game-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 12px;
-            z-index: 2;
-            position: relative;
-            gap: 10px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            flex-shrink: 0;
-        }
-        .stat-card {
-            background: rgba(20, 20, 20, 0.85);
-            border: 1px solid var(--panel-border);
-            border-radius: 3px;
-            padding: 10px 8px;
-            text-align: center;
-            transition: all 0.3s;
-            min-height: 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        .stat-label {
-            font-size: 9px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            color: var(--text-dim);
-            margin-bottom: 4px;
-            font-weight: 500;
-        }
-        .stat-value {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            letter-spacing: 0.5px;
-        }
-        .stat-value.good {
-            color: #4caf50;
-        }
-        .stat-value.bad {
-            color: #ef5350;
-        }
-        .stat-value.neutral {
-            color: var(--accent);
-        }
-
-        .news-ticker {
-            background: rgba(15, 15, 15, 0.9);
-            border: 1px solid var(--panel-border);
-            border-radius: 3px;
-            padding: 10px 12px;
-            flex-shrink: 0;
-            overflow: hidden;
-            position: relative;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-        }
-        .ticker-label {
-            font-size: 9px;
-            letter-spacing: 2px;
-            color: var(--accent2);
-            font-weight: 700;
-            text-transform: uppercase;
-            margin-right: 12px;
-            flex-shrink: 0;
-            background: rgba(139, 0, 0, 0.3);
-            padding: 2px 8px;
-            border-radius: 2px;
-        }
-        .ticker-text {
-            font-size: 12px;
-            color: #ccc;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-
-        .decision-area {
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .decision-title {
-            font-size: 13px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--accent);
-            font-weight: 700;
-            margin-bottom: 4px;
-            text-align: center;
-        }
-        .decision-card {
-            background: rgba(20, 20, 20, 0.9);
-            border: 1px solid var(--panel-border);
-            border-radius: 3px;
-            padding: 14px 16px;
-            cursor: pointer;
-            transition: all 0.25s;
-            min-height: 48px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            position: relative;
-            overflow: hidden;
-        }
-        .decision-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 3px;
-            height: 100%;
-            background: var(--accent);
-            opacity: 0;
-            transition: opacity 0.25s;
-        }
-        .decision-card:active {
-            background: rgba(40, 40, 40, 0.95);
-            border-color: var(--accent);
-            transform: scale(0.98);
-        }
-        .decision-card:active::before {
-            opacity: 1;
-        }
-        .decision-icon {
-            font-size: 24px;
-            flex-shrink: 0;
-        }
-        .decision-text {
-            font-size: 13px;
-            color: #ddd;
-            letter-spacing: 0.3px;
-            line-height: 1.3;
-            flex: 1;
-        }
-        .decision-impact {
-            font-size: 10px;
-            letter-spacing: 0.5px;
-            text-align: right;
-            flex-shrink: 0;
-        }
-        .impact-positive {
-            color: #4caf50;
-        }
-        .impact-negative {
-            color: #ef5350;
-        }
-
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 100;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-        .modal-box {
-            background: var(--panel);
-            border: 1px solid var(--accent);
-            border-radius: 4px;
-            padding: 24px 20px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 0 60px rgba(200, 168, 78, 0.2);
-            animation: modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        .modal-title {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            color: #fff;
-            margin-bottom: 12px;
-        }
-        .modal-text {
-            font-size: 14px;
-            color: #ccc;
-            letter-spacing: 0.5px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-        .modal-btn {
-            background: var(--accent);
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #1e2a3a;
             border: none;
-            color: #000;
-            padding: 14px 32px;
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-weight: 700;
+            border-radius: 8px;
+            color: #e0e6ed;
+            font-size: 0.95rem;
+            font-weight: 500;
             cursor: pointer;
-            border-radius: 2px;
-            min-height: 48px;
             transition: all 0.2s;
-            width: 100%;
+            flex: 1;
+            min-width: 100px;
+            letter-spacing: 0.3px;
         }
-        .modal-btn:active {
-            transform: scale(0.96);
-            background: #e0c060;
+        button:hover {
+            background: #2a3a50;
+            transform: translateY(-1px);
         }
-
-        .gameover-stats {
-            margin: 16px 0;
-            text-align: left;
+        button.primary {
+            background: #64ffda;
+            color: #0a0e17;
         }
-        .gameover-stat-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(60, 60, 60, 0.5);
-            font-size: 13px;
+        button.primary:hover {
+            background: #7fffe8;
         }
-        .gameover-stat-label {
-            color: var(--text-dim);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-size: 11px;
+        button.danger {
+            background: #ff6b6b;
+            color: #0a0e17;
         }
-        .gameover-stat-value {
-            color: #fff;
-            font-weight: 700;
+        button.danger:hover {
+            background: #ff8a8a;
         }
-
-        @media (max-width: 360px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .stat-value {
-                font-size: 14px;
-            }
-            .decision-text {
-                font-size: 12px;
-            }
+        #displayData {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #0d1524;
+            border-radius: 8px;
+            border-left: 3px solid #64ffda;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+            min-height: 60px;
+            color: #b0c4de;
         }
-        @media (min-width: 600px) {
-            .stats-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-            .game-content {
-                max-width: 700px;
-                margin: 0 auto;
-                width: 100%;
-            }
-            .hud-top {
-                max-width: 700px;
-                margin: 0 auto;
-                width: 100%;
-            }
+        .status {
+            margin-top: 0.75rem;
+            font-size: 0.85rem;
+            color: #7a8ba3;
+            text-align: right;
         }
-
-        .fb-status {
-            position: fixed;
-            bottom: 8px;
-            right: 8px;
-            font-size: 8px;
-            letter-spacing: 1px;
-            color: #444;
-            z-index: 50;
-            text-transform: uppercase;
-        }
-        .fb-status.online {
-            color: #2e7d32;
-        }
-        .fb-status.offline {
-            color: #b71c1c;
+        @media (max-width: 480px) {
+            .container { padding: 1.25rem; }
+            .field-group { flex-direction: column; }
+            button { min-width: 100%; }
         }
     </style>
 </head>
 <body>
-
-    <div class="scanline-overlay"></div>
-    <div class="vignette"></div>
-
-    <!-- MAIN MENU -->
-    <div id="menu-screen" class="screen active">
-        <div class="menu-title">PRESIDENT</div>
-        <div class="menu-subtitle">Simulator</div>
-        <button class="menu-btn primary" onclick="showScreen('country-screen'); loadCountries();">Start Game</button>
-        <button class="menu-btn" onclick="showScreen('country-screen'); loadCountries();">Select Country</button>
-        <button class="menu-btn danger" onclick="showGameOver('You have resigned from office.', getFinalStats())">Resign</button>
-        <div class="menu-version">v1.0 | Firebase RTDB</div>
+    <div class="container">
+        <h1>◈ FIREBASE ENTERPRISE</h1>
+        <div class="field-group">
+            <input type="text" id="dataInput" placeholder="Enter payload">
+        </div>
+        <div class="btn-group">
+            <button class="primary" onclick="saveData()">COMMIT</button>
+            <button onclick="loadData()">FETCH</button>
+            <button class="danger" onclick="clearData()">PURGE</button>
+        </div>
+        <div id="displayData">⏳ awaiting operation...</div>
+        <div class="status" id="statusMsg">● system ready</div>
     </div>
 
-    <!-- COUNTRY SELECT -->
-    <div id="country-screen" class="screen">
-        <div class="screen-header">
-            <button class="back-btn" onclick="showScreen('menu-screen')">← Back</button>
-            <h2>Select Nation</h2>
-            <div style="width:60px;"></div>
-        </div>
-        <div class="country-list" id="country-list">
-            <div class="loading-text">Loading nations...</div>
-        </div>
-    </div>
-
-    <!-- GAME SCREEN -->
-    <div id="game-screen" class="screen">
-        <div class="hud-top">
-            <div class="hud-country">
-                <span class="hud-flag" id="hud-flag">🏳️</span>
-                <span id="hud-country-name">—</span>
-            </div>
-            <div class="hud-term" id="hud-term">Year 1</div>
-            <div class="hud-approval">
-                <span id="hud-approval-value">50%</span>
-                <div class="approval-bar-bg">
-                    <div class="approval-bar-fill" id="hud-approval-bar" style="width:50%;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="game-content" id="game-content">
-        </div>
-        <div class="fb-status" id="fb-status">DB: —</div>
-    </div>
-
-    <!-- MODAL -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal-box">
-            <div class="modal-title" id="modal-title">Event</div>
-            <div class="modal-text" id="modal-text">Something happened.</div>
-            <button class="modal-btn" id="modal-btn" onclick="closeModal()">Continue</button>
-        </div>
-    </div>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js">
+    </script>
 
     <script>
-        // ============ FIREBASE CONFIG ============
-        const FIREBASE_DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-        let firebaseConnected = false;
-
-        function initFirebase() {
-            fetch(FIREBASE_DB_URL + '.json?shallow=true', { method: 'GET' })
-                .then(res => {
-                    if (res.ok) {
-                        firebaseConnected = true;
-                        updateFbStatus(true);
-                    } else {
-                        updateFbStatus(false);
-                    }
-                })
-                .catch(() => updateFbStatus(false));
-        }
-
-        function updateFbStatus(online) {
-            const el = document.getElementById('fb-status');
-            if (online) {
-                el.textContent = 'DB: ONLINE';
-                el.className = 'fb-status online';
-            } else {
-                el.textContent = 'DB: OFFLINE';
-                el.className = 'fb-status offline';
-            }
-        }
-
-        function saveScoreToFirebase(country, approval, termYears) {
-            if (!firebaseConnected) return;
-            try {
-                const data = {
-                    country: country,
-                    approval: approval,
-                    termYears: termYears,
-                    timestamp: Date.now()
-                };
-                fetch(FIREBASE_DB_URL + 'leaderboard.json', {
-                    method: 'POST',
-                    body: JSON.stringify(data),
-                    headers: { 'Content-Type': 'application/json' }
-                }).catch(() => {});
-            } catch (e) {}
-        }
-
-        function saveGlobalStats(country) {
-            if (!firebaseConnected) return;
-            try {
-                fetch(FIREBASE_DB_URL + 'stats/' + encodeURIComponent(country) + '.json', {
-                    method: 'POST',
-                    body: JSON.stringify({ picked: true, timestamp: Date.now() }),
-                    headers: { 'Content-Type': 'application/json' }
-                }).catch(() => {});
-            } catch (e) {}
-        }
-
-        // ============ SCREEN MANAGEMENT ============
-        function showScreen(screenId) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(screenId).classList.add('active');
-        }
-
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.remove('active');
-        }
-
-        function showModal(title, text) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-text').textContent = text;
-            document.getElementById('modal-overlay').classList.add('active');
-        }
-
-        // ============ GAME STATE ============
-        const GAME_STATE = {
-            country: null,
-            countryData: null,
-            approval: 50,
-            gdp: 0,
-            population: 0,
-            unemployment: 0,
-            inflation: 0,
-            debt: 0,
-            year: 1,
-            maxYears: 4,
-            gameOver: false,
-            decisions: [],
-            crisisHistory: []
+        const FIREBASE_CONFIG = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "YOUR_PROJECT",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
-        // ============ REAL WORLD DATA (REST Countries API Only) ============
-        let countriesData = [];
-        let countriesLoaded = false;
+        const DB_PATH = '/enterprise/data';
+        const STATUS_EL = document.getElementById('statusMsg');
+        const DISPLAY_EL = document.getElementById('displayData');
+        const INPUT_EL = document.getElementById('dataInput');
 
-        async function loadCountries() {
-            if (countriesLoaded && countriesData.length > 0) {
-                renderCountryList(countriesData);
+        firebase.initializeApp(FIREBASE_CONFIG);
+        const database = firebase.database();
+        const dbRef = database.ref(DB_PATH);
+
+        function setStatus(message, isError = false) {
+            STATUS_EL.textContent = isError ? '⚠ ' + message : '● ' + message;
+            STATUS_EL.style.color = isError ? '#ff6b6b' : '#7a8ba3';
+        }
+
+        function updateDisplay(value) {
+            DISPLAY_EL.textContent = value !== null && value !== undefined ? 
+                JSON.stringify(value, null, 2) : '∅ no data';
+        }
+
+        window.saveData = function() {
+            const payload = INPUT_EL.value.trim();
+            if (!payload) {
+                setStatus('payload required', true);
                 return;
             }
-            const listEl = document.getElementById('country-list');
-            listEl.innerHTML = '<div class="loading-text">Fetching real country data...</div>';
+            setStatus('committing...');
+            dbRef.set(payload)
+                .then(() => {
+                    setStatus('commit successful');
+                    updateDisplay(payload);
+                    INPUT_EL.value = '';
+                })
+                .catch(err => {
+                    setStatus('commit failed: ' + err.message, true);
+                    console.error('[FIREBASE] SET ERROR:', err);
+                });
+        };
 
-            try {
-                const res = await fetch('https://restcountries.com/v3.1/all?fields=name,flag,region,population,capital');
-                if (!res.ok) throw new Error('API error: ' + res.status);
-                const data = await res.json();
-                countriesData = data
-                    .filter(c => c.population > 500000)
-                    .sort((a, b) => b.population - a.population)
-                    .slice(0, 30);
-                countriesLoaded = true;
-                renderCountryList(countriesData);
-            } catch (e) {
-                listEl.innerHTML = `
-                    <div class="loading-text">⚠️ Failed to load countries.</div>
-                    <div class="loading-text">Check internet connection.</div>
-                    <div style="text-align:center;padding:10px;">
-                        <button class="back-btn" onclick="loadCountries()">Retry</button>
-                    </div>
-                `;
-            }
-        }
+        window.loadData = function() {
+            setStatus('fetching...');
+            dbRef.get()
+                .then(snapshot => {
+                    const value = snapshot.val();
+                    if (value !== null && value !== undefined) {
+                        updateDisplay(value);
+                        setStatus('fetch successful');
+                    } else {
+                        updateDisplay(null);
+                        setStatus('no data found');
+                    }
+                })
+                .catch(err => {
+                    setStatus('fetch failed: ' + err.message, true);
+                    console.error('[FIREBASE] GET ERROR:', err);
+                });
+        };
 
-        function renderCountryList(countries) {
-            const listEl = document.getElementById('country-list');
-            listEl.innerHTML = '';
-            countries.forEach(c => {
-                const item = document.createElement('div');
-                item.className = 'country-item';
-                const popStr = formatNumber(c.population);
-                item.innerHTML = `
-                    <div class="country-flag">${c.flag || '🏳️'}</div>
-                    <div class="country-info">
-                        <div class="country-name">${c.name.common}</div>
-                        <div class="country-region">${c.region || 'Unknown'}</div>
-                        <div class="country-pop">Population: ${popStr}</div>
-                    </div>
-                `;
-                item.addEventListener('click', () => selectCountry(c));
-                listEl.appendChild(item);
-            });
-        }
-
-        function selectCountry(countryData) {
-            GAME_STATE.country = countryData.name.common;
-            GAME_STATE.countryData = countryData;
-            GAME_STATE.approval = 50;
-            GAME_STATE.year = 1;
-            GAME_STATE.gameOver = false;
-            GAME_STATE.decisions = [];
-            GAME_STATE.crisisHistory = [];
-            GAME_STATE.gdp = getEstimatedGDP(countryData);
-            GAME_STATE.population = countryData.population;
-            GAME_STATE.unemployment = getEstimatedUnemployment(countryData);
-            GAME_STATE.inflation = getEstimatedInflation(countryData);
-            GAME_STATE.debt = getEstimatedDebt(countryData);
-
-            saveGlobalStats(countryData.name.common);
-            startGame();
-        }
-
-        // ============ ESTIMATED REAL DATA ============
-        function getEstimatedGDP(countryData) {
-            const regionFactors = { 'Asia': 8000, 'Europe': 35000, 'Africa': 3000, 'Americas': 20000, 'Oceania': 30000 };
-            const base = regionFactors[countryData.region] || 12000;
-            return Math.round(base * countryData.population);
-        }
-
-        function getEstimatedUnemployment(countryData) {
-            const regionRates = { 'Asia': 5.5, 'Europe': 7.5, 'Africa': 8.5, 'Americas': 6.5, 'Oceania': 4.5 };
-            return regionRates[countryData.region] || 6.5;
-        }
-
-        function getEstimatedInflation(countryData) {
-            const regionRates = { 'Asia': 4.0, 'Europe': 3.5, 'Africa': 8.0, 'Americas': 5.0, 'Oceania': 3.0 };
-            return regionRates[countryData.region] || 4.5;
-        }
-
-        function getEstimatedDebt(countryData) {
-            return Math.round(getEstimatedGDP(countryData) * 0.7);
-        }
-
-        function formatNumber(num) {
-            if (num >= 1e12) return (num / 1e12).toFixed(2) + 'T';
-            if (num >= 1e9) return (num / 1e9).toFixed(1) + 'B';
-            if (num >= 1e6) return (num / 1e6).toFixed(1) + 'M';
-            if (num >= 1e3) return (num / 1e3).toFixed(0) + 'K';
-            return num.toString();
-        }
-
-        function formatMoney(num) {
-            if (num >= 1e12) return '$' + (num / 1e12).toFixed(2) + 'T';
-            if (num >= 1e9) return '$' + (num / 1e9).toFixed(1) + 'B';
-            if (num >= 1e6) return '$' + (num / 1e6).toFixed(0) + 'M';
-            return '$' + num;
-        }
-
-        // ============ GAME START ============
-        function startGame() {
-            showScreen('game-screen');
-            document.getElementById('hud-flag').textContent = GAME_STATE.countryData.flag || '🏳️';
-            document.getElementById('hud-country-name').textContent = GAME_STATE.country.toUpperCase();
-            updateHUD();
-            generateDecision();
-            updateNewsTicker('You have been sworn in as President of ' + GAME_STATE.country + '.');
-        }
-
-        function updateHUD() {
-            document.getElementById('hud-approval-value').textContent = Math.round(GAME_STATE.approval) + '%';
-            document.getElementById('hud-approval-bar').style.width = GAME_STATE.approval + '%';
-            document.getElementById('hud-term').textContent = 'Year ' + GAME_STATE.year + ' / ' + GAME_STATE.maxYears;
-
-            const bar = document.getElementById('hud-approval-bar');
-            if (GAME_STATE.approval >= 60) bar.style.background = '#4caf50';
-            else if (GAME_STATE.approval >= 40) bar.style.background = '#c8a84e';
-            else bar.style.background = '#ef5350';
-
-            renderStats();
-        }
-
-        function renderStats() {
-            const content = document.getElementById('game-content');
-            const unemploymentClass = GAME_STATE.unemployment < 6 ? 'good' : GAME_STATE.unemployment > 9 ? 'bad' : 'neutral';
-            const inflationClass = GAME_STATE.inflation < 4 ? 'good' : GAME_STATE.inflation > 8 ? 'bad' : 'neutral';
-            const gdpClass = GAME_STATE.gdp > 0 ? 'good' : 'bad';
-
-            const statsHtml = `
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-label">GDP</div>
-                        <div class="stat-value ${gdpClass}">${formatMoney(GAME_STATE.gdp)}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Population</div>
-                        <div class="stat-value">${formatNumber(GAME_STATE.population)}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Unemployment</div>
-                        <div class="stat-value ${unemploymentClass}">${GAME_STATE.unemployment.toFixed(1)}%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Inflation</div>
-                        <div class="stat-value ${inflationClass}">${GAME_STATE.inflation.toFixed(1)}%</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Debt</div>
-                        <div class="stat-value">${formatMoney(GAME_STATE.debt)}</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Approval</div>
-                        <div class="stat-value neutral">${Math.round(GAME_STATE.approval)}%</div>
-                    </div>
-                </div>
-                <div class="news-ticker">
-                    <span class="ticker-label">📰 News</span>
-                    <span class="ticker-text" id="ticker-text">Welcome to your presidency.</span>
-                </div>
-                <div class="decision-area" id="decision-area">
-                    <div class="decision-title">— Policy Decision —</div>
-                </div>
-            `;
-
-            content.innerHTML = statsHtml;
-            generateDecision();
-        }
-
-        function updateNewsTicker(text) {
-            const ticker = document.getElementById('ticker-text');
-            if (ticker) ticker.textContent = text;
-        }
-
-        // ============ DECISION GENERATION ============
-        const DECISION_TEMPLATES = [
-            { icon: '💰', text: 'Tax Reform: Cut taxes to stimulate economy?', effects: { approval: +8, gdp: +2, unemployment: -0.5, inflation: +1, debt: +5 }, altText: 'You implemented tax cuts. Markets rally.' },
-            { icon: '🏥', text: 'Healthcare: Increase public health spending?', effects: { approval: +5, gdp: -1, unemployment: -0.3, inflation: +0.5, debt: +3 }, altText: 'Healthcare expansion approved. Public health improves.' },
-            { icon: '🛡️', text: 'Defense: Boost military budget?', effects: { approval: -3, gdp: +1, unemployment: -0.2, inflation: +0.8, debt: +7 }, altText: 'Military spending increased. Tensions with neighbors rise.' },
-            { icon: '🌍', text: 'Climate: Sign major emissions treaty?', effects: { approval: +6, gdp: -2, unemployment: +0.4, inflation: +0.3, debt: +2 }, altText: 'Climate treaty signed. Environmentalists celebrate.' },
-            { icon: '🏗️', text: 'Infrastructure: Massive public works program?', effects: { approval: +7, gdp: +3, unemployment: -1.5, inflation: +2, debt: +10 }, altText: 'Infrastructure project launched. Jobs created.' },
-            { icon: '🏦', text: 'Central Bank: Pressure for lower interest rates?', effects: { approval: +2, gdp: +2, unemployment: -0.5, inflation: +3, debt: -1 }, altText: 'Interest rates lowered. Risk of overheating economy.' },
-            { icon: '📚', text: 'Education: Free university tuition?', effects: { approval: +9, gdp: -2, unemployment: -0.8, inflation: +0.5, debt: +4 }, altText: 'Education reform passed. Youth support surges.' },
-            { icon: '🚔', text: 'Security: Increase police funding?', effects: { approval: -2, gdp: 0, unemployment: -0.1, inflation: +0.2, debt: +2 }, altText: 'Police funding increased. Mixed public reaction.' },
-            { icon: '🌾', text: 'Agriculture: Subsidize farmers?', effects: { approval: +4, gdp: +1, unemployment: -0.6, inflation: -0.5, debt: +3 }, altText: 'Farm subsidies approved. Rural communities pleased.' },
-            { icon: '🔬', text: 'Technology: Fund AI research initiative?', effects: { approval: +3, gdp: +4, unemployment: -0.7, inflation: +0.4, debt: +5 }, altText: 'Tech initiative announced. Innovation sector booms.' },
-            { icon: '🏠', text: 'Housing: Subsidize affordable housing?', effects: { approval: +6, gdp: +1, unemployment: -0.9, inflation: +1, debt: +6 }, altText: 'Housing program launched. Homelessness decreases.' },
-            { icon: '⚡', text: 'Energy: Nationalize power grid?', effects: { approval: -5, gdp: -3, unemployment: +0.2, inflation: +2, debt: +8 }, altText: 'Energy sector nationalized. Investors alarmed.' }
-        ];
-
-        const CRISIS_TEMPLATES = [
-            { icon: '🌊', text: 'Natural disaster strikes! Emergency response needed.', effects: { approval: -5, gdp: -3, unemployment: +1, inflation: +1, debt: +5 }, title: 'Natural Disaster' },
-            { icon: '📉', text: 'Global recession fears grip markets.', effects: { approval: -7, gdp: -5, unemployment: +2, inflation: -1, debt: +3 }, title: 'Economic Crisis' },
-            { icon: '🦠', text: 'Pandemic outbreak reported in major cities.', effects: { approval: -4, gdp: -4, unemployment: +2.5, inflation: +0.5, debt: +6 }, title: 'Pandemic Alert' },
-            { icon: '⚔️', text: 'Border tensions escalate with neighboring country.', effects: { approval: -3, gdp: -2, unemployment: +0.5, inflation: +2, debt: +7 }, title: 'Geopolitical Crisis' },
-            { icon: '🏦', text: 'Banking sector stability questioned.', effects: { approval: -6, gdp: -3, unemployment: +1, inflation: +2, debt: +4 }, title: 'Financial Crisis' },
-            { icon: '🔥', text: 'Massive wildfires rage across the nation.', effects: { approval: -3, gdp: -2, unemployment: +0.3, inflation: +0.5, debt: +4 }, title: 'Environmental Crisis' }
-        ];
-
-        let decisionIndex = 0;
-
-        function generateDecision() {
-            if (GAME_STATE.gameOver) return;
-            const decisionArea = document.getElementById('decision-area');
-            if (!decisionArea) return;
-
-            const template = DECISION_TEMPLATES[decisionIndex % DECISION_TEMPLATES.length];
-            decisionIndex++;
-
-            if (Math.random() < 0.25 && GAME_STATE.year > 1) {
-                const crisis = CRISIS_TEMPLATES[Math.floor(Math.random() * CRISIS_TEMPLATES.length)];
-                decisionArea.innerHTML = `
-                    <div class="decision-title">— ⚠️ Crisis Alert —</div>
-                    <div class="decision-card" onclick="handleCrisis(${JSON.stringify(crisis.effects).replace(/"/g, '&quot;')}, '${crisis.title}')">
-                        <div class="decision-icon">${crisis.icon}</div>
-                        <div class="decision-text">${crisis.text}</div>
-                        <div class="decision-impact">Approve?</div>
-                    </div>
-                `;
-            } else {
-                const effects = template.effects;
-                const impacts = [];
-                if (effects.approval > 0) impacts.push(`<span class="impact-positive">+${effects.approval}% appr</span>`);
-                else if (effects.approval < 0) impacts.push(`<span class="impact-negative">${effects.approval}% appr</span>`);
-                if (effects.gdp > 0) impacts.push(`<span class="impact-positive">GDP ↑</span>`);
-                else if (effects.gdp < 0) impacts.push(`<span class="impact-negative">GDP ↓</span>`);
-                if (effects.unemployment < 0) impacts.push(`<span class="impact-positive">Unemp ↓</span>`);
-                else if (effects.unemployment > 0) impacts.push(`<span class="impact-negative">Unemp ↑</span>`);
-
-                decisionArea.innerHTML = `
-                    <div class="decision-title">— Choose Your Action —</div>
-                    <div class="decision-card" onclick="makeDecision(${JSON.stringify(effects).replace(/"/g, '&quot;')}, '${template.altText}')">
-                        <div class="decision-icon">${template.icon}</div>
-                        <div class="decision-text">${template.text}</div>
-                        <div class="decision-impact">${impacts.join('<br>')}</div>
-                    </div>
-                    <div class="decision-card" onclick="rejectDecision('${template.text}')">
-                        <div class="decision-icon">🚫</div>
-                        <div class="decision-text">Reject proposal</div>
-                        <div class="decision-impact"><span class="impact-neutral">No change</span></div>
-                    </div>
-                `;
-            }
-        }
-
-        function makeDecision(effects, newsText) {
-            if (GAME_STATE.gameOver) return;
-            GAME_STATE.decisions.push({ effects, newsText, year: GAME_STATE.year });
-            applyEffects(effects);
-            updateNewsTicker(newsText);
-            advanceYear();
-        }
-
-        function handleCrisis(effects, crisisTitle) {
-            if (GAME_STATE.gameOver) return;
-            GAME_STATE.crisisHistory.push({ title: crisisTitle, year: GAME_STATE.year });
-            showModal(crisisTitle, 'You must address this crisis immediately. Your decision will have far-reaching consequences.');
-            applyEffects(effects);
-            updateNewsTicker('Crisis: ' + crisisTitle + ' — emergency measures enacted.');
-            advanceYear();
-        }
-
-        function rejectDecision(decisionText) {
-            if (GAME_STATE.gameOver) return;
-            GAME_STATE.approval -= 2;
-            updateNewsTicker('You rejected the proposal. Critics say you lack leadership.');
-            advanceYear();
-        }
-
-        function applyEffects(effects) {
-            GAME_STATE.approval = Math.max(0, Math.min(100, GAME_STATE.approval + effects.approval));
-            GAME_STATE.gdp = Math.max(0, GAME_STATE.gdp + (GAME_STATE.gdp * effects.gdp / 100));
-            GAME_STATE.unemployment = Math.max(0, GAME_STATE.unemployment + effects.unemployment);
-            GAME_STATE.inflation = Math.max(0, GAME_STATE.inflation + effects.inflation);
-            GAME_STATE.debt = Math.max(0, GAME_STATE.debt + (GAME_STATE.debt * effects.debt / 100));
-            updateHUD();
-        }
-
-        function advanceYear() {
-            GAME_STATE.year++;
-            if (GAME_STATE.year > GAME_STATE.maxYears) {
-                endTerm();
+        window.clearData = function() {
+            if (!confirm('Permanently delete all data at ' + DB_PATH + '?')) {
                 return;
             }
-            updateHUD();
-            if (GAME_STATE.approval <= 15) {
-                showGameOver('You have been impeached due to extremely low approval ratings.', getFinalStats());
-                return;
+            setStatus('purging...');
+            dbRef.remove()
+                .then(() => {
+                    setStatus('purge complete');
+                    updateDisplay(null);
+                })
+                .catch(err => {
+                    setStatus('purge failed: ' + err.message, true);
+                    console.error('[FIREBASE] REMOVE ERROR:', err);
+                });
+        };
+
+        dbRef.on('value', snapshot => {
+            const value = snapshot.val();
+            if (value !== null && value !== undefined) {
+                updateDisplay(value);
             }
-            if (GAME_STATE.approval >= 85) {
-                showGameOver('Your approval is so high, you have been re-elected early!', getFinalStats());
-                return;
-            }
-        }
+        }, error => {
+            console.error('[FIREBASE] LISTENER ERROR:', error);
+            setStatus('realtime sync error', true);
+        });
 
-        function endTerm() {
-            if (GAME_STATE.approval >= 50) {
-                showGameOver('Congratulations! You have been re-elected for another term!', getFinalStats());
-            } else {
-                showGameOver('You lost the election. Your term has ended.', getFinalStats());
-            }
-        }
-
-        function getFinalStats() {
-            return {
-                country: GAME_STATE.country,
-                approval: Math.round(GAME_STATE.approval),
-                gdp: GAME_STATE.gdp,
-                unemployment: GAME_STATE.unemployment,
-                inflation: GAME_STATE.inflation,
-                debt: GAME_STATE.debt,
-                years: GAME_STATE.year - 1
-            };
-        }
-
-        function showGameOver(title, stats) {
-            GAME_STATE.gameOver = true;
-            const country = stats.country || 'Unknown';
-            const approval = stats.approval || 0;
-            const years = stats.years || 0;
-
-            saveScoreToFirebase(country, approval, years);
-
-            const overlay = document.getElementById('modal-overlay');
-            document.getElementById('modal-title').textContent = 'Term Ended';
-            document.getElementById('modal-text').innerHTML = `
-                <strong style="color:#fff;">${title}</strong><br><br>
-                <div class="gameover-stats">
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">Country</span><span class="gameover-stat-value">${country}</span></div>
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">Final Approval</span><span class="gameover-stat-value">${approval}%</span></div>
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">GDP</span><span class="gameover-stat-value">${formatMoney(stats.gdp || 0)}</span></div>
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">Unemployment</span><span class="gameover-stat-value">${(stats.unemployment || 0).toFixed(1)}%</span></div>
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">Inflation</span><span class="gameover-stat-value">${(stats.inflation || 0).toFixed(1)}%</span></div>
-                    <div class="gameover-stat-row"><span class="gameover-stat-label">Years Served</span><span class="gameover-stat-value">${years}</span></div>
-                </div>
-            `;
-            document.getElementById('modal-btn').textContent = 'Return to Menu';
-            document.getElementById('modal-btn').onclick = function() {
-                closeModal();
-                showScreen('menu-screen');
-            };
-            overlay.classList.add('active');
-        }
-
-        // ============ INIT ============
-        function init() {
-            initFirebase();
-            showScreen('menu-screen');
-        }
-
-        init();
+        setStatus('● enterprise session active');
     </script>
 </body>
 </html>
