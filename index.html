@@ -2,54 +2,59 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>NEON CHAT</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;image-rendering:pixelated}
-html,body{background:#0a0a0f;display:flex;justify-content:center;align-items:center;min-height:100vh;font-family:'Courier New',monospace;overflow:hidden;height:100%;width:100%;position:fixed;top:0;left:0}
-#app{width:100%;height:100%;max-width:480px;display:flex;flex-direction:column;background:linear-gradient(180deg,#0d0d1a 0%,#1a0a2e 50%,#0d0d1a 100%);border:2px solid #ff00ff;box-shadow:0 0 40px #ff00ff88,inset 0 0 40px #ff00ff44;position:relative;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box;image-rendering:pixelated;-webkit-tap-highlight-color:transparent}
+html,body{background:#0a0a0f;font-family:'Courier New',monospace;overflow:hidden;height:100%;width:100%;position:fixed;top:0;left:0;display:flex;justify-content:center;align-items:center}
+#app{width:100%;height:100%;max-width:100%;display:flex;flex-direction:column;background:linear-gradient(180deg,#0d0d1a 0%,#1a0a2e 50%,#0d0d1a 100%);border:2px solid #ff00ff;box-shadow:0 0 40px #ff00ff88,inset 0 0 40px #ff00ff44;position:relative;overflow:hidden}
 #scanline{position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,rgba(0,0,0,0)0px,rgba(0,0,0,0)3px,rgba(0,0,0,0.15)3px,rgba(0,0,0,0.15)4px);pointer-events:none;z-index:10}
-#header{background:rgba(0,0,0,0.85);padding:8px 14px;border-bottom:2px solid #00ffff;text-align:center;position:relative;z-index:5;flex-shrink:0}
-#header h1{color:#00ffff;font-size:18px;letter-spacing:5px;text-shadow:0 0 20px #00ffff,0 0 40px #00ffff88;font-weight:700}
+#header{background:rgba(0,0,0,0.85);padding:6px 12px;border-bottom:2px solid #00ffff;text-align:center;position:relative;z-index:5;flex-shrink:0}
+#header h1{color:#00ffff;font-size:clamp(14px,4vw,20px);letter-spacing:4px;text-shadow:0 0 20px #00ffff,0 0 40px #00ffff88;font-weight:700}
 #header h1 span{color:#ff00ff;text-shadow:0 0 20px #ff00ff,0 0 40px #ff00ff88}
-#status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:3px;padding:0 2px}
-#status{color:#ffaa00;font-size:9px;letter-spacing:2px;text-shadow:0 0 10px #ffaa00}
-#user-badge{color:#00ffff;font-size:9px;background:rgba(0,255,255,0.1);padding:1px 10px;border:1px solid #00ffff44;letter-spacing:1px;text-shadow:0 0 10px #00ffff44}
-#messages{flex:1;overflow-y:auto;padding:8px 12px;background:rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:3px;scroll-behavior:smooth;z-index:5;position:relative;min-height:0}
-#messages::-webkit-scrollbar{width:4px}
+#status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:2px;padding:0 2px;flex-wrap:wrap;gap:2px}
+#status{color:#ffaa00;font-size:clamp(7px,2vw,10px);letter-spacing:1px;text-shadow:0 0 10px #ffaa00}
+#user-badge{color:#00ffff;font-size:clamp(7px,2vw,10px);background:rgba(0,255,255,0.1);padding:1px 8px;border:1px solid #00ffff44;letter-spacing:1px;text-shadow:0 0 10px #00ffff44;white-space:nowrap}
+#messages{flex:1;overflow-y:auto;padding:6px 10px;background:rgba(0,0,0,0.6);display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;z-index:5;position:relative;min-height:0;height:100%}
+#messages::-webkit-scrollbar{width:3px}
 #messages::-webkit-scrollbar-track{background:rgba(0,0,0,0.3)}
 #messages::-webkit-scrollbar-thumb{background:#ff00ff;box-shadow:0 0 10px #ff00ff}
-.msg{background:rgba(0,0,0,0.7);padding:5px 10px;border-left:3px solid #00ffff;word-wrap:break-word;animation:glitchIn .25s ease-out;border-radius:0 3px 3px 0;margin-bottom:1px}
-.msg .user{color:#ff00ff;font-weight:700;font-size:11px;text-shadow:0 0 10px #ff00ff88;letter-spacing:1px}
-.msg .time{color:#00ffff66;font-size:7px;float:right;margin-left:6px;letter-spacing:0.5px}
-.msg .text{color:#e0e0ff;font-size:13px;margin-top:1px;text-shadow:0 0 5px #8888ff33;line-height:1.3;font-weight:400;word-break:break-word}
+.msg{background:rgba(0,0,0,0.7);padding:4px 8px;border-left:2px solid #00ffff;word-wrap:break-word;animation:glitchIn .2s ease-out;border-radius:0 2px 2px 0;margin-bottom:1px}
+.msg .user{color:#ff00ff;font-weight:700;font-size:clamp(9px,2.5vw,12px);text-shadow:0 0 10px #ff00ff88;letter-spacing:0.5px}
+.msg .time{color:#00ffff66;font-size:clamp(6px,1.5vw,8px);float:right;margin-left:5px;letter-spacing:0.3px}
+.msg .text{color:#e0e0ff;font-size:clamp(11px,3vw,14px);margin-top:1px;text-shadow:0 0 5px #8888ff33;line-height:1.3;font-weight:400;word-break:break-word}
 .msg.system{background:rgba(255,170,0,0.08);border-left-color:#ffaa00}
 .msg.system .text{color:#ffaa00;text-shadow:0 0 10px #ffaa0044}
 .msg.self{background:rgba(255,0,255,0.08);border-left-color:#ff00ff}
 .msg.self .user{color:#00ffff;text-shadow:0 0 10px #00ffff88}
-#input-area{background:rgba(0,0,0,0.95);padding:6px 10px;border-top:2px solid #ff00ff;display:flex;gap:6px;flex-shrink:0;z-index:5;position:relative;align-items:center;min-height:50px}
-#input-area input{flex:1;background:rgba(0,0,0,0.8);border:2px solid #00ffff;padding:8px 12px;color:#e0e0ff;font-family:'Courier New',monospace;font-size:13px;outline:none;border-radius:0;transition:all .2s;min-width:0;height:38px}
+#input-area{background:rgba(0,0,0,0.95);padding:5px 8px;border-top:2px solid #ff00ff;display:flex;gap:4px;flex-shrink:0;z-index:5;position:relative;align-items:center;min-height:40px}
+#input-area input{flex:1;background:rgba(0,0,0,0.8);border:2px solid #00ffff;padding:6px 10px;color:#e0e0ff;font-family:'Courier New',monospace;font-size:clamp(11px,3vw,14px);outline:none;border-radius:0;transition:all .2s;min-width:0;height:32px}
 #input-area input:focus{border-color:#ff00ff;box-shadow:0 0 20px #ff00ff66,inset 0 0 20px #ff00ff22}
-#input-area input::placeholder{color:#555588;letter-spacing:1px;font-size:11px}
-#input-area button{background:#ff00ff;color:#000;border:none;padding:8px 16px;font-family:'Courier New',monospace;font-weight:700;font-size:12px;cursor:pointer;letter-spacing:2px;transition:all .15s;text-shadow:0 0 10px #fff;box-shadow:0 0 20px #ff00ff66;border-radius:0;white-space:nowrap;flex-shrink:0;height:38px}
+#input-area input::placeholder{color:#555588;letter-spacing:1px;font-size:clamp(9px,2vw,11px)}
+#input-area button{background:#ff00ff;color:#000;border:none;padding:6px 12px;font-family:'Courier New',monospace;font-weight:700;font-size:clamp(10px,2.5vw,13px);cursor:pointer;letter-spacing:1px;transition:all .15s;text-shadow:0 0 10px #fff;box-shadow:0 0 20px #ff00ff66;border-radius:0;white-space:nowrap;flex-shrink:0;height:32px;min-width:32px}
 #input-area button:active{transform:scale(0.92);box-shadow:0 0 40px #ff00ff}
 #input-area button:disabled{opacity:0.4;transform:scale(0.96);cursor:not-allowed}
-#char-counter{color:#555588;font-size:8px;letter-spacing:1px;padding:0 3px;min-width:25px;text-align:center;flex-shrink:0}
+#char-counter{color:#555588;font-size:clamp(7px,1.8vw,9px);letter-spacing:0.5px;padding:0 2px;min-width:20px;text-align:center;flex-shrink:0}
 #blocker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:#000;color:#ff00ff;font-family:'Courier New',monospace;font-size:20px;justify-content:center;align-items:center;z-index:9999;text-align:center;padding:30px;border:4px solid #ff00ff;box-shadow:inset 0 0 100px #ff00ff22}
 #blocker span{text-shadow:0 0 40px #ff00ff;letter-spacing:4px}
-@keyframes glitchIn{0%{opacity:0;transform:translateX(-6px);clip-path:inset(0 0 95% 0)}100%{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)}}
-@media(max-width:480px){#app{max-width:100%;border-width:1px;border-radius:0}
-#header h1{font-size:16px;letter-spacing:3px}
-.msg .text{font-size:12px}
-#input-area input{font-size:12px;padding:6px 10px;height:34px}
-#input-area button{padding:6px 12px;font-size:11px;height:34px}
-#input-area{padding:5px 8px;min-height:44px}}
+#connection-status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ff00ff;font-size:clamp(12px,3vw,16px);z-index:20;background:rgba(0,0,0,0.9);padding:10px 20px;border:2px solid #ff00ff;display:none;text-shadow:0 0 20px #ff00ff;letter-spacing:2px}
+@keyframes glitchIn{0%{opacity:0;transform:translateX(-4px);clip-path:inset(0 0 95% 0)}100%{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@media(max-width:480px){#app{border-width:1px;border-radius:0}
+#header{padding:4px 8px}
+#header h1{font-size:clamp(12px,3.5vw,16px)}
+#input-area{padding:4px 6px;min-height:36px}
+#input-area input{height:28px;padding:4px 8px}
+#input-area button{height:28px;padding:4px 10px;min-width:28px}
+.msg{padding:3px 6px}
+#messages{padding:4px 6px}}
 </style>
 </head>
 <body>
 <div id="blocker"><span>⚠️ ANDROID ONLY<br><br>ACCESS DENIED</span></div>
 <div id="app">
 <div id="scanline"></div>
+<div id="connection-status">⟳ CONNECTING...</div>
 <div id="header">
 <h1>◈ <span>NEON</span>CHAT ◈</h1>
 <div id="status-bar">
@@ -80,13 +85,36 @@ const sendBtn=document.getElementById('sendBtn');
 const messagesDiv=document.getElementById('messages');
 const charCounter=document.getElementById('char-counter');
 const userBadge=document.getElementById('user-badge');
+const statusEl=document.getElementById('status');
+const connStatus=document.getElementById('connection-status');
 let username='PIXEL_'+Math.random().toString(36).substring(2,6).toUpperCase();
 userBadge.textContent='🖥️ '+username;
 let isSending=false;
+let isConnected=false;
+let reconnectAttempts=0;
+let eventSource=null;
+let retryTimeout=null;
+
 function getTimestamp(){return new Date().toISOString().replace('T',' ').substring(0,19)}
 function generateId(){return Date.now().toString(36)+'_'+Math.random().toString(36).substring(2,6)}
 function sanitize(text){const d=document.createElement('div');d.textContent=text;return d.innerHTML}
 function buildMsgObj(user,text){return{id:generateId(),user:user,text:text,time:getTimestamp()}}
+
+function setConnected(state){
+isConnected=state;
+if(state){
+statusEl.textContent='● LIVE '+new Date().toLocaleTimeString();
+statusEl.style.color='#00ff88';
+connStatus.style.display='none';
+reconnectAttempts=0;
+}else{
+statusEl.textContent='⚠️ OFFLINE';
+statusEl.style.color='#ff3333';
+connStatus.style.display='block';
+connStatus.textContent='⟳ RECONNECTING...';
+}
+}
+
 function renderMsg(msg,isSystem=false,isSelf=false){
 const div=document.createElement('div');
 div.className='msg'+(isSystem?' system':'')+(isSelf?' self':'');
@@ -104,12 +132,14 @@ div.appendChild(timeSpan);
 div.appendChild(textSpan);
 return div;
 }
+
 function addSystemMsg(text){
 const msg={user:'SYSTEM',text:text,time:getTimestamp()};
 const el=renderMsg(msg,true,false);
 messagesDiv.appendChild(el);
 scrollToBottom();
 }
+
 async function loadMessages(){
 try{
 const resp=await fetch(DB_URL+MSG_PATH+'.json');
@@ -118,6 +148,7 @@ const data=await resp.json();
 if(!data){
 messagesDiv.innerHTML='';
 addSystemMsg('📡 AWAITING FIRST TRANSMISSION');
+setConnected(true);
 return;
 }
 const msgs=Object.values(data).filter(m=>m&&m.text&&m.user);
@@ -125,6 +156,7 @@ msgs.sort((a,b)=>a.time.localeCompare(b.time)||a.id.localeCompare(b.id));
 messagesDiv.innerHTML='';
 if(msgs.length===0){
 addSystemMsg('📡 AWAITING FIRST TRANSMISSION');
+setConnected(true);
 return;
 }
 const recent=msgs.slice(-MAX_MSG);
@@ -134,20 +166,24 @@ const el=renderMsg(m,false,isSelf);
 messagesDiv.appendChild(el);
 });
 scrollToBottom();
+setConnected(true);
 }catch(e){
 console.error('Load error:',e);
+setConnected(false);
 if(messagesDiv.children.length===0){
-addSystemMsg('⚠️ DATABASE OFFLINE - RETRYING...');
+addSystemMsg('⚠️ DATABASE OFFLINE');
 }
 }
 }
+
 function scrollToBottom(){
 setTimeout(()=>{
 messagesDiv.scrollTop=messagesDiv.scrollHeight;
-},30);
+},20);
 }
+
 async function sendMessage(){
-if(isSending)return;
+if(isSending||!isConnected)return;
 const raw=input.value.trim();
 if(!raw||raw.length<1)return;
 if(raw.length>500){
@@ -171,12 +207,13 @@ input.focus();
 await loadMessages();
 }catch(e){
 console.error('Send error:',e);
-addSystemMsg('❌ TRANSMISSION FAILED - RETRY');
+addSystemMsg('❌ TRANSMISSION FAILED');
 }finally{
 isSending=false;
 sendBtn.disabled=false;
 }
 }
+
 function updateCharCounter(){
 const count=input.value.length;
 charCounter.textContent=count;
@@ -188,12 +225,21 @@ charCounter.style.color='#ffaa00';
 charCounter.style.color='#555588';
 }
 }
+
 function setupRealtime(){
-let eventSource=null;
 function connect(){
-if(eventSource){eventSource.close();}
+if(eventSource){
+try{eventSource.close();}catch(e){}
+eventSource=null;
+}
 try{
 eventSource=new EventSource(DB_URL+MSG_PATH+'.json');
+eventSource.onopen=function(){
+setConnected(true);
+if(reconnectAttempts>0){
+addSystemMsg('🔌 RECONNECTED');
+}
+};
 eventSource.onmessage=function(e){
 if(e.data){
 try{
@@ -205,15 +251,27 @@ loadMessages();
 }
 };
 eventSource.onerror=function(){
-if(eventSource)eventSource.close();
-setTimeout(connect,2000);
+setConnected(false);
+if(eventSource){
+try{eventSource.close();}catch(e){}
+eventSource=null;
+}
+reconnectAttempts++;
+const delay=Math.min(3000+(reconnectAttempts*1000),15000);
+if(retryTimeout)clearTimeout(retryTimeout);
+retryTimeout=setTimeout(connect,delay);
 };
 }catch(e){
-setTimeout(connect,2000);
+setConnected(false);
+reconnectAttempts++;
+const delay=Math.min(3000+(reconnectAttempts*1000),15000);
+if(retryTimeout)clearTimeout(retryTimeout);
+retryTimeout=setTimeout(connect,delay);
 }
 }
 connect();
 }
+
 input.addEventListener('keydown',function(e){
 if(e.key==='Enter'&&!e.shiftKey){
 e.preventDefault();
@@ -223,19 +281,33 @@ sendMessage();
 input.addEventListener('input',updateCharCounter);
 sendBtn.addEventListener('click',sendMessage);
 document.addEventListener('visibilitychange',function(){
-if(!document.hidden){loadMessages();}
+if(!document.hidden&&!isConnected){
+loadMessages();
+}
 });
 loadMessages();
 setupRealtime();
 addSystemMsg('🔌 CONNECTION ESTABLISHED');
 addSystemMsg('💀 PIXEL NEON 4K ACTIVE');
 addSystemMsg('👋 WELCOME, '+username);
+
 setInterval(()=>{
-const status=document.getElementById('status');
-status.textContent='● LIVE '+new Date().toLocaleTimeString();
-status.style.color='#00ff88';
-setTimeout(()=>{status.style.color='#ffaa00';},200);
+if(isConnected){
+statusEl.textContent='● LIVE '+new Date().toLocaleTimeString();
+}
 },5000);
+
+window.addEventListener('online',function(){
+if(!isConnected){
+loadMessages();
+setupRealtime();
+addSystemMsg('📶 NETWORK RESTORED');
+}
+});
+window.addEventListener('offline',function(){
+setConnected(false);
+addSystemMsg('📶 NETWORK LOST');
+});
 })();
 </script>
 </body>
