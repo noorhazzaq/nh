@@ -4,83 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="robots" content="noindex,nofollow">
-<title>Real Lives - Full Evolution</title>
+<title>Real Lives - Complete Evolution</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a1a;color:#eee;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden}
-#app{width:100%;max-width:500px;min-height:100vh;background:#16213e;padding:10px;position:relative;display:flex;flex-direction:column}
-.header{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:2px solid #0f3460;margin-bottom:8px;flex-wrap:wrap}
-.header h1{font-size:16px;font-weight:700;color:#e94560;letter-spacing:0.5px}
-.header .stats-mini{display:flex;gap:6px;font-size:10px;color:#aaa;flex-wrap:wrap}
-.header .stats-mini span{background:#1a1a40;padding:2px 6px;border-radius:4px}
-.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:8px}
-.stat-card{background:#1a1a40;padding:4px 8px;border-radius:5px;border-left:3px solid #e94560}
+#app{width:100%;max-width:500px;min-height:100vh;background:#16213e;padding:8px;position:relative;display:flex;flex-direction:column}
+.header{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:2px solid #0f3460;margin-bottom:6px;flex-wrap:wrap}
+.header h1{font-size:15px;font-weight:700;color:#e94560}
+.header .stats-mini{display:flex;gap:4px;font-size:9px;color:#aaa;flex-wrap:wrap}
+.header .stats-mini span{background:#1a1a40;padding:2px 6px;border-radius:3px}
+.prison-banner{background:#6a1a2a;color:#fff;text-align:center;padding:4px;border-radius:4px;font-size:11px;font-weight:700;margin-bottom:6px;display:none}
+.prison-banner.show{display:block}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:6px}
+.stat-card{background:#1a1a40;padding:3px 6px;border-radius:4px;border-left:3px solid #e94560}
 .stat-card .top{display:flex;justify-content:space-between;align-items:center}
-.stat-card .label{font-size:9px;color:#aaa;text-transform:uppercase;font-weight:600}
-.stat-card .value{font-size:12px;font-weight:700;color:#fff}
+.stat-card .label{font-size:8px;color:#aaa;text-transform:uppercase;font-weight:600}
+.stat-card .value{font-size:11px;font-weight:700;color:#fff}
 .stat-bar{height:3px;background:#2a2a4a;border-radius:2px;margin-top:2px;overflow:hidden}
-.stat-bar .fill{height:100%;border-radius:2px;transition:width .3s}
+.stat-bar .fill{height:100%;border-radius:2px;transition:width .5s}
 .fill-health{background:#e94560}.fill-happiness{background:#f5a623}.fill-intelligence{background:#4ecdc4}.fill-wealth{background:#ffd93d}.fill-fitness{background:#6bcb77}.fill-social{background:#a29bfe}.fill-career{background:#fd79a8}.fill-spirit{background:#fdcb6e}.fill-law{background:#74b9ff}.fill-crime{background:#ff7675}
-.event-area{background:#0f3460;border-radius:8px;padding:10px;min-height:90px;margin-bottom:8px;display:flex;flex-direction:column;justify-content:center}
-.event-area .event-title{font-size:14px;font-weight:700;color:#e94560;margin-bottom:3px}
-.event-area .event-desc{font-size:12px;color:#ccc;line-height:1.4;margin-bottom:6px}
-.event-area .event-choice{display:flex;gap:4px;flex-wrap:wrap}
-.event-area .event-choice button{flex:1;min-width:60px;background:#1a1a40;border:1px solid #2a2a5a;color:#fff;padding:6px 3px;border-radius:5px;font-size:10px;font-weight:600;cursor:pointer;transition:all .15s}
+.event-area{background:#0f3460;border-radius:6px;padding:8px;min-height:80px;margin-bottom:6px;display:flex;flex-direction:column;justify-content:center}
+.event-area .event-title{font-size:13px;font-weight:700;color:#e94560;margin-bottom:2px}
+.event-area .event-desc{font-size:11px;color:#ccc;line-height:1.3;margin-bottom:4px}
+.event-area .event-choice{display:flex;gap:3px;flex-wrap:wrap}
+.event-area .event-choice button{flex:1;min-width:50px;background:#1a1a40;border:1px solid #2a2a5a;color:#fff;padding:5px 3px;border-radius:4px;font-size:9px;font-weight:600;cursor:pointer;transition:all .15s}
 .event-area .event-choice button:active{transform:scale(.95);background:#2a2a5a}
-.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px}
-.action-btn{background:#0f3460;border:none;color:#fff;padding:6px 0;border-radius:5px;font-size:9px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
+.action-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-bottom:6px}
+.action-btn{background:#0f3460;border:none;color:#fff;padding:5px 0;border-radius:4px;font-size:8px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center}
 .action-btn:active{transform:scale(.94);background:#1a4a7a}
-.action-btn .icon{font-size:16px;display:block;margin-bottom:1px}
-.log-area{background:#0a0a1a;border-radius:5px;padding:4px 6px;max-height:100px;overflow-y:auto;flex:1;min-height:60px;font-size:10px;color:#888;border:1px solid #1a1a3a}
+.action-btn .icon{font-size:14px;display:block;margin-bottom:1px}
+.action-btn.disabled{opacity:.4;pointer-events:none}
+.log-area{background:#0a0a1a;border-radius:4px;padding:3px 5px;max-height:90px;overflow-y:auto;flex:1;min-height:50px;font-size:9px;color:#888;border:1px solid #1a1a3a}
 .log-area .log-entry{padding:2px 0;border-bottom:1px solid #111;color:#bbb}
-.log-area .log-entry .year{color:#e94560;font-weight:700;margin-right:4px}
-.log-area .log-entry .type{display:inline-block;padding:0 4px;border-radius:2px;font-size:8px;margin-right:3px}
-.type-history{background:#2d3436;color:#dfe6e9}.type-law{background:#0984e3;color:#fff}.type-crime{background:#d63031;color:#fff}.type-prison{background:#6c5ce7;color:#fff}.type-career{background:#00b894;color:#fff}.type-chat{background:#fdcb6e;color:#2d3436}.type-event{background:#e17055;color:#fff}
-.footer{display:flex;gap:4px;margin-top:6px;padding-top:6px;border-top:1px solid #1a1a3a;flex-wrap:wrap}
-.footer button{flex:1;min-width:50px;background:#0f3460;border:none;color:#fff;padding:5px;border-radius:4px;font-size:10px;font-weight:600;cursor:pointer}
+.log-area .log-entry .year{color:#e94560;font-weight:700;margin-right:3px}
+.log-area .log-entry .type{display:inline-block;padding:0 3px;border-radius:2px;font-size:7px;margin-right:2px}
+.type-history{background:#2d3436;color:#dfe6e9}.type-law{background:#0984e3;color:#fff}.type-crime{background:#d63031;color:#fff}.type-prison{background:#6c5ce7;color:#fff}.type-career{background:#00b894;color:#fff}.type-chat{background:#fdcb6e;color:#2d3436}.type-event{background:#e17055;color:#fff}.type-relationship{background:#fd79a8;color:#fff}.type-finance{background:#ffd93d;color:#2d3436}.type-education{background:#4ecdc4;color:#2d3436}
+.footer{display:flex;gap:3px;margin-top:4px;padding-top:4px;border-top:1px solid #1a1a3a;flex-wrap:wrap}
+.footer button{flex:1;min-width:40px;background:#0f3460;border:none;color:#fff;padding:4px;border-radius:3px;font-size:9px;font-weight:600;cursor:pointer}
 .footer button:active{transform:scale(.95)}
 .footer .save-btn{background:#1a6a3a}.footer .load-btn{background:#6a3a1a}.footer .reset-btn{background:#6a1a2a}.footer .chat-btn{background:#6c5ce7}
-.dead-overlay{position:absolute;inset:0;background:rgba(0,0,0,.94);display:none;flex-direction:column;justify-content:center;align-items:center;z-index:100;border-radius:8px;padding:16px;text-align:center}
+.dead-overlay{position:absolute;inset:0;background:rgba(0,0,0,.95);display:none;flex-direction:column;justify-content:center;align-items:center;z-index:100;border-radius:6px;padding:14px;text-align:center}
 .dead-overlay.show{display:flex}
-.dead-overlay h2{font-size:24px;color:#e94560;margin-bottom:6px}
-.dead-overlay p{font-size:13px;color:#ccc;margin-bottom:10px;line-height:1.4}
-.dead-overlay .stats-final{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:100%;max-width:260px;margin-bottom:10px}
-.dead-overlay .stats-final div{background:#1a1a40;padding:4px 6px;border-radius:3px;display:flex;justify-content:space-between;font-size:11px}
-.dead-overlay .restart-btn{background:#e94560;border:none;color:#fff;padding:10px 28px;border-radius:30px;font-size:14px;font-weight:700;cursor:pointer}
-.chat-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:200;padding:16px}
+.dead-overlay h2{font-size:22px;color:#e94560;margin-bottom:4px}
+.dead-overlay p{font-size:12px;color:#ccc;margin-bottom:8px;line-height:1.3}
+.dead-overlay .stats-final{display:grid;grid-template-columns:1fr 1fr;gap:2px;width:100%;max-width:240px;margin-bottom:8px}
+.dead-overlay .stats-final div{background:#1a1a40;padding:3px 5px;border-radius:3px;display:flex;justify-content:space-between;font-size:10px}
+.dead-overlay .restart-btn{background:#e94560;border:none;color:#fff;padding:8px 24px;border-radius:30px;font-size:13px;font-weight:700;cursor:pointer}
+.dead-overlay .legacy-score{font-size:24px;color:#fdcb6e;font-weight:700;margin-bottom:4px}
+.chat-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;justify-content:center;align-items:center;z-index:200;padding:12px}
 .chat-modal.show{display:flex}
-.chat-box{background:#1a1a40;border-radius:12px;width:100%;max-width:400px;max-height:80vh;display:flex;flex-direction:column;padding:12px;border:1px solid #2a2a5a}
-.chat-box .chat-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:8px;border-bottom:1px solid #2a2a5a;margin-bottom:8px}
-.chat-box .chat-header h3{color:#e94560;font-size:16px}
-.chat-box .chat-header .close-btn{background:#6a1a2a;border:none;color:#fff;padding:4px 12px;border-radius:4px;font-size:14px;cursor:pointer}
-.chat-box .chat-messages{flex:1;overflow-y:auto;max-height:300px;margin-bottom:8px;padding:4px}
-.chat-box .chat-messages .msg{padding:4px 8px;margin-bottom:4px;border-radius:4px;font-size:12px;background:#0f3460;color:#eee}
-.chat-box .chat-messages .msg .who{color:#fdcb6e;font-weight:700;margin-right:4px}
+.chat-box{background:#1a1a40;border-radius:10px;width:100%;max-width:380px;max-height:80vh;display:flex;flex-direction:column;padding:10px;border:1px solid #2a2a5a}
+.chat-box .chat-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:1px solid #2a2a5a;margin-bottom:6px}
+.chat-box .chat-header h3{color:#e94560;font-size:14px}
+.chat-box .chat-header .close-btn{background:#6a1a2a;border:none;color:#fff;padding:3px 10px;border-radius:3px;font-size:12px;cursor:pointer}
+.chat-box .chat-messages{flex:1;overflow-y:auto;max-height:250px;margin-bottom:6px;padding:3px}
+.chat-box .chat-messages .msg{padding:3px 6px;margin-bottom:3px;border-radius:3px;font-size:11px;background:#0f3460;color:#eee}
+.chat-box .chat-messages .msg .who{color:#fdcb6e;font-weight:700;margin-right:3px}
 .chat-box .chat-messages .msg.system{background:#2d3436;color:#dfe6e9;font-style:italic}
-.chat-box .chat-input{display:flex;gap:6px}
-.chat-box .chat-input input{flex:1;padding:6px 10px;border-radius:4px;border:1px solid #2a2a5a;background:#0a0a1a;color:#fff;font-size:12px}
-.chat-box .chat-input button{background:#6c5ce7;border:none;color:#fff;padding:6px 16px;border-radius:4px;font-weight:600;cursor:pointer}
+.chat-box .chat-input{display:flex;gap:4px}
+.chat-box .chat-input input{flex:1;padding:5px 8px;border-radius:3px;border:1px solid #2a2a5a;background:#0a0a1a;color:#fff;font-size:11px}
+.chat-box .chat-input button{background:#6c5ce7;border:none;color:#fff;padding:5px 12px;border-radius:3px;font-weight:600;cursor:pointer}
 .hidden{display:none!important}
-::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar{width:2px}
 ::-webkit-scrollbar-track{background:#0a0a1a}
 ::-webkit-scrollbar-thumb{background:#2a2a5a;border-radius:2px}
-@media(max-width:360px){#app{padding:6px}.stat-card{padding:3px 5px}.stat-card .label{font-size:8px}.stat-card .value{font-size:10px}.action-btn{font-size:8px;padding:4px 0}.action-btn .icon{font-size:13px}.event-area{min-height:70px;padding:8px}}
-@media(min-width:481px){#app{max-width:600px;border-radius:12px;margin:10px;min-height:auto}}
+@media(max-width:360px){#app{padding:5px}.stat-card{padding:2px 4px}.stat-card .label{font-size:7px}.stat-card .value{font-size:9px}.action-btn{font-size:7px;padding:3px 0}.action-btn .icon{font-size:11px}.event-area{min-height:60px;padding:6px}}
+@media(min-width:481px){#app{max-width:600px;border-radius:10px;margin:10px;min-height:auto}}
 </style>
 </head>
 <body>
 <div id="app">
 <div class="header">
 <h1>REAL LIVES</h1>
-<div class="stats-mini"><span id="miniAge">0</span><span id="miniCareer">Unemployed</span><span id="miniStatus">Free</span></div>
+<div class="stats-mini"><span id="miniAge">0</span><span id="miniCareer">Unemployed</span><span id="miniStatus">✅ Free</span></div>
 </div>
+<div class="prison-banner" id="prisonBanner">🔒 PRISON - Sentence: 0 years remaining</div>
 <div class="stats-grid" id="statsGrid"></div>
 <div class="event-area" id="eventArea">
 <div class="event-title">Welcome</div>
-<div class="event-desc">Your evolved life simulation. Every choice shapes your destiny.</div>
+<div class="event-desc">Your complete life simulation. Every choice has consequences.</div>
 <div class="event-choice"><button id="beginBtn">Begin Life</button></div>
 </div>
-<div class="action-grid">
+<div class="action-grid" id="actionGrid">
 <button class="action-btn" data-action="work"><span class="icon">💼</span>Work</button>
 <button class="action-btn" data-action="study"><span class="icon">📚</span>Study</button>
 <button class="action-btn" data-action="social"><span class="icon">🤝</span>Social</button>
@@ -89,12 +94,16 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a1
 <button class="action-btn" data-action="invest"><span class="icon">💰</span>Invest</button>
 <button class="action-btn" data-action="crime"><span class="icon">🔫</span>Crime</button>
 <button class="action-btn" data-action="law"><span class="icon">⚖️</span>Law</button>
+<button class="action-btn" data-action="prison_work"><span class="icon">🔧</span>Prison Work</button>
+<button class="action-btn" data-action="prison_edu"><span class="icon">📖</span>Prison Edu</button>
+<button class="action-btn" data-action="parole"><span class="icon">🕊️</span>Parole</button>
 <button class="action-btn" data-action="next"><span class="icon">⏭️</span>Next</button>
 <button class="action-btn" data-action="history"><span class="icon">📜</span>History</button>
 <button class="action-btn" data-action="career"><span class="icon">📊</span>Career</button>
+<button class="action-btn" data-action="family"><span class="icon">👨‍👩‍👦</span>Family</button>
 <button class="action-btn" data-action="chat"><span class="icon">💬</span>Chat</button>
 </div>
-<div class="log-area" id="logArea"><div class="log-entry"><span class="year">[0]</span>Welcome to Real Lives Evolution.</div></div>
+<div class="log-area" id="logArea"><div class="log-entry"><span class="year">[0]</span>Welcome to Real Lives Complete.</div></div>
 <div class="footer">
 <button class="save-btn" id="saveBtn">💾 Save</button>
 <button class="load-btn" id="loadBtn">📂 Load</button>
@@ -103,6 +112,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a1
 </div>
 <div class="dead-overlay" id="deadOverlay">
 <h2>💀 GAME OVER</h2>
+<div class="legacy-score" id="legacyScore">0</div>
 <p id="deathMessage">Your life has ended.</p>
 <div class="stats-final" id="finalStats"></div>
 <button class="restart-btn" id="restartBtn">🔄 New Life</button>
@@ -110,7 +120,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0a0a1
 <div class="chat-modal" id="chatModal">
 <div class="chat-box">
 <div class="chat-header"><h3>💬 Social Chat</h3><button class="close-btn" id="chatCloseBtn">✕</button></div>
-<div class="chat-messages" id="chatMessages"><div class="msg system">Welcome to the social hub. Connect with others.</div></div>
+<div class="chat-messages" id="chatMessages"><div class="msg system">Welcome to the social hub.</div></div>
 <div class="chat-input"><input id="chatInput" placeholder="Type a message..."><button id="chatSendBtn">Send</button></div>
 </div>
 </div>
@@ -123,6 +133,7 @@ let chatHistory=[];
 const STATS=['health','happiness','intelligence','wealth','fitness','social','career','spirit','law','crime'];
 const LABELS={health:'❤️ Health',happiness:'😊 Happy',intelligence:'🧠 Intel',wealth:'💰 Wealth',fitness:'💪 Fit',social:'👥 Social',career:'📈 Career',spirit:'✨ Spirit',law:'⚖️ Law',crime:'🔫 Crime'};
 const CAREERS=['Unemployed','Retail','Clerk','Teacher','Nurse','Engineer','Doctor','Lawyer','Judge','Artist','Scientist','CEO','Professor','Architect','Chef','Pilot','Journalist','Politician','Police','Military'];
+const CRIME_LEVELS=['Clean','Petty','Minor','Moderate','Serious','Major','Wanted','Criminal','Felon','Mastermind'];
 const EVENTS=[
 {min:0,max:5,title:'Childhood',desc:'Your early years shape your foundation.',eff:{health:3,happiness:4,intelligence:3,social:2},opts:['Play','Learn','Explore']},
 {min:6,max:12,title:'School Years',desc:'Education and social development.',eff:{intelligence:5,social:4,happiness:3},opts:['Study Hard','Make Friends','Play Sports']},
@@ -135,20 +146,20 @@ const EVENTS=[
 {min:76,max:100,title:'Elder Years',desc:'Legacy and reflection.',eff:{health:-6,social:3,happiness:3,intelligence:3,spirit:5},opts:['Teach','Family Time','Rest','Reflect']}
 ];
 const RANDOMS=[
-{title:'Windfall',desc:'Unexpected inheritance!',eff:{wealth:8,happiness:3},prob:.15},
-{title:'Accident',desc:'Minor accident.',eff:{health:-5,fitness:-4},prob:.15},
-{title:'Romance',desc:'Met someone special.',eff:{happiness:7,social:6},prob:.12},
-{title:'Illness',desc:'Health setback.',eff:{health:-6,fitness:-4},prob:.15},
-{title:'Promotion',desc:'Career advancement!',eff:{career:6,wealth:7,happiness:5},prob:.1},
-{title:'Friendship',desc:'Deep friendship formed.',eff:{social:6,happiness:5},prob:.12},
-{title:'Loss',desc:'Personal loss.',eff:{happiness:-7,social:-4,spirit:3},prob:.08},
-{title:'Discovery',desc:'Found life purpose.',eff:{happiness:6,intelligence:4,spirit:6},prob:.1},
-{title:'Invest Win',desc:'Investment success!',eff:{wealth:9},prob:.06},
-{title:'Setback',desc:'Financial loss.',eff:{wealth:-6,happiness:-4},prob:.08},
-{title:'Legal Issue',desc:'Caught in legal trouble.',eff:{law:-5,wealth:-4,happiness:-4,crime:3},prob:.05},
-{title:'Hero Act',desc:'Saved someone!',eff:{happiness:8,social:6,law:5},prob:.04}
+{title:'Windfall',desc:'Unexpected inheritance!',eff:{wealth:8,happiness:3},prob:.12},
+{title:'Accident',desc:'Minor accident.',eff:{health:-5,fitness:-4},prob:.12},
+{title:'Romance',desc:'Met someone special.',eff:{happiness:7,social:6},prob:.10},
+{title:'Illness',desc:'Health setback.',eff:{health:-6,fitness:-4},prob:.12},
+{title:'Promotion',desc:'Career advancement!',eff:{career:6,wealth:7,happiness:5},prob:.08},
+{title:'Friendship',desc:'Deep friendship formed.',eff:{social:6,happiness:5},prob:.10},
+{title:'Loss',desc:'Personal loss.',eff:{happiness:-7,social:-4,spirit:3},prob:.06},
+{title:'Discovery',desc:'Found life purpose.',eff:{happiness:6,intelligence:4,spirit:6},prob:.08},
+{title:'Invest Win',desc:'Investment success!',eff:{wealth:9},prob:.05},
+{title:'Setback',desc:'Financial loss.',eff:{wealth:-6,happiness:-4},prob:.06},
+{title:'Legal Issue',desc:'Caught in legal trouble.',eff:{law:-5,wealth:-4,happiness:-4,crime:3},prob:.04},
+{title:'Hero Act',desc:'Saved someone!',eff:{happiness:8,social:6,law:5},prob:.03}
 ];
-function initState(){return{age:0,health:50,happiness:50,intelligence:40,wealth:30,fitness:50,social:40,career:20,spirit:30,law:50,crime:10,alive:true,partner:false,children:0,careerIdx:0,education:0,prison:false,prisonYears:0,criminalRecord:[],lawsuits:[],log:[],waiting:false,turn:0,history:[],chatLog:[],gameStarted:false}}
+function initState(){return{age:0,health:50,happiness:50,intelligence:40,wealth:30,fitness:50,social:40,career:20,spirit:30,law:50,crime:10,alive:true,partner:false,partnerName:'',children:0,childNames:[],careerIdx:0,education:0,prison:false,prisonYears:0,prisonSentence:0,prisonCrime:'',criminalRecord:[],lawsuits:[],log:[],waiting:false,turn:0,history:[],chatLog:[],gameStarted:false,savings:0,debt:0,educationLevel:'None',healthConditions:[],careerHistory:[]}}
 function clamp(v,a,b){return Math.min(Math.max(v,a),b)}
 function rnd(a,b){return Math.floor(Math.random()*(b-a+1))+a}
 function pick(a){return a[Math.floor(Math.random()*a.length)]}
@@ -156,29 +167,34 @@ function get(S,k){return S[k]||0}
 function set(S,k,v){S[k]=clamp(Math.round(v),0,100)}
 function mod(S,k,d){set(S,k,get(S,k)+d)}
 function ageGroup(a){if(a<=5)return 0;if(a<=12)return 1;if(a<=17)return 2;if(a<=22)return 3;if(a<=30)return 4;if(a<=45)return 5;if(a<=60)return 6;if(a<=75)return 7;return 8}
-function renderStats(){const g=document.getElementById('statsGrid');g.innerHTML='';STATS.forEach(k=>{const v=get(S,k);const p=Math.round(v);const c='fill-'+k;const d=document.createElement('div');d.className='stat-card';d.innerHTML='<div class="top"><span class="label">'+LABELS[k]+'</span><span class="value">'+p+'%</span></div><div class="stat-bar"><div class="fill '+c+'" style="width:'+p+'%"></div></div>';g.appendChild(d)});document.getElementById('miniAge').textContent=S.age+'y';document.getElementById('miniCareer').textContent=CAREERS[S.careerIdx]||'Unemployed';document.getElementById('miniStatus').textContent=S.prison?'🔒 Prison':'✅ Free'}
+function renderStats(){const g=document.getElementById('statsGrid');g.innerHTML='';STATS.forEach(k=>{const v=get(S,k);const p=Math.round(v);const c='fill-'+k;const d=document.createElement('div');d.className='stat-card';d.innerHTML='<div class="top"><span class="label">'+LABELS[k]+'</span><span class="value">'+p+'%</span></div><div class="stat-bar"><div class="fill '+c+'" style="width:'+p+'%"></div></div>';g.appendChild(d)});document.getElementById('miniAge').textContent=S.age+'y';document.getElementById('miniCareer').textContent=CAREERS[S.careerIdx]||'Unemployed';document.getElementById('miniStatus').textContent=S.prison?'🔒 Prison':'✅ Free';const pb=document.getElementById('prisonBanner');if(S.prison){pb.className='prison-banner show';pb.textContent='🔒 PRISON - '+S.prisonCrime+' - '+S.prisonSentence+' years remaining'}else{pb.className='prison-banner'}}
 function renderLog(){const g=document.getElementById('logArea');g.innerHTML='';const e=S.log.slice(-15);e.forEach(t=>{const d=document.createElement('div');d.className='log-entry';const typeClass=t.type?'type-'+t.type:'';d.innerHTML='<span class="year">['+t.y+']</span>'+(t.type?'<span class="type '+typeClass+'">'+t.type.toUpperCase()+'</span>':'')+t.t;g.appendChild(d)});g.scrollTop=g.scrollHeight}
 function renderEvent(title,desc,opts,cb){const g=document.getElementById('eventArea');g.innerHTML='<div class="event-title">'+title+'</div><div class="event-desc">'+desc+'</div>';const c=document.createElement('div');c.className='event-choice';if(!opts||opts.length===0){opts=['Continue']}opts.forEach((o,i)=>{const b=document.createElement('button');b.textContent=o;b.dataset.idx=i;b.onclick=function(e){e.stopPropagation();if(S.waiting)return;cb(parseInt(this.dataset.idx))};c.appendChild(b)});g.appendChild(c)}
 function addLog(t,type){S.log.push({y:S.age,t:t,type:type||'event'});if(S.log.length>50)S.log.shift();renderLog()}
-function addHistory(t){S.history.push({y:S.age,t:t});if(S.history.length>30)S.history.shift()}
-function applyAging(){const a=S.age;if(a>70){mod(S,'health',-4);mod(S,'fitness',-3)}else if(a>50){mod(S,'health',-3);mod(S,'fitness',-2)}else if(a>30){mod(S,'health',-1)}if(a>18&&!S.partner&&Math.random()<.04){S.partner=true;addLog('💕 Found life partner!','event')}if(a>25&&S.children<3&&S.partner&&Math.random()<.025){S.children++;addLog('👶 Welcomed a child!','event')}if(S.prison){S.prisonYears++;if(S.prisonYears>rnd(2,8)){S.prison=false;S.prisonYears=0;addLog('🔓 Released from prison.','event')}else{mod(S,'happiness',-3);mod(S,'social',-2);mod(S,'law',-1)}}if(a>80&&Math.random()<.10){S.alive=false;addLog('💀 Passed away at '+S.age,'event')}if(get(S,'health')<=0||get(S,'happiness')<=0){S.alive=false;addLog('💀 Health or happiness reached zero.','event')}if(get(S,'crime')>80&&!S.prison&&Math.random()<.15){S.prison=true;S.prisonYears=0;mod(S,'law',-10);addLog('🔒 Sentenced to prison!','crime')}if(a>110){S.alive=false;addLog('💀 Natural end.','event')}}
-function randomEvent(){if(Math.random()<.20&&S.age>5&&!S.prison){const e=pick(RANDOMS);if(Math.random()<e.prob){Object.keys(e.eff).forEach(k=>mod(S,k,e.eff[k]));addLog('⚡ '+e.title+': '+e.desc,'event');addHistory(e.title+' - '+e.desc);return true}}return false}
+function addHistory(t){S.history.push({y:S.age,t:t});if(S.history.length>40)S.history.shift()}
+function updatePrison(){if(S.prison){S.prisonSentence--;if(S.prisonSentence<=0){S.prison=false;S.prisonSentence=0;S.prisonCrime='';addLog('🔓 Released from prison!','prison');renderStats();return true}}return false}
+function applyAging(){const a=S.age;if(a>70){mod(S,'health',-4);mod(S,'fitness',-3)}else if(a>50){mod(S,'health',-3);mod(S,'fitness',-2)}else if(a>30){mod(S,'health',-1)}if(a>18&&!S.partner&&Math.random()<.04){const names=['Alex','Jordan','Taylor','Morgan','Riley','Avery','Quinn','Parker','Cameron','Logan'];S.partner=true;S.partnerName=pick(names);addLog('💕 Found life partner: '+S.partnerName+'!','relationship')}if(a>25&&S.children<3&&S.partner&&Math.random()<.025){const names=['Emma','Liam','Olivia','Noah','Ava','James','Sophia','Oliver','Mia','Ethan'];S.children++;S.childNames.push(pick(names)+' '+pick(['Jr.','II','III']));addLog('👶 Welcomed child: '+S.childNames[S.childNames.length-1]+'!','relationship')}if(S.prison){if(updatePrison()){renderStats()}else{mod(S,'happiness',-2);mod(S,'social',-1)}}if(a>80&&Math.random()<.10){S.alive=false;addLog('💀 Passed away at '+S.age,'event')}if(get(S,'health')<=0||get(S,'happiness')<=0){S.alive=false;addLog('💀 Health or happiness reached zero.','event')}if(get(S,'crime')>75&&!S.prison&&Math.random()<.12){const crimes=['Theft','Assault','Robbery','Burglary','Fraud','Hacking'];S.prison=true;S.prisonSentence=rnd(2,6);S.prisonCrime=pick(crimes);mod(S,'law',-10);addLog('🔒 Sentenced to '+S.prisonSentence+' years for '+S.prisonCrime+'!','crime')}if(a>110){S.alive=false;addLog('💀 Natural end.','event')}}
+function randomEvent(){if(Math.random()<.18&&S.age>5&&!S.prison){const e=pick(RANDOMS);if(Math.random()<e.prob){Object.keys(e.eff).forEach(k=>mod(S,k,e.eff[k]));addLog('⚡ '+e.title+': '+e.desc,'event');addHistory(e.title+' - '+e.desc);return true}}return false}
 function processEvent(){if(S.prison)return false;const g=ageGroup(S.age);const e=EVENTS[g];if(e&&S.age%2===0){const opts=e.opts||['Continue'];renderEvent(e.title,e.desc,opts,function(idx){if(S.waiting)return;S.waiting=true;Object.keys(e.eff||{}).forEach(k=>mod(S,k,e.eff[k]));if(opts.length>1){addLog('📌 Chose: '+opts[idx],'history');addHistory('Chose: '+opts[idx]);if(idx===0)mod(S,'intelligence',3);else if(idx===1)mod(S,'social',3);else if(idx===2)mod(S,'fitness',3)}else{addLog(e.title+' - '+e.desc,'event')}S.age++;applyAging();randomEvent();renderStats();S.waiting=false;if(!S.alive){showDeath();return}renderEvent('Year '+S.age,'Choose your path forward.',['Continue'],function(){S.waiting=false})});return true}return false}
-function doCrime(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot commit crime in prison.','crime');return}if(S.age<12){addLog('🚫 Too young for serious crime.','crime');return}const crimes=['Petty Theft','Fraud','Assault','Robbery','Burglary','Hacking'];const c=pick(crimes);const risk=Math.random();const lawBonus=get(S,'law')/100;const success=risk<.6+lawBonus*.3;if(success){const gain=rnd(2,15);mod(S,'wealth',gain);mod(S,'crime',5);mod(S,'law',-3);mod(S,'happiness',2);addLog('🔫 Committed '+c+' - Gained $'+gain+'k.','crime');addHistory('Committed '+c);if(get(S,'crime')>70&&Math.random()<.4){S.prison=true;S.prisonYears=0;mod(S,'law',-10);addLog('🔒 Arrested for '+c+'! Sent to prison.','crime')}}else{mod(S,'law',-5);mod(S,'happiness',-4);mod(S,'crime',3);addLog('🚨 Failed '+c+' - Got caught!','crime');if(Math.random()<.6){S.prison=true;S.prisonYears=0;addLog('🔒 Sentenced to prison!','crime')}}}
-function doLaw(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot practice law in prison.','law');return}const actions=['File Lawsuit','Report Crime','Community Service','Legal Advice','Court Case','Police Report'];const a=pick(actions);const success=Math.random()<.5+get(S,'law')/200;if(success){mod(S,'law',5);mod(S,'social',3);mod(S,'happiness',3);if(a==='File Lawsuit'||a==='Court Case'){const gain=rnd(2,10);mod(S,'wealth',gain);addLog('⚖️ '+a+' successful! Gained $'+gain+'k.','law')}else if(a==='Report Crime'){mod(S,'crime',-3);addLog('⚖️ '+a+' helped reduce crime.','law')}else{addLog('⚖️ '+a+' went well.','law')}addHistory('Legal: '+a)}else{mod(S,'law',-3);mod(S,'happiness',-2);addLog('⚖️ '+a+' failed.','law')}}
-function doCareerAction(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot advance career in prison.','career');return}const paths=['Get Certified','Network','Apply Promotion','Switch Field','Start Side Business'];const p=pick(paths);const success=Math.random()<.4+get(S,'intelligence')/200+get(S,'career')/200;if(success){const idx=S.careerIdx;if(idx<CAREERS.length-1){S.careerIdx=Math.min(idx+1,CAREERS.length-1)}mod(S,'career',5);mod(S,'wealth',4);mod(S,'happiness',3);addLog('📊 '+p+' - Career advanced to '+CAREERS[S.careerIdx]+'!','career');addHistory('Career: '+p+' -> '+CAREERS[S.careerIdx])}else{mod(S,'career',2);mod(S,'happiness',-1);addLog('📊 '+p+' - No progress.','career')}}
-function showHistory(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}renderEvent('📜 Life History',S.history.length>0?S.history.slice(-10).map(h=>'• Age '+h.y+': '+h.t).join('<br>'):'No history yet.',['Close'],function(){renderEvent('Year '+S.age,'Continue your journey.',['Continue'],function(){S.waiting=false})})}
-function doAction(a){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(!S.alive||S.waiting)return;S.waiting=true;let msg='';let type='event';switch(a){case'work':if(S.age<14){msg='Too young to work.';S.waiting=false;break}if(S.prison){msg='Cannot work in prison.';S.waiting=false;break}const earn=4+Math.floor(get(S,'career')/8);mod(S,'wealth',earn);mod(S,'career',2);mod(S,'happiness',-1);mod(S,'fitness',-2);msg='Worked +$'+earn+'k.';if(Math.random()<.08){mod(S,'wealth',4);msg+=' Bonus!'}type='career';break;case'study':if(S.prison){msg='Cannot study effectively in prison.';S.waiting=false;break}if(S.age<5){msg='Too young.';S.waiting=false;break}mod(S,'intelligence',5);mod(S,'career',2);mod(S,'happiness',-1);mod(S,'social',-1);msg='Studied.';if(Math.random()<.04){mod(S,'intelligence',6);msg='Academic breakthrough!'}type='history';break;case'social':if(S.prison){mod(S,'social',1);mod(S,'happiness',1);msg='Prison socializing.';type='event';break}mod(S,'social',5);mod(S,'happiness',4);mod(S,'health',1);msg='Socialized.';if(Math.random()<.08){mod(S,'social',4);msg='Made a close friend!'}type='event';break;case'exercise':if(S.prison){mod(S,'fitness',3);mod(S,'health',2);msg='Prison workout.';type='fitness';break}mod(S,'fitness',6);mod(S,'health',4);mod(S,'happiness',2);msg='Exercised.';if(Math.random()<.04){mod(S,'fitness',5);msg='Fitness milestone!'}type='fitness';break;case'rest':mod(S,'health',5);mod(S,'happiness',3);mod(S,'fitness',2);msg='Rested and recovered.';type='event';break;case'invest':if(S.prison){msg='Cannot invest in prison.';S.waiting=false;break}if(get(S,'wealth')<8){msg='Need $8k to invest.';S.waiting=false;break}const r=Math.random();if(r<.35){const g=Math.floor(get(S,'wealth')*.15);mod(S,'wealth',g);msg='Invest +$'+g+'k.';type='wealth'}else if(r<.65){const l=Math.floor(get(S,'wealth')*.06);mod(S,'wealth',-l);msg='Invest -$'+l+'k.';type='wealth'}else{const b=Math.floor(get(S,'wealth')*.25);mod(S,'wealth',b);msg='Great investment +$'+b+'k!';type='wealth'}break;case'crime':doCrime();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'law':doLaw();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'career':doCareerAction();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'history':showHistory();S.waiting=false;return;case'chat':openChat();S.waiting=false;return;case'next':S.age++;applyAging();randomEvent();renderStats();S.waiting=false;if(!S.alive){showDeath();return}if(!processEvent()){renderEvent('Year '+S.age,'Choose your path.',['Continue'],function(){S.waiting=false})}return}if(msg){addLog('▶ '+msg,type)}renderStats();S.waiting=false;if(S.alive&&!S.prison){if(!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}}else if(S.alive&&S.prison){renderEvent('🔒 Prison Life','You are incarcerated. Serve your time.',['Continue'],function(){S.waiting=false})}else{showDeath()}}
-function showDeath(){const o=document.getElementById('deadOverlay');o.className='dead-overlay show';document.getElementById('deathMessage').textContent='Lived to '+S.age+' years. Career: '+CAREERS[S.careerIdx];const f=document.getElementById('finalStats');f.innerHTML='';STATS.forEach(k=>{const d=document.createElement('div');d.innerHTML='<span>'+LABELS[k]+'</span><span>'+Math.round(get(S,k))+'%</span>';f.appendChild(d)});addLog('🏁 Life completed at '+S.age,'event')}
-function resetGame(){if(!confirm('Start a new life?'))return;S=initState();document.getElementById('deadOverlay').className='dead-overlay';renderStats();addLog('🔄 New life begins.','event');renderEvent('Welcome','Your evolved life awaits.','Begin',function(){startLife()})}
+function doCrime(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot commit crime in prison.','crime');return}if(S.age<12){addLog('🚫 Too young for serious crime.','crime');return}const crimes=['Petty Theft','Fraud','Assault','Robbery','Burglary','Hacking'];const c=pick(crimes);const risk=Math.random();const lawBonus=get(S,'law')/100;const success=risk<.5+lawBonus*.2;if(success){const gain=rnd(2,15);mod(S,'wealth',gain);mod(S,'crime',6);mod(S,'law',-4);mod(S,'happiness',2);addLog('🔫 Committed '+c+' - Gained $'+gain+'k.','crime');addHistory('Committed '+c);if(get(S,'crime')>75&&Math.random()<.45){S.prison=true;S.prisonSentence=rnd(2,5);S.prisonCrime=c;mod(S,'law',-10);addLog('🔒 Arrested for '+c+'! Sentenced to '+S.prisonSentence+' years.','crime')}}else{mod(S,'law',-6);mod(S,'happiness',-5);mod(S,'crime',4);addLog('🚨 Failed '+c+' - Got caught!','crime');if(Math.random()<.65){S.prison=true;S.prisonSentence=rnd(1,4);S.prisonCrime=c;addLog('🔒 Sentenced to '+S.prisonSentence+' years for '+c+'!','crime')}}}
+function doLaw(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot practice law in prison.','law');return}const actions=['File Lawsuit','Report Crime','Community Service','Legal Advice','Court Case','Police Report'];const a=pick(actions);const success=Math.random()<.45+get(S,'law')/180;if(success){mod(S,'law',6);mod(S,'social',3);mod(S,'happiness',3);if(a==='File Lawsuit'||a==='Court Case'){const gain=rnd(2,10);mod(S,'wealth',gain);addLog('⚖️ '+a+' successful! Gained $'+gain+'k.','law')}else if(a==='Report Crime'){mod(S,'crime',-4);addLog('⚖️ '+a+' helped reduce crime.','law')}else{addLog('⚖️ '+a+' went well.','law')}addHistory('Legal: '+a)}else{mod(S,'law',-4);mod(S,'happiness',-3);addLog('⚖️ '+a+' failed.','law')}}
+function doPrisonWork(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(!S.prison){addLog('🚫 Not in prison.','prison');return}mod(S,'happiness',-1);mod(S,'fitness',2);mod(S,'law',1);mod(S,'crime',-1);const earn=rnd(1,3);mod(S,'wealth',earn);addLog('🔧 Prison work - Earned $'+earn+'k. Good behavior noted.','prison');S.prisonSentence=Math.max(0,S.prisonSentence-1);if(S.prisonSentence<=0){S.prison=false;S.prisonCrime='';addLog('🔓 Released early for good behavior!','prison')}renderStats()}
+function doPrisonEdu(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(!S.prison){addLog('🚫 Not in prison.','prison');return}mod(S,'intelligence',4);mod(S,'law',2);mod(S,'crime',-1);mod(S,'happiness',1);addLog('📖 Prison education - Gained knowledge.','prison');S.prisonSentence=Math.max(0,S.prisonSentence-1);if(S.prisonSentence<=0){S.prison=false;S.prisonCrime='';addLog('🔓 Released early for good behavior!','prison')}renderStats()}
+function doParole(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(!S.prison){addLog('🚫 Not in prison.','prison');return}if(S.prisonSentence>3){addLog('🕊️ Parole denied - Sentence too long.','prison');return}const success=Math.random()<.3+get(S,'law')/200+get(S,'social')/200;if(success){S.prison=false;S.prisonCrime='';S.prisonSentence=0;addLog('🕊️ Granted parole! Released from prison.','prison');renderStats()}else{addLog('🕊️ Parole denied. Try again later.','prison')}}
+function doCareerAction(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(S.prison){addLog('🚫 Cannot advance career in prison.','career');return}const paths=['Get Certified','Network','Apply Promotion','Switch Field','Start Side Business'];const p=pick(paths);const success=Math.random()<.35+get(S,'intelligence')/180+get(S,'career')/180;if(success){const idx=S.careerIdx;if(idx<CAREERS.length-1){S.careerIdx=Math.min(idx+1,CAREERS.length-1)}mod(S,'career',6);mod(S,'wealth',5);mod(S,'happiness',3);S.careerHistory.push({age:S.age,career:CAREERS[S.careerIdx]});addLog('📊 '+p+' - Career advanced to '+CAREERS[S.careerIdx]+'!','career');addHistory('Career: '+p+' -> '+CAREERS[S.careerIdx])}else{mod(S,'career',3);mod(S,'happiness',-1);addLog('📊 '+p+' - No progress.','career')}}
+function showHistory(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}const h=S.history.length>0?S.history.slice(-15).map(h=>'• Age '+h.y+': '+h.t).join('<br>'):'No history yet.';renderEvent('📜 Life History',h,['Close'],function(){renderEvent('Year '+S.age,'Continue your journey.',['Continue'],function(){S.waiting=false})})}
+function showFamily(){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}let info='👤 Partner: '+(S.partner?S.partnerName:'None')+'<br>👶 Children: '+(S.children>0?S.childNames.join(', '):'None')+'<br>👨‍👩‍👦 Family Status: '+(S.partner?'Married/Partnered':'Single');renderEvent('👨‍👩‍👦 Family',info,['Close'],function(){renderEvent('Year '+S.age,'Continue your journey.',['Continue'],function(){S.waiting=false})})}
+function doAction(a){if(!S.gameStarted){addLog('⚠️ Start life first!','event');return}if(!S.alive||S.waiting)return;S.waiting=true;let msg='';let type='event';switch(a){case'work':if(S.age<14){msg='Too young to work.';S.waiting=false;break}if(S.prison){msg='Cannot work in prison.';S.waiting=false;break}const earn=4+Math.floor(get(S,'career')/8);mod(S,'wealth',earn);mod(S,'career',2);mod(S,'happiness',-1);mod(S,'fitness',-2);msg='Worked +$'+earn+'k.';if(Math.random()<.08){mod(S,'wealth',4);msg+=' Bonus!'}type='career';break;case'study':if(S.prison){msg='Cannot study effectively in prison.';S.waiting=false;break}if(S.age<5){msg='Too young.';S.waiting=false;break}mod(S,'intelligence',5);mod(S,'career',2);mod(S,'happiness',-1);mod(S,'social',-1);msg='Studied.';if(Math.random()<.04){mod(S,'intelligence',6);msg='Academic breakthrough!'}type='education';break;case'social':if(S.prison){mod(S,'social',1);mod(S,'happiness',1);msg='Prison socializing.';type='event';break}mod(S,'social',5);mod(S,'happiness',4);mod(S,'health',1);msg='Socialized.';if(Math.random()<.08){mod(S,'social',4);msg='Made a close friend!'}type='event';break;case'exercise':if(S.prison){mod(S,'fitness',3);mod(S,'health',2);msg='Prison workout.';type='fitness';break}mod(S,'fitness',6);mod(S,'health',4);mod(S,'happiness',2);msg='Exercised.';if(Math.random()<.04){mod(S,'fitness',5);msg='Fitness milestone!'}type='fitness';break;case'rest':mod(S,'health',5);mod(S,'happiness',3);mod(S,'fitness',2);msg='Rested and recovered.';type='event';break;case'invest':if(S.prison){msg='Cannot invest in prison.';S.waiting=false;break}if(get(S,'wealth')<8){msg='Need $8k to invest.';S.waiting=false;break}const r=Math.random();if(r<.35){const g=Math.floor(get(S,'wealth')*.15);mod(S,'wealth',g);msg='Invest +$'+g+'k.';type='finance'}else if(r<.65){const l=Math.floor(get(S,'wealth')*.06);mod(S,'wealth',-l);msg='Invest -$'+l+'k.';type='finance'}else{const b=Math.floor(get(S,'wealth')*.25);mod(S,'wealth',b);msg='Great investment +$'+b+'k!';type='finance'}break;case'crime':doCrime();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'law':doLaw();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'prison_work':doPrisonWork();S.waiting=false;renderStats();if(S.alive&&S.prison){renderEvent('🔒 Prison Life','Serve your time.',['Continue'],function(){S.waiting=false})}else if(S.alive&&!S.prison){processEvent()}return;case'prison_edu':doPrisonEdu();S.waiting=false;renderStats();if(S.alive&&S.prison){renderEvent('🔒 Prison Life','Serve your time.',['Continue'],function(){S.waiting=false})}else if(S.alive&&!S.prison){processEvent()}return;case'parole':doParole();S.waiting=false;renderStats();if(S.alive&&S.prison){renderEvent('🔒 Prison Life','Serve your time.',['Continue'],function(){S.waiting=false})}else if(S.alive&&!S.prison){processEvent()}return;case'career':doCareerAction();S.waiting=false;renderStats();if(S.alive&&!S.prison&&!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}return;case'history':showHistory();S.waiting=false;return;case'family':showFamily();S.waiting=false;return;case'chat':openChat();S.waiting=false;return;case'next':S.age++;applyAging();randomEvent();renderStats();S.waiting=false;if(!S.alive){showDeath();return}if(!processEvent()){renderEvent('Year '+S.age,'Choose your path.',['Continue'],function(){S.waiting=false})}return}if(msg){addLog('▶ '+msg,type)}renderStats();S.waiting=false;if(S.alive&&!S.prison){if(!processEvent()){renderEvent('Year '+S.age,'Choose your action.',['Continue'],function(){S.waiting=false})}}else if(S.alive&&S.prison){renderEvent('🔒 Prison Life','You are incarcerated. Serve your time.',['Continue'],function(){S.waiting=false})}else{showDeath()}}
+function showDeath(){const o=document.getElementById('deadOverlay');o.className='dead-overlay show';const legacy=Math.round((get(S,'health')+get(S,'happiness')+get(S,'intelligence')+get(S,'wealth')+get(S,'social')+get(S,'career')+get(S,'spirit'))/7);document.getElementById('legacyScore').textContent='🏆 Legacy Score: '+legacy;document.getElementById('deathMessage').textContent='Lived to '+S.age+' years. Career: '+CAREERS[S.careerIdx]+' | Partner: '+(S.partner?S.partnerName:'None')+' | Children: '+S.children;const f=document.getElementById('finalStats');f.innerHTML='';STATS.forEach(k=>{const d=document.createElement('div');d.innerHTML='<span>'+LABELS[k]+'</span><span>'+Math.round(get(S,k))+'%</span>';f.appendChild(d)});addLog('🏁 Life completed at '+S.age,'event')}
+function resetGame(){if(!confirm('Start a new life?'))return;S=initState();document.getElementById('deadOverlay').className='dead-overlay';renderStats();addLog('🔄 New life begins.','event');renderEvent('Welcome','Your complete life awaits.','Begin',function(){startLife()})}
 function saveGame(){if(!S||!S.alive){alert('No active life.');return}try{const d=JSON.stringify(S);fetch(FIREBASE_URL+'/save.json',{method:'PUT',headers:{'Content-Type':'application/json'},body:d}).then(r=>r.json()).then(()=>{addLog('💾 Game saved.','event');alert('Saved!')}).catch(()=>alert('Save failed.'))}catch(e){alert('Error: '+e.message)}}
-function loadGame(){fetch(FIREBASE_URL+'/save.json').then(r=>{if(!r.ok)throw new Error('No save');return r.json()}).then(d=>{if(!d||!d.age){alert('No valid save.');return}S=d;S.gameStarted=true;document.getElementById('deadOverlay').className='dead-overlay';renderStats();addLog('📂 Game loaded.','event');if(!S.alive){showDeath()}else if(S.prison){renderEvent('🔒 Prison Life','You are incarcerated.','Continue',function(){S.waiting=false})}else{renderEvent('Loaded','Continue your journey.','Continue',function(){S.waiting=false})}}).catch(()=>alert('No save found.'))}
+function loadGame(){fetch(FIREBASE_URL+'/save.json').then(r=>{if(!r.ok)throw new Error('No save');return r.json()}).then(d=>{if(!d||!d.age){alert('No valid save.');return}S=d;S.gameStarted=true;document.getElementById('deadOverlay').className='dead-overlay';renderStats();addLog('📂 Game loaded.','event');if(!S.alive){showDeath()}else if(S.prison){renderEvent('🔒 Prison Life','You are incarcerated. Serve your time.','Continue',function(){S.waiting=false})}else{renderEvent('Loaded','Continue your journey.','Continue',function(){S.waiting=false})}}).catch(()=>alert('No save found.'))}
 function openChat(){const m=document.getElementById('chatModal');m.classList.add('show');document.getElementById('chatInput').focus();renderChat()}
 function closeChat(){document.getElementById('chatModal').classList.remove('show')}
 function renderChat(){const g=document.getElementById('chatMessages');g.innerHTML='';const msgs=chatHistory.slice(-20);msgs.forEach(m=>{const d=document.createElement('div');d.className='msg'+(m.system?' system':'');d.innerHTML=(m.who?'<span class="who">'+m.who+':</span>':'')+m.text;g.appendChild(d)});g.scrollTop=g.scrollHeight}
 function sendChat(){const inp=document.getElementById('chatInput');const text=inp.value.trim();if(!text)return;const responses=['That\'s interesting!','I agree with you.','Tell me more.','That\'s deep.','Really? Wow!','I see what you mean.','That makes sense.','You\'re right!','Interesting perspective.','I never thought of that.','That\'s cool!','Yeah, totally.','Hmm, good point.','I feel the same.','That\'s wild!','For real?','No way!','That\'s awesome.','I understand.','Keep going.'];const names=['Alex','Jordan','Taylor','Morgan','Riley','Avery','Quinn','Parker','Cameron','Logan'];chatHistory.push({who:'You',text:text,time:Date.now()});const reply=pick(responses);const name=pick(names);setTimeout(()=>{chatHistory.push({who:name,text:reply,time:Date.now()});renderChat();addLog('💬 Chat: '+name+' said "'+reply+'"','chat')},500+Math.random()*800);chatHistory.push({who:'System',text:'...',system:true,time:Date.now()});renderChat();inp.value='';if(S&&S.alive){addLog('💬 You: '+text,'chat');addHistory('Chat: '+text)}}
-function startLife(){if(S.gameStarted)return;S.age=1;S.gameStarted=true;addLog('🌟 Life begins at age 1.','event');renderStats();renderEvent('Year 1','Your evolved journey starts now. Choose your first action.',['Continue'],function(){S.waiting=false})}
-function init(){S=initState();chatHistory=[{who:'System',text:'Welcome to the Social Hub. Connect with others.',system:true}];renderStats();addLog('🌟 Welcome to Real Lives Evolution.','event');document.getElementById('beginBtn').onclick=startLife;document.querySelectorAll('.action-btn').forEach(b=>{b.onclick=function(){doAction(this.dataset.action)}});document.getElementById('saveBtn').onclick=saveGame;document.getElementById('loadBtn').onclick=loadGame;document.getElementById('resetBtn').onclick=resetGame;document.getElementById('restartBtn').onclick=resetGame;document.getElementById('chatToggleBtn').onclick=openChat;document.getElementById('chatCloseBtn').onclick=closeChat;document.getElementById('chatSendBtn').onclick=sendChat;document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter')sendChat()});document.addEventListener('click',function(e){const m=document.getElementById('chatModal');if(e.target===m)closeChat()})}
+function startLife(){if(S.gameStarted)return;S.age=1;S.gameStarted=true;addLog('🌟 Life begins at age 1.','event');renderStats();renderEvent('Year 1','Your complete journey starts now. Choose your first action.',['Continue'],function(){S.waiting=false})}
+function init(){S=initState();chatHistory=[{who:'System',text:'Welcome to the Social Hub. Connect with others.',system:true}];renderStats();addLog('🌟 Welcome to Real Lives Complete.','event');document.getElementById('beginBtn').onclick=startLife;document.querySelectorAll('.action-btn').forEach(b=>{b.onclick=function(){doAction(this.dataset.action)}});document.getElementById('saveBtn').onclick=saveGame;document.getElementById('loadBtn').onclick=loadGame;document.getElementById('resetBtn').onclick=resetGame;document.getElementById('restartBtn').onclick=resetGame;document.getElementById('chatToggleBtn').onclick=openChat;document.getElementById('chatCloseBtn').onclick=closeChat;document.getElementById('chatSendBtn').onclick=sendChat;document.getElementById('chatInput').addEventListener('keydown',function(e){if(e.key==='Enter')sendChat()});document.addEventListener('click',function(e){const m=document.getElementById('chatModal');if(e.target===m)closeChat()})}
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init)}else{init()}
 })();
 </script>
