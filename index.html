@@ -1,1796 +1,649 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Threads - Social Platform</title>
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    /* ================================================================
-       FIXED THREADS STYLES v4.1
-       ================================================================ */
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>TRON CHAT</title>
     
-    /* ----- 1. RESET & VARIABLES ----- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg-primary: #000000;
-      --bg-secondary: #0a0a0a;
-      --bg-card: #121212;
-      --bg-input: #1a1a1a;
-      --bg-hover: #1f1f1f;
-      --text-primary: #ffffff;
-      --text-secondary: #a0a0a0;
-      --text-muted: #6b6b6b;
-      --accent: #0095f6;
-      --accent-hover: #1a9fff;
-      --like: #ed4956;
-      --border: #2a2a2a;
-      --shadow: 0 4px 20px rgba(0,0,0,0.5);
-      --radius: 16px;
-      --radius-sm: 12px;
-      --transition: all 0.2s ease;
-    }
-
-    body {
-      font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      min-height: 100vh;
-      padding: 0;
-      margin: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ----- 2. SCROLLBAR ----- */
-    ::-webkit-scrollbar {
-      width: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #333;
-      border-radius: 10px;
-    }
-
-    /* ----- 3. APP LAYOUT ----- */
-    .app-container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 0 0 80px;
-      position: relative;
-    }
-
-    /* ----- 4. HEADER ----- */
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(0,0,0,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .logo {
-      font-size: 1.6rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #0095f6, #a855f7);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
-
-    .logo i {
-      -webkit-text-fill-color: initial;
-      color: var(--accent);
-      margin-right: 4px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .header-btn {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.2rem;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 50%;
-      transition: var(--transition);
-      position: relative;
-    }
-
-    .header-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
-    }
-
-    .header-btn:active {
-      transform: scale(0.9);
-    }
-
-    .header-btn .badge-count {
-      position: absolute;
-      top: 0;
-      right: 0;
-      background: var(--like);
-      color: white;
-      font-size: 0.5rem;
-      font-weight: 700;
-      padding: 1px 5px;
-      border-radius: 10px;
-      min-width: 18px;
-      text-align: center;
-    }
-
-    .android-badge {
-      background: #3ddc84;
-      color: #000;
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 0.55rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      display: inline-block;
-    }
-
-    /* ----- 5. COMPOSE THREAD ----- */
-    .compose-section {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-secondary);
-    }
-
-    .compose-container {
-      display: flex;
-      gap: 12px;
-      align-items: flex-start;
-    }
-
-    .compose-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #a855f7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      color: white;
-      flex-shrink: 0;
-    }
-
-    .compose-input-wrap {
-      flex: 1;
-      position: relative;
-    }
-
-    .compose-input-wrap textarea {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      color: var(--text-primary);
-      font-size: 0.95rem;
-      font-family: inherit;
-      resize: vertical;
-      min-height: 70px;
-      max-height: 200px;
-      outline: none;
-      transition: var(--transition);
-    }
-
-    .compose-input-wrap textarea:focus {
-      border-color: var(--accent);
-    }
-
-    .compose-input-wrap textarea::placeholder {
-      color: var(--text-muted);
-    }
-
-    .compose-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 10px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .compose-tools {
-      display: flex;
-      gap: 8px;
-    }
-
-    .compose-tools button {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      cursor: pointer;
-      padding: 6px;
-      border-radius: 50%;
-      transition: var(--transition);
-    }
-
-    .compose-tools button:hover {
-      background: var(--bg-hover);
-      color: var(--accent);
-    }
-
-    .compose-tools button:active {
-      transform: scale(0.9);
-    }
-
-    .compose-submit {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px 24px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .compose-submit:hover {
-      background: var(--accent-hover);
-      transform: scale(1.02);
-    }
-
-    .compose-submit:active {
-      transform: scale(0.95);
-    }
-
-    .compose-submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .char-count {
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      margin-right: 12px;
-    }
-
-    .char-count.over {
-      color: var(--like);
-    }
-
-    /* ----- 6. THREADS FEED ----- */
-    .feed {
-      padding: 0;
-    }
-
-    .feed-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--bg-secondary);
-    }
-
-    .feed-header h2 {
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .feed-header .feed-stats {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    /* ----- 7. THREAD CARD ----- */
-    .thread-card {
-      padding: 16px;
-      border-bottom: 1px solid var(--border);
-      transition: var(--transition);
-      animation: fadeSlideUp 0.3s ease;
-    }
-
-    .thread-card:hover {
-      background: var(--bg-hover);
-    }
-
-    @keyframes fadeSlideUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .thread-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 8px;
-    }
-
-    .thread-user {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .thread-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), #a855f7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      color: white;
-      flex-shrink: 0;
-    }
-
-    .thread-avatar.green { background: linear-gradient(135deg, #00b894, #00a381); }
-    .thread-avatar.pink { background: linear-gradient(135deg, #e94560, #d63851); }
-    .thread-avatar.orange { background: linear-gradient(135deg, #fdcb6e, #f9ca5c); }
-    .thread-avatar.purple { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-
-    .thread-user-info {
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    .thread-username {
-      font-weight: 700;
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      flex-wrap: wrap;
-    }
-
-    .thread-username .verified {
-      color: var(--accent);
-      font-size: 0.7rem;
-    }
-
-    .thread-handle {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .thread-time {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      white-space: nowrap;
-      margin-left: 8px;
-      flex-shrink: 0;
-    }
-
-    .thread-content {
-      margin: 8px 0 12px 46px;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      word-wrap: break-word;
-      overflow-wrap: break-word;
-    }
-
-    .thread-content .hashtag {
-      color: var(--accent);
-      cursor: pointer;
-    }
-
-    .thread-content .hashtag:hover {
-      text-decoration: underline;
-    }
-
-    .thread-content .mention {
-      color: var(--accent);
-      cursor: pointer;
-    }
-
-    .thread-content .mention:hover {
-      text-decoration: underline;
-    }
-
-    /* ----- 8. THREAD MEDIA ----- */
-    .thread-media {
-      margin: 8px 0 12px 46px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: var(--bg-input);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 120px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .thread-media img {
-      width: 100%;
-      display: block;
-      max-height: 300px;
-      object-fit: cover;
-    }
-
-    .thread-media .media-placeholder {
-      padding: 20px;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .thread-media .media-placeholder i {
-      font-size: 2rem;
-      color: var(--text-muted);
-    }
-
-    /* ----- 9. THREAD ACTIONS ----- */
-    .thread-actions {
-      display: flex;
-      gap: 20px;
-      margin-left: 46px;
-      padding-top: 8px;
-      border-top: 1px solid var(--border);
-      flex-wrap: wrap;
-    }
-
-    .thread-action-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 4px 8px;
-      border-radius: 8px;
-      transition: var(--transition);
-    }
-
-    .thread-action-btn:hover {
-      background: var(--bg-hover);
-      color: var(--text-primary);
-    }
-
-    .thread-action-btn:active {
-      transform: scale(0.9);
-    }
-
-    .thread-action-btn.liked {
-      color: var(--like);
-    }
-
-    .thread-action-btn.liked i {
-      font-weight: 900;
-    }
-
-    .thread-action-btn .count {
-      font-weight: 600;
-      min-width: 16px;
-    }
-
-    .thread-action-btn .icon {
-      font-size: 1.1rem;
-    }
-
-    /* ----- 10. REPLY SECTION ----- */
-    .reply-section {
-      margin: 10px 0 0 46px;
-      display: none;
-      animation: fadeSlideUp 0.2s ease;
-    }
-
-    .reply-section.open {
-      display: block;
-    }
-
-    .reply-container {
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-    }
-
-    .reply-container .compose-avatar {
-      width: 28px;
-      height: 28px;
-      font-size: 0.8rem;
-    }
-
-    .reply-container input {
-      flex: 1;
-      min-width: 120px;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 8px 14px;
-      color: var(--text-primary);
-      font-size: 0.85rem;
-      outline: none;
-      transition: var(--transition);
-    }
-
-    .reply-container input:focus {
-      border-color: var(--accent);
-    }
-
-    .reply-container input::placeholder {
-      color: var(--text-muted);
-    }
-
-    .reply-container .reply-submit {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 6px 16px;
-      border-radius: 20px;
-      font-weight: 700;
-      font-size: 0.75rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .reply-container .reply-submit:hover {
-      background: var(--accent-hover);
-    }
-
-    .reply-container .reply-submit:active {
-      transform: scale(0.9);
-    }
-
-    /* ----- 11. REPLIES LIST ----- */
-    .replies-list {
-      margin: 8px 0 0 34px;
-      padding-left: 16px;
-      border-left: 2px solid var(--border);
-    }
-
-    .reply-item {
-      padding: 8px 0;
-      display: flex;
-      gap: 10px;
-      align-items: flex-start;
-    }
-
-    .reply-item .thread-avatar {
-      width: 24px;
-      height: 24px;
-      font-size: 0.6rem;
-      flex-shrink: 0;
-    }
-
-    .reply-item .reply-content {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .reply-item .reply-user {
-      font-weight: 700;
-      font-size: 0.75rem;
-    }
-
-    .reply-item .reply-text {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      margin-top: 2px;
-      word-wrap: break-word;
-    }
-
-    .reply-item .reply-time {
-      font-size: 0.6rem;
-      color: var(--text-muted);
-    }
-
-    /* ----- 12. EMPTY STATE ----- */
-    .empty-state {
-      padding: 60px 20px;
-      text-align: center;
-      color: var(--text-muted);
-    }
-
-    .empty-state .empty-icon {
-      font-size: 3rem;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-
-    .empty-state h3 {
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .empty-state p {
-      font-size: 0.9rem;
-      max-width: 300px;
-      margin: 0 auto;
-    }
-
-    /* ----- 13. LOADING SHIMMER ----- */
-    .shimmer {
-      background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.5s infinite;
-      border-radius: 8px;
-      height: 60px;
-      margin: 12px;
-    }
-
-    @keyframes shimmer {
-      0% { background-position: -200% center; }
-      100% { background-position: 200% center; }
-    }
-
-    /* ----- 14. TOAST ----- */
-    .toast-container {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: center;
-      width: 90%;
-      max-width: 540px;
-      pointer-events: none;
-    }
-
-    .toast {
-      background: rgba(30,30,30,0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      color: white;
-      padding: 12px 20px;
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-      font-weight: 500;
-      box-shadow: var(--shadow);
-      animation: fadeSlideUp 0.3s ease;
-      pointer-events: auto;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      width: 100%;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .toast.success { border-left: 3px solid var(--accent); }
-    .toast.error { border-left: 3px solid var(--like); }
-    .toast.warning { border-left: 3px solid #fdcb6e; }
-
-    .toast .toast-close {
-      margin-left: auto;
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      font-size: 1rem;
-      padding: 4px;
-    }
-
-    .toast .toast-close:hover {
-      color: var(--text-primary);
-    }
-
-    /* ----- 15. BLOCKED PAGE ----- */
-    .blocked-page {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background: #000;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      flex-direction: column;
-    }
-
-    .blocked-page .icon {
-      font-size: 4rem;
-      margin-bottom: 16px;
-      animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .blocked-page h1 {
-      font-size: 2rem;
-      margin: 0 0 8px;
-    }
-
-    .blocked-page p {
-      max-width: 320px;
-      color: #aaa;
-      line-height: 1.8;
-    }
-
-    /* ----- 16. RESPONSIVE ----- */
-    @media (max-width: 480px) {
-      .thread-content {
-        margin-left: 0;
-      }
-      .thread-actions {
-        margin-left: 0;
-        gap: 12px;
-      }
-      .reply-section {
-        margin-left: 0;
-      }
-      .replies-list {
-        margin-left: 0;
-        padding-left: 12px;
-      }
-      .compose-container {
-        flex-direction: row;
-      }
-      .compose-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .compose-tools {
-        justify-content: center;
-      }
-      .thread-time {
-        font-size: 0.6rem;
-      }
-      .logo {
-        font-size: 1.3rem;
-      }
-    }
-
-    @media (max-width: 380px) {
-      .header {
-        padding: 8px 12px;
-      }
-      .thread-card {
-        padding: 12px;
-      }
-      .compose-section {
-        padding: 12px;
-      }
-      .thread-actions {
-        gap: 8px;
-      }
-      .thread-action-btn {
-        font-size: 0.7rem;
-        padding: 2px 6px;
-      }
-    }
-
-    /* ----- 17. ACCESSIBILITY ----- */
-    .sr-only {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      border: 0;
-    }
-
-    button:focus-visible,
-    input:focus-visible,
-    textarea:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-  </style>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
+    </script>
+    
+    <style>
+        /* ===== 1. RESET & BASE ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #0a0a0a;
+            color: #00f0ff;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* ===== 2. GRID BACKGROUND ===== */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+            animation: gridPulse 4s ease-in-out infinite;
+        }
+        
+        @keyframes gridPulse {
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        
+        /* ===== 3. SPARKLE PARTICLES ===== */
+        .sparkle-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #00f0ff;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px rgba(0, 240, 255, 0.8);
+            animation: sparkleFloat linear infinite;
+        }
+        
+        @keyframes sparkleFloat {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1);
+                opacity: 0;
+            }
+        }
+        
+        /* ===== 4. CHAT LAYOUT ===== */
+        .chat-container {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 10px;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(5px);
+            border-left: 2px solid rgba(0, 240, 255, 0.2);
+            border-right: 2px solid rgba(0, 240, 255, 0.2);
+        }
+        
+        /* ===== 5. HEADER ===== */
+        .header {
+            text-align: center;
+            padding: 15px 0 10px;
+            border-bottom: 2px solid rgba(0, 240, 255, 0.3);
+            position: relative;
+            flex-shrink: 0;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: #00f0ff;
+            text-shadow:
+                0 0 10px rgba(0, 240, 255, 0.5),
+                0 0 20px rgba(0, 240, 255, 0.3),
+                0 0 40px rgba(0, 240, 255, 0.1);
+            animation: headerGlow 3s ease-in-out infinite;
+        }
+        
+        @keyframes headerGlow {
+            0%,
+            100% {
+                text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.5), 0 0 80px rgba(123, 47, 252, 0.3);
+            }
+        }
+        
+        .header .subtitle {
+            font-size: 0.7rem;
+            color: rgba(0, 240, 255, 0.5);
+            letter-spacing: 4px;
+            margin-top: 4px;
+        }
+        
+        .online-count {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.7rem;
+            color: #7b2ffc;
+            text-shadow: 0 0 10px rgba(123, 47, 252, 0.5);
+        }
+        
+        /* ===== 6. MESSAGES AREA ===== */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 5px;
+            margin: 10px 0;
+            scroll-behavior: smooth;
+        }
+        
+        .messages::-webkit-scrollbar {
+            width: 4px;
+        }
+        
+        .messages::-webkit-scrollbar-track {
+            background: rgba(0, 240, 255, 0.05);
+        }
+        
+        .messages::-webkit-scrollbar-thumb {
+            background: rgba(0, 240, 255, 0.3);
+            border-radius: 2px;
+        }
+        
+        /* ===== 7. MESSAGE BUBBLES ===== */
+        .message {
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            border-radius: 4px;
+            border-left: 3px solid #00f0ff;
+            background: rgba(0, 240, 255, 0.05);
+            animation: messageIn 0.3s ease-out;
+            position: relative;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.05);
+            word-wrap: break-word;
+        }
+        
+        @keyframes messageIn {
+            0% {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .message .sender {
+            font-size: 0.7rem;
+            color: #7b2ffc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+            text-shadow: 0 0 10px rgba(123, 47, 252, 0.3);
+        }
+        
+        .message .text {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            color: #c0f0ff;
+        }
+        
+        .message .time {
+            font-size: 0.6rem;
+            color: rgba(0, 240, 255, 0.3);
+            margin-top: 4px;
+            text-align: right;
+        }
+        
+        .message.system {
+            border-left-color: #7b2ffc;
+            background: rgba(123, 47, 252, 0.05);
+            text-align: center;
+            font-style: italic;
+            color: rgba(123, 47, 252, 0.6);
+        }
+        
+        .message.system .text {
+            color: rgba(123, 47, 252, 0.6);
+        }
+        
+        /* ===== 8. INPUT AREA ===== */
+        .input-area {
+            flex-shrink: 0;
+            display: flex;
+            gap: 8px;
+            padding: 12px 0;
+            border-top: 2px solid rgba(0, 240, 255, 0.2);
+            position: relative;
+        }
+        
+        .input-area::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00f0ff, #7b2ffc, transparent);
+            animation: inputGlow 2s linear infinite;
+            background-size: 200% 100%;
+        }
+        
+        @keyframes inputGlow {
+            0% {
+                background-position: -200% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        #messageInput {
+            flex: 1;
+            padding: 12px 16px;
+            background: rgba(0, 240, 255, 0.05);
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            border-radius: 4px;
+            color: #00f0ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        #messageInput:focus {
+            border-color: #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1), inset 0 0 20px rgba(0, 240, 255, 0.05);
+        }
+        
+        #messageInput::placeholder {
+            color: rgba(0, 240, 255, 0.3);
+        }
+        
+        #sendBtn {
+            padding: 12px 24px;
+            background: transparent;
+            border: 1px solid #00f0ff;
+            border-radius: 4px;
+            color: #00f0ff;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #sendBtn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+        
+        #sendBtn:hover::before {
+            left: 100%;
+        }
+        
+        #sendBtn:hover {
+            background: rgba(0, 240, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+        }
+        
+        #sendBtn:active {
+            transform: scale(0.95);
+        }
+        
+        /* ===== 9. BANNED OVERLAY ===== */
+        .ban-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .ban-overlay h1 {
+            font-size: 2rem;
+            color: #ff0040;
+            text-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+            margin-bottom: 20px;
+            letter-spacing: 4px;
+        }
+        
+        .ban-overlay p {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+        
+        /* ===== 10. RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.3rem;
+                letter-spacing: 4px;
+            }
+            .message .text {
+                font-size: 0.85rem;
+            }
+            #sendBtn {
+                padding: 12px 16px;
+                font-size: 0.7rem;
+            }
+            #messageInput {
+                font-size: 0.85rem;
+                padding: 10px 12px;
+            }
+        }
+        
+        @media (min-width: 481px) {
+            .chat-container {
+                border-left: 2px solid rgba(0, 240, 255, 0.3);
+                border-right: 2px solid rgba(0, 240, 255, 0.3);
+                box-shadow: 0 0 60px rgba(0, 240, 255, 0.05);
+            }
+        }
+    </style>
 </head>
 <body>
-
-<div id="root"></div>
-<div class="toast-container" id="toastContainer"></div>
-
-<script>
-  (function() {
-    "use strict";
-
-    // ================================================================
-    // 1. CONFIGURATION
-    // ================================================================
-    const CONFIG = {
-      firebase: {
-        apiKey: "AIzaSyDemoKeyReplaceMe",
-        authDomain: "zack360-2b303.firebaseapp.com",
-        databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "zack360-2b303",
-        storageBucket: "zack360-2b303.appspot.com",
-        messagingSenderId: "123456789012",
-        appId: "1:123456789012:web:abcdef123456"
-      },
-      dbPath: 'threads',
-      maxThreadLength: 500,
-      maxReplies: 50,
-      maxReplyLength: 280
-    };
-
-    // ================================================================
-    // 2. STATE
-    // ================================================================
-    const State = {
-      threads: [],
-      users: {},
-      currentUser: null,
-      isOnline: true,
-      loading: true,
-      replyingTo: null,
-      stats: { threads: 0, replies: 0, likes: 0 },
-      listeners: []
-    };
-
-    // ================================================================
-    // 3. UTILITY FUNCTIONS
-    // ================================================================
-    const Utils = {
-      isAndroid() {
-        return /android/i.test(navigator.userAgent);
-      },
-
-      generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2, 8);
-      },
-
-      timeAgo(timestamp) {
-        const now = Date.now();
-        const diff = now - timestamp;
-        const seconds = Math.floor(diff / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const hours = Math.floor(minutes / 60);
-        const days = Math.floor(hours / 24);
+    
+    <!-- BAN OVERLAY (hidden by default) -->
+    <div id="banOverlay" class="ban-overlay" style="display:none;">
+        <h1>⛔ ACCESS DENIED</h1>
+        <p>This terminal is only accessible from Android devices.</p>
+    </div>
+    
+    <!-- GRID BACKGROUND -->
+    <div class="grid-bg"></div>
+    
+    <!-- SPARKLE CONTAINER -->
+    <div class="sparkle-container" id="sparkleContainer"></div>
+    
+    <!-- CHAT UI -->
+    <div class="chat-container" id="chatContainer">
+        <!-- Header -->
+        <div class="header">
+            <h1>TRON</h1>
+            <div class="subtitle">⚡ GLOBAL NETWORK ⚡</div>
+            <div class="online-count" id="onlineCount">● 0</div>
+        </div>
         
-        if (days > 0) return days + 'd';
-        if (hours > 0) return hours + 'h';
-        if (minutes > 0) return minutes + 'm';
-        if (seconds > 10) return seconds + 's';
-        return 'now';
-      },
-
-      getAvatarColor(id) {
-        const colors = ['', 'green', 'pink', 'orange', 'purple'];
-        const index = id ? parseInt(id.charAt(id.length - 1), 36) % colors.length : 0;
-        return colors[index] || '';
-      },
-
-      getInitials(name) {
-        if (!name) return 'U';
-        return name.charAt(0).toUpperCase();
-      },
-
-      formatText(text) {
-        if (!text) return '';
-        // Escape HTML
-        const escaped = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        // Hashtag and mention detection
-        return escaped
-          .replace(/#(\w+)/g, '<span class="hashtag">#$1</span>')
-          .replace(/@(\w+)/g, '<span class="mention">@$1</span>');
-      },
-
-      truncate(str, max) {
-        if (!str) return '';
-        if (str.length <= max) return str;
-        return str.substring(0, max) + '...';
-      },
-
-      debounce(fn, delay = 300) {
-        let timeoutId;
-        return function(...args) {
-          clearTimeout(timeoutId);
-          timeoutId = setTimeout(() => fn.apply(this, args), delay);
+        <!-- Messages -->
+        <div class="messages" id="messages"></div>
+        
+        <!-- Input -->
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="500" />
+            <button id="sendBtn">SEND</button>
+        </div>
+    </div>
+    
+    <script>
+        // ============================================================
+        // 1. FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
-      }
-    };
-
-    // ================================================================
-    // 4. TOAST SYSTEM
-    // ================================================================
-    const Toast = {
-      container: null,
-
-      init() {
-        this.container = document.getElementById('toastContainer');
-        if (!this.container) {
-          console.error('Toast container not found');
+        
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const messagesRef = database.ref('messages');
+        const usersRef = database.ref('users');
+        
+        // ============================================================
+        // 2. DEVICE DETECTION - BLOCK NON-ANDROID
+        // ============================================================
+        function isAndroid() {
+            return /android/i.test(navigator.userAgent);
         }
-      },
-
-      show(message, type = 'info') {
-        if (!this.container) return;
         
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        const icons = {
-          success: '✅',
-          error: '❌',
-          warning: '⚠️',
-          info: 'ℹ️'
-        };
-        toast.innerHTML = `
-          <span>${icons[type] || 'ℹ️'} ${message}</span>
-          <button class="toast-close" aria-label="Close notification">&times;</button>
-        `;
-        
-        const closeBtn = toast.querySelector('.toast-close');
-        closeBtn.addEventListener('click', () => {
-          this.removeToast(toast);
-        });
-        
-        this.container.appendChild(toast);
-        
-        // Auto-remove after 3.5 seconds
-        const timeoutId = setTimeout(() => {
-          this.removeToast(toast);
-        }, 3500);
-        
-        // Store timeout for cleanup
-        toast._timeoutId = timeoutId;
-        
-        // Pause timeout on hover
-        toast.addEventListener('mouseenter', () => {
-          clearTimeout(toast._timeoutId);
-        });
-        
-        toast.addEventListener('mouseleave', () => {
-          toast._timeoutId = setTimeout(() => {
-            this.removeToast(toast);
-          }, 1500);
-        });
-      },
-
-      removeToast(toast) {
-        if (!toast || !toast.parentNode) return;
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px)';
-        setTimeout(() => {
-          if (toast.parentNode) {
-            toast.remove();
-          }
-        }, 300);
-      },
-
-      success(msg) { this.show(msg, 'success'); },
-      error(msg) { this.show(msg, 'error'); },
-      warning(msg) { this.show(msg, 'warning'); },
-      info(msg) { this.show(msg, 'info'); }
-    };
-
-    // ================================================================
-    // 5. FIREBASE MANAGER
-    // ================================================================
-    const FirebaseManager = {
-      db: null,
-      ref: null,
-      threadsRef: null,
-      initialized: false,
-      listeners: [],
-
-      init() {
-        if (this.initialized) return;
-        try {
-          firebase.initializeApp(CONFIG.firebase);
-          this.db = firebase.database();
-          this.ref = this.db.ref(CONFIG.dbPath);
-          this.threadsRef = this.ref.child('threads');
-          this.initialized = true;
-          
-          // Monitor connection status
-          const connRef = this.db.ref('.info/connected');
-          connRef.on('value', (snap) => {
-            State.isOnline = snap.val() === true;
-          });
-          
-          return this;
-        } catch (e) {
-          console.error('Firebase init error:', e);
-          Toast.error('Connection failed. Please refresh.');
-          throw e;
+        if (!isAndroid()) {
+            document.getElementById('banOverlay').style.display = 'flex';
+            document.getElementById('chatContainer').style.display = 'none';
+            throw new Error('Access denied: Android only');
         }
-      },
-
-      async getThreads(limit = 50) {
-        try {
-          const snapshot = await this.threadsRef
-            .orderByChild('timestamp')
-            .limitToLast(limit)
-            .once('value');
-          const data = snapshot.val();
-          if (!data) return [];
-          return Object.entries(data)
-            .map(([id, thread]) => {
-              // Ensure thread has an id
-              return { 
-                id, 
-                ...thread,
-                replies: thread.replies || {},
-                replyCount: thread.replyCount || 0,
-                likes: thread.likes || 0,
-                likedBy: thread.likedBy || {}
-              };
-            })
-            .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-        } catch (e) {
-          console.error('Get threads error:', e);
-          throw e;
+        
+        // ============================================================
+        // 3. EMOJI & GIF FILTER
+        // ============================================================
+        function filterEmojiAndGif(text) {
+            // Remove emoji (Unicode emoji ranges)
+            const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F700}-\u{1F77F}\u{1F780}-\u{1F7FF}\u{1F800}-\u{1F8FF}\u{1F900}-\u{1F9FF}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{2300}-\u{23FF}\u{2B50}\u{2934}\u{2935}\u{2190}-\u{21FF}]/gu;
+            text = text.replace(emojiRegex, '');
+            
+            // Remove GIF references (case insensitive)
+            text = text.replace(/gif/gi, '');
+            text = text.replace(/\.gif/gi, '');
+            text = text.replace(/\[gif\]/gi, '');
+            text = text.replace(/\(gif\)/gi, '');
+            
+            // Remove extra spaces
+            text = text.replace(/\s+/g, ' ').trim();
+            
+            return text || '[filtered]';
         }
-      },
-
-      async createThread(threadData) {
-        try {
-          const id = Utils.generateId();
-          const timestamp = Date.now();
-          const newThread = {
-            ...threadData,
-            id,
-            timestamp,
-            replies: {},
-            replyCount: 0,
-            likes: 0,
-            likedBy: {}
-          };
-          await this.threadsRef.child(id).set(newThread);
-          return { id, ...newThread };
-        } catch (e) {
-          console.error('Create thread error:', e);
-          throw e;
+        
+        // ============================================================
+        // 4. GENERATE USERNAME
+        // ============================================================
+        function generateUsername() {
+            const prefixes = ['USER', 'NODE', 'GRID', 'CORE', 'BYTE', 'ZERO', 'ONE', 'LIGHT', 'DIGI', 'CYBER'];
+            const suffixes = ['_X', '_9', '_7', '_Z', '_K', '_V', '_R', '_M', '_Q', '_F'];
+            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+            const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
+            const num = String(Math.floor(Math.random() * 100)).padStart(2, '0');
+            return prefix + suffix + num;
         }
-      },
-
-      async addReply(threadId, replyData) {
-        try {
-          const replyId = Utils.generateId();
-          const timestamp = Date.now();
-          const newReply = {
-            ...replyData,
-            id: replyId,
-            timestamp
-          };
-          
-          // Add reply
-          const replyPath = `threads/${threadId}/replies/${replyId}`;
-          await this.ref.child(replyPath).set(newReply);
-          
-          // Increment reply count
-          await this.threadsRef.child(threadId).child('replyCount')
-            .transaction(current => (current || 0) + 1);
-          
-          return { ...newReply, id: replyId };
-        } catch (e) {
-          console.error('Add reply error:', e);
-          throw e;
-        }
-      },
-
-      async toggleLike(threadId) {
-        try {
-          const threadRef = this.threadsRef.child(threadId);
-          const userId = 'user_' + Utils.generateId().substr(0, 8);
-          
-          // Check if already liked
-          const likedSnapshot = await threadRef.child('likedBy').child(userId).once('value');
-          const alreadyLiked = likedSnapshot.val() === true;
-          
-          if (alreadyLiked) {
-            // Unlike
-            await threadRef.child('likedBy').child(userId).remove();
-            const newLikes = await threadRef.child('likes')
-              .transaction(current => Math.max(0, (current || 0) - 1));
-            return { liked: false, likes: newLikes.snapshot.val() || 0 };
-          } else {
-            // Like
-            await threadRef.child('likedBy').child(userId).set(true);
-            const newLikes = await threadRef.child('likes')
-              .transaction(current => (current || 0) + 1);
-            return { liked: true, likes: newLikes.snapshot.val() || 0 };
-          }
-        } catch (e) {
-          console.error('Toggle like error:', e);
-          throw e;
-        }
-      },
-
-      attachRealtime(callback) {
-        const listener = this.threadsRef
-          .orderByChild('timestamp')
-          .limitToLast(50)
-          .on('value', (snapshot) => {
-            try {
-              const data = snapshot.val();
-              if (!data) {
-                callback([]);
-                return;
-              }
-              const threads = Object.entries(data)
-                .map(([id, thread]) => ({
-                  id,
-                  ...thread,
-                  replies: thread.replies || {},
-                  replyCount: thread.replyCount || 0,
-                  likes: thread.likes || 0,
-                  likedBy: thread.likedBy || {}
-                }))
-                .sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-              callback(threads);
-            } catch (e) {
-              console.error('Realtime callback error:', e);
+        
+        const username = generateUsername();
+        
+        // ============================================================
+        // 5. SPARKLE GENERATOR
+        // ============================================================
+        function createSparkles() {
+            const container = document.getElementById('sparkleContainer');
+            for (let i = 0; i < 25; i++) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'sparkle';
+                sparkle.style.left = Math.random() * 100 + '%';
+                sparkle.style.width = (Math.random() * 3 + 1) + 'px';
+                sparkle.style.height = sparkle.style.width;
+                sparkle.style.animationDuration = (Math.random() * 15 + 10) + 's';
+                sparkle.style.animationDelay = (Math.random() * 15) + 's';
+                sparkle.style.opacity = Math.random() * 0.5 + 0.2;
+                container.appendChild(sparkle);
             }
-          }, (error) => {
-            console.error('Realtime listener error:', error);
-            Toast.warning('Connection issue. Retrying...');
-          });
-        
-        this.listeners.push(listener);
-        return listener;
-      },
-
-      detachRealtime() {
-        this.listeners.forEach(listener => {
-          this.threadsRef.off('value', listener);
-        });
-        this.listeners = [];
-      }
-    };
-
-    // ================================================================
-    // 6. ANDROID ENFORCEMENT
-    // ================================================================
-    function enforceAndroid() {
-      if (!Utils.isAndroid()) {
-        document.body.innerHTML = `
-          <div class="blocked-page">
-            <div class="icon">📱</div>
-            <h1>Android Only</h1>
-            <p>Threads is optimized for Android browsers.<br>Please open on your Android device.</p>
-            <p style="font-size:0.7rem;color:#555;margin-top:20px;">User-Agent: ${navigator.userAgent}</p>
-          </div>
-        `;
-        return false;
-      }
-      return true;
-    }
-
-    // ================================================================
-    // 7. UI RENDERER
-    // ================================================================
-    const UI = {
-      elements: {},
-      threadCache: {},
-
-      render() {
-        const root = document.getElementById('root');
-        if (!root) {
-          console.error('Root element not found');
-          return;
         }
+        createSparkles();
         
-        root.innerHTML = `
-          <div class="app-container">
-            <!-- Header -->
-            <header class="header" role="banner">
-              <div class="header-left">
-                <span class="logo" aria-label="Threads"><i class="fas fa-threads" aria-hidden="true"></i>Threads</span>
-                <span class="android-badge" aria-label="Android optimized">🤖 Android</span>
-              </div>
-              <div class="header-right">
-                <button class="header-btn" id="refreshBtn" aria-label="Refresh feed" title="Refresh">
-                  <i class="fas fa-sync" aria-hidden="true"></i>
-                </button>
-                <button class="header-btn" id="statsBtn" aria-label="View stats" title="Stats">
-                  <i class="fas fa-chart-simple" aria-hidden="true"></i>
-                  <span class="badge-count" id="threadCount" aria-label="Thread count">0</span>
-                </button>
-              </div>
-            </header>
-
-            <!-- Compose -->
-            <section class="compose-section" aria-label="Compose thread">
-              <div class="compose-container">
-                <div class="compose-avatar" id="userAvatar" aria-hidden="true">U</div>
-                <div class="compose-input-wrap">
-                  <label for="threadInput" class="sr-only">Write a thread</label>
-                  <textarea 
-                    id="threadInput" 
-                    placeholder="What's on your mind?..." 
-                    maxlength="${CONFIG.maxThreadLength}"
-                    aria-label="Thread content"
-                  ></textarea>
-                  <div class="compose-actions">
-                    <div class="compose-tools">
-                      <button id="emojiBtn" aria-label="Add emoji"><i class="fas fa-face-smile" aria-hidden="true"></i></button>
-                      <button id="hashtagBtn" aria-label="Add hashtag"><i class="fas fa-hashtag" aria-hidden="true"></i></button>
-                    </div>
-                    <div>
-                      <span class="char-count" id="charCount" aria-live="polite">0/${CONFIG.maxThreadLength}</span>
-                      <button class="compose-submit" id="postBtn" aria-label="Post thread">Post</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <!-- Feed -->
-            <section class="feed" aria-label="Thread feed">
-              <div class="feed-header">
-                <h2><i class="fas fa-home" aria-hidden="true"></i> Feed</h2>
-                <span class="feed-stats" id="feedStats">0 threads</span>
-              </div>
-              <div id="feedContainer" role="list">
-                <div class="shimmer" aria-hidden="true"></div>
-                <div class="shimmer" aria-hidden="true"></div>
-                <div class="shimmer" aria-hidden="true"></div>
-              </div>
-            </section>
-          </div>
-        `;
-
-        this.cacheElements();
-        Toast.init();
-      },
-
-      cacheElements() {
-        const ids = [
-          'threadInput', 'postBtn', 'charCount', 'feedContainer',
-          'refreshBtn', 'statsBtn', 'threadCount', 'feedStats',
-          'userAvatar', 'emojiBtn', 'hashtagBtn'
-        ];
-        ids.forEach(id => {
-          this.elements[id] = document.getElementById(id);
-        });
-      },
-
-      renderThreads(threads) {
-        const container = this.elements.feedContainer;
-        if (!container) return;
-
-        if (!threads || threads.length === 0) {
-          container.innerHTML = `
-            <div class="empty-state" role="status">
-              <div class="empty-icon"><i class="fas fa-comment" aria-hidden="true"></i></div>
-              <h3>No threads yet</h3>
-              <p>Be the first to start a conversation!</p>
-            </div>
-          `;
-          this.updateStats(threads);
-          return;
-        }
-
-        // Cache and render
-        const html = threads.map(thread => this.createThreadHTML(thread)).join('');
-        container.innerHTML = html;
-        this.updateStats(threads);
-        this.bindThreadEvents();
-      },
-
-      createThreadHTML(thread) {
-        const avatarClass = Utils.getAvatarColor(thread.userId || thread.id);
-        const content = Utils.formatText(thread.content || '');
-        const time = Utils.timeAgo(thread.timestamp || Date.now());
-        const replyCount = thread.replyCount || 0;
-        const likes = thread.likes || 0;
-        const replies = thread.replies ? Object.values(thread.replies) : [];
-        const username = Utils.truncate(thread.username || 'Anonymous', 20);
-        const handle = Utils.truncate(thread.handle || 'user', 20);
-
-        return `
-          <div class="thread-card" data-thread-id="${thread.id}" role="listitem">
-            <div class="thread-header">
-              <div class="thread-user">
-                <div class="thread-avatar ${avatarClass}" aria-hidden="true">
-                  ${Utils.getInitials(thread.username || 'User')}
-                </div>
-                <div class="thread-user-info">
-                  <div class="thread-username">
-                    ${this.escapeHtml(username)}
-                    ${thread.verified ? '<span class="verified" aria-label="Verified"><i class="fas fa-check-circle" aria-hidden="true"></i></span>' : ''}
-                  </div>
-                  <div class="thread-handle">@${this.escapeHtml(handle)}</div>
-                </div>
-              </div>
-              <div class="thread-time" title="${new Date(thread.timestamp).toLocaleString()}">${time}</div>
-            </div>
-            <div class="thread-content">${content}</div>
-            ${this.createThreadMedia(thread)}
-            <div class="thread-actions">
-              <button class="thread-action-btn like-btn" data-thread-id="${thread.id}" aria-label="Like">
-                <span class="icon" aria-hidden="true"><i class="fa-regular fa-heart"></i></span>
-                <span class="count like-count">${likes}</span>
-              </button>
-              <button class="thread-action-btn reply-toggle" data-thread-id="${thread.id}" aria-label="Reply">
-                <span class="icon" aria-hidden="true"><i class="fa-regular fa-comment"></i></span>
-                <span class="count">${replyCount}</span>
-              </button>
-              <button class="thread-action-btn share-btn" data-thread-id="${thread.id}" aria-label="Share">
-                <span class="icon" aria-hidden="true"><i class="fa-regular fa-share-from-square"></i></span>
-              </button>
-            </div>
-            ${this.createReplySection(thread)}
-            ${this.createRepliesList(replies)}
-          </div>
-        `;
-      },
-
-      escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-      },
-
-      createThreadMedia(thread) {
-        if (thread.media) {
-          return `
-            <div class="thread-media">
-              <img src="${this.escapeHtml(thread.media)}" alt="Thread media" loading="lazy" />
-            </div>
-          `;
-        }
-        if (thread.mediaType) {
-          return `
-            <div class="thread-media">
-              <div class="media-placeholder">
-                <i class="fas fa-${this.escapeHtml(thread.mediaType)}" aria-hidden="true"></i>
-                <span>${this.escapeHtml(thread.mediaLabel || 'Media')}</span>
-              </div>
-            </div>
-          `;
-        }
-        return '';
-      },
-
-      createReplySection(thread) {
-        return `
-          <div class="reply-section" data-thread-id="${thread.id}">
-            <div class="reply-container">
-              <div class="compose-avatar" style="width:28px;height:28px;font-size:0.8rem;" aria-hidden="true">U</div>
-              <label for="reply-input-${thread.id}" class="sr-only">Write a reply</label>
-              <input 
-                type="text" 
-                class="reply-input" 
-                id="reply-input-${thread.id}"
-                placeholder="Write a reply..." 
-                maxlength="${CONFIG.maxReplyLength}" 
-              />
-              <button class="reply-submit" data-thread-id="${thread.id}" aria-label="Post reply">Reply</button>
-            </div>
-          </div>
-        `;
-      },
-
-      createRepliesList(replies) {
-        if (!replies || replies.length === 0) return '';
-        const visibleReplies = replies.slice(0, CONFIG.maxReplies);
-        return `
-          <div class="replies-list">
-            ${visibleReplies.map(reply => `
-              <div class="reply-item">
-                <div class="thread-avatar ${Utils.getAvatarColor(reply.userId || reply.id)}" style="width:24px;height:24px;font-size:0.6rem;" aria-hidden="true">
-                  ${Utils.getInitials(reply.username || 'U')}
-                </div>
-                <div class="reply-content">
-                  <div>
-                    <span class="reply-user">${this.escapeHtml(Utils.truncate(reply.username || 'Anonymous', 15))}</span>
-                    <span class="reply-time"> · ${Utils.timeAgo(reply.timestamp)}</span>
-                  </div>
-                  <div class="reply-text">${this.escapeHtml(Utils.truncate(reply.content || '', 200))}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        `;
-      },
-
-      updateStats(threads) {
-        const total = threads ? threads.length : 0;
-        const replies = threads ? threads.reduce((sum, t) => sum + (t.replyCount || 0), 0) : 0;
-        const likes = threads ? threads.reduce((sum, t) => sum + (t.likes || 0), 0) : 0;
-        
-        if (this.elements.threadCount) this.elements.threadCount.textContent = total;
-        if (this.elements.feedStats) {
-          this.elements.feedStats.textContent = `${total} threads · ${replies} replies · ${likes} likes`;
-        }
-        
-        State.stats.threads = total;
-        State.stats.replies = replies;
-        State.stats.likes = likes;
-      },
-
-      updateCharCount() {
-        const input = this.elements.threadInput;
-        const counter = this.elements.charCount;
-        if (!input || !counter) return;
-        const len = input.value.length;
-        const max = CONFIG.maxThreadLength;
-        counter.textContent = `${len}/${max}`;
-        counter.classList.toggle('over', len > max);
-        if (this.elements.postBtn) {
-          this.elements.postBtn.disabled = len === 0 || len > max;
-        }
-      },
-
-      bindThreadEvents() {
-        // Like buttons - use event delegation for better performance
-        document.querySelectorAll('.like-btn').forEach(btn => {
-          // Remove existing listeners to prevent duplicates
-          btn.replaceWith(btn.cloneNode(true));
-        });
-        
-        document.querySelectorAll('.like-btn').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            const threadId = btn.dataset.threadId;
-            if (threadId) {
-              await this.handleLike(threadId, btn);
-            }
-          });
-        });
-
-        // Reply toggle
-        document.querySelectorAll('.reply-toggle').forEach(btn => {
-          btn.replaceWith(btn.cloneNode(true));
-        });
-        
-        document.querySelectorAll('.reply-toggle').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const threadId = btn.dataset.threadId;
-            const section = document.querySelector(`.reply-section[data-thread-id="${threadId}"]`);
-            if (section) {
-              const isOpen = section.classList.toggle('open');
-              if (isOpen) {
-                const input = section.querySelector('.reply-input');
-                if (input) {
-                  setTimeout(() => input.focus(), 100);
-                }
-              }
-            }
-          });
-        });
-
-        // Reply submit
-        document.querySelectorAll('.reply-submit').forEach(btn => {
-          btn.replaceWith(btn.cloneNode(true));
-        });
-        
-        document.querySelectorAll('.reply-submit').forEach(btn => {
-          btn.addEventListener('click', async (e) => {
-            e.stopPropagation();
-            const threadId = btn.dataset.threadId;
-            const section = document.querySelector(`.reply-section[data-thread-id="${threadId}"]`);
-            const input = section?.querySelector('.reply-input');
-            if (input && input.value.trim()) {
-              await this.handleReply(threadId, input.value.trim());
-              input.value = '';
-              section.classList.remove('open');
-            }
-          });
-        });
-
-        // Reply input enter key
-        document.querySelectorAll('.reply-input').forEach(input => {
-          input.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-              e.preventDefault();
-              const section = input.closest('.reply-section');
-              const threadId = section?.dataset.threadId;
-              if (threadId) {
-                const btn = document.querySelector(`.reply-submit[data-thread-id="${threadId}"]`);
-                if (btn) btn.click();
-              }
-            }
-          });
-        });
-
-        // Share buttons
-        document.querySelectorAll('.share-btn').forEach(btn => {
-          btn.replaceWith(btn.cloneNode(true));
-        });
-        
-        document.querySelectorAll('.share-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const threadId = btn.dataset.threadId;
-            const shareData = {
-              title: 'Threads Post',
-              text: 'Check out this thread!',
-              url: window.location.origin + window.location.pathname + '?thread=' + threadId
+        // ============================================================
+        // 6. MESSAGE FUNCTIONS
+        // ============================================================
+        function sendMessage(text) {
+            text = text.trim();
+            if (!text) return;
+            
+            // Filter emoji/GIF
+            text = filterEmojiAndGif(text);
+            if (!text || text === '[filtered]') return;
+            
+            const message = {
+                sender: username,
+                text: text,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
             
-            if (navigator.share) {
-              navigator.share(shareData).catch(() => {});
-            } else if (navigator.clipboard) {
-              navigator.clipboard.writeText(shareData.url)
-                .then(() => Toast.success('Link copied!'))
-                .catch(() => Toast.warning('Could not copy link'));
-            } else {
-              // Fallback
-              const textarea = document.createElement('textarea');
-              textarea.value = shareData.url;
-              document.body.appendChild(textarea);
-              textarea.select();
-              try {
-                document.execCommand('copy');
-                Toast.success('Link copied!');
-              } catch (err) {
-                Toast.warning('Could not copy link');
-              }
-              document.body.removeChild(textarea);
-            }
-          });
-        });
-      },
-
-      async handleLike(threadId, btn) {
-        try {
-          btn.disabled = true;
-          const result = await FirebaseManager.toggleLike(threadId);
-          const countEl = btn.querySelector('.like-count');
-          if (countEl) countEl.textContent = result.likes;
-          btn.classList.toggle('liked', result.liked);
-          
-          // Update the icon
-          const icon = btn.querySelector('.icon i');
-          if (icon) {
-            icon.className = result.liked ? 'fa-solid fa-heart' : 'fa-regular fa-heart';
-          }
-          
-          Toast.info(result.liked ? '❤️ Liked!' : '💔 Unliked');
-        } catch (e) {
-          console.error('Like error:', e);
-          Toast.error('Failed to like');
-        } finally {
-          btn.disabled = false;
+            messagesRef.push(message);
+            document.getElementById('messageInput').value = '';
+            document.getElementById('messageInput').focus();
         }
-      },
-
-      async handleReply(threadId, content) {
-        try {
-          if (content.length > CONFIG.maxReplyLength) {
-            Toast.warning(`Reply too long (max ${CONFIG.maxReplyLength} chars)`);
-            return;
-          }
-          
-          const replyData = {
-            content: content.trim(),
-            username: 'User_' + Utils.generateId().substr(0, 4),
-            userId: Utils.generateId(),
-            timestamp: Date.now()
-          };
-          
-          await FirebaseManager.addReply(threadId, replyData);
-          Toast.success('💬 Reply posted!');
-        } catch (e) {
-          console.error('Reply error:', e);
-          Toast.error('Failed to reply');
-        }
-      }
-    };
-
-    // ================================================================
-    // 8. APP CONTROLLER
-    // ================================================================
-    const App = {
-      isInitialized: false,
-
-      init() {
-        // Prevent double initialization
-        if (this.isInitialized) return;
         
-        // Step 1: Enforce Android
-        if (!enforceAndroid()) return;
-
-        // Step 2: Render UI
-        UI.render();
-
-        // Step 3: Init Firebase
-        try {
-          FirebaseManager.init();
-        } catch (e) {
-          Toast.error('Failed to connect. Please refresh.');
-          return;
+        function displayMessage(data) {
+            const messagesDiv = document.getElementById('messages');
+            const msg = data.val();
+            const key = data.key;
+            
+            // Skip if no text
+            if (!msg || !msg.text) return;
+            
+            const div = document.createElement('div');
+            div.className = 'message';
+            div.dataset.key = key;
+            
+            // System message detection
+            if (msg.sender === 'SYSTEM') {
+                div.classList.add('system');
+            }
+            
+            const time = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--';
+            
+            div.innerHTML = `
+                        <div class="sender">${msg.sender || 'UNKNOWN'}</div>
+                        <div class="text">${escapeHtml(msg.text)}</div>
+                        <div class="time">${time}</div>
+                    `;
+            
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
-
-        // Step 4: Load initial threads
-        this.loadThreads();
-
-        // Step 5: Attach realtime listener
-        FirebaseManager.attachRealtime((threads) => {
-          State.threads = threads;
-          UI.renderThreads(threads);
-        });
-
-        // Step 6: Setup compose functionality
-        this.setupCompose();
-
-        // Step 7: Setup header buttons
-        this.setupHeaderButtons();
-
-        // Step 8: Initial char count
-        UI.updateCharCount();
-
-        this.isInitialized = true;
-        Toast.success('🚀 Threads ready!');
-      },
-
-      setupCompose() {
-        const postBtn = UI.elements.postBtn;
-        const threadInput = UI.elements.threadInput;
         
-        if (threadInput) {
-          // Char count update with debounce
-          const updateCharCount = Utils.debounce(() => UI.updateCharCount(), 100);
-          threadInput.addEventListener('input', updateCharCount);
-          
-          // Enter key to post (Shift+Enter for new line)
-          threadInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
-              e.preventDefault();
-              postBtn?.click();
-            }
-          });
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
         }
-
-        if (postBtn) {
-          postBtn.addEventListener('click', async () => {
-            const content = threadInput?.value.trim();
-            if (!content || content.length > CONFIG.maxThreadLength) {
-              if (content && content.length > CONFIG.maxThreadLength) {
-                Toast.warning(`Thread too long (max ${CONFIG.maxThreadLength} chars)`);
-              } else {
-                Toast.warning('Please write something');
-              }
-              return;
-            }
-
-            const threadData = {
-              content: content,
-              username: 'AndroidUser_' + Utils.generateId().substr(0, 4),
-              handle: 'user_' + Utils.generateId().substr(0, 6),
-              userId: Utils.generateId(),
-              verified: Math.random() > 0.9,
-              timestamp: Date.now()
+        
+        // ============================================================
+        // 7. ONLINE COUNT
+        // ============================================================
+        function updateOnlineCount() {
+            usersRef.on('value', function(snapshot) {
+                const count = snapshot.numChildren() || 0;
+                document.getElementById('onlineCount').textContent = '● ' + count;
+            });
+        }
+        
+        // Add/remove user presence
+        function setPresence() {
+            const userRef = usersRef.child(username);
+            userRef.onDisconnect().remove();
+            userRef.set({ online: true, lastSeen: firebase.database.ServerValue.TIMESTAMP });
+        }
+        
+        // ============================================================
+        // 8. REAL-TIME LISTENER
+        // ============================================================
+        function listenForMessages() {
+            // Load last 100 messages
+            messagesRef.limitToLast(100).on('child_added', function(data) {
+                displayMessage(data);
+            });
+        }
+        
+        // ============================================================
+        // 9. SEND SYSTEM MESSAGE
+        // ============================================================
+        function sendSystemMessage(text) {
+            const msg = {
+                sender: 'SYSTEM',
+                text: text,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
             };
-
-            try {
-              postBtn.disabled = true;
-              postBtn.textContent = 'Posting...';
-              await FirebaseManager.createThread(threadData);
-              if (threadInput) threadInput.value = '';
-              UI.updateCharCount();
-              Toast.success('🎉 Thread posted!');
-            } catch (e) {
-              console.error('Post error:', e);
-              Toast.error('Failed to post');
-            } finally {
-              postBtn.disabled = false;
-              postBtn.textContent = 'Post';
-            }
-          });
+            messagesRef.push(msg);
         }
-
-        // Emoji button
-        const emojiBtn = UI.elements.emojiBtn;
-        if (emojiBtn) {
-          emojiBtn.addEventListener('click', () => {
-            const emojis = ['😊', '🔥', '💯', '👏', '🙌', '💪', '✨', '🚀', '🎉', '❤️', '😂', '🥰', '😎', '🤩', '💫'];
-            const random = emojis[Math.floor(Math.random() * emojis.length)];
-            if (threadInput) {
-              const cursor = threadInput.selectionStart || 0;
-              const text = threadInput.value;
-              threadInput.value = text.slice(0, cursor) + random + text.slice(cursor);
-              threadInput.focus();
-              UI.updateCharCount();
-            }
-          });
-        }
-
-        // Hashtag button
-        const hashtagBtn = UI.elements.hashtagBtn;
-        if (hashtagBtn) {
-          hashtagBtn.addEventListener('click', () => {
-            if (threadInput) {
-              const hashtag = prompt('Enter hashtag:', 'threads');
-              if (hashtag && hashtag.trim()) {
-                const cursor = threadInput.selectionStart || 0;
-                const text = threadInput.value;
-                const cleanHashtag = hashtag.trim().replace(/\s/g, '');
-                threadInput.value = text.slice(0, cursor) + '#' + cleanHashtag + ' ' + text.slice(cursor);
-                threadInput.focus();
-                UI.updateCharCount();
-              }
-            }
-          });
-        }
-      },
-
-      setupHeaderButtons() {
-        // Refresh button
-        const refreshBtn = UI.elements.refreshBtn;
-        if (refreshBtn) {
-          refreshBtn.addEventListener('click', () => {
-            Toast.info('🔄 Refreshing...');
-            this.loadThreads();
-          });
-        }
-
-        // Stats button
-        const statsBtn = UI.elements.statsBtn;
-        if (statsBtn) {
-          statsBtn.addEventListener('click', () => {
-            const s = State.stats;
-            Toast.info(`📊 ${s.threads} threads · ${s.replies} replies · ${s.likes} likes`);
-          });
-        }
-      },
-
-      async loadThreads() {
-        try {
-          const threads = await FirebaseManager.getThreads(50);
-          State.threads = threads;
-          UI.renderThreads(threads);
-        } catch (e) {
-          console.error('Load threads error:', e);
-          Toast.error('Failed to load threads');
-        }
-      },
-
-      cleanup() {
-        FirebaseManager.detachRealtime();
-        this.isInitialized = false;
-      }
-    };
-
-    // ================================================================
-    // 9. BOOT
-    // ================================================================
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () => App.init());
-    } else {
-      // DOM already loaded, init immediately
-      App.init();
-    }
-
-    // Clean up on page unload
-    window.addEventListener('beforeunload', () => {
-      App.cleanup();
-    });
-
-  })();
-</script>
-
+        
+        // ============================================================
+        // 10. EVENT LISTENERS
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set presence
+            setPresence();
+            updateOnlineCount();
+            
+            // Listen for messages
+            listenForMessages();
+            
+            // Send system welcome
+            setTimeout(() => {
+                sendSystemMessage('⚡ ' + username + ' has entered the Grid');
+            }, 500);
+            
+            // Send button
+            document.getElementById('sendBtn').addEventListener('click', function() {
+                const input = document.getElementById('messageInput');
+                sendMessage(input.value);
+            });
+            
+            // Enter key
+            document.getElementById('messageInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    sendMessage(this.value);
+                }
+            });
+            
+            // Auto-focus input
+            document.getElementById('messageInput').focus();
+        });
+        
+        // ============================================================
+        // 11. CLEANUP ON UNLOAD
+        // ============================================================
+        window.addEventListener('beforeunload', function() {
+            const userRef = usersRef.child(username);
+            userRef.remove();
+            sendSystemMessage('⚡ ' + username + ' has left the Grid');
+        });
+        
+        console.log('⚡ TRON CHAT INITIALIZED');
+        console.log('👤 Username:', username);
+        console.log('📱 Device:', navigator.userAgent);
+    </script>
 </body>
 </html>
