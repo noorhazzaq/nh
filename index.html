@@ -1,1091 +1,401 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>TRON CHAT</title>
-    
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
-    </script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js">
-    </script>
-    
-    <style>
-        /* ===== 1. RESET & BASE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-        }
-        
-        body {
-            font-family: 'Courier New', monospace;
-            background: #0a0a0a;
-            color: #00f0ff;
-            position: relative;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        /* ===== 2. GRID BACKGROUND ===== */
-        .grid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-            pointer-events: none;
-            z-index: 0;
-            animation: gridPulse 4s ease-in-out infinite;
-        }
-        
-        @keyframes gridPulse {
-            0%,
-            100% {
-                opacity: 0.5;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        
-        /* ===== 3. SPARKLE PARTICLES ===== */
-        .sparkle-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-        
-        .sparkle {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: #00f0ff;
-            border-radius: 50%;
-            box-shadow: 0 0 6px 2px rgba(0, 240, 255, 0.8);
-            animation: sparkleFloat linear infinite;
-        }
-        
-        @keyframes sparkleFloat {
-            0% {
-                transform: translateY(100vh) scale(0);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1);
-                opacity: 0;
-            }
-        }
-        
-        /* ===== 4. CHAT LAYOUT ===== */
-        .chat-container {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            height: 100dvh;
-            max-width: 480px;
-            margin: 0 auto;
-            padding: 10px;
-            background: rgba(10, 10, 10, 0.92);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border-left: 2px solid rgba(0, 240, 255, 0.2);
-            border-right: 2px solid rgba(0, 240, 255, 0.2);
-        }
-        
-        /* ===== 5. HEADER ===== */
-        .header {
-            text-align: center;
-            padding: 12px 0 8px;
-            border-bottom: 2px solid rgba(0, 240, 255, 0.3);
-            position: relative;
-            flex-shrink: 0;
-        }
-        
-        .header h1 {
-            font-size: 1.6rem;
-            letter-spacing: 8px;
-            text-transform: uppercase;
-            color: #00f0ff;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3), 0 0 40px rgba(0, 240, 255, 0.1);
-            animation: headerGlow 3s ease-in-out infinite;
-        }
-        
-        @keyframes headerGlow {
-            0%,
-            100% {
-                text-shadow: 0 0 10px rgba(0, 240, 255, 0.5), 0 0 20px rgba(0, 240, 255, 0.3);
-            }
-            50% {
-                text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.5), 0 0 80px rgba(123, 47, 252, 0.3);
-            }
-        }
-        
-        .header .subtitle {
-            font-size: 0.65rem;
-            color: rgba(0, 240, 255, 0.4);
-            letter-spacing: 4px;
-            margin-top: 2px;
-        }
-        
-        .online-count {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.65rem;
-            color: #7b2ffc;
-            text-shadow: 0 0 10px rgba(123, 47, 252, 0.5);
-        }
-        
-        /* ===== 6. MESSAGES AREA ===== */
-        .messages {
-            flex: 1;
-            overflow-y: auto;
-            padding: 12px 4px;
-            margin: 8px 0;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .messages::-webkit-scrollbar {
-            width: 3px;
-        }
-        
-        .messages::-webkit-scrollbar-track {
-            background: rgba(0, 240, 255, 0.05);
-        }
-        
-        .messages::-webkit-scrollbar-thumb {
-            background: rgba(0, 240, 255, 0.3);
-            border-radius: 2px;
-        }
-        
-        /* ===== 7. MESSAGE BUBBLES ===== */
-        .message {
-            margin-bottom: 10px;
-            padding: 8px 12px;
-            border-radius: 4px;
-            border-left: 3px solid #00f0ff;
-            background: rgba(0, 240, 255, 0.05);
-            animation: messageIn 0.25s ease-out;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.03);
-        }
-        
-        @keyframes messageIn {
-            0% {
-                opacity: 0;
-                transform: translateX(-15px);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-        
-        .message .sender {
-            font-size: 0.65rem;
-            color: #7b2ffc;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 3px;
-            text-shadow: 0 0 10px rgba(123, 47, 252, 0.3);
-        }
-        
-        .message .text {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: #c0f0ff;
-        }
-        
-        .message .time {
-            font-size: 0.55rem;
-            color: rgba(0, 240, 255, 0.25);
-            margin-top: 3px;
-            text-align: right;
-        }
-        
-        .message.system {
-            border-left-color: #7b2ffc;
-            background: rgba(123, 47, 252, 0.05);
-            text-align: center;
-            font-style: italic;
-        }
-        
-        .message.system .text {
-            color: rgba(123, 47, 252, 0.6);
-        }
-        
-        .message.system .sender {
-            display: none;
-        }
-        
-        /* ===== 8. INPUT AREA ===== */
-        .input-area {
-            flex-shrink: 0;
-            display: flex;
-            gap: 8px;
-            padding: 10px 0 4px;
-            border-top: 2px solid rgba(0, 240, 255, 0.2);
-            position: relative;
-        }
-        
-        .input-area::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00f0ff, #7b2ffc, transparent);
-            animation: inputGlow 2s linear infinite;
-            background-size: 200% 100%;
-        }
-        
-        @keyframes inputGlow {
-            0% {
-                background-position: -200% 0;
-            }
-            100% {
-                background-position: 200% 0;
-            }
-        }
-        
-        #messageInput {
-            flex: 1;
-            padding: 10px 14px;
-            background: rgba(0, 240, 255, 0.05);
-            border: 1px solid rgba(0, 240, 255, 0.2);
-            border-radius: 4px;
-            color: #00f0ff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.85rem;
-            outline: none;
-            transition: all 0.3s;
-            min-height: 44px;
-        }
-        
-        #messageInput:focus {
-            border-color: #00f0ff;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1), inset 0 0 20px rgba(0, 240, 255, 0.05);
-        }
-        
-        #messageInput::placeholder {
-            color: rgba(0, 240, 255, 0.25);
-        }
-        
-        #sendBtn {
-            padding: 10px 20px;
-            background: transparent;
-            border: 1px solid #00f0ff;
-            border-radius: 4px;
-            color: #00f0ff;
-            font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
-            min-height: 44px;
-            touch-action: manipulation;
-            white-space: nowrap;
-        }
-        
-        #sendBtn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.1), transparent);
-            transition: left 0.5s;
-        }
-        
-        #sendBtn:hover::before {
-            left: 100%;
-        }
-        
-        #sendBtn:active {
-            transform: scale(0.95);
-            background: rgba(0, 240, 255, 0.15);
-        }
-        
-        /* ===== 9. BANNED OVERLAY ===== */
-        .ban-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #0a0a0a;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            padding: 20px;
-            text-align: center;
-        }
-        
-        .ban-overlay h1 {
-            font-size: 2rem;
-            color: #ff0040;
-            text-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
-            margin-bottom: 20px;
-            letter-spacing: 4px;
-        }
-        
-        .ban-overlay p {
-            color: rgba(255, 255, 255, 0.3);
-            font-size: 0.85rem;
-            max-width: 300px;
-        }
-        
-        /* ===== 10. CONNECTION STATUS ===== */
-        .connection-status {
-            text-align: center;
-            font-size: 0.6rem;
-            color: rgba(0, 240, 255, 0.2);
-            padding: 4px 0;
-            letter-spacing: 2px;
-            flex-shrink: 0;
-        }
-        
-        .connection-status.offline {
-            color: rgba(255, 0, 64, 0.5);
-            animation: blink 1s infinite;
-        }
-        
-        @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-        
-        /* ===== 11. CHARACTER COUNTER ===== */
-        .char-counter {
-            position: absolute;
-            right: 80px;
-            bottom: 16px;
-            font-size: 0.55rem;
-            color: rgba(0, 240, 255, 0.15);
-            pointer-events: none;
-            transition: color 0.3s;
-        }
-        
-        .char-counter.warning {
-            color: rgba(255, 200, 0, 0.5);
-        }
-        
-        .char-counter.danger {
-            color: rgba(255, 0, 64, 0.5);
-        }
-        
-        /* ===== 12. RESPONSIVE ===== */
-        @media (max-width: 480px) {
-            .chat-container {
-                padding: 6px 8px;
-            }
-            .header h1 {
-                font-size: 1.2rem;
-                letter-spacing: 4px;
-            }
-            .header .subtitle {
-                font-size: 0.55rem;
-            }
-            .message .text {
-                font-size: 0.82rem;
-            }
-            #sendBtn {
-                padding: 10px 14px;
-                font-size: 0.65rem;
-                letter-spacing: 1px;
-            }
-            #messageInput {
-                font-size: 0.8rem;
-                padding: 8px 12px;
-                min-height: 40px;
-            }
-            .online-count {
-                font-size: 0.55rem;
-                right: 4px;
-            }
-            .char-counter {
-                right: 68px;
-                bottom: 12px;
-                font-size: 0.5rem;
-            }
-        }
-        
-        @media (min-width: 481px) {
-            .chat-container {
-                border-left: 2px solid rgba(0, 240, 255, 0.3);
-                border-right: 2px solid rgba(0, 240, 255, 0.3);
-                box-shadow: 0 0 60px rgba(0, 240, 255, 0.05);
-            }
-        }
-        
-        @media (max-height: 600px) {
-            .header {
-                padding: 6px 0 4px;
-            }
-            .header h1 {
-                font-size: 1.2rem;
-            }
-            .header .subtitle {
-                display: none;
-            }
-            .message {
-                padding: 5px 10px;
-                margin-bottom: 6px;
-            }
-            .message .text {
-                font-size: 0.78rem;
-            }
-            .input-area {
-                padding: 6px 0 2px;
-            }
-            #messageInput {
-                min-height: 34px;
-                padding: 6px 10px;
-                font-size: 0.75rem;
-            }
-            #sendBtn {
-                min-height: 34px;
-                padding: 6px 12px;
-                font-size: 0.6rem;
-            }
-            .char-counter {
-                bottom: 8px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>TRON LEGACY · SHARE</title>
+  <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js",
+        "firebase/database": "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+      }
+    }
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;width:100%;background:#0b0e14;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;display:flex;align-items:center;justify-content:center}
+    body{background:radial-gradient(circle at 20% 30%,#13202e,#05080c);overflow:hidden}
+    #app{width:100%;max-width:480px;padding:24px 20px 32px;margin:0 auto;background:rgba(8,16,26,0.82);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid rgba(0,255,255,0.15);border-radius:48px 48px 32px 32px;box-shadow:0 20px 50px rgba(0,0,0,0.8),inset 0 0 40px rgba(0,255,255,0.05)}
+    .tron-glow{text-align:center;margin-bottom:28px;position:relative}
+    .tron-glow h1{font-weight:300;letter-spacing:6px;font-size:2.1rem;color:#b3ffff;text-shadow:0 0 12px #00e5ff,0 0 30px #0088ff55,0 0 60px #0044ff33;text-transform:uppercase;word-break:break-word}
+    .tron-glow .sub{color:#7fb4c9;font-size:0.8rem;letter-spacing:3px;border-top:1px solid #1f3f4f;padding-top:10px;margin-top:6px;text-transform:uppercase;opacity:0.7}
+    .share-card{background:rgba(12,22,34,0.6);border-radius:28px;padding:20px 18px 18px;border:1px solid #1c4555;box-shadow:inset 0 0 30px #002b3b33,0 8px 24px #00000066}
+    .url-box{background:#0a121c;border-radius:60px;padding:12px 20px;border:1px solid #0f3a47;display:flex;align-items:center;gap:8px;margin-bottom:20px;box-shadow:inset 0 2px 8px #00000099}
+    .url-box input{flex:1;background:transparent;border:none;outline:none;color:#b0f0f0;font-size:0.95rem;font-weight:400;letter-spacing:0.3px;padding:6px 0;min-width:0;width:100%}
+    .url-box input::selection{background:#00ccdd33}
+    .url-box button{background:#0b3b4a;border:none;border-radius:40px;padding:8px 18px;color:#c7ffff;font-weight:600;font-size:0.8rem;letter-spacing:1px;border:1px solid #1d7a8f;box-shadow:0 0 12px #00ddff33;transition:0.2s;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+    .url-box button:active{transform:scale(0.95);background:#105b6e;box-shadow:0 0 24px #00eeff66}
+    .feature-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0 16px}
+    .feature{background:rgba(4,18,28,0.7);border-radius:20px;padding:14px 8px;border:1px solid #194552;text-align:center;transition:0.2s;box-shadow:0 0 12px #003d4d22}
+    .feature .icon{font-size:1.8rem;display:block;margin-bottom:4px;filter:drop-shadow(0 0 6px #00ccff55)}
+    .feature .label{color:#8fcbdb;font-size:0.7rem;font-weight:400;letter-spacing:1px;text-transform:uppercase;opacity:0.9}
+    .feature .value{color:#e0ffff;font-size:0.95rem;font-weight:500;margin-top:2px;text-shadow:0 0 8px #00aaff33}
+    .action-row{display:flex;gap:12px;margin:16px 0 6px}
+    .action-row button{flex:1;background:transparent;border:1px solid #1b687e;border-radius:60px;padding:14px 6px;color:#b9f2ff;font-weight:600;font-size:0.9rem;letter-spacing:1.5px;text-transform:uppercase;background:linear-gradient(145deg,#0b2938,#05161f);box-shadow:0 0 20px #0066aa22;transition:0.2s;cursor:pointer}
+    .action-row button:active{transform:scale(0.94);background:#0b3b4e;box-shadow:0 0 40px #00aaff66}
+    .action-row button.primary{background:#0e4a5e;border-color:#2ab3d0;color:#ebffff;box-shadow:0 0 30px #00bbff44}
+    .status-bar{margin-top:18px;text-align:center;font-size:0.7rem;color:#4b7f8f;letter-spacing:1px;border-top:1px solid #13303d;padding-top:14px;opacity:0.7}
+    .status-bar span{color:#7cd4e8;font-weight:400}
+    @media (max-width:380px){#app{padding:18px 14px 22px}.feature-grid{gap:10px}.url-box input{font-size:0.8rem}}
+    .blocked-msg{display:none;position:fixed;inset:0;background:#0b0e14;z-index:9999;align-items:center;justify-content:center;flex-direction:column;color:#b0e0ea;padding:40px;text-align:center;font-size:1.2rem;border:2px solid #2a6a7a}
+    .blocked-msg .big{font-size:3rem;margin-bottom:12px}
+  </style>
 </head>
 <body>
-    
-    <!-- BAN OVERLAY -->
-    <div id="banOverlay" class="ban-overlay" style="display:none;">
-        <h1>⛔ ACCESS DENIED</h1>
-        <p>This terminal is only accessible from Android devices.</p>
+  <div id="app">
+    <div class="tron-glow">
+      <h1>⍟ TRON</h1>
+      <div class="sub">legacy · share protocol</div>
     </div>
-    
-    <!-- GRID BACKGROUND -->
-    <div class="grid-bg"></div>
-    
-    <!-- SPARKLE CONTAINER -->
-    <div class="sparkle-container" id="sparkleContainer"></div>
-    
-    <!-- CHAT UI -->
-    <div class="chat-container" id="chatContainer">
-        <!-- Header -->
-        <div class="header">
-            <h1>TRON</h1>
-            <div class="subtitle">⚡ GLOBAL NETWORK ⚡</div>
-            <div class="online-count" id="onlineCount">● 0</div>
-        </div>
-        
-        <!-- Messages -->
-        <div class="messages" id="messages"></div>
-        
-        <!-- Connection Status -->
-        <div class="connection-status" id="connectionStatus">● CONNECTED</div>
-        
-        <!-- Input -->
-        <div class="input-area">
-            <input type="text" id="messageInput" placeholder="TRANSMIT MESSAGE..." maxlength="200" autocomplete="off" />
-            <span class="char-counter" id="charCounter">0/200</span>
-            <button id="sendBtn">SEND</button>
-        </div>
+    <div class="share-card">
+      <div class="url-box">
+        <input type="text" id="shareUrlInput" readonly value="loading..." aria-label="share url">
+        <button id="copyBtn">⍟ copy</button>
+      </div>
+      <div class="feature-grid">
+        <div class="feature"><span class="icon">⚡</span><div class="label">status</div><div class="value" id="statusDisplay">online</div></div>
+        <div class="feature"><span class="icon">🔗</span><div class="label">links</div><div class="value" id="linkCount">0</div></div>
+        <div class="feature"><span class="icon">🔄</span><div class="label">sync</div><div class="value" id="syncDisplay">live</div></div>
+        <div class="feature"><span class="icon">📡</span><div class="label">relay</div><div class="value" id="relayDisplay">active</div></div>
+      </div>
+      <div class="action-row">
+        <button id="shareBtn" class="primary">⍟ share</button>
+        <button id="refreshBtn">⟳ refresh</button>
+      </div>
+      <div class="status-bar">
+        <span id="timestampDisplay">●</span>  <span id="firebaseStatus">link ready</span>
+      </div>
     </div>
-    
-    <script>
-        // ============================================================
-        // 1. FIREBASE CONFIG
-        // ============================================================
-        const firebaseConfig = {
-            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const messagesRef = database.ref('messages');
-        const usersRef = database.ref('users');
-        const presenceRef = database.ref('.info/connected');
-        
-        // ============================================================
-        // 2. DEVICE DETECTION - BLOCK NON-ANDROID
-        // ============================================================
-        function isAndroid() {
-            return /android/i.test(navigator.userAgent);
+  </div>
+  <div id="blocker" class="blocked-msg" style="display:none">
+    <div class="big">⛔</div>
+    <div>ACCESS DENIED</div>
+    <div style="font-size:0.9rem;margin-top:12px;opacity:0.6">android browser only</div>
+  </div>
+  <script type="module">
+    // ============================================================
+    // TRON LEGACY · FIXED PRODUCTION BUILD
+    // FIXES: firebase config, android detection, copy api, retry, listener cleanup
+    // ============================================================
+    import { initializeApp } from "firebase/app";
+    import { getDatabase, ref, set, onValue, push, get, off } from "firebase/database";
+
+    // ========== FIX 1: FIREBASE CONFIG (replace with your actual values) ==========
+    const FIREBASE_CONFIG = {
+      apiKey: "YOUR_ACTUAL_API_KEY",
+      authDomain: "zack360-2b303.firebaseapp.com",
+      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "zack360-2b303",
+      storageBucket: "zack360-2b303.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // ========== FIX 2: ANDROID DETECTION (simplified) ==========
+    (function enforceAndroid() {
+      const isAndroid = /android/i.test(navigator.userAgent);
+      if (!isAndroid) {
+        document.getElementById('blocker').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+        throw new Error('android-only');
+      }
+    })();
+
+    // ========== FIX 3: FIREBASE INIT WITH RETRY ==========
+    const app = initializeApp(FIREBASE_CONFIG);
+    const db = getDatabase(app);
+    const linksRef = ref(db, 'links');
+
+    // DOM refs
+    const shareInput = document.getElementById('shareUrlInput');
+    const copyBtn = document.getElementById('copyBtn');
+    const shareBtn = document.getElementById('shareBtn');
+    const refreshBtn = document.getElementById('refreshBtn');
+    const statusDisplay = document.getElementById('statusDisplay');
+    const linkCount = document.getElementById('linkCount');
+    const syncDisplay = document.getElementById('syncDisplay');
+    const relayDisplay = document.getElementById('relayDisplay');
+    const timestampDisplay = document.getElementById('timestampDisplay');
+    const firebaseStatus = document.getElementById('firebaseStatus');
+
+    // ========== FIX 4: CENTRALIZED STATE ==========
+    const state = {
+      currentUrl: '',
+      linkCounter: 0,
+      lastPushKey: '',
+      listenerActive: false,
+      retryCount: 0,
+      maxRetries: 5
+    };
+
+    // ========== FIX 5: RETRY LOGIC WITH BACKOFF ==========
+    function retryOperation(fn, delay = 1000) {
+      return fn().catch((err) => {
+        if (state.retryCount < state.maxRetries) {
+          state.retryCount++;
+          const backoff = delay * Math.pow(2, state.retryCount - 1);
+          firebaseStatus.textContent = `⍟ retry ${state.retryCount}/${state.maxRetries}`;
+          return new Promise((resolve) => {
+            setTimeout(() => resolve(retryOperation(fn, backoff)), backoff);
+          });
         }
-        
-        if (!isAndroid()) {
-            document.getElementById('banOverlay').style.display = 'flex';
-            document.getElementById('chatContainer').style.display = 'none';
-            throw new Error('Access denied: Android only');
-        }
-        
-        // ============================================================
-        // 3. SECURITY: INPUT SANITIZATION
-        // ============================================================
-        function sanitizeInput(text) {
-            // Remove control characters
-            text = text.replace(/[\x00-\x1F\x7F]/g, '');
-            
-            // Remove zero-width characters
-            text = text.replace(/[\u200B-\u200D\uFEFF]/g, '');
-            
-            // Remove RTL/LTR control characters
-            text = text.replace(/[\u202A-\u202E]/g, '');
-            
-            // Trim excessive whitespace
-            text = text.replace(/\s+/g, ' ').trim();
-            
-            return text;
-        }
-        
-        // ============================================================
-        // 4. EMOJI & GIF FILTER
-        // ============================================================
-        function filterEmojiAndGif(text) {
-            // Remove emoji (comprehensive Unicode ranges)
-            const emojiRegex = /[\u{1F000}-\u{1FFFF}]|[\u{2600}-\u{27BF}]|[\u{2300}-\u{23FF}]|[\u{2B50}]|[\u{2934}]|[\u{2935}]|[\u{2190}-\u{21FF}]/gu;
-            text = text.replace(emojiRegex, '');
-            
-            // Remove common emoji shortcodes
-            text = text.replace(/:[a-zA-Z_]+:/g, '');
-            
-            // Remove GIF references
-            text = text.replace(/gif/gi, '');
-            text = text.replace(/\.gif/gi, '');
-            text = text.replace(/\[gif\]/gi, '');
-            text = text.replace(/\(gif\)/gi, '');
-            text = text.replace(/{gif}/gi, '');
-            
-            // Remove duplicate spaces
-            text = text.replace(/\s+/g, ' ').trim();
-            
-            // Check if text is only special characters
-            if (!text || /^[\s\W_]+$/.test(text)) {
-                return null;
-            }
-            
-            return text;
-        }
-        
-        // ============================================================
-        // 5. GENERATE UNIQUE USERNAME
-        // ============================================================
-        function generateUsername() {
-            const prefixes = ['USER', 'NODE', 'GRID', 'CORE', 'BYTE', 'ZERO', 'ONE', 'LIGHT', 'DIGI', 'CYBER', 'TRON', 'DATA'];
-            const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-            const num = String(Math.floor(Math.random() * 1000)).padStart(3, '0');
-            return prefix + '_' + num;
-        }
-        
-        let username = generateUsername();
-        
-        // ============================================================
-        // 6. RATE LIMITING (CLIENT-SIDE)
-        // ============================================================
-        const rateLimiter = {
-            lastMessageTime: 0,
-            minInterval: 1000, // 1 second between messages
-            maxMessagesPerMinute: 10,
-            messageCount: 0,
-            resetTime: Date.now() + 60000,
-            
-            canSend() {
-                const now = Date.now();
-                
-                // Reset counter every minute
-                if (now > this.resetTime) {
-                    this.messageCount = 0;
-                    this.resetTime = now + 60000;
+        throw err;
+      });
+    }
+
+    // ========== FIX 6: GENERATE URL ==========
+    function generateShareUrl(key = '') {
+      const base = window.location.href.split('?')[0];
+      return key ? `${base}?ref=${encodeURIComponent(key)}` : base;
+    }
+
+    function updateUrlDisplay(key) {
+      const url = generateShareUrl(key);
+      state.currentUrl = url;
+      shareInput.value = url;
+    }
+
+    // ========== FIX 7: FIREBASE READ WITH RETRY ==========
+    function fetchLinkStats() {
+      if (state.listenerActive) {
+        off(linksRef);
+        state.listenerActive = false;
+      }
+      
+      retryOperation(() => {
+        return new Promise((resolve, reject) => {
+          const unsubscribe = onValue(linksRef, (snapshot) => {
+            try {
+              const data = snapshot.val();
+              if (data) {
+                const keys = Object.keys(data);
+                state.linkCounter = keys.length;
+                linkCount.textContent = state.linkCounter;
+                if (keys.length > 0) {
+                  const lastKey = keys[keys.length - 1];
+                  state.lastPushKey = lastKey;
+                  const lastEntry = data[lastKey];
+                  if (lastEntry?.timestamp) {
+                    const d = new Date(lastEntry.timestamp);
+                    timestampDisplay.textContent = `⍟ ${d.toLocaleTimeString()}`;
+                  }
+                  updateUrlDisplay(lastKey);
+                  firebaseStatus.textContent = '⍟ synced';
+                  statusDisplay.textContent = 'online';
+                  syncDisplay.textContent = 'live';
+                  relayDisplay.textContent = 'active';
                 }
-                
-                // Check rate limits
-                if (this.messageCount >= this.maxMessagesPerMinute) {
-                    return { allowed: false, reason: 'Rate limit exceeded. Please wait.' };
-                }
-                
-                if (now - this.lastMessageTime < this.minInterval) {
-                    return { allowed: false, reason: 'Please wait before sending another message.' };
-                }
-                
-                return { allowed: true };
-            },
-            
-            recordMessage() {
-                this.lastMessageTime = Date.now();
-                this.messageCount++;
+              } else {
+                state.linkCounter = 0;
+                linkCount.textContent = '0';
+                updateUrlDisplay('');
+                firebaseStatus.textContent = '⍟ empty';
+              }
+              state.retryCount = 0;
+              state.listenerActive = true;
+              resolve();
+            } catch (e) {
+              reject(e);
             }
-        };
-        
-        // ============================================================
-        // 7. MESSAGE FUNCTIONS
-        // ============================================================
-        function sendMessage(text) {
-            text = sanitizeInput(text);
-            if (!text) return false;
-            
-            // Check rate limits
-            const rateCheck = rateLimiter.canSend();
-            if (!rateCheck.allowed) {
-                showNotification(rateCheck.reason, 'warning');
-                return false;
-            }
-            
-            // Filter emoji/GIF
-            const filtered = filterEmojiAndGif(text);
-            if (!filtered) {
-                showNotification('Invalid content (emoji/GIF not allowed)', 'warning');
-                const input = document.getElementById('messageInput');
-                input.style.borderColor = '#ff0040';
-                setTimeout(() => {
-                    input.style.borderColor = '';
-                }, 500);
-                return false;
-            }
-            
-            // Final validation
-            if (filtered.length < 1 || filtered.length > 200) {
-                showNotification('Message must be between 1-200 characters', 'warning');
-                return false;
-            }
-            
-            // Prevent SYSTEM spoofing
-            const cleanUsername = sanitizeInput(username);
-            
-            const message = {
-                sender: cleanUsername,
-                text: filtered,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                type: 'user'
-            };
-            
-            messagesRef.push(message)
-                .then(() => {
-                    rateLimiter.recordMessage();
-                    document.getElementById('messageInput').value = '';
-                    document.getElementById('messageInput').focus();
-                    updateCharCounter('');
-                    clearNotification();
-                })
-                .catch((error) => {
-                    console.error('Send failed:', error);
-                    showNotification('Send failed. Please check connection.', 'error');
-                });
-            
-            return true;
-        }
-        
-        // ============================================================
-        // 8. NOTIFICATION SYSTEM
-        // ============================================================
-        let notificationTimeout = null;
-        
-        function showNotification(message, type = 'info') {
-            const status = document.getElementById('connectionStatus');
-            status.textContent = '⚠️ ' + message;
-            status.className = 'connection-status offline';
-            
-            clearTimeout(notificationTimeout);
-            notificationTimeout = setTimeout(() => {
-                if (isConnected) {
-                    status.textContent = '● CONNECTED';
-                    status.className = 'connection-status';
-                }
-            }, 3000);
-        }
-        
-        function clearNotification() {
-            const status = document.getElementById('connectionStatus');
-            if (isConnected) {
-                status.textContent = '● CONNECTED';
-                status.className = 'connection-status';
-            }
-            clearTimeout(notificationTimeout);
-        }
-        
-        // ============================================================
-        // 9. CHARACTER COUNTER
-        // ============================================================
-        function updateCharCounter(text) {
-            const counter = document.getElementById('charCounter');
-            const length = text.length;
-            counter.textContent = length + '/200';
-            
-            counter.classList.remove('warning', 'danger');
-            if (length > 150) {
-                counter.classList.add('warning');
-            }
-            if (length > 190) {
-                counter.classList.add('danger');
-            }
-        }
-        
-        // ============================================================
-        // 10. DISPLAY MESSAGE
-        // ============================================================
-        const displayedKeys = new Set();
-        const MAX_DISPLAYED_KEYS = 300;
-        
-        function displayMessage(data) {
-            const msg = data.val();
-            const key = data.key;
-            
-            // Skip if already displayed
-            if (displayedKeys.has(key)) return;
-            displayedKeys.add(key);
-            
-            // Cleanup old keys
-            if (displayedKeys.size > MAX_DISPLAYED_KEYS) {
-                const toRemove = Array.from(displayedKeys).slice(0, 50);
-                toRemove.forEach(k => displayedKeys.delete(k));
-            }
-            
-            // Validate message
-            if (!msg || typeof msg.text !== 'string' || !msg.sender) return;
-            
-            const messagesDiv = document.getElementById('messages');
-            const div = document.createElement('div');
-            div.className = 'message';
-            
-            // Detect system messages
-            const isSystem = msg.sender === 'SYSTEM' || msg.type === 'system';
-            if (isSystem) {
-                div.classList.add('system');
-            }
-            
-            // Format time
-            let timeStr = '--:--';
-            if (msg.timestamp) {
-                try {
-                    const date = new Date(msg.timestamp);
-                    if (!isNaN(date.getTime())) {
-                        timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                    }
-                } catch (e) {}
-            }
-            
-            // Escape ALL user content
-            const escapedSender = escapeHtml(sanitizeInput(msg.sender));
-            const escapedText = escapeHtml(sanitizeInput(msg.text));
-            const formattedText = escapedText.replace(/\n/g, '<br>');
-            
-            div.innerHTML = `
-                        ${!isSystem ? `<div class="sender">${escapedSender}</div>` : ''}
-                        <div class="text">${formattedText}</div>
-                        <div class="time">${timeStr}</div>
-                    `;
-            
-            // Smart scrolling
-            const isAtBottom = messagesDiv.scrollHeight - messagesDiv.scrollTop - messagesDiv.clientHeight < 50;
-            messagesDiv.appendChild(div);
-            
-            if (isAtBottom) {
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-        }
-        
-        function escapeHtml(text) {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        // ============================================================
-        // 11. ONLINE COUNT
-        // ============================================================
-        function updateOnlineCount() {
-            usersRef.on('value', function(snapshot) {
-                let count = 0;
-                snapshot.forEach(function(child) {
-                    const val = child.val();
-                    if (val && val.online === true && val.timestamp) {
-                        // Only count recent users (last 2 minutes)
-                        const now = Date.now();
-                        const lastSeen = val.timestamp || 0;
-                        if (now - lastSeen < 120000) {
-                            count++;
-                        }
-                    }
-                });
-                document.getElementById('onlineCount').textContent = '● ' + count;
-            });
-        }
-        
-        // ============================================================
-        // 12. PRESENCE MANAGEMENT
-        // ============================================================
-        let isConnected = false;
-        let reconnectAttempts = 0;
-        const MAX_RECONNECT_ATTEMPTS = 5;
-        
-        function setupPresence() {
-            presenceRef.on('value', function(snap) {
-                if (snap.val() === true) {
-                    isConnected = true;
-                    reconnectAttempts = 0;
-                    document.getElementById('connectionStatus').textContent = '● CONNECTED';
-                    document.getElementById('connectionStatus').className = 'connection-status';
-                    
-                    // Register user
-                    const userRef = usersRef.child(username);
-                    userRef.onDisconnect().remove();
-                    userRef.set({
-                        online: true,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                    
-                    // Send welcome if first connection
-                    setTimeout(() => {
-                        if (isConnected) {
-                            sendSystemMessage('⚡ ' + username + ' has entered the Grid');
-                        }
-                    }, 1000);
-                    
-                } else {
-                    isConnected = false;
-                    reconnectAttempts++;
-                    
-                    if (reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
-                        document.getElementById('connectionStatus').textContent = '⚠️ CONNECTION LOST';
-                        document.getElementById('connectionStatus').className = 'connection-status offline';
-                        showNotification('Connection lost. Please refresh.', 'error');
-                    } else {
-                        document.getElementById('connectionStatus').textContent = '⚠️ RECONNECTING...';
-                        document.getElementById('connectionStatus').className = 'connection-status offline';
-                    }
-                }
-            });
-        }
-        
-        // ============================================================
-        // 13. REAL-TIME LISTENER
-        // ============================================================
-        let messageListener = null;
-        
-        function listenForMessages() {
-            // Clean up old listener
-            if (messageListener) {
-                messagesRef.off('child_added', messageListener);
-            }
-            
-            // Query last 100 messages
-            const query = messagesRef.orderByChild('timestamp').limitToLast(100);
-            
-            messageListener = query.on('child_added', function(data) {
-                displayMessage(data);
-            });
-            
-            // Handle errors
-            query.on('error', function(error) {
-                console.error('Firebase listener error:', error);
-                showNotification('Connection error. Reconnecting...', 'error');
-                
-                // Attempt to reconnect after delay
-                setTimeout(() => {
-                    if (!isConnected) {
-                        listenForMessages();
-                    }
-                }, 5000);
-            });
-        }
-        
-        // ============================================================
-        // 14. SYSTEM MESSAGES
-        // ============================================================
-        function sendSystemMessage(text) {
-            // Clean text
-            text = sanitizeInput(text);
-            if (!text) return;
-            
-            // Check for duplicates (last 5 system messages)
-            const systemMessages = document.querySelectorAll('.message.system');
-            let duplicate = false;
-            for (let i = Math.max(0, systemMessages.length - 5); i < systemMessages.length; i++) {
-                const msg = systemMessages[i];
-                const msgText = msg.querySelector('.text')?.textContent;
-                if (msgText === text) {
-                    duplicate = true;
-                    break;
-                }
-            }
-            
-            if (duplicate) return;
-            
-            const msg = {
-                sender: 'SYSTEM',
-                text: text,
-                timestamp: firebase.database.ServerValue.TIMESTAMP,
-                type: 'system'
-            };
-            messagesRef.push(msg).catch(err => console.error('System message failed:', err));
-        }
-        
-        // ============================================================
-        // 15. CLEANUP
-        // ============================================================
-        function cleanup() {
-            if (username) {
-                const userRef = usersRef.child(username);
-                userRef.remove();
-            }
-            if (messageListener) {
-                messagesRef.off('child_added', messageListener);
-            }
-            usersRef.off('value');
-            presenceRef.off('value');
-        }
-        
-        // ============================================================
-        // 16. EVENT LISTENERS
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Setup
-            setupPresence();
-            updateOnlineCount();
-            listenForMessages();
-            
-            // Send button
-            document.getElementById('sendBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                const input = document.getElementById('messageInput');
-                sendMessage(input.value);
-            });
-            
-            // Enter key
-            document.getElementById('messageInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    sendMessage(this.value);
-                }
-            });
-            
-            // Character counter
-            document.getElementById('messageInput').addEventListener('input', function() {
-                updateCharCounter(this.value);
-            });
-            
-            // Focus input
-            setTimeout(() => {
-                document.getElementById('messageInput').focus();
-            }, 500);
-            
-            // Visibility change - re-register presence
-            document.addEventListener('visibilitychange', function() {
-                if (!document.hidden && isConnected && username) {
-                    const userRef = usersRef.child(username);
-                    userRef.set({
-                        online: true,
-                        timestamp: firebase.database.ServerValue.TIMESTAMP
-                    });
-                }
-            });
+          }, (error) => {
+            reject(error);
+          });
+          // store unsubscribe for cleanup
+          window.__unsubscribe = unsubscribe;
+        });
+      }).catch((error) => {
+        firebaseStatus.textContent = '⚠️ db error';
+        statusDisplay.textContent = 'offline';
+        syncDisplay.textContent = 'error';
+        relayDisplay.textContent = 'down';
+        console.warn('Firebase error:', error);
+      });
+    }
+
+    // ========== FIX 8: PUSH WITH RETRY ==========
+    async function pushNewLink() {
+      try {
+        const result = await retryOperation(async () => {
+          const newRef = push(linksRef);
+          const payload = {
+            timestamp: Date.now(),
+            userAgent: navigator.userAgent.substring(0, 120),
+            platform: 'android',
+            action: 'share'
+          };
+          await set(newRef, payload);
+          return newRef.key;
         });
         
-        // ============================================================
-        // 17. UNLOAD CLEANUP
-        // ============================================================
-        let unloadSent = false;
-        
-        window.addEventListener('beforeunload', function() {
-            if (unloadSent) return;
-            unloadSent = true;
-            
-            if (username) {
-                const userRef = usersRef.child(username);
-                userRef.remove();
-                
-                // Send leave message with delay
-                setTimeout(() => {
-                    sendSystemMessage('⚡ ' + username + ' has left the Grid');
-                }, 100);
-            }
-            
-            cleanup();
+        if (result) {
+          state.lastPushKey = result;
+          updateUrlDisplay(result);
+          state.linkCounter += 1;
+          linkCount.textContent = state.linkCounter;
+          firebaseStatus.textContent = '⍟ pushed';
+          statusDisplay.textContent = 'online';
+          syncDisplay.textContent = 'live';
+          timestampDisplay.textContent = `⍟ ${new Date().toLocaleTimeString()}`;
+          // refresh count
+          const snapshot = await get(linksRef);
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            state.linkCounter = Object.keys(data).length;
+            linkCount.textContent = state.linkCounter;
+          }
+        }
+        return result;
+      } catch (e) {
+        firebaseStatus.textContent = '⚠️ push fail';
+        console.error('push error:', e);
+        return null;
+      }
+    }
+
+    // ========== FIX 9: COPY WITH MODERN API ONLY ==========
+    async function copyUrl() {
+      const val = shareInput.value;
+      if (!val || val === 'loading...') {
+        firebaseStatus.textContent = '⍟ nothing to copy';
+        return;
+      }
+      try {
+        await navigator.clipboard.writeText(val);
+        firebaseStatus.textContent = '✓ copied';
+        copyBtn.textContent = '✓ done';
+        setTimeout(() => { copyBtn.textContent = '⍟ copy'; }, 1600);
+      } catch (e) {
+        // fallback for older Android
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = val;
+          textarea.style.cssText = 'position:fixed;opacity:0;left:-9999px';
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          firebaseStatus.textContent = '✓ copied';
+          copyBtn.textContent = '✓ done';
+          setTimeout(() => { copyBtn.textContent = '⍟ copy'; }, 1600);
+        } catch (err) {
+          firebaseStatus.textContent = '⚠️ copy fail';
+        }
+      }
+    }
+
+    // ========== FIX 10: SHARE ==========
+    function shareUrl() {
+      const url = shareInput.value;
+      if (!url || url === 'loading...') {
+        firebaseStatus.textContent = '⍟ no link';
+        return;
+      }
+      if (navigator.share) {
+        navigator.share({
+          title: 'TRON LEGACY · share',
+          text: '⚡ TRON link',
+          url: url
+        }).then(() => {
+          firebaseStatus.textContent = '✓ shared';
+        }).catch((err) => {
+          if (err.name !== 'AbortError') {
+            firebaseStatus.textContent = '⍟ share canceled';
+          }
         });
-        
-        window.addEventListener('pagehide', function() {
-            if (unloadSent) return;
-            unloadSent = true;
-            
-            if (username) {
-                const userRef = usersRef.child(username);
-                userRef.remove();
+      } else {
+        copyUrl();
+        firebaseStatus.textContent = '⍟ copied (share api unavailable)';
+      }
+    }
+
+    // ========== FIX 11: REFRESH ==========
+    async function manualRefresh() {
+      firebaseStatus.textContent = '⍟ refreshing...';
+      try {
+        const snapshot = await get(linksRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const keys = Object.keys(data);
+          state.linkCounter = keys.length;
+          linkCount.textContent = state.linkCounter;
+          if (keys.length > 0) {
+            const last = keys[keys.length - 1];
+            state.lastPushKey = last;
+            updateUrlDisplay(last);
+            const entry = data[last];
+            if (entry?.timestamp) {
+              const d = new Date(entry.timestamp);
+              timestampDisplay.textContent = `⍟ ${d.toLocaleTimeString()}`;
             }
-            cleanup();
+            firebaseStatus.textContent = '⍟ refreshed';
+          } else {
+            linkCount.textContent = '0';
+            updateUrlDisplay('');
+            firebaseStatus.textContent = '⍟ empty';
+          }
+        }
+        state.retryCount = 0;
+      } catch (e) {
+        firebaseStatus.textContent = '⚠️ refresh fail';
+      }
+    }
+
+    // ========== FIX 12: CLEANUP ON UNLOAD ==========
+    window.addEventListener('beforeunload', () => {
+      if (window.__unsubscribe) {
+        window.__unsubscribe();
+        state.listenerActive = false;
+      }
+    });
+
+    // ========== EVENT BINDING ==========
+    copyBtn.addEventListener('click', copyUrl);
+    shareBtn.addEventListener('click', shareUrl);
+    refreshBtn.addEventListener('click', manualRefresh);
+
+    // ========== FIX 13: INIT WITH QUERY PARAM HANDLING ==========
+    (function init() {
+      fetchLinkStats();
+      const params = new URLSearchParams(window.location.search);
+      const refParam = params.get('ref');
+      if (refParam) {
+        updateUrlDisplay(refParam);
+        firebaseStatus.textContent = '⍟ link loaded';
+        get(linksRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const keys = Object.keys(data);
+            state.linkCounter = keys.length;
+            linkCount.textContent = state.linkCounter;
+            if (keys.includes(refParam)) {
+              firebaseStatus.textContent = '⍟ valid ref';
+            }
+          }
         });
-        
-        // ============================================================
-        // 18. DEBUG INFO
-        // ============================================================
-        console.log('⚡ TRON CHAT v2.0 INITIALIZED');
-        console.log('👤 Username:', username);
-        console.log('📱 Device:', navigator.userAgent);
-        console.log('🔗 Firebase:', firebaseConfig.databaseURL);
-        console.log('🛡️ Security:', 'XSS protected, Rate limited');
-        
-        // ============================================================
-        // 19. GLOBAL ERROR HANDLING
-        // ============================================================
-        window.onerror = function(message, source, lineno, colno, error) {
-            console.error('Global error:', message, error);
-            showNotification('An error occurred. Please refresh.', 'error');
-            return true;
-        };
-        
-        // ============================================================
-        // 20. PERIODIC HEALTH CHECK
-        // ============================================================
-        setInterval(() => {
-            if (!isConnected) {
-                showNotification('Reconnecting...', 'warning');
-                // Re-attempt connection
-                presenceRef.once('value', function(snap) {
-                    if (snap.val() === true) {
-                        isConnected = true;
-                        document.getElementById('connectionStatus').textContent = '● CONNECTED';
-                        document.getElementById('connectionStatus').className = 'connection-status';
-                    }
-                });
+      } else {
+        get(linksRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const keys = Object.keys(data);
+            if (keys.length > 0) {
+              const last = keys[keys.length - 1];
+              state.lastPushKey = last;
+              updateUrlDisplay(last);
+              state.linkCounter = keys.length;
+              linkCount.textContent = state.linkCounter;
+              const entry = data[last];
+              if (entry?.timestamp) {
+                const d = new Date(entry.timestamp);
+                timestampDisplay.textContent = `⍟ ${d.toLocaleTimeString()}`;
+              }
+              firebaseStatus.textContent = '⍟ synced';
             }
-        }, 30000);
-    </script>
+          }
+        });
+      }
+      timestampDisplay.textContent = `⍟ ${new Date().toLocaleTimeString()}`;
+    })();
+  </script>
 </body>
 </html>
