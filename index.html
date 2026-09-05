@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no">
-<title>NEON PULSE ADMIN</title>
+<title>⚡ NEON PULSE ADMIN</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,-apple-system,sans-serif}
 :root{--primary:#ff00ff;--secondary:#00ffff;--accent:#ffaa00;--bg:#0a0a12;--surface:#12121f;--glass:rgba(10,10,30,.85)}
@@ -19,11 +19,6 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .header .brand{font-size:1rem;font-weight:800;background:linear-gradient(90deg,#ff00ff,#00ffff,#ffaa00,#ff00ff);background-size:300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:rainbowText 3s linear infinite;letter-spacing:2px;flex:1;white-space:nowrap;min-width:80px}
 @keyframes rainbowText{0%{background-position:0%}100%{background-position:300%}}
 .header .controls{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
-.header .user-area{display:flex;align-items:center;gap:4px;flex-shrink:0}
-.header .user-area input{background:rgba(20,20,50,.8);border:1.5px solid #ff00ff88;border-radius:30px;padding:5px 12px;color:#f0fcff;font-size:.75rem;width:80px;transition:.4s;outline:0;box-shadow:0 0 20px rgba(255,0,255,.2),inset 0 0 20px rgba(255,0,255,.05)}
-.header .user-area input:focus{width:110px;border-color:#00ffff;box-shadow:0 0 40px rgba(0,255,255,.6),0 0 80px rgba(255,0,255,.3);background:rgba(10,10,40,.9)}
-.header .user-area button{background:linear-gradient(135deg,#ff00ff,#cc00ff);border:0;border-radius:30px;padding:4px 12px;font-size:.7rem;font-weight:700;color:#fff;cursor:pointer;transition:.3s;text-shadow:0 0 20px rgba(255,255,255,.5);box-shadow:0 0 30px rgba(255,0,255,.4),inset 0 0 20px rgba(255,255,255,.2)}
-.header .user-area button:active{transform:scale(.9)}
 .header .theme-btn{background:linear-gradient(135deg,#00ffff,#0088ff);border:0;border-radius:30px;padding:4px 10px;font-size:.65rem;font-weight:700;color:#fff;cursor:pointer;transition:.3s;text-shadow:0 0 20px rgba(255,255,255,.3);box-shadow:0 0 30px rgba(0,255,255,.3);white-space:nowrap}
 .header .theme-btn:active{transform:scale(.9)}
 .drawer-toggle{background:0 0;border:0;color:#fff;font-size:1.5rem;cursor:pointer;padding:4px 8px;text-shadow:0 0 20px rgba(255,0,255,.5)}
@@ -65,8 +60,6 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .drawer .auth-section input:focus{border-color:#00ffff;box-shadow:0 0 30px rgba(0,255,255,.2)}
 .drawer .auth-section .btn-primary{background:linear-gradient(135deg,#ff00ff,#cc00ff);border:0;border-radius:30px;padding:12px;font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;transition:.3s;box-shadow:0 0 40px rgba(255,0,255,.3)}
 .drawer .auth-section .btn-primary:active{transform:scale(.95)}
-.drawer .auth-section .btn-google{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:30px;padding:12px;font-size:.85rem;font-weight:600;color:#fff;cursor:pointer;transition:.3s;display:flex;align-items:center;justify-content:center;gap:8px}
-.drawer .auth-section .btn-google:active{transform:scale(.95)}
 .drawer .auth-section .toggle-auth{color:#00ffff;cursor:pointer;text-align:center;font-size:.8rem;margin-top:6px;text-decoration:underline}
 .drawer .auth-section .toggle-auth:active{color:#ff00ff}
 .drawer .admin-section{display:none;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,0,255,.2)}
@@ -80,7 +73,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 .drawer .admin-section .logout-btn:active{transform:scale(.95)}
 .banned-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:24px;color:#ff4466;font-size:1.6rem;text-align:center;padding:30px;font-weight:700}
 .banned-overlay .icon{font-size:5rem;filter:drop-shadow(0 0 60px #ff4466);animation:pulseGlow 1.5s infinite alternate}
-@media(max-width:480px){.drawer{width:280px;left:-290px}.header .brand{font-size:.85rem}.header .user-area input{width:70px}.message{padding:8px 12px;font-size:.82rem}.input-area textarea{font-size:.82rem;padding:8px 14px}.input-area .send-btn{width:44px;height:44px;font-size:1.3rem}.drawer .admin-section .tool-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.drawer{width:280px;left:-290px}.header .brand{font-size:.85rem}.message{padding:8px 12px;font-size:.82rem}.input-area textarea{font-size:.82rem;padding:8px 14px}.input-area .send-btn{width:44px;height:44px;font-size:1.3rem}.drawer .admin-section .tool-grid{grid-template-columns:1fr 1fr}}
 </style>
 </head>
 <body>
@@ -111,10 +104,9 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 <div class="email" id="displayEmail">Not logged in</div>
 </div>
 <div class="auth-section" id="authSection">
-<input type="email" id="authEmail" placeholder="Email">
+<input type="text" id="authUsername" placeholder="Username">
 <input type="password" id="authPassword" placeholder="Password">
 <button class="btn-primary" id="authSubmit">Login</button>
-<button class="btn-google" id="googleLogin">🅶 Sign in with Google</button>
 <div class="toggle-auth" id="toggleAuth">Don't have an account? Register</div>
 </div>
 <div class="admin-section" id="adminSection">
@@ -129,7 +121,7 @@ body{display:flex;align-items:center;justify-content:center;background:radial-gr
 const isAndroid=/android/i.test(navigator.userAgent);
 if(!isAndroid){document.getElementById('bannedOverlay').style.display='flex';document.getElementById('app').style.filter='blur(8px)';return;}
 const DB_URL='https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-let db,messagesRef,usersRef,adminRef;
+let db,messagesRef,usersRef;
 let currentUser=null;
 let isAdmin=false;
 let isLoginMode=true;
@@ -141,11 +133,10 @@ const overlay=document.getElementById('drawerOverlay');
 const drawerToggle=document.getElementById('drawerToggle');
 const drawerClose=document.getElementById('drawerClose');
 const loginPromptBtn=document.getElementById('loginPromptBtn');
-const authEmail=document.getElementById('authEmail');
+const authUsername=document.getElementById('authUsername');
 const authPassword=document.getElementById('authPassword');
 const authSubmit=document.getElementById('authSubmit');
 const toggleAuth=document.getElementById('toggleAuth');
-const googleLogin=document.getElementById('googleLogin');
 const displayName=document.getElementById('displayName');
 const displayEmail=document.getElementById('displayEmail');
 const adminSection=document.getElementById('adminSection');
@@ -154,8 +145,8 @@ const logoutBtn=document.getElementById('logoutBtn');
 const themeToggle=document.getElementById('themeToggle');
 let themes=['default','cyber','synth','aurora','galaxy','rave'];
 let themeIndex=0;
-function initFirebase(){if(typeof firebase!=='undefined'){try{if(!firebase.apps.length){firebase.initializeApp({databaseURL:DB_URL,apiKey:'AIzaSyDemoKey',authDomain:'zack360-2b303.firebaseapp.com'});}db=firebase.database();messagesRef=db.ref('messages');usersRef=db.ref('users');adminRef=db.ref('admin');}catch(e){console.warn('FB init',e);}}else{setTimeout(initFirebase,300);}}
-function loadMessages(){if(!messagesRef)return;messagesRef.orderByChild('timestamp').limitToLast(100).on('child_added',function(snap){const data=snap.val();if(data&&data.text&&data.username){appendMessage(data.username,data.text,data.timestamp,data.userId===currentUser?.uid||data.userId===currentUser);}});}
+function initFirebase(){if(typeof firebase!=='undefined'){try{if(!firebase.apps.length){firebase.initializeApp({databaseURL:DB_URL,apiKey:'AIzaSyDemoKey',authDomain:'zack360-2b303.firebaseapp.com'});}db=firebase.database();messagesRef=db.ref('messages');usersRef=db.ref('users');}catch(e){console.warn('FB init',e);}}else{setTimeout(initFirebase,300);}}
+function loadMessages(){if(!messagesRef)return;messagesRef.orderByChild('timestamp').limitToLast(100).on('child_added',function(snap){const data=snap.val();if(data&&data.text&&data.username){appendMessage(data.username,data.text,data.timestamp,data.userId===currentUser);}});}
 function appendMessage(username,text,timestamp,isOwn){const msgDiv=document.createElement('div');msgDiv.className='message'+(isOwn?' own':'');
 const meta=document.createElement('div');meta.className='meta';
 const uname=document.createElement('span');uname.className='username';uname.textContent=username||'Anon';
@@ -167,7 +158,7 @@ msgDiv.appendChild(meta);msgDiv.appendChild(textDiv);
 chat.appendChild(msgDiv);
 chat.scrollTop=chat.scrollHeight;}
 function linkify(txt){if(!txt)return'';const urlPattern=/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/gi;return txt.replace(urlPattern,'<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>');}
-function sendMessage(){const text=msgInput.value.trim();if(!text||!currentUser)return;if(!messagesRef){initFirebase();return;}const payload={username:displayName.textContent||'Guest',text:text,timestamp:Date.now(),userId:currentUser.uid||currentUser};
+function sendMessage(){const text=msgInput.value.trim();if(!text||!currentUser)return;if(!messagesRef){initFirebase();return;}const payload={username:displayName.textContent||'Guest',text:text,timestamp:Date.now(),userId:currentUser};
 messagesRef.push(payload).then(()=>{msgInput.value='';msgInput.style.height='auto';chat.scrollTop=chat.scrollHeight;}).catch(e=>{console.warn('send fail',e);});}
 function setupListeners(){
 sendBtn.addEventListener('click',sendMessage);
@@ -179,27 +170,22 @@ overlay.addEventListener('click',function(){drawer.classList.remove('open');over
 loginPromptBtn.addEventListener('click',function(){drawer.classList.add('open');overlay.classList.add('active');});
 toggleAuth.addEventListener('click',function(){isLoginMode=!isLoginMode;this.textContent=isLoginMode?'Don\'t have an account? Register':'Already have an account? Login';authSubmit.textContent=isLoginMode?'Login':'Register';});
 authSubmit.addEventListener('click',handleAuth);
-googleLogin.addEventListener('click',handleGoogleAuth);
 logoutBtn.addEventListener('click',handleLogout);
 themeToggle.addEventListener('click',cycleTheme);
 }
-function handleAuth(){const email=authEmail.value.trim();const pass=authPassword.value.trim();if(!email||!pass){alert('Please fill all fields');return;}
-if(isLoginMode){firebase.auth().signInWithEmailAndPassword(email,pass).then(user=>{onAuthSuccess(user.user);}).catch(err=>{alert('Login failed: '+err.message);});}else{firebase.auth().createUserWithEmailAndPassword(email,pass).then(user=>{onAuthSuccess(user.user);}).catch(err=>{alert('Registration failed: '+err.message);});}}
-function handleGoogleAuth(){const provider=new firebase.auth.GoogleAuthProvider();firebase.auth().signInWithPopup(provider).then(result=>{onAuthSuccess(result.user);}).catch(err=>{alert('Google login failed: '+err.message);});}
-function onAuthSuccess(user){currentUser=user;const name=user.displayName||user.email?.split('@')[0]||'User';displayName.textContent=name;displayEmail.textContent=user.email||'No email';authEmail.value='';authPassword.value='';checkAdmin(user);drawer.classList.remove('open');overlay.classList.remove('active');chat.classList.remove('blurred');chat.querySelector('.login-overlay').style.display='none';localStorage.setItem('neonUser',JSON.stringify({uid:user.uid,email:user.email,name:name}));}
-function checkAdmin(user){if(!user)return;usersRef.child(user.uid).once('value').then(snap=>{const data=snap.val();const isAdminUser=user.email==='zack360@neon.chat'||user.email==='zack360@gmail.com'||user.email==='zack360@admin.com'||user.uid==='zack360';if(isAdminUser||(data&&data.role==='admin')){isAdmin=true;adminSection.classList.add('active');generateAdminTools();usersRef.child(user.uid).update({role:'admin',email:user.email,name:displayName.textContent});}else{isAdmin=false;adminSection.classList.remove('active');}}).catch(()=>{});}
+function handleAuth(){const username=authUsername.value.trim();const pass=authPassword.value.trim();if(!username||!pass){alert('Please fill all fields');return;}
+if(isLoginMode){usersRef.child(username).once('value').then(snap=>{const data=snap.val();if(data&&data.password===pass){loginUser(username,data);}else{alert('Invalid username or password');}}).catch(()=>{alert('Login failed');});}else{usersRef.child(username).once('value').then(snap=>{if(snap.exists()){alert('Username already taken');return;}usersRef.child(username).set({username:username,password:pass,displayName:username,role:'member',created:Date.now()}).then(()=>{loginUser(username,{username:username,displayName:username,role:'member'});}).catch(()=>{alert('Registration failed');});}).catch(()=>{alert('Registration failed');});}}
+function loginUser(username,data){currentUser=username;displayName.textContent=data.displayName||username;displayEmail.textContent='User: '+username;authUsername.value='';authPassword.value='';const isAdminUser=username==='zack360'||username==='admin'||username==='zack360-admin';if(isAdminUser||data.role==='admin'){isAdmin=true;adminSection.classList.add('active');generateAdminTools();usersRef.child(username).update({role:'admin'});}else{isAdmin=false;adminSection.classList.remove('active');}drawer.classList.remove('open');overlay.classList.remove('active');chat.classList.remove('blurred');chat.querySelector('.login-overlay').style.display='none';localStorage.setItem('neonUser',username);}
 function generateAdminTools(){const tools=[{name:'👥 Users',action:'listUsers'},{name:'🔍 Search',action:'searchUsers'},{name:'👑 Roles',action:'manageRoles'},{name:'🚫 Ban',action:'banUser'},{name:'🔇 Mute',action:'muteUser'},{name:'🗑️ Delete User',action:'deleteUser'},{name:'📊 Stats',action:'viewStats'},{name:'💬 Messages',action:'viewMessages'},{name:'🔎 Filter Msg',action:'filterMessages'},{name:'✏️ Edit Msg',action:'editMessage'},{name:'🗑️ Bulk Del',action:'bulkDelete'},{name:'📌 Pin Msg',action:'pinMessage'},{name:'😀 Emoji Ban',action:'toggleEmojiBan'},{name:'🚫 Blocklist',action:'manageBlocklist'},{name:'🎨 Theme Lock',action:'lockTheme'},{name:'📋 Rules',action:'setRules'},{name:'📊 Dashboard',action:'dashboard'},{name:'📜 Audit Log',action:'auditLog'},{name:'🚨 Reports',action:'viewReports'},{name:'📈 Insights',action:'userInsights'},{name:'💾 Backup',action:'backupData'},{name:'🔄 Restore',action:'restoreData'},{name:'⚙️ Settings',action:'systemSettings'},{name:'🔒 Maintenance',action:'maintenanceMode'},{name:'🗑️ Clear All',action:'clearAll'},{name:'📤 Export CSV',action:'exportCSV'},{name:'📥 Import',action:'importData'},{name:'🛡️ Mod Stats',action:'modStats'},{name:'📊 Trends',action:'viewTrends'},{name:'👤 User Details',action:'userDetails'},{name:'🔐 Sessions',action:'viewSessions'},{name:'📧 Notify All',action:'notifyAll'},{name:'🎯 Announce',action:'makeAnnouncement'},{name:'📁 Media',action:'manageMedia'},{name:'🌐 API Keys',action:'manageAPI'},{name:'💻 System Logs',action:'systemLogs'}];
 adminTools.innerHTML='';tools.forEach(t=>{const btn=document.createElement('button');btn.className='tool-btn'+(t.name.includes('Delete')||t.name.includes('Ban')||t.name.includes('Clear')?' danger':'');btn.textContent=t.name;btn.dataset.action=t.action;btn.addEventListener('click',function(){alert('🔧 Admin Tool: '+t.name+'\n\nThis would execute the '+t.action+' function.\n\n(Production implementation would handle this action)');if(t.action==='clearAll'||t.action==='deleteUser'||t.action==='bulkDelete'){if(confirm('⚠️ This action is destructive. Are you sure?')){alert('Action confirmed!')}}});adminTools.appendChild(btn);});}
-function handleLogout(){firebase.auth().signOut().then(()=>{currentUser=null;isAdmin=false;adminSection.classList.remove('active');chat.classList.add('blurred');chat.querySelector('.login-overlay').style.display='flex';displayName.textContent='Guest';displayEmail.textContent='Not logged in';localStorage.removeItem('neonUser');drawer.classList.remove('open');overlay.classList.remove('active');}).catch(err=>{alert('Logout failed: '+err.message);});}
+function handleLogout(){currentUser=null;isAdmin=false;adminSection.classList.remove('active');chat.classList.add('blurred');chat.querySelector('.login-overlay').style.display='flex';displayName.textContent='Guest';displayEmail.textContent='Not logged in';localStorage.removeItem('neonUser');drawer.classList.remove('open');overlay.classList.remove('active');}
 function cycleTheme(){themeIndex=(themeIndex+1)%themes.length;const theme=themes[themeIndex];const colors={default:['#ff00ff','#00ffff','#ffaa00'],cyber:['#00ff00','#00ffff','#ff00ff'],synth:['#ff6bff','#ffb86b','#ff00ff'],aurora:['#00ff88','#00ddff','#ff00ff'],galaxy:['#9b59b6','#3498db','#2ecc71'],rave:['#ff0000','#00ff00','#0000ff']};const c=colors[theme]||colors.default;document.documentElement.style.setProperty('--primary',c[0]);document.documentElement.style.setProperty('--secondary',c[1]);document.documentElement.style.setProperty('--accent',c[2]);document.querySelector('#app').style.borderColor=c[0]+'66';document.querySelector('#app').style.boxShadow='0 0 60px '+c[0]+'33,0 0 120px '+c[1]+'22';}
-function restoreSession(){const saved=localStorage.getItem('neonUser');if(saved){try{const data=JSON.parse(saved);if(data.uid){firebase.auth().onAuthStateChanged(user=>{if(user){onAuthSuccess(user);}else{firebase.auth().signInWithEmailAndPassword('','').catch(()=>{});}});}}catch(e){}}}
-function initAuthListener(){firebase.auth().onAuthStateChanged(user=>{if(user){onAuthSuccess(user);}else{if(!currentUser){chat.classList.add('blurred');chat.querySelector('.login-overlay').style.display='flex';displayName.textContent='Guest';displayEmail.textContent='Not logged in';adminSection.classList.remove('active');}}});}
-(function boot(){restoreSession();initFirebase();setTimeout(()=>{if(!db){initFirebase();}},500);setupListeners();loadMessages();initAuthListener();})();
+function restoreSession(){const saved=localStorage.getItem('neonUser');if(saved){usersRef.child(saved).once('value').then(snap=>{const data=snap.val();if(data){loginUser(saved,data);}}).catch(()=>{});}}
+(function boot(){initFirebase();setTimeout(()=>{if(!db){initFirebase();}},500);setupListeners();loadMessages();setTimeout(restoreSession,800);})();
 window.addEventListener('online',function(){if(!db){initFirebase();}});
 })();
 </script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 </body>
 </html>
