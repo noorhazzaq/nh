@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>ZACK THREADS</title>
     <style>
-        /* ===== RESET & VARIABLES ===== */
         * {
             margin: 0;
             padding: 0;
@@ -27,7 +26,8 @@
             --theme-color: #00ffd0;
         }
 
-        html, body {
+        html,
+        body {
             height: 100%;
             background: var(--dark-bg);
             color: #e0f0ff;
@@ -35,7 +35,6 @@
             overflow-x: hidden;
         }
 
-        /* ===== ANIMATED BACKGROUND ===== */
         body::before {
             content: '';
             position: fixed;
@@ -43,7 +42,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
             background-size: 50px 50px;
@@ -53,8 +52,12 @@
         }
 
         @keyframes gridPulse {
-            0% { opacity: 0.3; }
-            100% { opacity: 0.8; }
+            0% {
+                opacity: 0.3;
+            }
+            100% {
+                opacity: 0.8;
+            }
         }
 
         body::after {
@@ -73,8 +76,12 @@
         }
 
         @keyframes scanLine {
-            0% { top: -5%; }
-            100% { top: 105%; }
+            0% {
+                top: -5%;
+            }
+            100% {
+                top: 105%;
+            }
         }
 
         .particles {
@@ -95,22 +102,102 @@
             opacity: 0;
         }
 
-        .particle:nth-child(1) { left: 10%; animation-duration: 18s; width: 3px; height: 3px; background: var(--neon-cyan); box-shadow: 0 0 8px var(--neon-cyan); }
-        .particle:nth-child(2) { left: 25%; animation-duration: 22s; width: 2px; height: 2px; background: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); }
-        .particle:nth-child(3) { left: 40%; animation-duration: 16s; width: 4px; height: 4px; background: var(--neon-purple); box-shadow: 0 0 12px var(--neon-purple); }
-        .particle:nth-child(4) { left: 55%; animation-duration: 24s; width: 2px; height: 2px; background: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
-        .particle:nth-child(5) { left: 70%; animation-duration: 20s; width: 5px; height: 5px; background: var(--neon-gold); box-shadow: 0 0 16px var(--neon-gold); }
-        .particle:nth-child(6) { left: 85%; animation-duration: 26s; width: 3px; height: 3px; background: var(--neon-orange); box-shadow: 0 0 10px var(--neon-orange); }
-        .particle:nth-child(7) { left: 50%; animation-duration: 19s; width: 4px; height: 4px; background: var(--neon-cyan); box-shadow: 0 0 12px var(--neon-cyan); }
-        .particle:nth-child(8) { left: 15%; animation-duration: 23s; width: 2px; height: 2px; background: var(--neon-purple); box-shadow: 0 0 8px var(--neon-purple); }
-        .particle:nth-child(9) { left: 65%; animation-duration: 17s; width: 3px; height: 3px; background: var(--neon-pink); box-shadow: 0 0 12px var(--neon-pink); }
-        .particle:nth-child(10) { left: 35%; animation-duration: 21s; width: 4px; height: 4px; background: var(--neon-gold); box-shadow: 0 0 14px var(--neon-gold); }
+        .particle:nth-child(1) {
+            left: 10%;
+            animation-duration: 18s;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+        .particle:nth-child(2) {
+            left: 25%;
+            animation-duration: 22s;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-blue);
+            box-shadow: 0 0 8px var(--neon-blue);
+        }
+        .particle:nth-child(3) {
+            left: 40%;
+            animation-duration: 16s;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-purple);
+            box-shadow: 0 0 12px var(--neon-purple);
+        }
+        .particle:nth-child(4) {
+            left: 55%;
+            animation-duration: 24s;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+        .particle:nth-child(5) {
+            left: 70%;
+            animation-duration: 20s;
+            width: 5px;
+            height: 5px;
+            background: var(--neon-gold);
+            box-shadow: 0 0 16px var(--neon-gold);
+        }
+        .particle:nth-child(6) {
+            left: 85%;
+            animation-duration: 26s;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-orange);
+            box-shadow: 0 0 10px var(--neon-orange);
+        }
+        .particle:nth-child(7) {
+            left: 50%;
+            animation-duration: 19s;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-cyan);
+            box-shadow: 0 0 12px var(--neon-cyan);
+        }
+        .particle:nth-child(8) {
+            left: 15%;
+            animation-duration: 23s;
+            width: 2px;
+            height: 2px;
+            background: var(--neon-purple);
+            box-shadow: 0 0 8px var(--neon-purple);
+        }
+        .particle:nth-child(9) {
+            left: 65%;
+            animation-duration: 17s;
+            width: 3px;
+            height: 3px;
+            background: var(--neon-pink);
+            box-shadow: 0 0 12px var(--neon-pink);
+        }
+        .particle:nth-child(10) {
+            left: 35%;
+            animation-duration: 21s;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-gold);
+            box-shadow: 0 0 14px var(--neon-gold);
+        }
 
         @keyframes floatParticle {
-            0% { transform: translateY(110vh) scale(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.8; }
-            90% { opacity: 0.8; }
-            100% { transform: translateY(-10vh) scale(1) rotate(720deg); opacity: 0; }
+            0% {
+                transform: translateY(110vh) scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.8;
+            }
+            90% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         .sparkle {
@@ -122,17 +209,22 @@
             pointer-events: none;
             z-index: 9998;
             background: radial-gradient(circle at 20% 30%, rgba(0, 255, 208, 0.02) 0%, transparent 50%),
-                        radial-gradient(circle at 80% 70%, rgba(180, 0, 255, 0.02) 0%, transparent 50%);
+                radial-gradient(circle at 80% 70%, rgba(180, 0, 255, 0.02) 0%, transparent 50%);
             animation: sparkleBg 12s infinite alternate ease-in-out;
         }
 
         @keyframes sparkleBg {
-            0% { opacity: 0.2; }
-            50% { opacity: 0.6; }
-            100% { opacity: 0.2; }
+            0% {
+                opacity: 0.2;
+            }
+            50% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 0.2;
+            }
         }
 
-        /* ===== CONTAINER ===== */
         .container {
             position: relative;
             z-index: 1;
@@ -149,12 +241,20 @@
         }
 
         @keyframes containerGlow {
-            0% { box-shadow: 0 0 20px rgba(0, 240, 255, 0.06), 0 0 40px rgba(180, 0, 255, 0.03); border-color: rgba(0, 240, 255, 0.15); }
-            50% { box-shadow: 0 0 50px rgba(0, 240, 255, 0.12), 0 0 100px rgba(180, 0, 255, 0.08); border-color: rgba(180, 0, 255, 0.25); }
-            100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.06), 0 0 60px rgba(0, 240, 255, 0.06); border-color: rgba(255, 215, 0, 0.15); }
+            0% {
+                box-shadow: 0 0 20px rgba(0, 240, 255, 0.06), 0 0 40px rgba(180, 0, 255, 0.03);
+                border-color: rgba(0, 240, 255, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(0, 240, 255, 0.12), 0 0 100px rgba(180, 0, 255, 0.08);
+                border-color: rgba(180, 0, 255, 0.25);
+            }
+            100% {
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.06), 0 0 60px rgba(0, 240, 255, 0.06);
+                border-color: rgba(255, 215, 0, 0.15);
+            }
         }
 
-        /* ===== HEADER ===== */
         .header {
             text-align: center;
             padding-bottom: 1.2rem;
@@ -175,8 +275,14 @@
         }
 
         @keyframes headerLine {
-            0% { opacity: 0.2; transform: scaleX(0.7); }
-            100% { opacity: 1; transform: scaleX(1.3); }
+            0% {
+                opacity: 0.2;
+                transform: scaleX(0.7);
+            }
+            100% {
+                opacity: 1;
+                transform: scaleX(1.3);
+            }
         }
 
         .header h1 {
@@ -221,21 +327,43 @@
         }
 
         @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         @keyframes sparkleIcon {
-            0%, 100% { opacity: 1; transform: translateY(-50%) scale(1) rotate(0deg); }
-            50% { opacity: 0.2; transform: translateY(-50%) scale(1.5) rotate(180deg); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: translateY(-50%) scale(1) rotate(0deg);
+            }
+            50% {
+                opacity: 0.2;
+                transform: translateY(-50%) scale(1.5) rotate(180deg);
+            }
         }
 
         @keyframes titleFlicker {
-            0%, 100% { opacity: 1; }
-            2% { opacity: 0.85; }
-            4% { opacity: 1; }
-            50% { opacity: 0.95; }
+            0%,
+            100% {
+                opacity: 1;
+            }
+            2% {
+                opacity: 0.85;
+            }
+            4% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.95;
+            }
         }
 
         .subtitle {
@@ -248,11 +376,16 @@
         }
 
         @keyframes subtitlePulse {
-            0% { opacity: 0.3; letter-spacing: 10px; }
-            100% { opacity: 0.7; letter-spacing: 14px; }
+            0% {
+                opacity: 0.3;
+                letter-spacing: 10px;
+            }
+            100% {
+                opacity: 0.7;
+                letter-spacing: 14px;
+            }
         }
 
-        /* ===== FORMS ===== */
         .form-group {
             margin: 1.8rem 0;
         }
@@ -368,11 +501,14 @@
         }
 
         @keyframes errorPulse {
-            0% { opacity: 0.6; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 0.6;
+            }
+            100% {
+                opacity: 1;
+            }
         }
 
-        /* ===== USER BADGE ===== */
         .user-badge {
             text-align: center;
             padding: 0.6rem;
@@ -390,7 +526,6 @@
             text-shadow: 0 0 20px var(--neon-purple);
         }
 
-        /* ===== THREAD INPUT ===== */
         .thread-input {
             margin: 1.2rem 0;
         }
@@ -428,7 +563,6 @@
             margin-top: 0.8rem;
         }
 
-        /* ===== THREADS LIST ===== */
         .threads-container {
             margin-top: 1.8rem;
             padding-top: 1.5rem;
@@ -508,8 +642,14 @@
         }
 
         @keyframes threadIn {
-            0% { opacity: 0; transform: translateY(-12px) scale(0.96); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
+            0% {
+                opacity: 0;
+                transform: translateY(-12px) scale(0.96);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .thread-author {
@@ -581,6 +721,12 @@
 
         .thread-actions .reply-btn:hover {
             color: var(--neon-purple);
+        }
+
+        .thread-actions .view-only {
+            color: rgba(0, 240, 255, 0.2);
+            font-size: 0.55rem;
+            padding: 0.3rem 0.6rem;
         }
 
         .replies-container {
@@ -721,8 +867,15 @@
         }
 
         @keyframes dotBlink {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.2; transform: scale(0.8); }
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.2;
+                transform: scale(0.8);
+            }
         }
 
         .exit-btn {
@@ -744,41 +897,91 @@
             transform: scale(1.05);
         }
 
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s infinite;
+        .public-notice {
+            text-align: center;
+            font-size: 0.55rem;
+            color: rgba(0, 240, 255, 0.15);
+            letter-spacing: 2px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-top: 1px solid rgba(0, 240, 255, 0.04);
         }
 
-        @keyframes dots {
-            0% { content: ''; }
-            33% { content: '.'; }
-            66% { content: '..'; }
-            100% { content: '...'; }
+        .public-notice span {
+            color: var(--neon-gold);
+            opacity: 0.5;
         }
 
-        /* ===== RESPONSIVE ===== */
         @media (max-width: 600px) {
-            .container { margin: 0.6rem; padding: 1.2rem; border-radius: 20px; }
-            .header h1 { font-size: 2rem; letter-spacing: 4px; }
-            .header h1::before, .header h1::after { display: none; }
-            .thread-item { padding: 0.8rem; }
-            .thread-content { font-size: 0.75rem; }
-            .form-group input { font-size: 0.8rem; padding: 0.8rem 1rem; }
-            .btn { font-size: 0.7rem; padding: 0.8rem; }
+            .container {
+                margin: 0.6rem;
+                padding: 1.2rem;
+                border-radius: 20px;
+            }
+            .header h1 {
+                font-size: 2rem;
+                letter-spacing: 4px;
+            }
+            .header h1::before,
+            .header h1::after {
+                display: none;
+            }
+            .thread-item {
+                padding: 0.8rem;
+            }
+            .thread-content {
+                font-size: 0.75rem;
+            }
+            .form-group input {
+                font-size: 0.8rem;
+                padding: 0.8rem 1rem;
+            }
+            .btn {
+                font-size: 0.7rem;
+                padding: 0.8rem;
+            }
         }
 
         @media (max-width: 400px) {
-            .container { padding: 0.8rem; }
-            .header h1 { font-size: 1.5rem; letter-spacing: 2px; }
-            .subtitle { font-size: 0.55rem; letter-spacing: 5px; }
-            .thread-footer { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
-            .thread-actions { width: 100%; justify-content: space-around; }
-            .reply-input-group { flex-direction: column; }
-            .reply-input-group button { width: 100%; }
-            .threads-header { flex-direction: column; gap: 0.3rem; align-items: flex-start; }
+            .container {
+                padding: 0.8rem;
+            }
+            .header h1 {
+                font-size: 1.5rem;
+                letter-spacing: 2px;
+            }
+            .subtitle {
+                font-size: 0.55rem;
+                letter-spacing: 5px;
+            }
+            .thread-footer {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+            .thread-actions {
+                width: 100%;
+                justify-content: space-around;
+            }
+            .reply-input-group {
+                flex-direction: column;
+            }
+            .reply-input-group button {
+                width: 100%;
+            }
+            .threads-header {
+                flex-direction: column;
+                gap: 0.3rem;
+                align-items: flex-start;
+            }
         }
 
-        .container, .header, .thread-item, .btn, .form-group input, .thread-input textarea {
+        .container,
+        .header,
+        .thread-item,
+        .btn,
+        .form-group input,
+        .thread-input textarea {
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             -webkit-perspective: 1000;
@@ -812,12 +1015,14 @@
 
     <div class="sparkle"></div>
 
-    <!-- LOGIN -->
+    <!-- ===== LOGIN PAGE ===== -->
     <div class="container" id="loginPage">
         <div class="header">
             <h1>Zack Threads</h1>
             <div class="subtitle">◈ cyber social ◈</div>
         </div>
+
+        <!-- Login Form -->
         <div class="form-group">
             <input type="text" id="loginUsername" placeholder="USERNAME" maxlength="20" />
             <input type="password" id="loginPassword" placeholder="PASSWORD" maxlength="30" />
@@ -825,9 +1030,24 @@
             <button class="btn btn-secondary" onclick="showRegister()" style="margin-top:0.6rem;">⟡ CREATE ACCOUNT</button>
             <div id="loginError" class="error-msg"></div>
         </div>
+
+        <!-- ===== PUBLIC THREADS (Visible to everyone) ===== -->
+        <div class="threads-container" id="publicThreads">
+            <div class="threads-header">
+                <span>⟡ public threads</span>
+                <span class="thread-count" id="publicCount">0 threads</span>
+            </div>
+            <div class="threads-list" id="publicList">
+                <div class="empty-threads">⍟ loading threads... ⍟</div>
+            </div>
+        </div>
+
+        <div class="public-notice">
+            <span>✦</span> login to post, like &amp; reply <span>✦</span>
+        </div>
     </div>
 
-    <!-- REGISTER -->
+    <!-- ===== REGISTER PAGE ===== -->
     <div class="container hidden" id="registerPage">
         <div class="header">
             <h1>Zack Threads</h1>
@@ -843,7 +1063,7 @@
         </div>
     </div>
 
-    <!-- THREADS -->
+    <!-- ===== THREADS PAGE (Logged in) ===== -->
     <div class="container hidden" id="threadsPage">
         <div class="header">
             <h1>Zack Threads</h1>
@@ -902,6 +1122,7 @@
 
         let user = null;
         let threads = [];
+        let publicThreads = [];
         let listening = false;
         let renderTimer = null;
         let statusTimeout = null;
@@ -922,6 +1143,8 @@
         const threadInput = $('threadContent');
         const threadsList = $('threadsList');
         const threadCount = $('threadCount');
+        const publicList = $('publicList');
+        const publicCount = $('publicCount');
         const statusText = $('statusText');
 
         // ===== NAV =====
@@ -1007,6 +1230,11 @@
                 displayUser.textContent = username.toUpperCase();
                 loginUser.value = '';
                 loginPass.value = '';
+                // Stop public listener, start private listener
+                if (publicListener) {
+                    THREADS.off('value', publicListener);
+                    publicListener = null;
+                }
                 loadThreads();
                 showThreads();
                 setStatus('welcome ' + username);
@@ -1023,6 +1251,8 @@
             showLogin();
             loginErr.textContent = '';
             setStatus('logged out');
+            // Reload public threads
+            loadPublicThreads();
         }
 
         // ===== STATUS =====
@@ -1039,7 +1269,99 @@
             }
         }
 
-        // ===== THREADS =====
+        // ===== PUBLIC THREADS (No login required) =====
+        let publicListener = null;
+
+        function loadPublicThreads() {
+            if (publicListener) {
+                THREADS.off('value', publicListener);
+                publicListener = null;
+            }
+
+            publicListener = function(snap) {
+                try {
+                    if (snap.exists()) {
+                        const data = snap.val();
+                        publicThreads = Object.keys(data).map(k => ({
+                            id: k,
+                            ...data[k]
+                        }));
+                        publicThreads.sort((a, b) => b.timestamp - a.timestamp);
+                    } else {
+                        publicThreads = [];
+                    }
+                    renderPublicThreads();
+                } catch (e) {
+                    console.error('Public load error:', e);
+                }
+            };
+
+            THREADS.on('value', publicListener);
+        }
+
+        function renderPublicThreads() {
+            if (!publicList) return;
+
+            if (!publicThreads.length) {
+                publicList.innerHTML = '<div class="empty-threads">⍟ no threads yet ⍟</div>';
+                publicCount.textContent = '0 threads';
+                return;
+            }
+
+            let html = '';
+            for (let i = 0; i < publicThreads.length; i++) {
+                const t = publicThreads[i];
+                const time = new Date(t.timestamp).toLocaleTimeString('en-US', {
+                    hour12: false,
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+                const likes = t.likes || [];
+                const replies = t.replies || [];
+                const rCount = replies.length;
+
+                let repliesHtml = '';
+                if (rCount) {
+                    for (let j = 0; j < replies.length; j++) {
+                        const r = replies[j];
+                        const rTime = new Date(r.timestamp).toLocaleTimeString('en-US', {
+                            hour12: false,
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                        repliesHtml += `
+                            <div class="reply-item">
+                                <span class="reply-author">${esc(r.author).toUpperCase()}</span>
+                                <span class="reply-text">${esc(r.text)}</span>
+                                <span class="reply-time">${rTime}</span>
+                            </div>
+                        `;
+                    }
+                }
+
+                html += `
+                    <div class="thread-item">
+                        <div class="thread-author">${esc(t.author).toUpperCase()}</div>
+                        <div class="thread-content">${esc(t.content)}</div>
+                        <div class="thread-footer">
+                            <span>${time}</span>
+                            <div class="thread-actions">
+                                <span class="view-only">♥ ${likes.length}</span>
+                                <span class="view-only">⌨ ${rCount}</span>
+                            </div>
+                        </div>
+                        <div class="replies-container">
+                            ${repliesHtml}
+                        </div>
+                    </div>
+                `;
+            }
+
+            publicList.innerHTML = html;
+            publicCount.textContent = `${publicThreads.length} threads`;
+        }
+
+        // ===== LOGGED IN THREADS =====
         function loadThreads() {
             if (listening) {
                 THREADS.off();
@@ -1270,6 +1592,7 @@
 
         // ===== INIT =====
         showLogin();
+        loadPublicThreads();
 
         // ===== MOBILE OPTIMIZATION =====
         if (window.innerWidth < 600) {
@@ -1291,17 +1614,12 @@
             }
         });
 
-        console.log('✓ ZACK THREADS OPTIMIZED');
-        console.log('✓ 10 particles (mobile optimized)');
-        console.log('✓ All dead code removed');
-        console.log('✓ Memory leaks fixed');
-        console.log('✓ Input validation added');
-        console.log('✓ Max lengths: thread 500, reply 200');
-        console.log('✓ Error handling improved');
-        console.log('✓ Animation performance optimized');
-        console.log('✓ Firebase listener cleanup fixed');
-        console.log('✓ Status feedback added');
-        console.log('✓ Character limits enforced');
+        console.log('✓ ZACK THREADS • PUBLIC VERSION');
+        console.log('✓ Public threads visible on login page');
+        console.log('✓ No login required to view threads');
+        console.log('✓ Login required to post/like/reply');
+        console.log('✓ Two separate listeners: public + private');
+        console.log('✓ Clean separation of concerns');
         console.log('✓ All features functional');
     </script>
 </body>
