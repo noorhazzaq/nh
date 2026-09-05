@@ -2,394 +2,201 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>⚡ NEON CHAT ⚡</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>NEOCHAT</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;image-rendering:pixelated;-webkit-tap-highlight-color:transparent}
-html,body{background:radial-gradient(ellipse at center,#0a0a0f 0%,#000000 100%);font-family:'Courier New',monospace;overflow:hidden;height:100%;width:100%;position:fixed;top:0;left:0;display:flex;justify-content:center;align-items:center}
-#app{width:100%;height:100%;max-width:100%;display:flex;flex-direction:column;background:rgba(10,10,20,0.75);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:2px solid rgba(192,192,192,0.3);box-shadow:0 0 60px rgba(255,255,255,0.05),inset 0 0 60px rgba(192,192,192,0.02);position:relative;overflow:hidden}
-#rainbow-bg{position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,#ff00ff,#00ffff,#ff00ff,#00ffff,#ff00ff);opacity:0.06;animation:rotateRainbow 20s linear infinite;z-index:0;mix-blend-mode:screen}
-@keyframes rotateRainbow{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
-#scanline{position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,rgba(0,0,0,0)0px,rgba(0,0,0,0)2px,rgba(0,0,0,0.08)2px,rgba(0,0,0,0.08)3px);pointer-events:none;z-index:10}
-#glow-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 80%,rgba(255,0,255,0.03)0%,transparent 70%);pointer-events:none;z-index:1}
-#header{background:rgba(20,20,35,0.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px 12px;border-bottom:1px solid rgba(192,192,192,0.15);text-align:center;position:relative;z-index:5;flex-shrink:0;border-bottom:2px solid transparent;border-image:linear-gradient(90deg,#ff00ff,#00ffff,#ff00ff,#00ffff)1;animation:borderFlow 3s linear infinite}
-@keyframes borderFlow{0%{border-image:linear-gradient(90deg,#ff00ff,#00ffff,#ff00ff,#00ffff)1}50%{border-image:linear-gradient(90deg,#00ffff,#ff00ff,#00ffff,#ff00ff)1}100%{border-image:linear-gradient(90deg,#ff00ff,#00ffff,#ff00ff,#00ffff)1}}
-#header h1{color:#e0e0ff;font-size:clamp(14px,4vw,20px);letter-spacing:4px;text-shadow:0 0 30px rgba(255,0,255,0.3),0 0 60px rgba(0,255,255,0.2);font-weight:700;background:linear-gradient(90deg,#ff00ff,#00ffff,#ff00ff,#00ffff);background-size:300% 100%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:rainbowText 4s linear infinite}
-@keyframes rainbowText{0%{background-position:0% 50%}100%{background-position:300% 50%}}
-#status-bar{display:flex;justify-content:space-between;align-items:center;margin-top:2px;padding:0 2px;flex-wrap:wrap;gap:2px}
-#status{color:#00ff88;font-size:clamp(7px,2vw,10px);letter-spacing:1px;text-shadow:0 0 20px rgba(0,255,136,0.3);font-weight:bold}
-#user-badge{color:#e0e0ff;font-size:clamp(7px,2vw,10px);background:rgba(255,255,255,0.05);padding:1px 10px;border:1px solid rgba(192,192,192,0.15);letter-spacing:1px;text-shadow:0 0 20px rgba(255,255,255,0.1);white-space:nowrap;border-radius:2px;backdrop-filter:blur(5px)}
-#ip-box{position:absolute;top:10px;right:10px;background:rgba(0,0,0,0.7);backdrop-filter:blur(10px);border:1px solid rgba(255,0,255,0.2);padding:4px 8px;z-index:20;border-radius:2px;font-size:clamp(6px,1.5vw,8px);color:rgba(224,224,255,0.6);letter-spacing:0.5px;display:flex;flex-direction:column;align-items:flex-end;gap:1px;min-width:80px}
-#ip-box .ip-label{color:rgba(192,192,192,0.3);font-size:clamp(5px,1.2vw,7px);text-transform:uppercase;letter-spacing:1px}
-#ip-box .ip-value{color:#00ffff;text-shadow:0 0 20px rgba(0,255,255,0.2);font-weight:bold;font-size:clamp(7px,1.8vw,10px)}
-#ip-box .ip-location{color:rgba(192,192,192,0.3);font-size:clamp(5px,1.2vw,7px)}
-#messages{flex:1;overflow-y:auto;padding:6px 10px;background:rgba(0,0,0,0.3);display:flex;flex-direction:column;gap:2px;scroll-behavior:smooth;z-index:5;position:relative;min-height:0;height:100%}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',system-ui,sans-serif}
+html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f}
+body{display:flex;justify-content:center;align-items:center}
+#app{width:100%;height:100%;max-width:480px;margin:0 auto;display:flex;flex-direction:column;background:radial-gradient(circle at 20% 30%,#14141e,#08080c);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,255,200,0.08)}
+#app::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(0,255,200,0.01)30px,rgba(0,200,255,0.01)60px);pointer-events:none}
+.glow-ring{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.25;animation:breath 4s ease-in-out infinite alternate}
+.glow-ring:nth-child(1){width:70%;height:70%;top:-20%;left:-20%;background:conic-gradient(from 0deg,#0ff,#f0f,#0ff);animation-delay:0s}
+.glow-ring:nth-child(2){width:50%;height:50%;bottom:-10%;right:-10%;background:conic-gradient(from 180deg,#f0f,#0ff,#f0f);animation-delay:2s}
+@keyframes breath{0%{transform:scale(0.9)rotate(0deg);opacity:0.2}100%{transform:scale(1.3)rotate(15deg);opacity:0.35}}
+header{position:relative;z-index:10;padding:14px 18px;background:rgba(10,10,18,0.55);backdrop-filter:blur(12px);border-bottom:1px solid rgba(0,255,210,0.2);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+header h1{font-weight:300;font-size:1.3rem;letter-spacing:3px;text-transform:uppercase;background:linear-gradient(135deg,#0ff,#a0f,#0ff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 3s linear infinite;text-shadow:0 0 20px rgba(0,255,200,0.3)}
+@keyframes shimmer{0%{background-position:0%}100%{background-position:200%}}
+.user-badge{display:flex;align-items:center;gap:10px;color:#8cf;font-size:0.8rem;font-weight:300}
+.user-badge span{background:rgba(0,255,200,0.08);padding:4px 14px;border-radius:40px;border:1px solid rgba(0,255,200,0.25);backdrop-filter:blur(4px);letter-spacing:0.5px}
+#messages{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:6px;position:relative;z-index:5;scroll-behavior:smooth}
 #messages::-webkit-scrollbar{width:3px}
-#messages::-webkit-scrollbar-track{background:rgba(255,255,255,0.02)}
-#messages::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ff00ff,#00ffff);border-radius:2px}
-.msg{background:rgba(255,255,255,0.03);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:4px 10px;border-left:2px solid rgba(192,192,192,0.2);word-wrap:break-word;animation:glitchIn .2s ease-out;border-radius:0 2px 2px 0;margin-bottom:1px;transition:all .3s;position:relative}
-.msg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(90deg,rgba(255,255,255,0.02),transparent);pointer-events:none}
-.msg:hover{background:rgba(255,255,255,0.05)}
-.msg .user{font-weight:700;font-size:clamp(9px,2.5vw,12px);letter-spacing:0.5px;background:linear-gradient(90deg,#ff00ff,#00ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 30px rgba(255,0,255,0.2)}
-.msg .time{color:rgba(192,192,192,0.3);font-size:clamp(6px,1.5vw,8px);float:right;margin-left:5px;letter-spacing:0.3px}
-.msg .text{color:rgba(224,224,255,0.85);font-size:clamp(11px,3vw,14px);margin-top:1px;text-shadow:0 0 20px rgba(255,255,255,0.02);line-height:1.4;font-weight:400;word-break:break-word}
-.msg .text a{color:#00ffff;text-decoration:none;border-bottom:1px solid rgba(0,255,255,0.2);transition:all .3s;padding:0 2px;word-break:break-all}
-.msg .text a:hover{color:#ff00ff;border-bottom-color:#ff00ff;text-shadow:0 0 20px rgba(255,0,255,0.3)}
-.msg .text a:active{color:#ff00ff;border-bottom-color:#ff00ff;text-shadow:0 0 30px rgba(255,0,255,0.5)}
-.msg.system{background:rgba(255,170,0,0.05);border-left-color:rgba(255,170,0,0.3)}
-.msg.system .text{color:#ffaa00;text-shadow:0 0 20px rgba(255,170,0,0.2)}
-.msg.system .text a{color:#ffaa00;border-bottom-color:rgba(255,170,0,0.3)}
-.msg.system .text a:hover{color:#ff6600;border-bottom-color:#ff6600}
-.msg.self{background:rgba(255,0,255,0.05);border-left-color:rgba(255,0,255,0.3)}
-.msg.self .user{background:linear-gradient(90deg,#00ffff,#ff00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.msg.self .text a{color:#ff00ff;border-bottom-color:rgba(255,0,255,0.3)}
-.msg.self .text a:hover{color:#00ffff;border-bottom-color:#00ffff}
-#input-area{background:rgba(20,20,35,0.7);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:5px 8px;border-top:1px solid rgba(192,192,192,0.1);display:flex;gap:4px;flex-shrink:0;z-index:5;position:relative;align-items:center;min-height:40px}
-#input-area input{flex:1;background:rgba(255,255,255,0.03);border:1px solid rgba(192,192,192,0.1);padding:6px 10px;color:#e0e0ff;font-family:'Courier New',monospace;font-size:clamp(11px,3vw,14px);outline:none;border-radius:0;transition:all .3s;min-width:0;height:32px}
-#input-area input:focus{border-color:rgba(255,0,255,0.3);box-shadow:0 0 30px rgba(255,0,255,0.05),inset 0 0 30px rgba(255,0,255,0.02)}
-#input-area input::placeholder{color:rgba(192,192,192,0.2);letter-spacing:1px;font-size:clamp(9px,2vw,11px)}
-#input-area button{background:linear-gradient(135deg,#ff00ff,#00ffff);color:#000;border:none;padding:6px 14px;font-family:'Courier New',monospace;font-weight:700;font-size:clamp(10px,2.5vw,13px);cursor:pointer;letter-spacing:1px;transition:all .3s;text-shadow:0 0 20px rgba(255,255,255,0.3);border-radius:0;white-space:nowrap;flex-shrink:0;height:32px;min-width:32px;opacity:0.8}
-#input-area button:active{transform:scale(0.92);opacity:1}
-#input-area button:disabled{opacity:0.3;transform:scale(0.96);cursor:not-allowed}
-#char-counter{color:rgba(192,192,192,0.2);font-size:clamp(7px,1.8vw,9px);letter-spacing:0.5px;padding:0 2px;min-width:20px;text-align:center;flex-shrink:0}
-#blocker{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);color:#ff00ff;font-family:'Courier New',monospace;font-size:20px;justify-content:center;align-items:center;z-index:9999;text-align:center;padding:30px;border:2px solid rgba(255,0,255,0.3);box-shadow:inset 0 0 100px rgba(255,0,255,0.05);backdrop-filter:blur(20px)}
-#blocker span{text-shadow:0 0 40px rgba(255,0,255,0.3);letter-spacing:4px}
-#connection-status{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#ff00ff;font-size:clamp(12px,3vw,16px);z-index:20;background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);padding:10px 20px;border:1px solid rgba(255,0,255,0.2);display:none;text-shadow:0 0 30px rgba(255,0,255,0.2);letter-spacing:2px;border-radius:2px}
-@keyframes glitchIn{0%{opacity:0;transform:translateX(-4px);clip-path:inset(0 0 95% 0)}100%{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)}}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-@media(max-width:480px){#app{border-width:1px;border-radius:0}
-#header{padding:4px 8px}
-#header h1{font-size:clamp(12px,3.5vw,16px)}
-#input-area{padding:4px 6px;min-height:36px}
-#input-area input{height:28px;padding:4px 8px}
-#input-area button{height:28px;padding:4px 10px;min-width:28px}
-.msg{padding:3px 6px}
-#messages{padding:4px 6px}
-#ip-box{top:5px;right:5px;padding:3px 6px;min-width:60px}
-#ip-box .ip-value{font-size:clamp(6px,1.5vw,8px)}
-#ip-box .ip-label{font-size:clamp(4px,1vw,6px)}
-#ip-box .ip-location{font-size:clamp(4px,1vw,6px)}}
+#messages::-webkit-scrollbar-track{background:transparent}
+#messages::-webkit-scrollbar-thumb{background:rgba(0,255,210,0.3);border-radius:20px}
+.msg{margin-bottom:4px;padding:10px 16px;border-radius:20px;max-width:84%;word-break:break-word;font-size:0.95rem;line-height:1.4;animation:fadeUp 0.25s ease;position:relative;border:1px solid transparent;backdrop-filter:blur(2px)}
+.msg.self{align-self:flex-end;background:rgba(0,255,210,0.08);border-color:rgba(0,255,210,0.25);color:#bffff0;border-bottom-right-radius:4px;box-shadow:0 0 20px rgba(0,255,200,0.05)}
+.msg.other{align-self:flex-start;background:rgba(180,0,255,0.06);border-color:rgba(180,0,255,0.2);color:#e0d0ff;border-bottom-left-radius:4px;box-shadow:0 0 20px rgba(180,0,255,0.05)}
+.msg .name{font-size:0.65rem;font-weight:400;letter-spacing:0.5px;opacity:0.6;margin-bottom:2px;text-transform:uppercase;color:#8cf}
+.msg .time{font-size:0.55rem;opacity:0.3;float:right;margin-left:12px;margin-top:4px}
+@keyframes fadeUp{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
+#input-area{position:relative;z-index:10;padding:10px 14px 16px;background:rgba(10,10,18,0.5);backdrop-filter:blur(14px);border-top:1px solid rgba(0,255,210,0.12);display:flex;gap:10px;align-items:center;flex-shrink:0}
+#input-area input{flex:1;padding:12px 18px;border-radius:60px;border:1px solid rgba(0,255,210,0.2);background:rgba(0,20,20,0.5);color:#c8fff0;font-size:0.95rem;outline:none;transition:0.25s;backdrop-filter:blur(4px);letter-spacing:0.3px}
+#input-area input::placeholder{color:rgba(180,220,255,0.3);font-weight:300}
+#input-area input:focus{border-color:#0ff;box-shadow:0 0 30px rgba(0,255,200,0.06),inset 0 0 20px rgba(0,255,200,0.03)}
+#send-btn{background:linear-gradient(135deg,#0cf,#a0f);border:none;width:50px;height:50px;border-radius:50%;display:flex;justify-content:center;align-items:center;color:#fff;font-size:1.6rem;font-weight:200;cursor:pointer;transition:0.2s;box-shadow:0 0 30px rgba(0,200,255,0.15);border:1px solid rgba(255,255,255,0.08);flex-shrink:0}
+#send-btn:active{transform:scale(0.92);opacity:0.7}
+#status{text-align:center;font-size:0.6rem;letter-spacing:1px;color:rgba(0,255,210,0.2);padding:4px 0 2px;background:transparent;position:relative;z-index:5}
+@media(max-width:380px){header h1{font-size:1rem}.msg{font-size:0.85rem;padding:8px 12px}}
+@media(min-width:600px){#app{max-width:440px;border-radius:28px;box-shadow:0 0 80px rgba(0,255,200,0.06)}}
 </style>
 </head>
 <body>
-<div id="blocker"><span>⚠️ ANDROID ONLY<br><br>ACCESS DENIED</span></div>
 <div id="app">
-<div id="rainbow-bg"></div>
-<div id="glow-overlay"></div>
-<div id="scanline"></div>
-<div id="connection-status">⟳ CONNECTING...</div>
-<div id="ip-box">
-<div class="ip-label">● VISITOR</div>
-<div class="ip-value" id="visitor-ip">DETECTING...</div>
-<div class="ip-location" id="visitor-location">—</div>
-</div>
-<div id="header">
-<h1>◈ NEONCHAT ◈</h1>
-<div id="status-bar">
-<div id="status">● CONNECTED</div>
-<div id="user-badge">🖥️ PIXEL</div>
-</div>
-</div>
+<div class="glow-ring"></div>
+<div class="glow-ring"></div>
+<header>
+<h1>✦ NEOCHAT</h1>
+<div class="user-badge"><span id="user-label">● ANON</span></div>
+</header>
 <div id="messages"></div>
 <div id="input-area">
-<input type="text" id="msgInput" placeholder="✧ TYPE YOUR MESSAGE ✧" maxlength="500" autocomplete="off">
-<span id="char-counter">0</span>
-<button id="sendBtn">►</button>
+<input id="msg-input" type="text" placeholder="ENTER MESSAGE" autocomplete="off">
+<button id="send-btn">➤</button>
 </div>
+<div id="status">⚡ LIVE · BREATHING METALLIC</div>
 </div>
 <script>
 (function(){
-const isAndroid=/android/i.test(navigator.userAgent);
-if(!isAndroid){
-document.getElementById('blocker').style.display='flex';
-document.getElementById('app').style.display='none';
-return;
-}
 const DB_URL='https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/';
-const MSG_PATH='messages/';
-const VISITOR_PATH='visitors/';
-const MAX_MSG=150;
-const input=document.getElementById('msgInput');
-const sendBtn=document.getElementById('sendBtn');
+const MSG_PATH='messages';
+let username='ANON_'+Math.random().toString(36).substring(2,6).toUpperCase();
+document.getElementById('user-label').textContent='● '+username;
+
 const messagesDiv=document.getElementById('messages');
-const charCounter=document.getElementById('char-counter');
-const userBadge=document.getElementById('user-badge');
-const statusEl=document.getElementById('status');
-const connStatus=document.getElementById('connection-status');
-const visitorIpEl=document.getElementById('visitor-ip');
-const visitorLocationEl=document.getElementById('visitor-location');
-let username='PIXEL_'+Math.random().toString(36).substring(2,6).toUpperCase();
-userBadge.textContent='🖥️ '+username;
-let isSending=false;
-let isConnected=false;
-let reconnectAttempts=0;
-let eventSource=null;
-let retryTimeout=null;
-let visitorData=null;
+const inputEl=document.getElementById('msg-input');
+const sendBtn=document.getElementById('send-btn');
 
-function getTimestamp(){return new Date().toISOString().replace('T',' ').substring(0,19)}
-function generateId(){return Date.now().toString(36)+'_'+Math.random().toString(36).substring(2,6)}
-function sanitize(text){const d=document.createElement('div');d.textContent=text;return d.innerHTML}
+let lastMsgCount=0;
+let isFirstLoad=true;
 
-function linkify(text){
-const urlRegex=/(https?:\/\/[^\s]+|www\.[^\s]+|[a-zA-Z0-9][a-zA-Z0-9-]+(\.[a-zA-Z]{2,})+\/[^\s]*)/g;
-return text.replace(urlRegex,function(url){
-let href=url;
-if(!href.startsWith('http://')&&!href.startsWith('https://')){
-href='http://'+href;
-}
-return '<a href="'+sanitize(href)+'" target="_blank" rel="noopener noreferrer">'+sanitize(url)+'</a>';
-});
-}
+function getTimestamp(){return Date.now();}
 
-function buildMsgObj(user,text){return{id:generateId(),user:user,text:text,time:getTimestamp()}}
+function formatTime(ts){const d=new Date(ts);return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');}
 
-function setConnected(state){
-isConnected=state;
-if(state){
-statusEl.textContent='● LIVE '+new Date().toLocaleTimeString();
-statusEl.style.color='#00ff88';
-connStatus.style.display='none';
-reconnectAttempts=0;
-}else{
-statusEl.textContent='⚠️ OFFLINE';
-statusEl.style.color='#ff3333';
-connStatus.style.display='block';
-connStatus.textContent='⟳ RECONNECTING...';
-}
-}
-
-function renderMsg(msg,isSystem=false,isSelf=false){
+function renderMessage(data,key){
 const div=document.createElement('div');
-div.className='msg'+(isSystem?' system':'')+(isSelf?' self':'');
-const userSpan=document.createElement('span');
-userSpan.className='user';
-userSpan.textContent=isSystem?'⚡ SYS':sanitize(msg.user||'ANON');
+div.className='msg '+(data.user===username?'self':'other');
+const nameSpan=document.createElement('div');
+nameSpan.className='name';
+nameSpan.textContent=data.user||'unknown';
+const textSpan=document.createElement('span');
+textSpan.textContent=data.text||'';
 const timeSpan=document.createElement('span');
 timeSpan.className='time';
-timeSpan.textContent=msg.time||getTimestamp();
-const textSpan=document.createElement('span');
-textSpan.className='text';
-if(isSystem){
-textSpan.textContent=sanitize(msg.text);
-}else{
-textSpan.innerHTML=linkify(sanitize(msg.text));
-}
-div.appendChild(userSpan);
-div.appendChild(timeSpan);
+timeSpan.textContent=data.ts?formatTime(data.ts):'';
+div.appendChild(nameSpan);
 div.appendChild(textSpan);
+div.appendChild(timeSpan);
+div.dataset.key=key;
 return div;
 }
 
-function addSystemMsg(text){
-const msg={user:'SYSTEM',text:text,time:getTimestamp()};
-const el=renderMsg(msg,true,false);
+function appendMessage(data,key){
+const el=renderMessage(data,key);
 messagesDiv.appendChild(el);
-scrollToBottom();
-}
-
-async function loadMessages(){
-try{
-const resp=await fetch(DB_URL+MSG_PATH+'.json');
-if(!resp.ok)throw new Error('Fetch failed');
-const data=await resp.json();
-if(!data){
-messagesDiv.innerHTML='';
-addSystemMsg('📡 AWAITING FIRST TRANSMISSION');
-setConnected(true);
-return;
-}
-const msgs=Object.values(data).filter(m=>m&&m.text&&m.user);
-msgs.sort((a,b)=>a.time.localeCompare(b.time)||a.id.localeCompare(b.id));
-messagesDiv.innerHTML='';
-if(msgs.length===0){
-addSystemMsg('📡 AWAITING FIRST TRANSMISSION');
-setConnected(true);
-return;
-}
-const recent=msgs.slice(-MAX_MSG);
-recent.forEach(m=>{
-const isSelf=m.user===username;
-const el=renderMsg(m,false,isSelf);
-messagesDiv.appendChild(el);
-});
-scrollToBottom();
-setConnected(true);
-}catch(e){
-console.error('Load error:',e);
-setConnected(false);
-if(messagesDiv.children.length===0){
-addSystemMsg('⚠️ DATABASE OFFLINE');
-}
-}
-}
-
-function scrollToBottom(){
-setTimeout(()=>{
 messagesDiv.scrollTop=messagesDiv.scrollHeight;
-},20);
 }
 
-async function sendMessage(){
-if(isSending||!isConnected)return;
-const raw=input.value.trim();
-if(!raw||raw.length<1)return;
-if(raw.length>500){
-addSystemMsg('⚠️ MESSAGE TOO LONG (MAX 500)');
+function fetchMessages(){
+fetch(DB_URL+MSG_PATH+'.json')
+.then(r=>{if(!r.ok)throw new Error('DB fetch fail');return r.json();})
+.then(data=>{
+if(!data){if(isFirstLoad){messagesDiv.innerHTML='';}return;}
+const keys=Object.keys(data);
+if(keys.length===0){if(isFirstLoad){messagesDiv.innerHTML='';}return;}
+const sorted=keys.sort((a,b)=> (data[a].ts||0) - (data[b].ts||0));
+const currentKeys=new Set();
+sorted.forEach(k=>currentKeys.add(k));
+if(isFirstLoad){
+messagesDiv.innerHTML='';
+sorted.forEach(k=>{
+const item=data[k];
+if(item&&item.text&&item.user){
+appendMessage(item,k);
+}
+});
+lastMsgCount=sorted.length;
+isFirstLoad=false;
 return;
 }
-isSending=true;
-sendBtn.disabled=true;
-const msgObj=buildMsgObj(username,raw);
-try{
-const path=DB_URL+MSG_PATH+msgObj.id+'.json';
-const resp=await fetch(path,{
-method:'PUT',
+const existing=Array.from(messagesDiv.querySelectorAll('.msg')).map(el=>el.dataset.key);
+const existingSet=new Set(existing);
+const newKeys=sorted.filter(k=>!existingSet.has(k));
+if(newKeys.length>0){
+newKeys.forEach(k=>{
+const item=data[k];
+if(item&&item.text&&item.user){
+appendMessage(item,k);
+}
+});
+lastMsgCount=sorted.length;
+}
+if(sorted.length<lastMsgCount){
+messagesDiv.innerHTML='';
+sorted.forEach(k=>{
+const item=data[k];
+if(item&&item.text&&item.user){
+appendMessage(item,k);
+}
+});
+lastMsgCount=sorted.length;
+}
+})
+.catch(e=>{console.warn('fetch error',e);});
+}
+
+function pushMessage(text){
+if(!text||text.trim()==='')return;
+const payload={user:username,text:text.trim(),ts:getTimestamp()};
+fetch(DB_URL+MSG_PATH+'.json',{
+method:'POST',
 headers:{'Content-Type':'application/json'},
-body:JSON.stringify(msgObj)
-});
-if(!resp.ok)throw new Error('Send failed');
-input.value='';
-updateCharCounter();
-input.focus();
-await loadMessages();
-}catch(e){
-console.error('Send error:',e);
-addSystemMsg('❌ TRANSMISSION FAILED');
-}finally{
-isSending=false;
-sendBtn.disabled=false;
-}
+body:JSON.stringify(payload)
+})
+.then(r=>{if(!r.ok)throw new Error('push fail');return r.json();})
+.then(()=>{inputEl.value='';inputEl.focus();fetchMessages();})
+.catch(e=>{console.warn('send error',e);});
 }
 
-function updateCharCounter(){
-const count=input.value.length;
-charCounter.textContent=count;
-if(count>450){
-charCounter.style.color='#ff6600';
-}else if(count>400){
-charCounter.style.color='#ffaa00';
-}else{
-charCounter.style.color='rgba(192,192,192,0.2)';
-}
+function handleSend(){
+const raw=inputEl.value;
+if(raw.trim()==='')return;
+pushMessage(raw);
 }
 
-async function detectAndStoreVisitor(){
-try{
-const resp=await fetch('https://api.ipify.org?format=json');
-if(!resp.ok)throw new Error('IP detect failed');
-const data=await resp.json();
-const ip=data.ip;
-const visitorId='visitor_'+ip.replace(/\./g,'_');
-const timestamp=getTimestamp();
-visitorData={id:visitorId,ip:ip,time:timestamp,userAgent:navigator.userAgent.substring(0,100)};
-try{
-const geoResp=await fetch('https://ipapi.co/'+ip+'/json/');
-if(geoResp.ok){
-const geoData=await geoResp.json();
-if(geoData.city&&geoData.country_name){
-visitorData.location=geoData.city+', '+geoData.country_name;
-visitorLocationEl.textContent=visitorData.location;
-}
-}
-}catch(e){}
-visitorIpEl.textContent=ip;
-visitorData.username=username;
-const path=DB_URL+VISITOR_PATH+visitorId+'.json';
-await fetch(path,{
-method:'PUT',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify(visitorData)
-});
-}catch(e){
-console.error('Visitor detect error:',e);
-visitorIpEl.textContent='⚠️ OFFLINE';
-}
+sendBtn.addEventListener('click',handleSend);
+inputEl.addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();handleSend();}});
+
+let pollInterval=null;
+
+function startPolling(){
+fetchMessages();
+if(pollInterval)clearInterval(pollInterval);
+pollInterval=setInterval(fetchMessages,1800);
 }
 
-function setupRealtime(){
-function connect(){
-if(eventSource){
-try{eventSource.close();}catch(e){}
-eventSource=null;
+function blockNonAndroid(){
+const ua=navigator.userAgent||'';
+const isAndroid=/android/i.test(ua);
+if(!isAndroid){
+document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0a0a0f;color:#0ff;font-family:sans-serif;padding:20px;text-align:center;flex-direction:column;"><span style="font-size:3rem;margin-bottom:16px;">⛔</span><h2 style="font-weight:300;letter-spacing:2px;">ANDROID ONLY</h2><p style="opacity:0.4;font-size:0.9rem;margin-top:8px;">this terminal is optimized for android</p></div>';
+return false;
 }
-try{
-eventSource=new EventSource(DB_URL+MSG_PATH+'.json');
-eventSource.onopen=function(){
-setConnected(true);
-if(reconnectAttempts>0){
-addSystemMsg('🔌 RECONNECTED');
-}
-};
-eventSource.onmessage=function(e){
-if(e.data){
-try{
-const data=JSON.parse(e.data);
-if(data&&data.text&&data.user){
-loadMessages();
-}
-}catch(err){}
-}
-};
-eventSource.onerror=function(){
-setConnected(false);
-if(eventSource){
-try{eventSource.close();}catch(e){}
-eventSource=null;
-}
-reconnectAttempts++;
-const delay=Math.min(3000+(reconnectAttempts*1000),15000);
-if(retryTimeout)clearTimeout(retryTimeout);
-retryTimeout=setTimeout(connect,delay);
-};
-}catch(e){
-setConnected(false);
-reconnectAttempts++;
-const delay=Math.min(3000+(reconnectAttempts*1000),15000);
-if(retryTimeout)clearTimeout(retryTimeout);
-retryTimeout=setTimeout(connect,delay);
-}
-}
-connect();
+return true;
 }
 
-input.addEventListener('keydown',function(e){
-if(e.key==='Enter'&&!e.shiftKey){
-e.preventDefault();
-sendMessage();
+if(!blockNonAndroid()){
+throw new Error('non-android blocked');
 }
-});
-input.addEventListener('input',updateCharCounter);
-sendBtn.addEventListener('click',sendMessage);
-document.addEventListener('visibilitychange',function(){
-if(!document.hidden&&!isConnected){
-loadMessages();
-}
-});
-detectAndStoreVisitor();
-loadMessages();
-setupRealtime();
-addSystemMsg('🔌 CONNECTION ESTABLISHED');
-addSystemMsg('💀 PIXEL NEON 4K ACTIVE');
-addSystemMsg('👋 WELCOME, '+username);
 
-setInterval(()=>{
-if(isConnected){
-statusEl.textContent='● LIVE '+new Date().toLocaleTimeString();
-}
-},5000);
+startPolling();
 
-window.addEventListener('online',function(){
-if(!isConnected){
-loadMessages();
-setupRealtime();
-addSystemMsg('📶 NETWORK RESTORED');
-}
+window.addEventListener('beforeunload',function(){
+if(pollInterval)clearInterval(pollInterval);
 });
-window.addEventListener('offline',function(){
-setConnected(false);
-addSystemMsg('📶 NETWORK LOST');
-});
+
+inputEl.focus();
+
 })();
 </script>
 </body>
