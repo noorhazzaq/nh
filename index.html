@@ -3,55 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Android Cloud Hub</title>
+  <title>Android Cloud Pro</title>
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    /* ===== SORTED & EVOLVED STYLES ===== */
+    /* ================================================================
+       SORTED & EVOLVED STYLES v3.0
+       ================================================================ */
+    
+    /* ----- 1. RESET & BASE ----- */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
 
+    :root {
+      --primary: #6c5ce7;
+      --primary-dark: #5a4bd1;
+      --secondary: #00b894;
+      --danger: #e94560;
+      --warning: #fdcb6e;
+      --dark: #0f0c29;
+      --dark-mid: #302b63;
+      --dark-light: #24243e;
+      --bg: #f8f9fc;
+      --text: #1a1a2e;
+      --text-light: #6c6c8a;
+      --shadow: 0 20px 60px rgba(0,0,0,0.4);
+      --radius: 24px;
+      --radius-sm: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     body {
       font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+      background: linear-gradient(135deg, var(--dark), var(--dark-mid), var(--dark-light));
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 16px;
+      padding: 12px;
       margin: 0;
     }
 
-    .app-container {
-      width: 100%;
-      max-width: 420px;
-      animation: fadeIn 0.5s ease;
+    /* ----- 2. ANIMATIONS ----- */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(108, 92, 231, 0.2); }
+      50% { box-shadow: 0 0 40px rgba(108, 92, 231, 0.4); }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* ----- 3. APP CONTAINER ----- */
+    .app-wrapper {
+      width: 100%;
+      max-width: 480px;
+      animation: fadeSlideUp 0.6s ease;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 32px;
-      padding: 28px 24px 32px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255, 255, 255, 0.97);
+      backdrop-filter: blur(20px);
+      border-radius: var(--radius);
+      padding: 20px 20px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,0.15);
+      position: relative;
+      overflow: hidden;
     }
 
-    /* Header */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary), var(--warning), var(--danger));
+      background-size: 300% 100%;
+      animation: shimmer 4s linear infinite;
+    }
+
+    /* ----- 4. HEADER ----- */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      padding-top: 4px;
     }
 
     .header-left {
@@ -60,270 +120,495 @@
       gap: 12px;
     }
 
-    .logo {
-      font-size: 2rem;
-      line-height: 1;
+    .logo-wrap {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
     }
 
     .title-group h1 {
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #1a1a2e;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--text);
       letter-spacing: -0.5px;
+      line-height: 1.2;
     }
 
     .title-group .subtitle {
-      font-size: 0.7rem;
-      color: #666;
-      font-weight: 500;
+      font-size: 0.6rem;
+      color: var(--text-light);
+      font-weight: 600;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.8px;
     }
 
-    .android-badge {
+    .badge-group {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: none;
+    }
+
+    .badge-android {
       background: #3ddc84;
       color: #000;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.6rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      display: none;
-      animation: pulse 2s infinite;
     }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.7; }
+    .badge-pro {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
     }
 
-    /* Stats Bar */
-    .stats-bar {
+    .badge-live {
+      background: var(--danger);
+      color: white;
+      animation: pulseGlow 2s infinite;
+    }
+
+    /* ----- 5. QUICK STATS ----- */
+    .quick-stats {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .stat-item {
-      background: #f0f2f5;
-      border-radius: 16px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: #1a1a2e;
-    }
-
-    .stat-label {
-      font-size: 0.6rem;
-      color: #666;
-      text-transform: uppercase;
-      letter-spacing: 0.3px;
-      margin-top: 2px;
-    }
-
-    /* Data Display */
-    .data-section {
-      background: #f8f9fc;
-      border-radius: 20px;
-      padding: 16px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
       margin-bottom: 16px;
-      border: 1px solid #e9ecef;
-      min-height: 100px;
-      position: relative;
     }
 
-    .data-label {
-      font-size: 0.65rem;
+    .stat-card {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 10px 6px;
+      text-align: center;
+      transition: var(--transition);
+      cursor: default;
+      border: 1px solid transparent;
+    }
+
+    .stat-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .stat-card .number {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .stat-card .label {
+      font-size: 0.5rem;
+      color: var(--text-light);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      color: #888;
-      margin-bottom: 8px;
       font-weight: 600;
     }
 
+    .stat-card .icon {
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* ----- 6. DATA DISPLAY ----- */
+    .data-panel {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      margin-bottom: 14px;
+      border: 2px solid #eef0f4;
+      transition: var(--transition);
+      min-height: 120px;
+      position: relative;
+    }
+
+    .data-panel:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+    }
+
+    .data-panel .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .data-panel .panel-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-light);
+    }
+
+    .data-panel .panel-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    .data-panel .panel-actions button {
+      background: transparent;
+      border: none;
+      color: var(--text-light);
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      transition: var(--transition);
+    }
+
+    .data-panel .panel-actions button:hover {
+      background: rgba(108, 92, 231, 0.1);
+      color: var(--primary);
+    }
+
     .data-content {
-      font-family: 'Courier New', monospace;
-      font-size: 0.85rem;
-      color: #1a1a2e;
+      font-family: 'JetBrains Mono', 'Courier New', monospace;
+      font-size: 0.8rem;
+      color: var(--text);
       word-break: break-word;
       white-space: pre-wrap;
-      line-height: 1.5;
+      line-height: 1.6;
       max-height: 200px;
       overflow-y: auto;
+      padding: 4px 0;
     }
 
     .data-content.empty {
-      color: #aaa;
+      color: #b0b0c0;
       font-style: italic;
+      font-family: inherit;
     }
 
-    .timestamp {
-      font-size: 0.6rem;
-      color: #999;
+    .data-meta {
+      display: flex;
+      justify-content: space-between;
       margin-top: 8px;
-      text-align: right;
+      font-size: 0.55rem;
+      color: var(--text-light);
     }
 
-    /* Action Buttons */
-    .actions {
+    .data-meta .size {
+      font-weight: 600;
+    }
+
+    /* ----- 7. ACTION BUTTONS ----- */
+    .action-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
       margin-bottom: 12px;
     }
 
     .btn {
-      padding: 14px 20px;
+      padding: 12px 8px;
       border: none;
-      border-radius: 16px;
-      font-size: 0.85rem;
-      font-weight: 600;
+      border-radius: var(--radius-sm);
+      font-size: 0.75rem;
+      font-weight: 700;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: var(--transition);
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
+      gap: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn i {
+      font-size: 1rem;
     }
 
     .btn:active {
-      transform: scale(0.95);
+      transform: scale(0.94);
+    }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s;
+    }
+
+    .btn:active::after {
+      transform: translateX(0);
     }
 
     .btn-primary {
-      background: #1a1a2e;
+      background: var(--primary);
       color: white;
     }
 
     .btn-primary:hover {
-      background: #2d2d44;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108, 92, 231, 0.3);
     }
 
     .btn-success {
-      background: #00b894;
+      background: var(--secondary);
       color: white;
     }
 
     .btn-success:hover {
       background: #00a381;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 184, 148, 0.3);
     }
 
     .btn-danger {
-      background: #e94560;
+      background: var(--danger);
       color: white;
     }
 
     .btn-danger:hover {
       background: #d63851;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(233, 69, 96, 0.3);
     }
 
     .btn-warning {
-      background: #fdcb6e;
-      color: #1a1a2e;
+      background: var(--warning);
+      color: var(--text);
     }
 
     .btn-warning:hover {
       background: #f9ca5c;
+      transform: translateY(-2px);
     }
 
-    .btn-full {
-      grid-column: 1 / -1;
+    .btn-ghost {
+      background: var(--bg);
+      color: var(--text);
+      border: 2px solid #eef0f4;
     }
 
-    /* Input Area */
-    .input-area {
+    .btn-ghost:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn .badge-btn {
+      font-size: 0.45rem;
+      background: rgba(255,255,255,0.2);
+      padding: 1px 6px;
+      border-radius: 10px;
+    }
+
+    /* ----- 8. INPUT AREA ----- */
+    .input-section {
       display: flex;
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-bottom: 12px;
     }
 
-    .input-area input {
+    .input-section input {
       flex: 1;
-      padding: 12px 16px;
-      border: 2px solid #e9ecef;
-      border-radius: 16px;
-      font-size: 0.9rem;
+      padding: 10px 14px;
+      border: 2px solid #eef0f4;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
       outline: none;
-      transition: border 0.2s;
+      transition: var(--transition);
+      background: var(--bg);
     }
 
-    .input-area input:focus {
-      border-color: #1a1a2e;
+    .input-section input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
     }
 
-    .input-area .btn {
-      padding: 12px 20px;
-      white-space: nowrap;
+    .input-section input::placeholder {
+      color: #b0b0c0;
     }
 
-    /* Status */
+    .input-section .btn {
+      padding: 10px 16px;
+      flex-shrink: 0;
+      flex-direction: row;
+      gap: 6px;
+    }
+
+    /* ----- 9. ADVANCED CONTROLS ----- */
+    .advanced-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .advanced-controls .btn {
+      flex-direction: row;
+      gap: 6px;
+      font-size: 0.65rem;
+      padding: 8px 12px;
+    }
+
+    /* ----- 10. STATUS BAR ----- */
     .status-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e9ecef;
+      padding-top: 14px;
+      border-top: 2px solid #eef0f4;
     }
 
-    .status-msg {
-      font-size: 0.75rem;
-      color: #666;
+    .status-left {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       display: inline-block;
+      transition: var(--transition);
     }
 
     .status-dot.idle { background: #b2bec3; }
-    .status-dot.loading { background: #fdcb6e; animation: blink 0.8s infinite; }
-    .status-dot.success { background: #00b894; }
-    .status-dot.error { background: #e94560; }
+    .status-dot.loading { background: var(--warning); animation: pulseGlow 0.8s infinite; }
+    .status-dot.success { background: var(--secondary); }
+    .status-dot.error { background: var(--danger); }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.3; }
+    .status-text {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-light);
     }
 
-    .connection-status {
-      font-size: 0.65rem;
-      color: #999;
+    .status-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.6rem;
+      color: var(--text-light);
     }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 400px) {
-      .actions {
+    .status-right .online-indicator {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .status-right .online-indicator .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--secondary);
+      display: inline-block;
+    }
+
+    .status-right .online-indicator .dot.offline {
+      background: var(--danger);
+    }
+
+    /* ----- 11. TOAST NOTIFICATIONS ----- */
+    .toast-container {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      width: 90%;
+      max-width: 460px;
+      pointer-events: none;
+    }
+
+    .toast {
+      background: var(--text);
+      color: white;
+      padding: 12px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      animation: fadeSlideUp 0.3s ease;
+      pointer-events: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .toast.success { background: var(--secondary); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); color: var(--text); }
+    .toast.info { background: var(--primary); }
+
+    .toast .toast-icon { font-size: 1.1rem; }
+    .toast .toast-close {
+      margin-left: auto;
+      background: none;
+      border: none;
+      color: inherit;
+      cursor: pointer;
+      opacity: 0.6;
+      font-size: 1rem;
+    }
+
+    /* ----- 12. RESPONSIVE ----- */
+    @media (max-width: 420px) {
+      .action-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .action-grid .btn-full {
+        grid-column: 1 / -1;
+      }
+      .quick-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .advanced-controls {
         grid-template-columns: 1fr;
       }
-      .input-area {
-        flex-direction: column;
+      .header {
+        flex-wrap: wrap;
+        gap: 8px;
       }
-      .stats-bar {
-        grid-template-columns: 1fr 1fr;
+      .badge-group {
+        margin-left: auto;
+      }
+      .card {
+        padding: 16px;
       }
     }
 
-    /* ===== BLOCKED MESSAGE ===== */
+    /* ----- 13. BLOCKED PAGE ----- */
     .blocked-page {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f0c29, #302b63);
+      background: linear-gradient(135deg, var(--dark), var(--dark-mid));
       color: white;
-      font-family: sans-serif;
       padding: 20px;
       text-align: center;
       flex-direction: column;
@@ -331,103 +616,308 @@
 
     .blocked-page .icon {
       font-size: 4rem;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      animation: float 3s ease-in-out infinite;
     }
 
     .blocked-page h1 {
       font-size: 2rem;
-      margin: 0 0 10px;
+      margin: 0 0 8px;
+      background: linear-gradient(135deg, #3ddc84, #00b894);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .blocked-page p {
       max-width: 320px;
-      color: #ccc;
-      line-height: 1.6;
+      color: #aaa;
+      line-height: 1.8;
+      font-size: 0.9rem;
     }
 
     .blocked-page .ua {
       margin-top: 30px;
-      font-size: 0.7rem;
-      color: #666;
+      font-size: 0.6rem;
+      color: #555;
       word-break: break-all;
+      background: rgba(255,255,255,0.05);
+      padding: 12px 16px;
+      border-radius: 12px;
+      max-width: 320px;
+    }
+
+    /* Scrollbar styling */
+    .data-content::-webkit-scrollbar {
+      width: 4px;
+    }
+    .data-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .data-content::-webkit-scrollbar-thumb {
+      background: #d0d0d8;
+      border-radius: 10px;
     }
   </style>
 </head>
 <body>
 
-<div id="app">
-  <!-- Will be replaced if blocked -->
-</div>
+<div id="root"></div>
+<div class="toast-container" id="toastContainer"></div>
 
 <script>
   (function() {
     "use strict";
 
-    // ============================================================
-    // 1. SORTED: FIREBASE CONFIGURATION
-    // ============================================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyDemoKeyReplaceMe",
-      authDomain: "zack360-2b303.firebaseapp.com",
-      databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "zack360-2b303",
-      storageBucket: "zack360-2b303.appspot.com",
-      messagingSenderId: "123456789012",
-      appId: "1:123456789012:web:abcdef123456"
+    // ================================================================
+    // 1. SORTED: CONFIGURATION
+    // ================================================================
+    const CONFIG = {
+      firebase: {
+        apiKey: "AIzaSyDemoKeyReplaceMe",
+        authDomain: "zack360-2b303.firebaseapp.com",
+        databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "zack360-2b303",
+        storageBucket: "zack360-2b303.appspot.com",
+        messagingSenderId: "123456789012",
+        appId: "1:123456789012:web:abcdef123456"
+      },
+      dbPath: 'proData',
+      maxRetries: 3,
+      toastDuration: 3000
     };
 
-    // ============================================================
-    // 2. SORTED: STATE MANAGEMENT
-    // ============================================================
+    // ================================================================
+    // 2. SORTED: STATE
+    // ================================================================
     const State = {
       data: null,
+      dataSize: 0,
       lastUpdate: null,
-      connectionStatus: 'idle',
-      stats: { reads: 0, writes: 0, errors: 0 }
+      isOnline: true,
+      stats: { reads: 0, writes: 0, errors: 0, deletes: 0 },
+      pendingActions: 0,
+      isBlocked: false
     };
 
-    // ============================================================
-    // 3. SORTED: DOM REFERENCES
-    // ============================================================
-    let elements = {};
+    // ================================================================
+    // 3. SORTED: UTILITY FUNCTIONS
+    // ================================================================
+    const Utils = {
+      getDataSize(obj) {
+        try {
+          const str = typeof obj === 'object' ? JSON.stringify(obj) : String(obj);
+          return new Blob([str]).size;
+        } catch { return 0; }
+      },
 
-    function cacheElements() {
-      elements = {
-        app: document.getElementById('app'),
-        dataContent: document.getElementById('dataContent'),
-        timestamp: document.getElementById('timestamp'),
-        statusMsg: document.getElementById('statusMsg'),
-        statusDot: document.getElementById('statusDot'),
-        connStatus: document.getElementById('connStatus'),
-        readCount: document.getElementById('readCount'),
-        writeCount: document.getElementById('writeCount'),
-        errorCount: document.getElementById('errorCount'),
-        androidBadge: document.getElementById('androidBadge'),
-        customInput: document.getElementById('customInput'),
-        // Buttons
-        fetchBtn: document.getElementById('fetchBtn'),
-        updateBtn: document.getElementById('updateBtn'),
-        deleteBtn: document.getElementById('deleteBtn'),
-        customBtn: document.getElementById('customBtn'),
-        clearBtn: document.getElementById('clearBtn')
-      };
-    }
+      formatBytes(bytes) {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+      },
 
-    // ============================================================
-    // 4. SORTED: ANDROID DETECTION & ENFORCEMENT
-    // ============================================================
-    function isAndroid() {
-      return /android/i.test(navigator.userAgent);
-    }
+      generateId() {
+        return Date.now().toString(36) + Math.random().toString(36).substr(2, 6);
+      },
 
-    function enforceAndroidOnly() {
-      if (!isAndroid()) {
+      debounce(fn, ms = 300) {
+        let timer;
+        return (...args) => {
+          clearTimeout(timer);
+          timer = setTimeout(() => fn(...args), ms);
+        };
+      },
+
+      isAndroid() {
+        return /android/i.test(navigator.userAgent);
+      },
+
+      getTimestamp() {
+        return new Date().toLocaleString('en-US', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        });
+      }
+    };
+
+    // ================================================================
+    // 4. SORTED: TOAST SYSTEM
+    // ================================================================
+    const Toast = {
+      container: null,
+
+      init() {
+        this.container = document.getElementById('toastContainer');
+      },
+
+      show(message, type = 'info', duration = CONFIG.toastDuration) {
+        if (!this.container) return;
+        
+        const icons = {
+          success: '✅',
+          error: '❌',
+          warning: '⚠️',
+          info: 'ℹ️'
+        };
+
+        const toast = document.createElement('div');
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+          <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+          <span>${message}</span>
+          <button class="toast-close">&times;</button>
+        `;
+
+        toast.querySelector('.toast-close').addEventListener('click', () => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(20px)';
+          setTimeout(() => toast.remove(), 300);
+        });
+
+        this.container.appendChild(toast);
+
+        setTimeout(() => {
+          if (toast.parentNode) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+          }
+        }, duration);
+      },
+
+      success(msg) { this.show(msg, 'success'); },
+      error(msg) { this.show(msg, 'error'); },
+      warning(msg) { this.show(msg, 'warning'); },
+      info(msg) { this.show(msg, 'info'); }
+    };
+
+    // ================================================================
+    // 5. SORTED: FIREBASE MANAGER
+    // ================================================================
+    const FirebaseManager = {
+      db: null,
+      ref: null,
+      initialized: false,
+      listenerAttached: false,
+
+      init() {
+        if (this.initialized) return;
+        try {
+          firebase.initializeApp(CONFIG.firebase);
+          this.db = firebase.database();
+          this.ref = this.db.ref(CONFIG.dbPath);
+          this.initialized = true;
+          this.monitorConnection();
+          Toast.success('🔥 Firebase connected');
+        } catch (e) {
+          Toast.error('Firebase init failed: ' + e.message);
+          throw e;
+        }
+      },
+
+      monitorConnection() {
+        const connRef = this.db.ref('.info/connected');
+        connRef.on('value', (snap) => {
+          State.isOnline = snap.val() === true;
+          document.querySelector('.online-indicator .dot')?.classList.toggle('offline', !State.isOnline);
+        });
+      },
+
+      async read() {
+        try {
+          const snapshot = await this.ref.once('value');
+          const val = snapshot.val();
+          State.data = val;
+          State.dataSize = Utils.getDataSize(val);
+          State.stats.reads++;
+          State.lastUpdate = Date.now();
+          return val;
+        } catch (e) {
+          State.stats.errors++;
+          throw e;
+        }
+      },
+
+      async write(data) {
+        try {
+          await this.ref.set(data);
+          State.data = data;
+          State.dataSize = Utils.getDataSize(data);
+          State.stats.writes++;
+          State.lastUpdate = Date.now();
+          return data;
+        } catch (e) {
+          State.stats.errors++;
+          throw e;
+        }
+      },
+
+      async update(updates) {
+        try {
+          await this.ref.update(updates);
+          const snapshot = await this.ref.once('value');
+          const val = snapshot.val();
+          State.data = val;
+          State.dataSize = Utils.getDataSize(val);
+          State.stats.writes++;
+          State.lastUpdate = Date.now();
+          return val;
+        } catch (e) {
+          State.stats.errors++;
+          throw e;
+        }
+      },
+
+      async delete() {
+        try {
+          await this.ref.remove();
+          State.data = null;
+          State.dataSize = 0;
+          State.stats.deletes++;
+          State.lastUpdate = Date.now();
+          return true;
+        } catch (e) {
+          State.stats.errors++;
+          throw e;
+        }
+      },
+
+      attachRealtime(callback) {
+        if (this.listenerAttached) return;
+        this.listenerAttached = true;
+        this.ref.on('value', (snapshot) => {
+          const val = snapshot.val();
+          State.data = val;
+          State.dataSize = Utils.getDataSize(val);
+          State.lastUpdate = Date.now();
+          if (callback) callback(val);
+        }, (error) => {
+          Toast.warning('Realtime: ' + error.message);
+        });
+      },
+
+      detachRealtime() {
+        if (this.listenerAttached) {
+          this.ref.off();
+          this.listenerAttached = false;
+        }
+      }
+    };
+
+    // ================================================================
+    // 6. SORTED: ANDROID ENFORCEMENT
+    // ================================================================
+    function enforceAndroid() {
+      if (!Utils.isAndroid()) {
+        State.isBlocked = true;
         document.body.innerHTML = `
           <div class="blocked-page">
             <div class="icon">📱</div>
-            <h1>Android Required</h1>
-            <p>This app is optimized for Android browsers. Please open on an Android device.</p>
-            <div class="ua">User-Agent: ${navigator.userAgent}</div>
+            <h1>Android Only</h1>
+            <p>This premium app is optimized for Android browsers.<br>Please open on your Android device.</p>
+            <div class="ua">${navigator.userAgent}</div>
           </div>
         `;
         return false;
@@ -435,315 +925,450 @@
       return true;
     }
 
-    // ============================================================
-    // 5. SORTED: FIREBASE INITIALIZATION
-    // ============================================================
-    let database, dbRef;
+    // ================================================================
+    // 7. SORTED: UI RENDERER
+    // ================================================================
+    const UI = {
+      elements: {},
 
-    function initFirebase() {
-      firebase.initializeApp(firebaseConfig);
-      database = firebase.database();
-      dbRef = database.ref('appData'); // using a clean path
-    }
-
-    // ============================================================
-    // 6. SORTED: UI RENDER FUNCTIONS
-    // ============================================================
-    function renderApp() {
-      elements.app.innerHTML = `
-        <div class="app-container">
-          <div class="card">
-            <!-- Header -->
-            <div class="header">
-              <div class="header-left">
-                <span class="logo">☁️</span>
-                <div class="title-group">
-                  <h1>Cloud Hub</h1>
-                  <div class="subtitle">Real-time Database</div>
+      render() {
+        document.getElementById('root').innerHTML = `
+          <div class="app-wrapper">
+            <div class="card">
+              <!-- Header -->
+              <div class="header">
+                <div class="header-left">
+                  <div class="logo-wrap"><i class="fas fa-cloud"></i></div>
+                  <div class="title-group">
+                    <h1>Cloud Pro</h1>
+                    <div class="subtitle">Real-time Database v3</div>
+                  </div>
+                </div>
+                <div class="badge-group">
+                  <span class="badge badge-android" id="androidBadge">🤖 Android</span>
+                  <span class="badge badge-pro" id="proBadge">⚡ Pro</span>
+                  <span class="badge badge-live" id="liveBadge">● Live</span>
                 </div>
               </div>
-              <span class="android-badge" id="androidBadge">🤖 Android</span>
-            </div>
 
-            <!-- Stats -->
-            <div class="stats-bar">
-              <div class="stat-item">
-                <div class="stat-number" id="readCount">0</div>
-                <div class="stat-label">Reads</div>
+              <!-- Quick Stats -->
+              <div class="quick-stats">
+                <div class="stat-card">
+                  <span class="icon">📥</span>
+                  <div class="number" id="statReads">0</div>
+                  <div class="label">Reads</div>
+                </div>
+                <div class="stat-card">
+                  <span class="icon">📤</span>
+                  <div class="number" id="statWrites">0</div>
+                  <div class="label">Writes</div>
+                </div>
+                <div class="stat-card">
+                  <span class="icon">❌</span>
+                  <div class="number" id="statErrors">0</div>
+                  <div class="label">Errors</div>
+                </div>
+                <div class="stat-card">
+                  <span class="icon">🗑️</span>
+                  <div class="number" id="statDeletes">0</div>
+                  <div class="label">Deletes</div>
+                </div>
               </div>
-              <div class="stat-item">
-                <div class="stat-number" id="writeCount">0</div>
-                <div class="stat-label">Writes</div>
+
+              <!-- Data Panel -->
+              <div class="data-panel">
+                <div class="panel-header">
+                  <span class="panel-label"><i class="fas fa-database"></i> Data</span>
+                  <div class="panel-actions">
+                    <button id="copyBtn" title="Copy"><i class="fas fa-copy"></i></button>
+                    <button id="expandBtn" title="Expand"><i class="fas fa-expand"></i></button>
+                    <button id="refreshBtn" title="Refresh"><i class="fas fa-sync"></i></button>
+                  </div>
+                </div>
+                <div class="data-content empty" id="dataContent">📭 No data yet</div>
+                <div class="data-meta">
+                  <span class="size" id="dataSize">0 B</span>
+                  <span id="dataTime">—</span>
+                </div>
               </div>
-              <div class="stat-item">
-                <div class="stat-number" id="errorCount">0</div>
-                <div class="stat-label">Errors</div>
+
+              <!-- Action Grid -->
+              <div class="action-grid">
+                <button class="btn btn-primary" id="fetchBtn"><i class="fas fa-download"></i> Fetch</button>
+                <button class="btn btn-success" id="updateBtn"><i class="fas fa-pen"></i> Update</button>
+                <button class="btn btn-danger" id="deleteBtn"><i class="fas fa-trash"></i> Delete</button>
+                <button class="btn btn-warning" id="resetBtn"><i class="fas fa-undo"></i> Reset</button>
               </div>
-            </div>
 
-            <!-- Data Display -->
-            <div class="data-section">
-              <div class="data-label">📦 Data</div>
-              <div class="data-content empty" id="dataContent">No data yet</div>
-              <div class="timestamp" id="timestamp">—</div>
-            </div>
-
-            <!-- Actions -->
-            <div class="actions">
-              <button class="btn btn-primary" id="fetchBtn">📥 Fetch</button>
-              <button class="btn btn-success" id="updateBtn">✏️ Update</button>
-              <button class="btn btn-danger" id="deleteBtn">🗑️ Delete</button>
-              <button class="btn btn-warning" id="clearBtn">🧹 Clear</button>
-            </div>
-
-            <!-- Custom Input -->
-            <div class="input-area">
-              <input type="text" id="customInput" placeholder="Enter custom value..." />
-              <button class="btn btn-primary" id="customBtn">Send</button>
-            </div>
-
-            <!-- Status -->
-            <div class="status-bar">
-              <div class="status-msg">
-                <span class="status-dot idle" id="statusDot"></span>
-                <span id="statusMsg">Ready</span>
+              <!-- Input Section -->
+              <div class="input-section">
+                <input type="text" id="customInput" placeholder="Enter JSON or text..." />
+                <button class="btn btn-primary" id="sendBtn"><i class="fas fa-paper-plane"></i> Send</button>
               </div>
-              <div class="connection-status" id="connStatus">● Online</div>
+
+              <!-- Advanced Controls -->
+              <div class="advanced-controls">
+                <button class="btn btn-ghost" id="incrementBtn"><i class="fas fa-plus-circle"></i> Increment</button>
+                <button class="btn btn-ghost" id="timestampBtn"><i class="fas fa-clock"></i> Timestamp</button>
+                <button class="btn btn-ghost" id="clearDisplayBtn"><i class="fas fa-eraser"></i> Clear View</button>
+                <button class="btn btn-ghost" id="exportBtn"><i class="fas fa-file-export"></i> Export</button>
+              </div>
+
+              <!-- Status Bar -->
+              <div class="status-bar">
+                <div class="status-left">
+                  <span class="status-dot idle" id="statusDot"></span>
+                  <span class="status-text" id="statusText">Ready</span>
+                </div>
+                <div class="status-right">
+                  <span class="online-indicator">
+                    <span class="dot"></span>
+                    <span id="onlineStatus">Online</span>
+                  </span>
+                  <span id="actionCounter">0 pending</span>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      `;
-      cacheElements();
-      if (elements.androidBadge) elements.androidBadge.style.display = 'inline-block';
-    }
+        `;
 
-    // ============================================================
-    // 7. SORTED: UPDATE UI FUNCTIONS
-    // ============================================================
-    function setStatus(msg, type = 'idle') {
-      if (elements.statusMsg) elements.statusMsg.textContent = msg;
-      if (elements.statusDot) {
-        elements.statusDot.className = 'status-dot ' + type;
-      }
-      if (type === 'loading') State.connectionStatus = 'loading';
-      else if (type === 'success') State.connectionStatus = 'online';
-      else if (type === 'error') State.connectionStatus = 'error';
-      else State.connectionStatus = 'idle';
-      updateConnectionStatus();
-    }
+        this.cacheElements();
+        this.setupBadges();
+        Toast.init();
+      },
 
-    function updateConnectionStatus() {
-      if (elements.connStatus) {
-        const status = State.connectionStatus;
-        const icons = { online: '🟢', loading: '🟡', error: '🔴', idle: '⚪' };
-        const labels = { online: 'Online', loading: 'Loading...', error: 'Error', idle: 'Idle' };
-        elements.connStatus.textContent = `${icons[status] || '⚪'} ${labels[status] || 'Idle'}`;
-      }
-    }
-
-    function updateStats() {
-      if (elements.readCount) elements.readCount.textContent = State.stats.reads;
-      if (elements.writeCount) elements.writeCount.textContent = State.stats.writes;
-      if (elements.errorCount) elements.errorCount.textContent = State.stats.errors;
-    }
-
-    function displayData(value) {
-      if (!elements.dataContent) return;
-      if (value === null || value === undefined) {
-        elements.dataContent.textContent = '📭 Empty';
-        elements.dataContent.className = 'data-content empty';
-        return;
-      }
-      const display = typeof value === 'object' ? JSON.stringify(value, null, 2) : String(value);
-      elements.dataContent.textContent = display;
-      elements.dataContent.className = 'data-content';
-    }
-
-    function updateTimestamp() {
-      if (elements.timestamp) {
-        const now = new Date();
-        elements.timestamp.textContent = `🕐 ${now.toLocaleTimeString()}`;
-      }
-    }
-
-    // ============================================================
-    // 8. SORTED: DATABASE OPERATIONS
-    // ============================================================
-    function fetchData() {
-      setStatus('Fetching...', 'loading');
-      State.stats.reads++;
-      updateStats();
-
-      dbRef.once('value')
-        .then((snapshot) => {
-          const val = snapshot.val();
-          State.data = val;
-          displayData(val);
-          updateTimestamp();
-          setStatus('✅ Data loaded', 'success');
-          State.stats.reads++;
-          updateStats();
-        })
-        .catch((err) => {
-          console.error('Fetch error:', err);
-          State.stats.errors++;
-          updateStats();
-          setStatus('❌ ' + err.message, 'error');
-          displayData(null);
+      cacheElements() {
+        const ids = [
+          'androidBadge', 'proBadge', 'liveBadge',
+          'statReads', 'statWrites', 'statErrors', 'statDeletes',
+          'dataContent', 'dataSize', 'dataTime',
+          'statusDot', 'statusText', 'onlineStatus', 'actionCounter',
+          'fetchBtn', 'updateBtn', 'deleteBtn', 'resetBtn',
+          'sendBtn', 'customInput', 'incrementBtn', 'timestampBtn',
+          'clearDisplayBtn', 'exportBtn', 'copyBtn', 'expandBtn', 'refreshBtn'
+        ];
+        ids.forEach(id => {
+          this.elements[id] = document.getElementById(id);
         });
-    }
+      },
 
-    function updateData(customValue = null) {
-      const payload = customValue || {
-        timestamp: Date.now(),
-        message: 'Hello from Android!',
-        random: Math.floor(Math.random() * 10000),
-        note: 'Evolved version'
-      };
+      setupBadges() {
+        if (this.elements.androidBadge) {
+          this.elements.androidBadge.style.display = 'inline-block';
+        }
+        if (this.elements.proBadge) {
+          this.elements.proBadge.style.display = 'inline-block';
+        }
+        if (this.elements.liveBadge) {
+          this.elements.liveBadge.style.display = 'inline-block';
+        }
+      },
 
-      setStatus('Updating...', 'loading');
-      State.stats.writes++;
-      updateStats();
+      updateStats() {
+        const s = State.stats;
+        if (this.elements.statReads) this.elements.statReads.textContent = s.reads;
+        if (this.elements.statWrites) this.elements.statWrites.textContent = s.writes;
+        if (this.elements.statErrors) this.elements.statErrors.textContent = s.errors;
+        if (this.elements.statDeletes) this.elements.statDeletes.textContent = s.deletes;
+      },
 
-      dbRef.set(payload)
-        .then(() => {
-          State.data = payload;
-          displayData(payload);
-          updateTimestamp();
-          setStatus('✅ Updated successfully', 'success');
-          State.stats.writes++;
-          updateStats();
-        })
-        .catch((err) => {
-          console.error('Update error:', err);
-          State.stats.errors++;
-          updateStats();
-          setStatus('❌ ' + err.message, 'error');
-        });
-    }
+      updateDataDisplay(data) {
+        const el = this.elements.dataContent;
+        if (!el) return;
+        if (data === null || data === undefined) {
+          el.textContent = '📭 No data yet';
+          el.className = 'data-content empty';
+          return;
+        }
+        const display = typeof data === 'object' ? JSON.stringify(data, null, 2) : String(data);
+        el.textContent = display;
+        el.className = 'data-content';
+      },
 
-    function deleteData() {
-      if (!confirm('🗑️ Delete all data?')) return;
+      updateMeta() {
+        if (this.elements.dataSize) {
+          this.elements.dataSize.textContent = Utils.formatBytes(State.dataSize);
+        }
+        if (this.elements.dataTime) {
+          this.elements.dataTime.textContent = State.lastUpdate ? '🕐 ' + Utils.getTimestamp() : '—';
+        }
+      },
 
-      setStatus('Deleting...', 'loading');
-      State.stats.writes++;
-      updateStats();
+      setStatus(msg, type = 'idle') {
+        if (this.elements.statusText) this.elements.statusText.textContent = msg;
+        if (this.elements.statusDot) {
+          this.elements.statusDot.className = 'status-dot ' + type;
+        }
+      },
 
-      dbRef.remove()
-        .then(() => {
-          State.data = null;
-          displayData(null);
-          updateTimestamp();
-          setStatus('🗑️ Data deleted', 'success');
-          State.stats.writes++;
-          updateStats();
-        })
-        .catch((err) => {
-          console.error('Delete error:', err);
-          State.stats.errors++;
-          updateStats();
-          setStatus('❌ ' + err.message, 'error');
-        });
-    }
+      updateOnlineStatus() {
+        if (this.elements.onlineStatus) {
+          this.elements.onlineStatus.textContent = State.isOnline ? 'Online' : 'Offline';
+        }
+      },
 
-    function clearDisplay() {
-      displayData(null);
-      setStatus('🧹 Display cleared', 'idle');
-      // Note: Doesn't delete from Firebase, just clears view
-    }
-
-    function handleCustomInput() {
-      const input = elements.customInput;
-      if (!input) return;
-      const value = input.value.trim();
-      if (!value) {
-        setStatus('⚠️ Please enter a value', 'error');
-        return;
+      updateActionCounter() {
+        if (this.elements.actionCounter) {
+          this.elements.actionCounter.textContent = State.pendingActions + ' pending';
+        }
       }
-      // Try to parse as JSON, else use as string
-      let parsed;
-      try { parsed = JSON.parse(value); } catch (e) { parsed = value; }
-      updateData(parsed);
-      input.value = '';
-    }
+    };
 
-    // ============================================================
-    // 9. SORTED: REAL-TIME LISTENER (OPTIONAL)
-    // ============================================================
-    let listenerAttached = false;
+    // ================================================================
+    // 8. SORTED: APP CONTROLLER
+    // ================================================================
+    const App = {
+      init() {
+        // Step 1: Enforce Android
+        if (!enforceAndroid()) return;
 
-    function attachRealtimeListener() {
-      if (listenerAttached) return;
-      listenerAttached = true;
-      dbRef.on('value', (snapshot) => {
-        const val = snapshot.val();
-        State.data = val;
-        displayData(val);
-        updateTimestamp();
-        setStatus('🔄 Live update', 'success');
-        // Don't increment stats for passive listeners
-      }, (error) => {
-        console.warn('Realtime listener error:', error);
-      });
-    }
+        // Step 2: Render UI
+        UI.render();
 
-    // ============================================================
-    // 10. SORTED: EVENT BINDING
-    // ============================================================
-    function bindEvents() {
-      if (elements.fetchBtn) elements.fetchBtn.addEventListener('click', fetchData);
-      if (elements.updateBtn) elements.updateBtn.addEventListener('click', () => updateData());
-      if (elements.deleteBtn) elements.deleteBtn.addEventListener('click', deleteData);
-      if (elements.clearBtn) elements.clearBtn.addEventListener('click', clearDisplay);
-      if (elements.customBtn) elements.customBtn.addEventListener('click', handleCustomInput);
-      if (elements.customInput) {
-        elements.customInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') handleCustomInput();
+        // Step 3: Init Firebase
+        FirebaseManager.init();
+
+        // Step 4: Load initial data
+        this.loadData();
+
+        // Step 5: Attach realtime listener
+        FirebaseManager.attachRealtime((data) => {
+          UI.updateDataDisplay(data);
+          UI.updateMeta();
+          UI.setStatus('🔄 Live update', 'success');
+        });
+
+        // Step 6: Bind events
+        this.bindEvents();
+
+        // Step 7: Start periodic status updates
+        setInterval(() => {
+          UI.updateOnlineStatus();
+          UI.updateActionCounter();
+          UI.updateStats();
+        }, 2000);
+
+        Toast.success('🚀 Cloud Pro ready!');
+      },
+
+      async loadData() {
+        try {
+          UI.setStatus('Loading...', 'loading');
+          const data = await FirebaseManager.read();
+          UI.updateDataDisplay(data);
+          UI.updateMeta();
+          UI.updateStats();
+          UI.setStatus('✅ Loaded', 'success');
+        } catch (e) {
+          Toast.error('Load failed: ' + e.message);
+          UI.setStatus('❌ Error', 'error');
+        }
+      },
+
+      async updateData(value) {
+        const payload = value || {
+          timestamp: Date.now(),
+          message: 'Hello from Pro!',
+          random: Math.floor(Math.random() * 100000),
+          note: 'Evolved v3.0',
+          id: Utils.generateId()
+        };
+
+        try {
+          State.pendingActions++;
+          UI.updateActionCounter();
+          UI.setStatus('Updating...', 'loading');
+
+          const data = await FirebaseManager.write(payload);
+          UI.updateDataDisplay(data);
+          UI.updateMeta();
+          UI.updateStats();
+          UI.setStatus('✅ Updated', 'success');
+          Toast.success('Data updated!');
+        } catch (e) {
+          Toast.error('Update failed: ' + e.message);
+          UI.setStatus('❌ Error', 'error');
+        } finally {
+          State.pendingActions--;
+          UI.updateActionCounter();
+        }
+      },
+
+      async deleteData() {
+        if (!confirm('🗑️ Delete all data from Firebase?')) return;
+
+        try {
+          State.pendingActions++;
+          UI.updateActionCounter();
+          UI.setStatus('Deleting...', 'loading');
+
+          await FirebaseManager.delete();
+          UI.updateDataDisplay(null);
+          UI.updateMeta();
+          UI.updateStats();
+          UI.setStatus('🗑️ Deleted', 'success');
+          Toast.success('Data deleted!');
+        } catch (e) {
+          Toast.error('Delete failed: ' + e.message);
+          UI.setStatus('❌ Error', 'error');
+        } finally {
+          State.pendingActions--;
+          UI.updateActionCounter();
+        }
+      },
+
+      async incrementCounter() {
+        try {
+          const current = State.data?.counter || 0;
+          const newVal = current + 1;
+          await FirebaseManager.update({ counter: newVal });
+          UI.updateDataDisplay(State.data);
+          UI.updateMeta();
+          UI.updateStats();
+          UI.setStatus(`🔢 Counter: ${newVal}`, 'success');
+          Toast.info(`Counter: ${newVal}`);
+        } catch (e) {
+          Toast.error('Increment failed: ' + e.message);
+        }
+      },
+
+      async addTimestamp() {
+        try {
+          const ts = Date.now();
+          await FirebaseManager.update({ 
+            lastTimestamp: ts,
+            timestampReadable: new Date(ts).toLocaleString()
+          });
+          UI.updateDataDisplay(State.data);
+          UI.updateMeta();
+          UI.setStatus('🕐 Timestamp added', 'success');
+          Toast.success('Timestamp saved!');
+        } catch (e) {
+          Toast.error('Failed: ' + e.message);
+        }
+      },
+
+      exportData() {
+        if (!State.data) {
+          Toast.warning('No data to export');
+          return;
+        }
+        const json = JSON.stringify(State.data, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-${Date.now()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        Toast.success('📤 Data exported!');
+      },
+
+      copyData() {
+        if (!State.data) {
+          Toast.warning('No data to copy');
+          return;
+        }
+        const text = JSON.stringify(State.data, null, 2);
+        navigator.clipboard?.writeText(text).then(() => {
+          Toast.success('📋 Copied!');
+        }).catch(() => {
+          // Fallback
+          const area = document.createElement('textarea');
+          area.value = text;
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand('copy');
+          area.remove();
+          Toast.success('📋 Copied!');
+        });
+      },
+
+      bindEvents() {
+        const E = UI.elements;
+
+        // Primary actions
+        if (E.fetchBtn) E.fetchBtn.addEventListener('click', () => this.loadData());
+        if (E.updateBtn) E.updateBtn.addEventListener('click', () => this.updateData());
+        if (E.deleteBtn) E.deleteBtn.addEventListener('click', () => this.deleteData());
+        if (E.resetBtn) E.resetBtn.addEventListener('click', () => {
+          this.updateData({ 
+            reset: true,
+            timestamp: Date.now(),
+            message: 'Reset state',
+            counter: 0
+          });
+        });
+
+        // Send custom input
+        if (E.sendBtn) {
+          E.sendBtn.addEventListener('click', () => {
+            const input = E.customInput;
+            if (!input) return;
+            const val = input.value.trim();
+            if (!val) {
+              Toast.warning('Please enter a value');
+              return;
+            }
+            let parsed;
+            try { parsed = JSON.parse(val); } catch { parsed = val; }
+            this.updateData(parsed);
+            input.value = '';
+          });
+        }
+
+        if (E.customInput) {
+          E.customInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') E.sendBtn?.click();
+          });
+        }
+
+        // Advanced controls
+        if (E.incrementBtn) E.incrementBtn.addEventListener('click', () => this.incrementCounter());
+        if (E.timestampBtn) E.timestampBtn.addEventListener('click', () => this.addTimestamp());
+        if (E.clearDisplayBtn) {
+          E.clearDisplayBtn.addEventListener('click', () => {
+            UI.updateDataDisplay(null);
+            UI.setStatus('🧹 View cleared', 'idle');
+            Toast.info('Display cleared');
+          });
+        }
+        if (E.exportBtn) E.exportBtn.addEventListener('click', () => this.exportData());
+
+        // Panel actions
+        if (E.copyBtn) E.copyBtn.addEventListener('click', () => this.copyData());
+        if (E.refreshBtn) E.refreshBtn.addEventListener('click', () => this.loadData());
+        if (E.expandBtn) {
+          E.expandBtn.addEventListener('click', () => {
+            const el = UI.elements.dataContent;
+            if (el) {
+              el.style.maxHeight = el.style.maxHeight === 'none' ? '200px' : 'none';
+              Toast.info(el.style.maxHeight === 'none' ? '📖 Expanded' : '📕 Collapsed');
+            }
+          });
+        }
+
+        // Network status
+        window.addEventListener('online', () => {
+          State.isOnline = true;
+          UI.updateOnlineStatus();
+          Toast.success('🌐 Back online');
+        });
+        window.addEventListener('offline', () => {
+          State.isOnline = false;
+          UI.updateOnlineStatus();
+          Toast.warning('📡 Offline');
         });
       }
-    }
+    };
 
-    // ============================================================
-    // 11. SORTED: INITIALIZATION
-    // ============================================================
-    function init() {
-      // Step 1: Enforce Android
-      if (!enforceAndroidOnly()) return;
-
-      // Step 2: Init Firebase
-      initFirebase();
-
-      // Step 3: Render UI
-      renderApp();
-
-      // Step 4: Cache elements (already done in renderApp)
-      // But re-cache to be safe
-      cacheElements();
-
-      // Step 5: Load initial data
-      fetchData();
-
-      // Step 6: Attach realtime listener for live updates
-      attachRealtimeListener();
-
-      // Step 7: Bind events
-      bindEvents();
-
-      // Step 8: Update connection status periodically
-      setStatus('🚀 Ready', 'idle');
-      updateConnectionStatus();
-      updateStats();
-
-      console.log('✅ Cloud Hub evolved and ready!');
-    }
-
-    // ============================================================
-    // 12. SORTED: DOM READY
-    // ============================================================
+    // ================================================================
+    // 9. SORTED: BOOT
+    // ================================================================
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', init);
+      document.addEventListener('DOMContentLoaded', () => App.init());
     } else {
-      init();
+      App.init();
     }
 
   })();
