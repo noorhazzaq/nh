@@ -16,7 +16,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#06080c;font-family:
 #sub{font-size:clamp(0.6rem,2vw,0.9rem);color:#7ab8e6;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 20px #0088ff66;border-bottom:1px solid #2a6a9a55;padding-bottom:6px;width:75%;text-align:center;margin-bottom:8px}
 #story{width:100%;min-height:clamp(100px,28vh,180px);padding:14px 12px;background:rgba(0,12,28,0.7);border-radius:20px;border:1px solid #2a8acc66;box-shadow:inset 0 0 40px #001a3366,0 0 30px #0088ff22;font-size:clamp(0.9rem,2.6vw,1.2rem);line-height:1.6;display:flex;align-items:center;justify-content:center;text-align:center;color:#d6ecff;overflow-y:auto;word-break:break-word;backdrop-filter:blur(4px);transition:all 0.2s;text-shadow:0 0 12px #0088ff55}
 #choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:12px 0;flex:0 0 auto}
-.choice{background:linear-gradient(145deg,#0f1f2e,#08141f);border:1px solid #2a7aaa;border-radius:60px;padding:clamp(10px,2.4vh,16px) 4px;font-size:clamp(0.7rem,2.1vw,1rem);font-weight:700;color:#b8dcff;text-align:center;cursor:pointer;box-shadow:0 4px 0 #001a2a,0 0 20px #0088ff22;transition:all 0.1s ease;touch-action:manipulation;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;text-shadow:0 0 8px #0088ff44}
+.choice{background:linear-gradient(145deg,#0f1f2e,#08141f);border:1px solid #2a7aaa;border-radius:60px;padding:clamp(10px,2.4vh,16px) 4px;font-size:clamp(0.7rem,2.1vw,1rem);font-weight:700;color:#b8dcff;text-align:center;cursor:pointer;box-shadow:0 4px 0 #001a2a,0 0 20px #0088ff22;transition:all 0.1s ease;touch-action:manipulation;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;text-shadow:0 0 8px #0088ff44;user-select:none;-webkit-tap-highlight-color:transparent}
 .choice::after{content:'';position:absolute;inset:1px;border-radius:60px;background:linear-gradient(135deg,#00aaff11,#a855f711);pointer-events:none;opacity:0}
 .choice:active{transform:translateY(3px);box-shadow:0 1px 0 #001a2a,0 0 40px #00aaff66;background:linear-gradient(145deg,#1a2f42,#0b1a28);border-color:#4a9adf}
 .choice.disabled{opacity:0.25;pointer-events:none;filter:grayscale(0.8);box-shadow:none}
@@ -26,7 +26,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#06080c;font-family:
 .choice[data-idx="3"]{border-color:#ffb86b88;box-shadow:0 4px 0 #4a2a1a,0 0 25px #ffb86b33}
 #info-panel{display:flex;justify-content:space-between;align-items:center;width:100%;padding:6px 12px;background:rgba(0,12,24,0.7);border-radius:60px;border:1px solid #2a7aaa66;backdrop-filter:blur(4px);font-size:clamp(0.55rem,1.7vw,0.85rem);color:#8ac0e6;flex-wrap:wrap;gap:4px 6px;margin-top:4px;box-shadow:0 0 20px #0088ff22}
 .badge{background:rgba(0,20,44,0.7);padding:2px 14px;border-radius:40px;border:1px solid #3a8acc66;box-shadow:0 0 15px #0088ff22;text-shadow:0 0 8px #0088ff66;font-weight:600;color:#b0dcff}
-#resetBtn{background:linear-gradient(145deg,#1a0a1e,#2a1028);border:1px solid #b06a8a;border-radius:40px;padding:4px 16px;font-weight:800;color:#f0c8da;cursor:pointer;font-size:clamp(0.6rem,1.8vw,0.9rem);transition:0.1s;touch-action:manipulation;box-shadow:0 0 25px #b06a8a33;text-shadow:0 0 12px #ff88aa44;letter-spacing:1px}
+#resetBtn{background:linear-gradient(145deg,#1a0a1e,#2a1028);border:1px solid #b06a8a;border-radius:40px;padding:4px 16px;font-weight:800;color:#f0c8da;cursor:pointer;font-size:clamp(0.6rem,1.8vw,0.9rem);transition:0.1s;touch-action:manipulation;box-shadow:0 0 25px #b06a8a33;text-shadow:0 0 12px #ff88aa44;letter-spacing:1px;user-select:none;-webkit-tap-highlight-color:transparent}
 #resetBtn:active{background:linear-gradient(145deg,#2a1428,#3a1a30);transform:scale(0.94);box-shadow:0 0 40px #ff88aa66}
 @media(max-width:420px){#choices{gap:7px}.choice{border-radius:30px;padding:10px 2px;font-size:0.75rem;white-space:normal}}
 @media(orientation:landscape) and (max-height:500px){#story{min-height:70px;padding:8px}#choices{gap:6px;margin:6px 0}.choice{padding:6px 2px;font-size:0.7rem}#info-panel{padding:4px 8px}}
@@ -57,95 +57,97 @@ html,body{width:100%;height:100%;overflow:hidden;background:#06080c;font-family:
 <script>
 (function(){
 "use strict";
-const STATE={role:null,path:0,step:0,ending:null,consequence:null,storyIndex:0,gameOver:false};
-const ROLES=[
-{id:'warrior',label:'WARRIOR',icon:'⚔️',color:'#ff6b6b'},
-{id:'mage',label:'MAGE',icon:'🌀',color:'#6b6bff'},
-{id:'rogue',label:'ROGUE',icon:'🗡️',color:'#6bff6b'},
-{id:'cleric',label:'CLERIC',icon:'🛡️',color:'#ffb86b'}
+var STATE={role:null,path:0,step:0,ending:null,consequence:null,gameOver:false};
+var ROLES=[
+{id:'warrior',label:'WARRIOR',icon:'⚔️'},
+{id:'mage',label:'MAGE',icon:'🌀'},
+{id:'rogue',label:'ROGUE',icon:'🗡️'},
+{id:'cleric',label:'CLERIC',icon:'🛡️'}
 ];
-const STORIES=[
+var STORIES=[
 {role:'warrior',text:'Kaelen, Iron Vanguard. Northland burns. Kin scattered. A warlock offers a cursed blade — but honor demands a choice.',choices:['Take cursed blade','Rally the clans','Seek mountain oracle','March alone to dark keep']},
 {role:'mage',text:'Lyra of Amber Spire. The Veil tears — demons seep through. The High Council is frozen. A forbidden scroll could seal the rift.',choices:['Read forbidden scroll','Burn scroll & fight','Summon elder elemental','Flee to southern isles']},
 {role:'rogue',text:'Shadow — no true name. Crimson Syndicate betrayed you. A vial of ichor grants godlike speed, but consumes memory.',choices:['Drink the ichor','Sell vial for gold','Ambush guildmaster','Disguise & infiltrate']},
 {role:'cleric',text:'Seraphine, Lightbringer. Undeath spreads from catacombs. Faith wavers — a demon offers a cure for your soul.',choices:['Accept demon pact','Purify with fire','Preach hope to survivors','Seek lost relic of dawn']}
 ];
-const CONSEQUENCES=[
+var CONSEQUENCES=[
 {role:'warrior',choice0:'Cursed blade consumes — you become a dark warlord.',choice1:'Clans unite under your banner — north is free.',choice2:'Oracle reveals alliance — victory assured.',choice3:'Alone you slay warlock, but die from wounds.'},
 {role:'mage',choice0:'Scroll unleashes chaos — you become a living rift.',choice1:'Fire purges demons, half the city burns.',choice2:'Elemental crushes demons, but you lose control.',choice3:'You survive, but realm falls to darkness.'},
 {role:'rogue',choice0:'Speed unmatched — ghost, but forget your past.',choice1:'Gold buys power — you lead new syndicate.',choice2:'Kill guildmaster — become new tyrant.',choice3:'Escape free, but ichor is lost forever.'},
 {role:'cleric',choice0:'Soul damned — you become a death knight.',choice1:'Fire cleanses catacombs, you are scarred.',choice2:'Hope rallies people — new age of faith.',choice3:'Relic burns undead — you ascend as saint.'}
 ];
-const ENDINGS={
+var ENDINGS={
 warrior:['Dark Warlord','Northward King','Oracle Champion','Martyr of North'],
 mage:['Riftwalker','Ashen Reformer','Elemental Thrall','Fugitive Seer'],
 rogue:['Memoryless Phantom','Gold Emperor','Shadow Tyrant','Free Exile'],
 cleric:['Death Knight','Scarred Purifier','Radiant Prophet','Ascended Saint']
 };
-const pathLabels=['FIRST','SECOND','THIRD','FOURTH'];
 
-const storyEl=document.getElementById('story');
-const choicesEl=document.getElementById('choices');
-const roleDisplay=document.getElementById('roleDisplay');
-const pathDisplay=document.getElementById('pathDisplay');
-const endingDisplay=document.getElementById('endingDisplay');
-const resetBtn=document.getElementById('resetBtn');
+var storyEl=document.getElementById('story');
+var choicesEl=document.getElementById('choices');
+var roleDisplay=document.getElementById('roleDisplay');
+var pathDisplay=document.getElementById('pathDisplay');
+var endingDisplay=document.getElementById('endingDisplay');
+var resetBtn=document.getElementById('resetBtn');
 
 function updateUI(){
-const r=STATE.role;
-roleDisplay.textContent=r?`ROLE: ${r.icon} ${r.label}`:'ROLE: —';
-pathDisplay.textContent=`PATH: ${STATE.path+1}/4`;
-endingDisplay.textContent=STATE.ending?`ENDING: ${STATE.ending}`:'ENDING: —';
+var r=STATE.role;
+roleDisplay.textContent=r?'ROLE: '+r.icon+' '+r.label:'ROLE: —';
+pathDisplay.textContent='PATH: '+(STATE.path+1)+'/4';
+endingDisplay.textContent=STATE.ending?'ENDING: '+STATE.ending:'ENDING: —';
 if(STATE.gameOver){
-storyEl.textContent=`${STATE.consequence||'The prophecy ends.'} ✦ GAME OVER`;
-document.querySelectorAll('.choice').forEach(b=>b.classList.add('disabled'));
+storyEl.textContent=(STATE.consequence||'The prophecy ends.')+' ✦ GAME OVER';
+var btns=document.querySelectorAll('.choice');
+for(var i=0;i<btns.length;i++){btns[i].classList.add('disabled');}
 storyEl.classList.remove('glow-pulse');
 storyEl.style.textShadow='0 0 30px #ff6b6b88,0 0 60px #ff6b6b44';
-}else{
+return;
+}
 storyEl.classList.add('glow-pulse');
 storyEl.style.textShadow='';
-const story=STORIES.find(s=>s.role===STATE.role?.id);
+var story=null;
+for(var s=0;s<STORIES.length;s++){if(STORIES[s].role===STATE.role?.id){story=STORIES[s];break;}}
 if(story&&STATE.step<4){
 storyEl.textContent=story.text;
-const btns=document.querySelectorAll('.choice');
-btns.forEach((btn,i)=>{
-btn.classList.remove('disabled');
-if(i<4){
-const label=story.choices[i]||'—';
-btn.textContent=label;
-btn.dataset.idx=i;
-}else{btn.classList.add('disabled');}
-});
+var btns2=document.querySelectorAll('.choice');
+for(var j=0;j<btns2.length;j++){
+btns2[j].classList.remove('disabled');
+if(j<4){
+var label=story.choices[j]||'—';
+btns2[j].textContent=label;
+btns2[j].dataset.idx=j;
+}else{btns2[j].classList.add('disabled');}
+}
 }else if(story&&STATE.step>=4){
 storyEl.textContent='Your legend is written. The realm remembers your deeds.';
-document.querySelectorAll('.choice').forEach(b=>b.classList.add('disabled'));
+var btns3=document.querySelectorAll('.choice');
+for(var k=0;k<btns3.length;k++){btns3[k].classList.add('disabled');}
 }else{
 storyEl.textContent='Choose your role to begin the prophecy.';
-document.querySelectorAll('.choice').forEach((btn,i)=>{
-btn.classList.remove('disabled');
-if(i<4){
-btn.textContent=ROLES[i]?`${ROLES[i].icon} ${ROLES[i].label}`:'—';
-btn.dataset.idx=i;
-}else{btn.classList.add('disabled');}
-});
+var btns4=document.querySelectorAll('.choice');
+for(var l=0;l<btns4.length;l++){
+btns4[l].classList.remove('disabled');
+if(l<4){
+btns4[l].textContent=ROLES[l]?ROLES[l].icon+' '+ROLES[l].label:'—';
+btns4[l].dataset.idx=l;
+}else{btns4[l].classList.add('disabled');}
 }
 }
 }
 
 function applyConsequence(choiceIdx){
 if(!STATE.role)return;
-const cons=CONSEQUENCES.find(c=>c.role===STATE.role.id);
+var cons=null;
+for(var c=0;c<CONSEQUENCES.length;c++){if(CONSEQUENCES[c].role===STATE.role.id){cons=CONSEQUENCES[c];break;}}
 if(!cons)return;
-let msg='';
-switch(choiceIdx){
-case 0:msg=cons.choice0;break;
-case 1:msg=cons.choice1;break;
-case 2:msg=cons.choice2;break;
-case 3:msg=cons.choice3;break;
-default:msg='The consequence unfolds.';
-}
+var msg='';
+if(choiceIdx===0)msg=cons.choice0;
+else if(choiceIdx===1)msg=cons.choice1;
+else if(choiceIdx===2)msg=cons.choice2;
+else if(choiceIdx===3)msg=cons.choice3;
+else msg='The consequence unfolds.';
 STATE.consequence=msg;
-const endings=ENDINGS[STATE.role.id];
+var endings=ENDINGS[STATE.role.id];
 if(endings&&endings[choiceIdx])STATE.ending=endings[choiceIdx];
 STATE.gameOver=true;
 STATE.step=4;
@@ -155,7 +157,7 @@ updateUI();
 function advancePath(choiceIdx){
 if(STATE.gameOver)return;
 if(!STATE.role){
-const roleIndex=parseInt(choiceIdx);
+var roleIndex=parseInt(choiceIdx);
 if(roleIndex>=0&&roleIndex<ROLES.length){
 STATE.role=ROLES[roleIndex];
 STATE.path=0;
@@ -168,26 +170,28 @@ updateUI();
 return;
 }
 if(STATE.step>=4)return;
-const story=STORIES.find(s=>s.role===STATE.role.id);
+var story=null;
+for(var s=0;s<STORIES.length;s++){if(STORIES[s].role===STATE.role.id){story=STORIES[s];break;}}
 if(!story)return;
-const choiceIndex=parseInt(choiceIdx);
+var choiceIndex=parseInt(choiceIdx);
 if(isNaN(choiceIndex)||choiceIndex<0||choiceIndex>3)return;
 STATE.path=Math.min(STATE.path+1,3);
 STATE.step=STATE.path;
 if(STATE.step>=4){
 applyConsequence(choiceIndex);
 }else{
-const nextStory=STORIES.find(s=>s.role===STATE.role.id);
+var nextStory=null;
+for(var ns=0;ns<STORIES.length;ns++){if(STORIES[ns].role===STATE.role.id){nextStory=STORIES[ns];break;}}
 if(nextStory){
 storyEl.textContent=nextStory.text;
-const btns=document.querySelectorAll('.choice');
-btns.forEach((btn,i)=>{
-btn.classList.remove('disabled');
+var btns=document.querySelectorAll('.choice');
+for(var i=0;i<btns.length;i++){
+btns[i].classList.remove('disabled');
 if(i<4){
-btn.textContent=nextStory.choices[i]||'—';
-btn.dataset.idx=i;
-}else{btn.classList.add('disabled');}
-});
+btns[i].textContent=nextStory.choices[i]||'—';
+btns[i].dataset.idx=i;
+}else{btns[i].classList.add('disabled');}
+}
 }
 updateUI();
 }
@@ -203,27 +207,27 @@ STATE.gameOver=false;
 storyEl.textContent='Choose your role to begin the prophecy.';
 storyEl.classList.add('glow-pulse');
 storyEl.style.textShadow='';
-const btns=document.querySelectorAll('.choice');
-btns.forEach((btn,i)=>{
-btn.classList.remove('disabled');
+var btns=document.querySelectorAll('.choice');
+for(var i=0;i<btns.length;i++){
+btns[i].classList.remove('disabled');
 if(i<4){
-btn.textContent=ROLES[i]?`${ROLES[i].icon} ${ROLES[i].label}`:'—';
-btn.dataset.idx=i;
-}else{btn.classList.add('disabled');}
-});
+btns[i].textContent=ROLES[i]?ROLES[i].icon+' '+ROLES[i].label:'—';
+btns[i].dataset.idx=i;
+}else{btns[i].classList.add('disabled');}
+}
 updateUI();
 }
 
 function handleChoice(e){
-const target=e.target.closest('.choice');
+var target=e.target.closest('.choice');
 if(!target)return;
 if(target.classList.contains('disabled'))return;
-const idx=target.dataset.idx;
+var idx=target.dataset.idx;
 if(idx===undefined)return;
-const numIdx=parseInt(idx);
+var numIdx=parseInt(idx);
 if(isNaN(numIdx))return;
 if(!STATE.role){
-const roleIndex=numIdx;
+var roleIndex=numIdx;
 if(roleIndex>=0&&roleIndex<ROLES.length){
 STATE.role=ROLES[roleIndex];
 STATE.path=0;
@@ -232,17 +236,18 @@ STATE.ending=null;
 STATE.consequence=null;
 STATE.gameOver=false;
 updateUI();
-const story=STORIES.find(s=>s.role===STATE.role.id);
+var story=null;
+for(var s=0;s<STORIES.length;s++){if(STORIES[s].role===STATE.role.id){story=STORIES[s];break;}}
 if(story){
 storyEl.textContent=story.text;
-const btns=document.querySelectorAll('.choice');
-btns.forEach((btn,i)=>{
-btn.classList.remove('disabled');
+var btns=document.querySelectorAll('.choice');
+for(var i=0;i<btns.length;i++){
+btns[i].classList.remove('disabled');
 if(i<4){
-btn.textContent=story.choices[i]||'—';
-btn.dataset.idx=i;
-}else{btn.classList.add('disabled');}
-});
+btns[i].textContent=story.choices[i]||'—';
+btns[i].dataset.idx=i;
+}else{btns[i].classList.add('disabled');}
+}
 }
 updateUI();
 }
