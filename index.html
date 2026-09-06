@@ -5,7 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>2026 3D RPG</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;overflow:hidden;background:#0a0a1a;font-family:'Segoe UI',system-ui,sans-serif;touch-action:none}canvas{display:block;width:100vw;height:100vh;background:radial-gradient(circle at center,#1a2a3a,#0a0a12)}#ui{position:fixed;bottom:2vh;left:0;width:100%;display:flex;justify-content:center;gap:1.5vw;padding:1vh 2vw;z-index:10;pointer-events:none;flex-wrap:wrap}#ui>*{pointer-events:auto;background:rgba(10,10,26,0.75);backdrop-filter:blur(8px);border:1px solid rgba(100,200,255,0.25);border-radius:12px;padding:1.2vh 2.2vw;color:#c8f0ff;font-size:clamp(0.7rem,2vh,1.2rem);font-weight:600;letter-spacing:0.06em;box-shadow:0 8px 24px rgba(0,0,0,0.6);transition:all 0.15s;min-width:70px;text-align:center;cursor:pointer;text-transform:uppercase}#ui>*:active{transform:scale(0.94);background:rgba(60,180,255,0.25)}#stats{position:fixed;top:2vh;left:2vw;z-index:10;color:#b0e0ff;font-size:clamp(0.8rem,2.2vh,1.3rem);background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);padding:1.2vh 2vw;border-radius:12px;border:1px solid rgba(100,200,255,0.15);font-weight:400;line-height:1.6;pointer-events:none;font-family:'Courier New',monospace}#stats span{color:#ffd866;font-weight:600}#msg{position:fixed;top:12vh;left:50%;transform:translateX(-50%);z-index:10;color:#fff;font-size:clamp(0.9rem,2.5vh,1.5rem);background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:1vh 2.5vw;border-radius:30px;border:1px solid rgba(255,200,100,0.3);pointer-events:none;opacity:0;transition:opacity 0.3s;white-space:nowrap;font-weight:500}#msg.show{opacity:1}#inventory{position:fixed;top:2vh;right:2vw;z-index:10;color:#b0e0ff;font-size:clamp(0.7rem,1.8vh,1.1rem);background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);padding:1vh 1.5vw;border-radius:12px;border:1px solid rgba(100,200,255,0.15);pointer-events:none;text-align:right;font-family:'Courier New',monospace}#inventory span{color:#ffd866;font-weight:600}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0a0a1a;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        canvas {
+            display: block;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at center, #1a2a3a, #0a0a12);
+        }
+        #ui {
+            position: fixed;
+            bottom: 3vh;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 2vw;
+            padding: 0 2vw;
+            z-index: 10;
+            pointer-events: none;
+            flex-wrap: wrap;
+        }
+        #ui>* {
+            pointer-events: auto;
+            background: rgba(10, 10, 26, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(100, 200, 255, 0.25);
+            border-radius: 14px;
+            padding: 1.4vh 2.8vw;
+            color: #c8f0ff;
+            font-size: clamp(0.8rem, 2.2vh, 1.3rem);
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+            transition: all 0.1s;
+            min-width: 80px;
+            text-align: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            flex: 0 1 auto;
+        }
+        #ui>*:active {
+            transform: scale(0.92);
+            background: rgba(60, 180, 255, 0.3);
+            border-color: rgba(100, 200, 255, 0.6);
+        }
+        #stats {
+            position: fixed;
+            top: 2vh;
+            left: 2vw;
+            z-index: 10;
+            color: #b0e0ff;
+            font-size: clamp(0.8rem, 2.4vh, 1.4rem);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            padding: 1.2vh 2vw;
+            border-radius: 14px;
+            border: 1px solid rgba(100, 200, 255, 0.15);
+            font-weight: 400;
+            line-height: 1.7;
+            pointer-events: none;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+        }
+        #stats span {
+            color: #ffd866;
+            font-weight: 700;
+        }
+        #msg {
+            position: fixed;
+            top: 14vh;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            color: #fff;
+            font-size: clamp(1rem, 2.8vh, 1.6rem);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(6px);
+            padding: 1.2vh 3vw;
+            border-radius: 40px;
+            border: 1px solid rgba(255, 200, 100, 0.3);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.25s;
+            white-space: nowrap;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+        }
+        #msg.show {
+            opacity: 1;
+        }
+        #inventory {
+            position: fixed;
+            top: 2vh;
+            right: 2vw;
+            z-index: 10;
+            color: #b0e0ff;
+            font-size: clamp(0.7rem, 2vh, 1.1rem);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            padding: 1vh 1.8vw;
+            border-radius: 14px;
+            border: 1px solid rgba(100, 200, 255, 0.15);
+            pointer-events: none;
+            text-align: right;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.05em;
+            line-height: 1.6;
+        }
+        #inventory span {
+            color: #ffd866;
+            font-weight: 700;
+        }
+        @media (max-width: 600px) {
+            #ui {
+                gap: 1.5vw;
+                bottom: 2vh;
+            }
+            #ui>* {
+                padding: 1.2vh 3vw;
+                font-size: clamp(0.6rem, 2vh, 0.9rem);
+                min-width: 60px;
+                border-radius: 10px;
+            }
+            #stats {
+                font-size: clamp(0.6rem, 1.8vh, 0.9rem);
+                padding: 0.8vh 2vw;
+                top: 1vh;
+                left: 1vw;
+            }
+            #inventory {
+                font-size: clamp(0.6rem, 1.6vh, 0.9rem);
+                padding: 0.8vh 2vw;
+                top: 1vh;
+                right: 1vw;
+            }
+            #msg {
+                font-size: clamp(0.7rem, 2vh, 1rem);
+                top: 10vh;
+                padding: 0.8vh 4vw;
+            }
+        }
     </style>
 </head>
 <body>
@@ -15,243 +169,296 @@
     <div id="ui"><div id="btnAtk">⚔️ Attack</div><div id="btnDef">🛡️ Defend</div><div id="btnHeal">💚 Heal</div><div id="btnRest">⏳ Rest</div></div>
     <canvas id="gameCanvas"></canvas>
     <script>
-        (function(){
-            const canvas=document.getElementById('gameCanvas');
-            const ctx=canvas.getContext('2d');
-            let W,H;
-            function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-            window.addEventListener('resize',resize);resize();
+        (function() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            let W, H;
 
-            const hpEl=document.getElementById('hp'),atkEl=document.getElementById('atk'),defEl=document.getElementById('def');
-            const lvlEl=document.getElementById('lvl'),xpEl=document.getElementById('xp'),xpNextEl=document.getElementById('xpNext');
-            const itemsEl=document.getElementById('items'),goldEl=document.getElementById('gold');
-            const msgEl=document.getElementById('msg');
-            let msgTimeout=null;
+            function resize() {
+                W = canvas.width = window.innerWidth;
+                H = canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', resize);
+            resize();
 
-            function showMsg(t){msgEl.textContent=t;msgEl.classList.add('show');if(msgTimeout)clearTimeout(msgTimeout);msgTimeout=setTimeout(()=>msgEl.classList.remove('show'),1800)}
+            const hpEl = document.getElementById('hp'),
+                atkEl = document.getElementById('atk'),
+                defEl = document.getElementById('def');
+            const lvlEl = document.getElementById('lvl'),
+                xpEl = document.getElementById('xp'),
+                xpNextEl = document.getElementById('xpNext');
+            const itemsEl = document.getElementById('items'),
+                goldEl = document.getElementById('gold');
+            const msgEl = document.getElementById('msg');
+            let msgTimeout = null;
 
-            const player={
-                hp:100,maxHp:100,atk:12,def:5,lvl:1,xp:0,xpNext:20,
-                gold:0,items:0,baseAtk:12,baseDef:5,defending:false,
-                healPotions:3
+            function showMsg(t) {
+                msgEl.textContent = t;
+                msgEl.classList.add('show');
+                if (msgTimeout) clearTimeout(msgTimeout);
+                msgTimeout = setTimeout(() => msgEl.classList.remove('show'), 1600);
+            }
+
+            const player = {
+                x: 0,
+                y: 0,
+                hp: 100,
+                maxHp: 100,
+                atk: 12,
+                def: 5,
+                lvl: 1,
+                xp: 0,
+                xpNext: 20,
+                gold: 0,
+                items: 0,
+                baseAtk: 12,
+                baseDef: 5,
+                defending: false,
+                healPotions: 3
             };
-            let enemies=[];
-            let particles=[];
-            let gameTime=0;
-            let battleActive=false;
-            let currentEnemy=null;
-            let enemySpawnTimer=0;
-            let frameCount=0;
+            let enemies = [];
+            let particles = [];
+            let gameTime = 0;
+            let frameCount = 0;
+            let enemySpawnTimer = 0;
 
-            class Enemy{
-                constructor(x,y,lvlScale=1){
-                    this.x=x;this.y=y;
-                    const baseHp=30+Math.floor(Math.random()*20);
-                    const baseAtk=6+Math.floor(Math.random()*6);
-                    const baseDef=2+Math.floor(Math.random()*3);
-                    const scale=1+((player.lvl-1)*0.35)+Math.random()*0.2;
-                    this.maxHp=Math.floor(baseHp*scale);
-                    this.hp=this.maxHp;
-                    this.atk=Math.floor(baseAtk*scale);
-                    this.def=Math.floor(baseDef*scale);
-                    this.type=Math.random()>0.6?'🔥':(Math.random()>0.5?'🧟':'🐉');
-                    this.size=16+Math.floor(Math.random()*8);
-                    this.hitTimer=0;
-                    this.dead=false;
-                    this.angle=Math.random()*Math.PI*2;
-                    this.speed=0.4+Math.random()*0.3;
-                    this.targetX=x;this.targetY=y;
+            class Enemy {
+                constructor(x, y, lvlScale) {
+                    this.x = x;
+                    this.y = y;
+                    const baseHp = 30 + Math.floor(Math.random() * 20);
+                    const baseAtk = 6 + Math.floor(Math.random() * 6);
+                    const baseDef = 2 + Math.floor(Math.random() * 3);
+                    const scale = 1 + ((player.lvl - 1) * 0.35) + Math.random() * 0.2;
+                    this.maxHp = Math.floor(baseHp * scale);
+                    this.hp = this.maxHp;
+                    this.atk = Math.floor(baseAtk * scale);
+                    this.def = Math.floor(baseDef * scale);
+                    this.type = Math.random() > 0.6 ? '🔥' : (Math.random() > 0.5 ? '🧟' : '🐉');
+                    this.size = 16 + Math.floor(Math.random() * 8);
+                    this.hitTimer = 0;
+                    this.dead = false;
+                    this.angle = Math.random() * Math.PI * 2;
+                    this.speed = 0.4 + Math.random() * 0.3;
+                    this.targetX = x;
+                    this.targetY = y;
                 }
-                update(dt){
-                    if(this.dead)return;
-                    this.angle+=dt*0.5;
-                    const dx=this.x-player.x,dy=this.y-player.y;
-                    const dist=Math.sqrt(dx*dx+dy*dy);
-                    if(dist>80&&dist<400){
-                        const move=this.speed*dt*60;
-                        this.x-=dx/dist*move*0.3;
-                        this.y-=dy/dist*move*0.3;
-                    }else if(dist<50){
-                        const move=this.speed*dt*60;
-                        this.x+=dx/dist*move*0.5;
-                        this.y+=dy/dist*move*0.5;
+                update(dt) {
+                    if (this.dead) return;
+                    this.angle += dt * 0.5;
+                    const dx = this.x - player.x,
+                        dy = this.y - player.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist > 80 && dist < 400) {
+                        const move = this.speed * dt * 60;
+                        this.x -= dx / dist * move * 0.3;
+                        this.y -= dy / dist * move * 0.3;
+                    } else if (dist < 50) {
+                        const move = this.speed * dt * 60;
+                        this.x += dx / dist * move * 0.5;
+                        this.y += dy / dist * move * 0.5;
                     }
-                    if(this.hitTimer>0)this.hitTimer-=dt;
-                    this.x+=Math.sin(this.angle)*dt*0.5;
-                    this.y+=Math.cos(this.angle*0.7)*dt*0.5;
-                    if(this.x<20)this.x=20;if(this.x>W-20)this.x=W-20;
-                    if(this.y<20)this.y=20;if(this.y>H-20)this.y=H-20;
+                    if (this.hitTimer > 0) this.hitTimer -= dt;
+                    this.x += Math.sin(this.angle) * dt * 0.5;
+                    this.y += Math.cos(this.angle * 0.7) * dt * 0.5;
+                    if (this.x < 20) this.x = 20;
+                    if (this.x > W - 20) this.x = W - 20;
+                    if (this.y < 20) this.y = 20;
+                    if (this.y > H - 20) this.y = H - 20;
                 }
-                draw(ctx){
-                    if(this.dead)return;
+                draw(ctx) {
+                    if (this.dead) return;
                     ctx.save();
-                    ctx.translate(this.x,this.y);
-                    const pulse=1+Math.sin(gameTime*3+this.angle)*0.03;
-                    const s=this.size*pulse;
-                    ctx.shadowColor='rgba(255,100,50,0.3)';
-                    ctx.shadowBlur=20;
+                    ctx.translate(this.x, this.y);
+                    const pulse = 1 + Math.sin(gameTime * 3 + this.angle) * 0.03;
+                    const s = this.size * pulse;
+                    ctx.shadowColor = 'rgba(255,100,50,0.3)';
+                    ctx.shadowBlur = 20;
                     ctx.beginPath();
-                    ctx.arc(0,0,s,0,Math.PI*2);
-                    ctx.fillStyle=this.hitTimer>0?'#fff':this.type==='🔥'?'#e8453a':this.type==='🧟'?'#6aaa3a':'#3a7acc';
+                    ctx.arc(0, 0, s, 0, Math.PI * 2);
+                    ctx.fillStyle = this.hitTimer > 0 ? '#fff' : this.type === '🔥' ? '#e8453a' : this.type === '🧟' ? '#6aaa3a' :
+                        '#3a7acc';
                     ctx.fill();
-                    ctx.strokeStyle='rgba(255,255,255,0.5)';
-                    ctx.lineWidth=2;
+                    ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                    ctx.lineWidth = 2;
                     ctx.stroke();
-                    ctx.shadowBlur=0;
-                    ctx.fillStyle='#fff';
-                    ctx.font='bold 14px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.textBaseline='middle';
-                    ctx.fillText(this.type,0,-s-12);
-                    const hpW=30;const hpH=4;
-                    ctx.fillStyle='rgba(0,0,0,0.7)';
-                    ctx.fillRect(-hpW/2,-s-8,hpW,hpH);
-                    ctx.fillStyle=this.hp/this.maxHp>0.5?'#4caf50':'#f44336';
-                    ctx.fillRect(-hpW/2,-s-8,hpW*(this.hp/this.maxHp),hpH);
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#fff';
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.type, 0, -s - 12);
+                    const hpW = 30;
+                    const hpH = 4;
+                    ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                    ctx.fillRect(-hpW / 2, -s - 8, hpW, hpH);
+                    ctx.fillStyle = this.hp / this.maxHp > 0.5 ? '#4caf50' : '#f44336';
+                    ctx.fillRect(-hpW / 2, -s - 8, hpW * (this.hp / this.maxHp), hpH);
                     ctx.restore();
                 }
-                takeDamage(dmg){
-                    const actual=Math.max(1,dmg-this.def*0.5);
-                    this.hp-=actual;
-                    this.hitTimer=0.15;
-                    if(this.hp<=0){this.hp=0;this.dead=true}
+                takeDamage(dmg) {
+                    const actual = Math.max(1, dmg - this.def * 0.5);
+                    this.hp -= actual;
+                    this.hitTimer = 0.15;
+                    if (this.hp <= 0) {
+                        this.hp = 0;
+                        this.dead = true;
+                    }
                     return Math.floor(actual);
                 }
             }
 
-            const player={x:W/2,y:H/2,hp:100,maxHp:100,atk:12,def:5,lvl:1,xp:0,xpNext:20,gold:0,items:0,baseAtk:12,baseDef:5,defending:false,healPotions:3};
-
-            function spawnEnemy(){
-                if(enemies.length>=6)return;
-                const angle=Math.random()*Math.PI*2;
-                const dist=150+Math.random()*200;
-                const x=player.x+Math.cos(angle)*dist;
-                const y=player.y+Math.sin(angle)*dist;
-                const e=new Enemy(Math.max(30,Math.min(W-30,x)),Math.max(30,Math.min(H-30,y)),1+player.lvl*0.1);
+            function spawnEnemy() {
+                if (enemies.length >= 6) return;
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 150 + Math.random() * 200;
+                const x = Math.max(30, Math.min(W - 30, player.x + Math.cos(angle) * dist));
+                const y = Math.max(30, Math.min(H - 30, player.y + Math.sin(angle) * dist));
+                const e = new Enemy(x, y, 1 + player.lvl * 0.1);
                 enemies.push(e);
             }
 
-            function healPlayer(amount){
-                const healed=Math.min(amount,player.maxHp-player.hp);
-                player.hp+=healed;
-                showMsg(`💚 +${Math.floor(healed)} HP`);
+            function healPlayer(amount) {
+                const healed = Math.min(amount, player.maxHp - player.hp);
+                player.hp += healed;
+                showMsg('💚 +' + Math.floor(healed) + ' HP');
                 return healed;
             }
 
-            function gainXP(amount){
-                player.xp+=amount;
-                while(player.xp>=player.xpNext){
-                    player.xp-=player.xpNext;
+            function gainXP(amount) {
+                player.xp += amount;
+                while (player.xp >= player.xpNext) {
+                    player.xp -= player.xpNext;
                     player.lvl++;
-                    player.xpNext=Math.floor(player.xpNext*1.5)+10;
-                    player.maxHp+=8;
-                    player.hp=player.maxHp;
-                    player.baseAtk+=2+player.lvl;
-                    player.baseDef+=1+Math.floor(player.lvl/2);
-                    player.atk=player.baseAtk;
-                    player.def=player.baseDef;
-                    showMsg(`⬆️ Level ${player.lvl}!`);
+                    player.xpNext = Math.floor(player.xpNext * 1.5) + 10;
+                    player.maxHp += 8;
+                    player.hp = player.maxHp;
+                    player.baseAtk += 2 + player.lvl;
+                    player.baseDef += 1 + Math.floor(player.lvl / 2);
+                    player.atk = player.baseAtk;
+                    player.def = player.baseDef;
+                    showMsg('⬆️ Level ' + player.lvl + '!');
                     spawnEnemy();
                     spawnEnemy();
                 }
                 updateUI();
             }
 
-            function attackEnemy(){
-                if(enemies.length===0){showMsg('👀 No enemies!');return}
-                let target=null;let minDist=Infinity;
-                for(const e of enemies){
-                    if(e.dead)continue;
-                    const dx=e.x-player.x,dy=e.y-player.y;
-                    const d=dx*dx+dy*dy;
-                    if(d<minDist){minDist=d;target=e}
+            function attackEnemy() {
+                if (enemies.length === 0) {
+                    showMsg('👀 No enemies!');
+                    return;
                 }
-                if(!target){showMsg('💨 None nearby');return}
-                const dmg=target.takeDamage(player.atk+Math.floor(Math.random()*4));
-                showMsg(`⚔️ ${dmg} damage!`);
-                createHitParticles(target.x,target.y,'#ff6644',12);
-                if(target.dead){
-                    const goldReward=5+Math.floor(Math.random()*10)+player.lvl*2;
-                    const xpReward=8+Math.floor(Math.random()*12)+player.lvl*3;
-                    player.gold+=goldReward;
-                    player.items+=Math.random()>0.5?1:0;
+                let target = null;
+                let minDist = Infinity;
+                for (const e of enemies) {
+                    if (e.dead) continue;
+                    const dx = e.x - player.x,
+                        dy = e.y - player.y;
+                    const d = dx * dx + dy * dy;
+                    if (d < minDist) {
+                        minDist = d;
+                        target = e;
+                    }
+                }
+                if (!target) {
+                    showMsg('💨 None nearby');
+                    return;
+                }
+                const dmg = target.takeDamage(player.atk + Math.floor(Math.random() * 4));
+                showMsg('⚔️ ' + dmg + ' damage!');
+                createHitParticles(target.x, target.y, '#ff6644', 12);
+                if (target.dead) {
+                    const goldReward = 5 + Math.floor(Math.random() * 10) + player.lvl * 2;
+                    const xpReward = 8 + Math.floor(Math.random() * 12) + player.lvl * 3;
+                    player.gold += goldReward;
+                    player.items += Math.random() > 0.5 ? 1 : 0;
                     gainXP(xpReward);
-                    showMsg(`💀 +${goldReward}G +${xpReward}XP`);
-                    createHitParticles(target.x,target.y,'#ffdd44',25);
-                    setTimeout(()=>{spawnEnemy()},300);
+                    showMsg('💀 +' + goldReward + 'G +' + xpReward + 'XP');
+                    createHitParticles(target.x, target.y, '#ffdd44', 25);
+                    setTimeout(() => { spawnEnemy(); }, 300);
                 }
                 updateUI();
             }
 
-            function defendAction(){
-                player.defending=true;
+            function defendAction() {
+                player.defending = true;
                 showMsg('🛡️ Defending...');
-                setTimeout(()=>{player.defending=false},800);
+                setTimeout(() => { player.defending = false; }, 800);
             }
 
-            function useHeal(){
-                if(player.healPotions<=0){showMsg('❌ No potions!');return}
+            function useHeal() {
+                if (player.healPotions <= 0) {
+                    showMsg('❌ No potions!');
+                    return;
+                }
                 player.healPotions--;
-                healPlayer(30+Math.floor(Math.random()*15));
+                healPlayer(30 + Math.floor(Math.random() * 15));
                 updateUI();
             }
 
-            function restAction(){
-                if(enemies.some(e=>!e.dead&&Math.hypot(e.x-player.x,e.y-player.y)<120)){
+            function restAction() {
+                if (enemies.some(e => !e.dead && Math.hypot(e.x - player.x, e.y - player.y) < 120)) {
                     showMsg('⚠️ Enemies nearby!');
                     return;
                 }
-                healPlayer(15+Math.floor(player.maxHp*0.08));
+                healPlayer(15 + Math.floor(player.maxHp * 0.08));
                 showMsg('⏳ Resting...');
                 updateUI();
             }
 
-            function createHitParticles(x,y,color,n=15){
-                for(let i=0;i<n;i++){
-                    const angle=Math.random()*Math.PI*2;
-                    const speed=1+Math.random()*4;
+            function createHitParticles(x, y, color, n) {
+                for (let i = 0; i < n; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = 1 + Math.random() * 4;
                     particles.push({
-                        x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,
-                        life:0.5+Math.random()*0.6,maxLife:0.6+Math.random()*0.4,
-                        size:2+Math.random()*4,color
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        life: 0.5 + Math.random() * 0.6,
+                        maxLife: 0.6 + Math.random() * 0.4,
+                        size: 2 + Math.random() * 4,
+                        color: color
                     });
                 }
             }
 
-            function updateUI(){
-                hpEl.textContent=Math.floor(player.hp);
-                atkEl.textContent=player.atk;
-                defEl.textContent=player.def;
-                lvlEl.textContent=player.lvl;
-                xpEl.textContent=player.xp;
-                xpNextEl.textContent=player.xpNext;
-                itemsEl.textContent=player.items;
-                goldEl.textContent=player.gold;
+            function updateUI() {
+                hpEl.textContent = Math.floor(player.hp);
+                atkEl.textContent = player.atk;
+                defEl.textContent = player.def;
+                lvlEl.textContent = player.lvl;
+                xpEl.textContent = player.xp;
+                xpNextEl.textContent = player.xpNext;
+                itemsEl.textContent = player.items;
+                goldEl.textContent = player.gold;
             }
 
-            function enemyAttackPlayer(){
-                for(const e of enemies){
-                    if(e.dead)continue;
-                    const dx=e.x-player.x,dy=e.y-player.y;
-                    if(dx*dx+dy*dy<2500){
-                        let dmg=e.atk+Math.floor(Math.random()*3)-1;
-                        if(player.defending)dmg=Math.floor(dmg*0.25);
-                        else dmg=Math.max(1,dmg-Math.floor(player.def*0.4));
-                        player.hp-=dmg;
-                        createHitParticles(player.x,player.y,'#ff3333',8);
-                        showMsg(`💥 -${dmg} HP`);
-                        if(player.hp<=0){
-                            player.hp=0;
+            function enemyAttackPlayer() {
+                for (const e of enemies) {
+                    if (e.dead) continue;
+                    const dx = e.x - player.x,
+                        dy = e.y - player.y;
+                    if (dx * dx + dy * dy < 2500) {
+                        let dmg = e.atk + Math.floor(Math.random() * 3) - 1;
+                        if (player.defending) dmg = Math.floor(dmg * 0.25);
+                        else dmg = Math.max(1, dmg - Math.floor(player.def * 0.4));
+                        player.hp -= dmg;
+                        createHitParticles(player.x, player.y, '#ff3333', 8);
+                        showMsg('💥 -' + dmg + ' HP');
+                        if (player.hp <= 0) {
+                            player.hp = 0;
                             showMsg('💀 YOU DIED');
-                            setTimeout(()=>{
-                                player.hp=player.maxHp;
-                                player.gold=Math.floor(player.gold*0.8);
-                                player.items=Math.floor(player.items*0.7);
-                                enemies=[];
-                                spawnEnemy();
+                            setTimeout(() => {
+                                player.hp = player.maxHp;
+                                player.gold = Math.floor(player.gold * 0.8);
+                                player.items = Math.floor(player.items * 0.7);
+                                enemies = [];
+                                for (let i = 0; i < 3; i++) spawnEnemy();
                                 updateUI();
                                 showMsg('🔄 Revived');
-                            },1200);
+                            }, 1200);
                         }
                         updateUI();
                         break;
@@ -259,103 +466,125 @@
                 }
             }
 
-            function update(dt){
-                gameTime+=dt;
+            function update(dt) {
+                gameTime += dt;
                 frameCount++;
-                if(frameCount%30===0&&enemies.length<4)spawnEnemy();
-                for(const e of enemies)e.update(dt);
-                enemies=enemies.filter(e=>!e.dead||e.hitTimer>0);
-                if(frameCount%20===0)enemyAttackPlayer();
-                for(let i=particles.length-1;i>=0;i--){
-                    const p=particles[i];
-                    p.x+=p.vx;p.y+=p.vy;p.vy+=0.05;p.life-=dt;
-                    p.vx*=0.98;p.vy*=0.98;
-                    if(p.life<=0)particles.splice(i,1);
+                if (frameCount % 30 === 0 && enemies.length < 4) spawnEnemy();
+                for (const e of enemies) e.update(dt);
+                enemies = enemies.filter(e => !e.dead || e.hitTimer > 0);
+                if (frameCount % 20 === 0) enemyAttackPlayer();
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    p.vy += 0.05;
+                    p.life -= dt;
+                    p.vx *= 0.98;
+                    p.vy *= 0.98;
+                    if (p.life <= 0) particles.splice(i, 1);
                 }
-                if(Math.random()<0.002&&enemies.length<4)spawnEnemy();
-                if(player.hp<player.maxHp&&frameCount%120===0&&!enemies.some(e=>!e.dead&&Math.hypot(e.x-player.x,e.y-player.y)<100)){
+                if (Math.random() < 0.002 && enemies.length < 4) spawnEnemy();
+                if (player.hp < player.maxHp && frameCount % 120 === 0 && !enemies.some(e => !e.dead && Math.hypot(e.x -
+                        player.x, e.y - player.y) < 100)) {
                     healPlayer(1);
                 }
                 updateUI();
             }
 
-            function draw(){
-                ctx.clearRect(0,0,W,H);
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
                 ctx.save();
-                const grad=ctx.createRadialGradient(player.x,player.y,20,player.x,player.y,400);
-                grad.addColorStop(0,'#1a2a3a');grad.addColorStop(1,'#0a0a12');
-                ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
+                const grad = ctx.createRadialGradient(player.x, player.y, 20, player.x, player.y, 400);
+                grad.addColorStop(0, '#1a2a3a');
+                grad.addColorStop(1, '#0a0a12');
+                ctx.fillStyle = grad;
+                ctx.fillRect(0, 0, W, H);
                 ctx.restore();
 
-                for(const p of particles){
-                    ctx.globalAlpha=p.life/p.maxLife*0.9;
-                    ctx.fillStyle=p.color;
+                for (const p of particles) {
+                    ctx.globalAlpha = (p.life / p.maxLife) * 0.9;
+                    ctx.fillStyle = p.color;
                     ctx.beginPath();
-                    ctx.arc(p.x,p.y,p.size*(0.5+p.life/p.maxLife*0.5),0,Math.PI*2);
+                    ctx.arc(p.x, p.y, p.size * (0.5 + (p.life / p.maxLife) * 0.5), 0, Math.PI * 2);
                     ctx.fill();
                 }
-                ctx.globalAlpha=1;
+                ctx.globalAlpha = 1;
 
-                for(const e of enemies)e.draw(ctx);
+                for (const e of enemies) e.draw(ctx);
 
                 ctx.save();
-                ctx.translate(player.x,player.y);
-                const glow=ctx.createRadialGradient(0,0,5,0,0,30);
-                glow.addColorStop(0,'rgba(80,200,255,0.15)');
-                glow.addColorStop(1,'rgba(80,200,255,0)');
-                ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,30,0,Math.PI*2);ctx.fill();
-                ctx.shadowColor='rgba(80,200,255,0.4)';
-                ctx.shadowBlur=30;
+                ctx.translate(player.x, player.y);
+                const glow = ctx.createRadialGradient(0, 0, 5, 0, 0, 30);
+                glow.addColorStop(0, 'rgba(80,200,255,0.15)');
+                glow.addColorStop(1, 'rgba(80,200,255,0)');
+                ctx.fillStyle = glow;
                 ctx.beginPath();
-                ctx.arc(0,0,16,0,Math.PI*2);
-                ctx.fillStyle=player.defending?'#4fc3f7':'#42a5f5';
+                ctx.arc(0, 0, 30, 0, Math.PI * 2);
                 ctx.fill();
-                ctx.strokeStyle='rgba(255,255,255,0.5)';
-                ctx.lineWidth=2;
+                ctx.shadowColor = 'rgba(80,200,255,0.4)';
+                ctx.shadowBlur = 30;
+                ctx.beginPath();
+                ctx.arc(0, 0, 16, 0, Math.PI * 2);
+                ctx.fillStyle = player.defending ? '#4fc3f7' : '#42a5f5';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 2;
                 ctx.stroke();
-                ctx.shadowBlur=0;
-                ctx.fillStyle='#fff';
-                ctx.font='bold 18px sans-serif';
-                ctx.textAlign='center';
-                ctx.textBaseline='middle';
-                ctx.fillText('🧙',0,-20);
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 18px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🧙', 0, -20);
                 ctx.restore();
 
-                ctx.fillStyle='rgba(255,255,255,0.04)';
-                ctx.fillRect(0,0,W,H);
-                ctx.strokeStyle='rgba(255,255,255,0.03)';
-                ctx.lineWidth=1;
-                for(let i=0;i<W;i+=40){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke()}
-                for(let i=0;i<H;i+=40){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke()}
+                ctx.fillStyle = 'rgba(255,255,255,0.04)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < W; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(i, 0);
+                    ctx.lineTo(i, H);
+                    ctx.stroke();
+                }
+                for (let i = 0; i < H; i += 40) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i);
+                    ctx.lineTo(W, i);
+                    ctx.stroke();
+                }
             }
 
-            function loop(timestamp){
-                const dt=Math.min(0.05,1/60);
+            function loop(timestamp) {
+                const dt = Math.min(0.05, 1 / 60);
                 update(dt);
                 draw();
                 requestAnimationFrame(loop);
             }
 
-            document.getElementById('btnAtk').addEventListener('click',attackEnemy);
-            document.getElementById('btnDef').addEventListener('click',defendAction);
-            document.getElementById('btnHeal').addEventListener('click',useHeal);
-            document.getElementById('btnRest').addEventListener('click',restAction);
-            document.addEventListener('keydown',(e)=>{
-                if(e.key==='a'||e.key==='A')attackEnemy();
-                if(e.key==='d'||e.key==='D')defendAction();
-                if(e.key==='h'||e.key==='H')useHeal();
-                if(e.key==='r'||e.key==='R')restAction();
+            document.getElementById('btnAtk').addEventListener('click', attackEnemy);
+            document.getElementById('btnDef').addEventListener('click', defendAction);
+            document.getElementById('btnHeal').addEventListener('click', useHeal);
+            document.getElementById('btnRest').addEventListener('click', restAction);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'a' || e.key === 'A') attackEnemy();
+                if (e.key === 'd' || e.key === 'D') defendAction();
+                if (e.key === 'h' || e.key === 'H') useHeal();
+                if (e.key === 'r' || e.key === 'R') restAction();
             });
 
-            for(let i=0;i<3;i++)spawnEnemy();
+            player.x = W / 2;
+            player.y = H / 2;
+            for (let i = 0; i < 3; i++) spawnEnemy();
             updateUI();
             showMsg('🎮 RPG 2026');
             loop(0);
 
-            window.addEventListener('resize',()=>{
+            window.addEventListener('resize', () => {
                 resize();
-                player.x=Math.min(W-30,Math.max(30,player.x));
-                player.y=Math.min(H-30,Math.max(30,player.y));
+                player.x = Math.min(W - 30, Math.max(30, player.x));
+                player.y = Math.min(H - 30, Math.max(30, player.y));
             });
         })();
     </script>
