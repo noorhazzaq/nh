@@ -85,15 +85,25 @@
   let state={};
   let endings=new Array(36).fill(false);
   let achievementCount=0;
-  let totalEndings=0;
   let hintCount=0;
+  let visitedNodes=new Set();
 
-  const el={story:document.getElementById('story'),role:document.getElementById('role-tag'),hp:document.getElementById('hp'),fate:document.getElementById('fate'),achieve:document.getElementById('achievements'),badge:document.getElementById('badge'),choices:document.getElementById('choices'),progress:document.getElementById('progress-fill'),progressText:document.getElementById('progressText'),panel:document.getElementById('panel')};
+  const el={
+    story:document.getElementById('story'),
+    role:document.getElementById('role-tag'),
+    hp:document.getElementById('hp'),
+    fate:document.getElementById('fate'),
+    achieve:document.getElementById('achievements'),
+    badge:document.getElementById('badge'),
+    choices:document.getElementById('choices'),
+    progress:document.getElementById('progress-fill'),
+    progressText:document.getElementById('progressText'),
+    panel:document.getElementById('panel')
+  };
 
   function updateUI(){
     el.hp.textContent=state.hp||10;
     const unlocked=endings.filter(Boolean).length;
-    totalEndings=unlocked;
     el.fate.textContent=unlocked+'/36';
     el.achieve.textContent=Math.min(unlocked,36);
     el.progress.style.width=(unlocked/36*100)+'%';
@@ -119,16 +129,12 @@
     updateUI();
   }
 
-  function defaultState(){
-    return{hp:10,role:'⚔️ Nomad',step:0,flags:{},inventory:[],endings:new Array(36).fill(false)};
-  }
-
   function resetGame(){
-    const d=defaultState();
-    state={hp:d.hp,role:d.role,step:0,flags:{},inventory:[],endings:new Array(36).fill(false)};
+    state={hp:10,role:'⚔️ Nomad',step:0,flags:{},inventory:[]};
     endings.fill(false);
     achievementCount=0;
     hintCount=0;
+    visitedNodes=new Set();
     renderNode(0);
     updateUI();
   }
@@ -140,6 +146,7 @@
       el.choices.innerHTML='';
       return;
     }
+    visitedNodes.add(id);
     el.story.textContent=node.text;
     if(node.role)state.role=node.role;
     if(node.hpDelta){
@@ -198,98 +205,200 @@
 
   const nodes={};
 
-  // BASE CHOICES FOR NEXUS
-  const baseChoices=[
-    {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
-    {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
-    {label:'🌊 Abyssal Trench',next:3,hint:'mystery'}
-  ];
-
-  // CORE NODES
+  // === NEXUS (0) ===
   nodes[0]={
-    text:'🌌 The Nexus of Chronos. Three paths spiral into infinity. Each choice weaves a new fate. Which thread will you pull?',
+    text:'🌌 The Nexus of Chronos. Six paths spiral into infinity. Each choice weaves a new fate. Which thread will you pull?',
     role:'⚔️ Nomad',
-    choices:function(){
-      const unlocked=endings.filter(Boolean).length;
-      const extras=[];
-      if(unlocked>=12)extras.push({label:'🪞 Mirror of Aethra',next:30,requireEndings:12,hint:'12+ fates'});
-      if(unlocked>=24)extras.push({label:'🌀 Rift Walker',next:32,requireEndings:24,hint:'24+ fates'});
-      if(unlocked>=30)extras.push({label:'🌌 Celestial Pact',next:33,requireEndings:30,hint:'30+ fates'});
-      return [...baseChoices,...extras];
-    }()
+    choices:[
+      {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
+      {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
+      {label:'🌊 Abyssal Trench',next:3,hint:'mystery'},
+      {label:'🔥 Ember Citadel',next:20,hint:'fire + fury'},
+      {label:'❄️ Frostbound Peak',next:21,hint:'ice + wisdom'},
+      {label:'⚡ Stormspire',next:22,hint:'lightning + speed'}
+    ]
   };
 
+  // === LEVEL 1 PATHS (nodes 1-3, 20-22) ===
+
+  // Verdant Labyrinth
   nodes[1]={
-    text:'The Labyrinth breathes with sentient flora. A Dryad offers you the Fruit of Rebirth (+3 HP) but you forget a part of yourself.',
+    text:'The Labyrinth breathes with sentient flora. A Dryad offers you the Fruit of Rebirth (+3 HP).',
     hpDelta:3,
     choices:[
       {label:'🍎 Accept the fruit',next:4,flags:{memory:false}},
-      {label:'🌱 Refuse and delve deeper',next:5}
+      {label:'🌱 Refuse and delve deeper',next:5},
+      {label:'🔥 Burn the grove',next:6,flags:{burned:true}}
     ]
   };
 
+  // Obsidian Wastes
   nodes[2]={
-    text:'The Wastes shimmer with heat. A colossal skeleton of a god lies half-buried. Its ribcage hides a vault.',
+    text:'The Wastes shimmer with heat. A colossal skeleton of a god lies half-buried.',
     choices:[
-      {label:'⚰️ Enter the vault',next:6},
-      {label:'🏃 Turn back',next:0}
+      {label:'⚰️ Enter the vault',next:7},
+      {label:'🏃 Climb the skeleton',next:8},
+      {label:'💀 Pray to the god',next:9,flags:{prayed:true}}
     ]
   };
 
+  // Abyssal Trench
   nodes[3]={
-    text:'The Trench pulses with bioluminescence. A drowned city spirals downward. A siren offers you a deal.',
+    text:'The Trench pulses with bioluminescence. A drowned city spirals downward.',
     choices:[
-      {label:'🎵 Accept the siren\'s deal',next:7,flags:{sirenDeal:true}},
-      {label:'🏊 Dive alone into the abyss',next:8}
+      {label:'🎵 Accept the siren\'s deal',next:10,flags:{sirenDeal:true}},
+      {label:'🏊 Dive alone into the abyss',next:11},
+      {label:'📜 Read the ancient tablets',next:12,flags:{readTablets:true}}
     ]
   };
 
-  nodes[4]={text:'The Fruit binds you to the Labyrinth. You become its eternal guardian, watching over all who enter.',endingIndex:0,choices:[]};
-  nodes[5]={text:'You find a grove of memory. An ancient treant teaches you the way of the Roots.',role:'🌳 Rootwarden',choices:[{label:'🌿 Learn the Rootway',next:9},{label:'🚶 Leave',next:0}]};
-  nodes[6]={text:'The vault contains a shard of the god\'s heart. It pulses with power. But the god\'s curse drains you.',hpDelta:-2,choices:[{label:'💎 Keep the shard',next:10,flags:{godShard:true}},{label:'🗑️ Discard it',next:11}]};
-  nodes[7]={text:'The siren grants you gills and a map to the sunken throne. But you can never leave the deep.',endingIndex:1,choices:[]};
-  nodes[8]={text:'You find a relic of the drowned king. It shows you all possible deaths.',endingIndex:2,choices:[]};
-  nodes[9]={text:'The Rootwarden reveals the Labyrinth\'s heart. You become one with the forest.',endingIndex:3,choices:[]};
-  nodes[10]={text:'The shard awakens the god. You become its vessel. Immortal, but hollow.',endingIndex:4,choices:[]};
-  nodes[11]={text:'The shard shatters, releasing a wave of pure fate. You glimpse the entire web of endings.',endingIndex:5,choices:[]};
+  // Ember Citadel
+  nodes[20]={
+    text:'The Citadel burns with eternal flame. The Fire Lord challenges you.',
+    choices:[
+      {label:'⚔️ Fight the Fire Lord',next:23},
+      {label:'🔥 Embrace the flame',next:24,flags:{flameEmbrace:true}},
+      {label:'🏃 Flee',next:0}
+    ]
+  };
 
-  // GENERATE ENDINGS 6-29 (nodes 12-35)
-  for(let i=6;i<30;i++){
-    const nodeId=12+(i-6);
-    nodes[nodeId]={
-      text:'🌀 You step through a rift in reality. A new fate crystallizes around you. The Chronos weaves your story into its tapestry.',
-      endingIndex:i,
-      choices:[]
-    };
-    nodes['end_'+i]={
-      text:'✨ FATE #'+(i+1)+' · You have claimed a unique destiny. The threads of Chronos remember your name.',
-      endingIndex:i,
-      choices:[{label:'⟳ Return to the Nexus',next:0}]
-    };
-  }
+  // Frostbound Peak
+  nodes[21]={
+    text:'The Peak is veiled in eternal winter. An ice oracle speaks riddles.',
+    choices:[
+      {label:'❄️ Answer the riddle',next:25},
+      {label:'🗡️ Break the ice',next:26},
+      {label:'📖 Study the runes',next:27,flags:{runesStudied:true}}
+    ]
+  };
 
-  // HIDDEN ENDINGS (30-35)
-  nodes[30]={text:'You find the Mirror of Aethra. It reflects all your past lives. To unlock the final truth, you must have witnessed 30 fates.',choices:[{label:'🪞 Gaze into the mirror',next:31,requireEndings:30},{label:'🚶 Walk away',next:0}]};
-  nodes[31]={text:'The mirror fractures. You become the Weaver of All Fates. The universe acknowledges you.',endingIndex:30,choices:[]};
+  // Stormspire
+  nodes[22]={
+    text:'The Spire crackles with lightning. Storm giants guard the summit.',
+    choices:[
+      {label:'⚡ Challenge the giants',next:28},
+      {label:'🌪️ Ride the storm',next:29},
+      {label:'🔮 Channel the lightning',next:30,flags:{lightningChanneled:true}}
+    ]
+  };
+
+  // === BRANCH ENDINGS (4-19) ===
+
+  // From Labyrinth (1)
+  nodes[4]={text:'The Fruit binds you to the Labyrinth. You become its eternal guardian.',endingIndex:0,choices:[]};
+  nodes[5]={text:'You find a grove of memory. An ancient treant teaches you the Roots.',role:'🌳 Rootwarden',choices:[{label:'🌿 Learn the Rootway',next:13},{label:'🚶 Leave',next:0}]};
+  nodes[6]={text:'The grove burns. The Dryad curses you. You become the Ashen Wanderer.',endingIndex:1,choices:[]};
+
+  // From Wastes (2)
+  nodes[7]={text:'The vault contains a shard of the god\'s heart. It pulses with power.',hpDelta:-2,choices:[{label:'💎 Keep the shard',next:14,flags:{godShard:true}},{label:'🗑️ Discard it',next:15}]};
+  nodes[8]={text:'You climb the skeleton and find the god\'s crown. You become the Skeleton King.',endingIndex:2,choices:[]};
+  nodes[9]={text:'The god answers. You become the God-Touched Prophet.',endingIndex:3,choices:[]};
+
+  // From Trench (3)
+  nodes[10]={text:'The siren grants you gills and a map to the sunken throne. You can never leave the deep.',endingIndex:4,choices:[]};
+  nodes[11]={text:'You find a relic of the drowned king. It shows you all possible deaths.',endingIndex:5,choices:[]};
+  nodes[12]={text:'The tablets reveal the city\'s fall. You become the Archivist of the Deep.',endingIndex:6,choices:[]};
+
+  // Continue from Rootwarden (5 -> 13)
+  nodes[13]={text:'The Rootwarden reveals the Labyrinth\'s heart. You become one with the forest.',endingIndex:7,choices:[]};
+
+  // Continue from shard (7 -> 14,15)
+  nodes[14]={text:'The shard awakens the god. You become its vessel. Immortal, but hollow.',endingIndex:8,choices:[]};
+  nodes[15]={text:'The shard shatters, releasing a wave of pure fate. You glimpse the entire web of endings.',endingIndex:9,choices:[]};
+
+  // === FROM EMBER CITADEL (20 -> 23,24) ===
+  nodes[23]={text:'You defeat the Fire Lord and claim his crown. The realm bows to you.',endingIndex:10,choices:[]};
+  nodes[24]={text:'You embrace the flame and become the Phoenix King. Reborn in fire.',endingIndex:11,choices:[]};
+
+  // === FROM FROSTBOUND PEAK (21 -> 25,26,27) ===
+  nodes[25]={text:'You solve the riddle. The oracle grants you the Ice Crown. You rule the frozen north.',endingIndex:12,choices:[]};
+  nodes[26]={text:'You shatter the ice and free the imprisoned storm. Chaos reigns. You become the Stormbreaker.',endingIndex:13,choices:[]};
+  nodes[27]={text:'You study the runes and learn the language of the ancients. You become the Rune Master.',endingIndex:14,choices:[]};
+
+  // === FROM STORMSPIRE (22 -> 28,29,30) ===
+  nodes[28]={text:'You defeat the giants and claim the Storm Scepter. The skies obey you.',endingIndex:15,choices:[]};
+  nodes[29]={text:'You ride the storm into the void. You become the Void Walker.',endingIndex:16,choices:[]};
+  nodes[30]={text:'You channel the lightning into your soul. You become the Thunder God.',endingIndex:17,choices:[]};
+
+  // === ENDINGS 18-29 (additional branches from deeper choices) ===
+
+  // Add more branches from existing nodes
+  nodes[31]={text:'You find a hidden passage in the Labyrinth. It leads to the Dreamer\'s Sanctuary.',choices:[{label:'🌙 Enter the sanctuary',next:32},{label:'🚶 Return',next:0}]};
+  nodes[32]={text:'You meet the Dreamer. He offers you a vision of all futures.',endingIndex:18,choices:[]};
+  
+  nodes[33]={text:'You find a oasis in the Wastes. A merchant offers you a cursed artifact.',choices:[{label:'💀 Buy the artifact',next:34},{label:'🚶 Walk away',next:0}]};
+  nodes[34]={text:'The artifact consumes you. You become the Cursed One.',endingIndex:19,choices:[]};
+
+  nodes[35]={text:'You find a submerged library in the Trench. It holds forbidden knowledge.',choices:[{label:'📚 Read the forbidden book',next:36},{label:'🚶 Leave',next:0}]};
+  nodes[36]={text:'The knowledge drives you mad. You become the Mad Prophet.',endingIndex:20,choices:[]};
+
+  // Endings 21-29 (extra branches)
+  nodes[37]={text:'You find the Forge of Creation. You can craft your own fate.',endingIndex:21,choices:[]};
+  nodes[38]={text:'You find the Garden of Eden. You become the Eternal Gardener.',endingIndex:22,choices:[]};
+  nodes[39]={text:'You find the Clockwork City. You become the Mechanist.',endingIndex:23,choices:[]};
+  nodes[40]={text:'You find the Void Engine. You become the Void Lord.',endingIndex:24,choices:[]};
+  nodes[41]={text:'You find the Star Forge. You become the Star Smith.',endingIndex:25,choices:[]};
+  nodes[42]={text:'You find the Time Well. You become the Time Keeper.',endingIndex:26,choices:[]};
+  nodes[43]={text:'You find the Mirror of Souls. You become the Soul Weaver.',endingIndex:27,choices:[]};
+  nodes[44]={text:'You find the Dream Forge. You become the Dream Smith.',endingIndex:28,choices:[]};
+  nodes[45]={text:'You find the Fate Spinner. You become the Fate Weaver.',endingIndex:29,choices:[]};
+
+  // Connect these extra nodes to the Nexus via new choices
+  nodes[0].choices.push(
+    {label:'🌙 Dreamer\'s Sanctuary',next:31,hint:'vision'},
+    {label:'🏜️ Oasis Merchant',next:33,hint:'cursed'},
+    {label:'📚 Submerged Library',next:35,hint:'forbidden'},
+    {label:'🔥 Forge of Creation',next:37,hint:'craft'},
+    {label:'🌺 Garden of Eden',next:38,hint:'eternal'},
+    {label:'⚙️ Clockwork City',next:39,hint:'mechanist'},
+    {label:'🌀 Void Engine',next:40,hint:'void'},
+    {label:'⭐ Star Forge',next:41,hint:'smith'},
+    {label:'⏳ Time Well',next:42,hint:'keeper'},
+    {label:'🪞 Mirror of Souls',next:43,hint:'weaver'},
+    {label:'💭 Dream Forge',next:44,hint:'dream'},
+    {label:'🕸️ Fate Spinner',next:45,hint:'weaver'}
+  );
+
+  // === HIDDEN ENDINGS (30-35) ===
+  nodes[46]={text:'You find the Mirror of Aethra. It reflects all your past lives.',choices:[{label:'🪞 Gaze into the mirror',next:47,requireEndings:12},{label:'🚶 Walk away',next:0}]};
+  nodes[47]={text:'The mirror fractures. You become the Weaver of All Fates.',endingIndex:30,choices:[]};
   nodes['end_30']={text:'✨ FATE #31 · The Weaver of All Fates.',endingIndex:30,choices:[{label:'⟳ Return to the Nexus',next:0}]};
   
-  nodes[32]={text:'You stumble upon a tear in the fabric of Chronos. You step through.',endingIndex:31,choices:[]};
+  nodes[48]={text:'You stumble upon a tear in the fabric of Chronos.',endingIndex:31,choices:[]};
   nodes['end_31']={text:'✨ FATE #32 · The Rift Walker.',endingIndex:31,choices:[{label:'⟳ Return to the Nexus',next:0}]};
   
-  nodes[33]={text:'A celestial being offers you omniscience. You accept.',endingIndex:32,choices:[]};
+  nodes[49]={text:'A celestial being offers you omniscience. You accept.',endingIndex:32,choices:[]};
   nodes['end_32']={text:'✨ FATE #33 · The Omniscient.',endingIndex:32,choices:[{label:'⟳ Return to the Nexus',next:0}]};
   
-  nodes[34]={text:'You reject all fate and forge your own path. The system breaks.',endingIndex:33,choices:[]};
+  nodes[50]={text:'You reject all fate and forge your own path. The system breaks.',endingIndex:33,choices:[]};
   nodes['end_33']={text:'✨ FATE #34 · The Renegade.',endingIndex:33,choices:[{label:'⟳ Return to the Nexus',next:0}]};
   
-  nodes[35]={text:'You find the First Thread. You become the origin.',endingIndex:34,choices:[]};
+  nodes[51]={text:'You find the First Thread. You become the origin.',endingIndex:34,choices:[]};
   nodes['end_34']={text:'✨ FATE #35 · The Origin.',endingIndex:34,choices:[{label:'⟳ Return to the Nexus',next:0}]};
-
-  // ENDING 35 (index 35) - special final ending
-  nodes['final']={text:'The Chronos acknowledges you as its master. All 36 fates are yours. You are the Weaver of Destiny.',endingIndex:35,choices:[]};
+  
+  nodes['final']={text:'The Chronos acknowledges you as its master. All 36 fates are yours.',endingIndex:35,choices:[]};
   nodes['end_35']={text:'✨ FATE #36 · THE WEAVER OF DESTINY. You have conquered all fates.',endingIndex:35,choices:[{label:'⟳ Return to the Nexus',next:0}]};
 
-  // FIREBASE
+  // Add hidden paths to Nexus
+  nodes[0].choices.push(
+    {label:'🪞 Mirror of Aethra',next:46,requireEndings:12,hint:'12+ fates'},
+    {label:'🌀 Rift Walker',next:48,requireEndings:24,hint:'24+ fates'},
+    {label:'🌌 Celestial Pact',next:49,requireEndings:30,hint:'30+ fates'},
+    {label:'🌱 First Thread',next:51,requireEndings:34,hint:'34+ fates'}
+  );
+
+  // === GENERATE ENDING NODES FOR 0-29 ===
+  for(let i=0;i<30;i++){
+    if(!nodes['end_'+i]){
+      nodes['end_'+i]={
+        text:'✨ FATE #'+(i+1)+' · You have claimed a unique destiny. The threads of Chronos remember your name.',
+        endingIndex:i,
+        choices:[{label:'⟳ Return to the Nexus',next:0}]
+      };
+    }
+  }
+
+  // === SAVE/LOAD ===
   function saveToFirebase(){
     const payload={
       hp:state.hp,
@@ -317,15 +426,12 @@
     if(unlocked>=36){alert('🔮 You have mastered all 36 fates. You are the Weaver.');return;}
     const remaining=36-unlocked;
     const hints=[
-      'Try the Forest path for early endings.',
-      'The Dunes hold cursed treasures.',
-      'The Coast leads to deep mysteries.',
-      'Return to the Nexus after unlocking 12+ fates.',
-      'The Mirror appears after 12 fates.',
-      'The Rift opens after 24 fates.',
-      'Celestial Pact requires 30 fates.',
-      'Explore every branch. Some endings are hidden in loops.',
-      'Save often. Load to retry branches.'
+      'The Nexus has 6 paths. Explore all of them.',
+      'Each path branches into 2-3 endings.',
+      'Hidden paths appear after 12, 24, 30, and 34 endings.',
+      'Some endings require specific flags (burned, prayed, etc.).',
+      'Save often and try every choice.',
+      'The Mirror, Rift, Pact, and First Thread unlock hidden endings.'
     ];
     alert('🔮 '+hints[hintCount%hints.length]+' ('+remaining+' fates remaining)');
     hintCount++;
