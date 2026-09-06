@@ -88,7 +88,7 @@
   let totalEndings=0;
   let hintCount=0;
 
-  const el={story:document.getElementById('story'),role:document.getElementById('role-tag'),hp:document.getElementById('hp'),fate:document.getElementById('fate'),achieve:document.getElementById('achievements'),badge:document.getElementById('badge'),choices:document.getElementById('choices'),progress:document.getElementById('progress-fill'),progressText:document.getElementById('progressText')};
+  const el={story:document.getElementById('story'),role:document.getElementById('role-tag'),hp:document.getElementById('hp'),fate:document.getElementById('fate'),achieve:document.getElementById('achievements'),badge:document.getElementById('badge'),choices:document.getElementById('choices'),progress:document.getElementById('progress-fill'),progressText:document.getElementById('progressText'),panel:document.getElementById('panel')};
 
   function updateUI(){
     el.hp.textContent=state.hp||10;
@@ -115,6 +115,7 @@
     state.flags=s.flags||{};
     state.inventory=s.inventory||[];
     if(s.endings){for(let i=0;i<36;i++){if(s.endings[i])endings[i]=true;}}
+    if(s.achievementCount!==undefined){achievementCount=s.achievementCount;}
     updateUI();
   }
 
@@ -126,6 +127,7 @@
     const d=defaultState();
     state={hp:d.hp,role:d.role,step:0,flags:{},inventory:[],endings:new Array(36).fill(false)};
     endings.fill(false);
+    achievementCount=0;
     hintCount=0;
     renderNode(0);
     updateUI();
@@ -142,6 +144,7 @@
     if(node.role)state.role=node.role;
     if(node.hpDelta){
       state.hp=Math.min(15,Math.max(1,state.hp+node.hpDelta));
+      if(state.hp<=0){state.hp=1;}
     }
     if(node.inventoryAdd){
       if(!state.inventory)state.inventory=[];
@@ -152,9 +155,9 @@
       if(!endings[node.endingIndex]){
         endings[node.endingIndex]=true;
         achievementCount++;
+        el.panel.classList.add('ending-glow');
+        setTimeout(()=>el.panel.classList.remove('ending-glow'),800);
       }
-      el.panel.classList.add('ending-glow');
-      setTimeout(()=>el.panel.classList.remove('ending-glow'),800);
     }
     el.choices.innerHTML='';
     if(node.choices&&node.choices.length){
@@ -195,15 +198,25 @@
 
   const nodes={};
 
+  // BASE CHOICES FOR NEXUS
+  const baseChoices=[
+    {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
+    {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
+    {label:'🌊 Abyssal Trench',next:3,hint:'mystery'}
+  ];
+
   // CORE NODES
   nodes[0]={
     text:'🌌 The Nexus of Chronos. Three paths spiral into infinity. Each choice weaves a new fate. Which thread will you pull?',
     role:'⚔️ Nomad',
-    choices:[
-      {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
-      {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
-      {label:'🌊 Abyssal Trench',next:3,hint:'mystery'}
-    ]
+    choices:function(){
+      const unlocked=endings.filter(Boolean).length;
+      const extras=[];
+      if(unlocked>=12)extras.push({label:'🪞 Mirror of Aethra',next:30,requireEndings:12,hint:'12+ fates'});
+      if(unlocked>=24)extras.push({label:'🌀 Rift Walker',next:32,requireEndings:24,hint:'24+ fates'});
+      if(unlocked>=30)extras.push({label:'🌌 Celestial Pact',next:33,requireEndings:30,hint:'30+ fates'});
+      return [...baseChoices,...extras];
+    }()
   };
 
   nodes[1]={
@@ -240,17 +253,17 @@
   nodes[10]={text:'The shard awakens the god. You become its vessel. Immortal, but hollow.',endingIndex:4,choices:[]};
   nodes[11]={text:'The shard shatters, releasing a wave of pure fate. You glimpse the entire web of endings.',endingIndex:5,choices:[]};
 
-  // EXPANDED 36 ENDINGS (nodes 12-35 mapped to endings 6-29)
-  for(let i=12;i<36;i++){
-    const endIdx=i-6;
-    nodes[i]={
+  // GENERATE ENDINGS 6-29 (nodes 12-35)
+  for(let i=6;i<30;i++){
+    const nodeId=12+(i-6);
+    nodes[nodeId]={
       text:'🌀 You step through a rift in reality. A new fate crystallizes around you. The Chronos weaves your story into its tapestry.',
-      endingIndex:endIdx,
+      endingIndex:i,
       choices:[]
     };
-    nodes['end_'+(i-6)]={
-      text:'✨ FATE #'+(i-5)+' · You have claimed a unique destiny. The threads of Chronos remember your name.',
-      endingIndex:(i-6),
+    nodes['end_'+i]={
+      text:'✨ FATE #'+(i+1)+' · You have claimed a unique destiny. The threads of Chronos remember your name.',
+      endingIndex:i,
       choices:[{label:'⟳ Return to the Nexus',next:0}]
     };
   }
@@ -258,22 +271,23 @@
   // HIDDEN ENDINGS (30-35)
   nodes[30]={text:'You find the Mirror of Aethra. It reflects all your past lives. To unlock the final truth, you must have witnessed 30 fates.',choices:[{label:'🪞 Gaze into the mirror',next:31,requireEndings:30},{label:'🚶 Walk away',next:0}]};
   nodes[31]={text:'The mirror fractures. You become the Weaver of All Fates. The universe acknowledges you.',endingIndex:30,choices:[]};
+  nodes['end_30']={text:'✨ FATE #31 · The Weaver of All Fates.',endingIndex:30,choices:[{label:'⟳ Return to the Nexus',next:0}]};
+  
   nodes[32]={text:'You stumble upon a tear in the fabric of Chronos. You step through.',endingIndex:31,choices:[]};
+  nodes['end_31']={text:'✨ FATE #32 · The Rift Walker.',endingIndex:31,choices:[{label:'⟳ Return to the Nexus',next:0}]};
+  
   nodes[33]={text:'A celestial being offers you omniscience. You accept.',endingIndex:32,choices:[]};
+  nodes['end_32']={text:'✨ FATE #33 · The Omniscient.',endingIndex:32,choices:[{label:'⟳ Return to the Nexus',next:0}]};
+  
   nodes[34]={text:'You reject all fate and forge your own path. The system breaks.',endingIndex:33,choices:[]};
+  nodes['end_33']={text:'✨ FATE #34 · The Renegade.',endingIndex:33,choices:[{label:'⟳ Return to the Nexus',next:0}]};
+  
   nodes[35]={text:'You find the First Thread. You become the origin.',endingIndex:34,choices:[]};
+  nodes['end_34']={text:'✨ FATE #35 · The Origin.',endingIndex:34,choices:[{label:'⟳ Return to the Nexus',next:0}]};
 
-  // EXTRA CHOICES ADDED TO NEXUS (node 0) AFTER UNLOCKING
-  // dynamic injection via condition
-  const originalChoices=nodes[0].choices;
-  nodes[0].choices=[
-    {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
-    {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
-    {label:'🌊 Abyssal Trench',next:3,hint:'mystery'},
-    {label:'🪞 Mirror of Aethra',next:30,requireEndings:12,hint:'12+ fates'},
-    {label:'🌀 Rift Walker',next:32,requireEndings:24,hint:'24+ fates'},
-    {label:'🌌 Celestial Pact',next:33,requireEndings:30,hint:'30+ fates'}
-  ];
+  // ENDING 35 (index 35) - special final ending
+  nodes['final']={text:'The Chronos acknowledges you as its master. All 36 fates are yours. You are the Weaver of Destiny.',endingIndex:35,choices:[]};
+  nodes['end_35']={text:'✨ FATE #36 · THE WEAVER OF DESTINY. You have conquered all fates.',endingIndex:35,choices:[{label:'⟳ Return to the Nexus',next:0}]};
 
   // FIREBASE
   function saveToFirebase(){
@@ -298,7 +312,6 @@
     }).catch(()=>alert('⚠️ Load error.'));
   }
 
-  // HINT SYSTEM
   function showHint(){
     const unlocked=endings.filter(Boolean).length;
     if(unlocked>=36){alert('🔮 You have mastered all 36 fates. You are the Weaver.');return;}
