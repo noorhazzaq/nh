@@ -3,505 +3,334 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>∀rcana · 36 ends</title>
+  <title>CHRONOS · 36 FATES</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-    body {
-      background: #0b0d12;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100dvh;
-      min-height: 100vh;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      padding: 8px;
-    }
-    #game {
-      background: #151a22;
-      max-width: 600px;
-      width: 100%;
-      border-radius: 36px 36px 28px 28px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
-      padding: 20px 16px 24px;
-      color: #e7e9ee;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-      border: 1px solid #2e3643;
-      transition: all 0.1s;
-    }
-    #header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.9rem;
-      background: #1f2631;
-      padding: 10px 14px;
-      border-radius: 60px;
-      border: 1px solid #3d4657;
-      letter-spacing: 0.3px;
-    }
-    #stats span {
-      background: #2b3342;
-      padding: 4px 12px;
-      border-radius: 30px;
-      margin: 0 3px;
-      font-weight: 600;
-      color: #bcc9e6;
-    }
-    #achievement-badge {
-      background: #f5c542;
-      color: #12161e;
-      padding: 4px 14px;
-      border-radius: 40px;
-      font-weight: 700;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      border: 1px solid #ffd966;
-      box-shadow: 0 0 8px #f5c54255;
-      display: inline-block;
-    }
-    #story-box {
-      background: #0f131c;
-      border-radius: 28px;
-      padding: 20px 18px;
-      min-height: 150px;
-      border: 1px solid #2f384a;
-      box-shadow: inset 0 4px 8px #00000033;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    #story-text {
-      font-size: 1rem;
-      line-height: 1.5;
-      font-weight: 400;
-      color: #d3dbe8;
-      word-break: break-word;
-    }
-    #role-display {
-      font-size: 0.8rem;
-      background: #1e2633;
-      padding: 6px 14px;
-      border-radius: 40px;
-      align-self: flex-start;
-      border: 1px solid #4d5a70;
-      color: #b3c7e6;
-    }
-    #choices {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin: 6px 0 4px;
-    }
-    .choice-btn {
-      background: #1f2735;
-      border: 1px solid #3b465c;
-      border-radius: 60px;
-      padding: 14px 20px;
-      font-size: 1rem;
-      font-weight: 500;
-      color: #dce3f0;
-      text-align: left;
-      transition: all 0.08s linear;
-      width: 100%;
-      box-shadow: 0 2px 0 #0b0f16;
-      letter-spacing: 0.2px;
-    }
-    .choice-btn:active {
-      background: #2e3a50;
-      transform: scale(0.98);
-      border-color: #7b8db0;
-      box-shadow: 0 1px 0 #0b0f16;
-    }
-    .choice-btn:disabled {
-      opacity: 0.45;
-      transform: none;
-      pointer-events: none;
-    }
-    #footer-actions {
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 6px;
-    }
-    .action-btn {
-      background: #1e2633;
-      border: 1px solid #3f4a60;
-      border-radius: 40px;
-      padding: 10px 18px;
-      color: #c8d4e9;
-      font-weight: 600;
-      font-size: 0.8rem;
-      flex: 1 1 auto;
-      text-align: center;
-      transition: 0.08s linear;
-      box-shadow: 0 2px 0 #0b0f16;
-      min-width: 80px;
-    }
-    .action-btn:active {
-      background: #2b364b;
-      transform: scale(0.96);
-      border-color: #6e81a8;
-    }
-    .action-btn:disabled {
-      opacity: 0.3;
-      transform: none;
-      pointer-events: none;
-    }
-    #ending-counter {
-      background: #0f131c;
-      border-radius: 40px;
-      padding: 6px 16px;
-      font-size: 0.75rem;
-      border: 1px solid #3a445a;
-      color: #a9bddb;
-      text-align: center;
-      display: inline-block;
-      margin: 0 auto;
-    }
-    #ban-message {
-      display: none;
-      background: #1f0f12;
-      color: #ffb3b3;
-      padding: 30px 16px;
-      border-radius: 40px;
-      text-align: center;
-      border: 1px solid #b34a4a;
-      font-weight: 600;
-    }
-    @media (max-width: 480px) {
-      #game { padding: 14px 10px; }
-      .choice-btn { padding: 12px 16px; font-size: 0.95rem; }
-    }
-    @media (min-width: 768px) {
-      #game { padding: 28px 24px; }
-    }
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+    body{background:#080b12;display:flex;align-items:center;justify-content:center;min-height:100dvh;min-height:100vh;font-family:'Segoe UI',system-ui,-apple-system,sans-serif;padding:6px}
+    #game{background:linear-gradient(145deg,#111820,#0a0f17);max-width:640px;width:100%;border-radius:48px 48px 32px 32px;box-shadow:0 20px 60px rgba(0,0,0,0.9),inset 0 1px 0 #2a3448;padding:18px 14px 22px;color:#e2e8f0;display:flex;flex-direction:column;gap:12px;border:1px solid #283040}
+    #hud{display:flex;justify-content:space-between;align-items:center;background:rgba(18,24,34,0.8);backdrop-filter:blur(8px);padding:10px 16px;border-radius:60px;border:1px solid #33405a;flex-wrap:wrap;gap:6px}
+    #hud-left{display:flex;gap:10px;flex-wrap:wrap}
+    .hud-item{background:#1a2332;padding:4px 14px;border-radius:40px;font-weight:600;font-size:0.8rem;color:#b7c9e6;border:1px solid #2f3d57;display:flex;align-items:center;gap:6px}
+    .hud-item .icon{font-size:1rem}
+    #hud-right{display:flex;gap:8px;align-items:center}
+    #badge{background:#f5c542;color:#0e1420;padding:4px 14px;border-radius:40px;font-weight:700;font-size:0.65rem;text-transform:uppercase;letter-spacing:0.8px;border:1px solid #ffd966;box-shadow:0 0 16px #f5c54244;white-space:nowrap}
+    #panel{background:#0c121e;border-radius:32px;padding:20px 18px;min-height:160px;border:1px solid #263040;box-shadow:inset 0 4px 20px #00000055;display:flex;flex-direction:column;gap:10px;position:relative}
+    #story{font-size:1.05rem;line-height:1.6;font-weight:400;color:#d5dfee;word-break:break-word;min-height:3.2em}
+    #role-tag{font-size:0.75rem;background:#1a2538;padding:4px 16px;border-radius:40px;align-self:flex-start;border:1px solid #4a5a78;color:#a7bfe0;font-weight:500;letter-spacing:0.3px}
+    #choices{display:flex;flex-direction:column;gap:8px;margin:4px 0 2px}
+    .choice{background:linear-gradient(135deg,#192233,#111a28);border:1px solid #334563;border-radius:60px;padding:14px 22px;font-size:0.95rem;font-weight:500;color:#dce4f2;text-align:left;transition:all 0.06s linear;width:100%;box-shadow:0 3px 0 #070b12;letter-spacing:0.2px;display:flex;align-items:center;gap:12px}
+    .choice:active{background:#293954;transform:scale(0.97);border-color:#6a80aa;box-shadow:0 1px 0 #070b12}
+    .choice:disabled{opacity:0.35;transform:none;pointer-events:none;filter:grayscale(0.6)}
+    .choice .badge{font-size:0.7rem;background:#2a3650;padding:2px 12px;border-radius:30px;color:#9bb0d0;margin-left:auto}
+    #toolbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-top:4px}
+    .tool-btn{background:#141e2e;border:1px solid #334763;border-radius:40px;padding:10px 16px;color:#c4d2ea;font-weight:600;font-size:0.75rem;flex:1 1 auto;text-align:center;transition:0.06s linear;box-shadow:0 2px 0 #080c14;min-width:70px;letter-spacing:0.3px}
+    .tool-btn:active{background:#1f2e48;transform:scale(0.95);border-color:#5a72a0}
+    .tool-btn:disabled{opacity:0.25;transform:none;pointer-events:none}
+    #progress{background:#0a101c;border-radius:40px;padding:6px 16px;font-size:0.7rem;border:1px solid #2d3d58;color:#9bb2d4;text-align:center;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    #progress-bar{flex:1;height:4px;background:#1a253a;border-radius:10px;overflow:hidden;min-width:60px}
+    #progress-fill{height:100%;width:0%;background:linear-gradient(90deg,#f5c542,#f7a63a);border-radius:10px;transition:width 0.3s}
+    #ban{display:none;background:#1a0b10;color:#ffb3b3;padding:40px 20px;border-radius:48px;text-align:center;border:1px solid #b34a4a;font-weight:600;font-size:1.1rem}
+    @media(max-width:480px){#game{padding:12px 8px}#panel{padding:16px 14px}.choice{padding:12px 16px;font-size:0.9rem}#story{font-size:0.95rem}}
+    @media(min-width:768px){#game{padding:28px 24px}#panel{padding:26px 24px}}
+    .fade-in{animation:fade 0.15s ease}
+    @keyframes fade{0%{opacity:0.5;transform:translateY(4px)}100%{opacity:1;transform:translateY(0)}}
+    .ending-glow{box-shadow:0 0 30px #f5c54233,inset 0 0 30px #f5c54211}
   </style>
 </head>
 <body>
 <div id="game">
-  <div id="header">
-    <div id="stats"><span id="hp">❤️ 10</span><span id="endings">🏆 0/36</span></div>
-    <div id="achievement-badge">✦ ACHIEVEMENT</div>
+  <div id="hud">
+    <div id="hud-left">
+      <span class="hud-item"><span class="icon">❤️</span><span id="hp">10</span></span>
+      <span class="hud-item"><span class="icon">⚡</span><span id="fate">0/36</span></span>
+      <span class="hud-item"><span class="icon">🏅</span><span id="achievements">0</span></span>
+    </div>
+    <div id="hud-right">
+      <span id="badge">✦ APPRENTICE</span>
+    </div>
   </div>
-  <div id="story-box">
-    <div id="story-text">The Veil of Aethra · choose your path</div>
-    <div id="role-display">⚔️ Wanderer</div>
+
+  <div id="panel" class="fade-in">
+    <div id="story">The Veil of Chronos parts before you. Destiny awaits.</div>
+    <div id="role-tag">⚔️ Nomad</div>
   </div>
+
   <div id="choices"></div>
-  <div id="footer-actions">
-    <button class="action-btn" id="resetBtn">⟲ RESTART</button>
-    <button class="action-btn" id="saveBtn">💾 SAVE</button>
-    <button class="action-btn" id="loadBtn">📂 LOAD</button>
+
+  <div id="toolbar">
+    <button class="tool-btn" id="resetBtn">⟳ REBIRTH</button>
+    <button class="tool-btn" id="saveBtn">💾 SAVE</button>
+    <button class="tool-btn" id="loadBtn">📂 LOAD</button>
+    <button class="tool-btn" id="hintBtn">🔮 HINT</button>
   </div>
-  <div id="ending-counter">⚡ ENDINGS UNLOCKED: <span id="endingCount">0</span> / 36</div>
-  <div id="ban-message">⚠️ ANDROID BROWSER ONLY · ACCESS DENIED</div>
+
+  <div id="progress">
+    <span>FATES UNLOCKED</span>
+    <div id="progress-bar"><div id="progress-fill" style="width:0%"></div></div>
+    <span id="progressText">0 / 36</span>
+  </div>
+
+  <div id="ban">⚠️ ANDROID BROWSER ONLY · ACCESS DENIED</div>
 </div>
+
 <script>
-  (function() {
-    if (!/android/i.test(navigator.userAgent)) {
-      document.getElementById('game').style.display = 'none';
-      document.getElementById('ban-message').style.display = 'block';
+(function(){
+  if(!/android/i.test(navigator.userAgent)){
+    document.getElementById('game').style.display='none';
+    document.getElementById('ban').style.display='block';
+    return;
+  }
+
+  const DB_URL='https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/save.json';
+  let state={};
+  let endings=new Array(36).fill(false);
+  let achievementCount=0;
+  let totalEndings=0;
+  let hintCount=0;
+
+  const el={story:document.getElementById('story'),role:document.getElementById('role-tag'),hp:document.getElementById('hp'),fate:document.getElementById('fate'),achieve:document.getElementById('achievements'),badge:document.getElementById('badge'),choices:document.getElementById('choices'),progress:document.getElementById('progress-fill'),progressText:document.getElementById('progressText')};
+
+  function updateUI(){
+    el.hp.textContent=state.hp||10;
+    const unlocked=endings.filter(Boolean).length;
+    totalEndings=unlocked;
+    el.fate.textContent=unlocked+'/36';
+    el.achieve.textContent=Math.min(unlocked,36);
+    el.progress.style.width=(unlocked/36*100)+'%';
+    el.progressText.textContent=unlocked+' / 36';
+    el.role.textContent=state.role||'⚔️ Nomad';
+    if(unlocked>=36){el.badge.textContent='✦ GOD OF FATES';el.badge.style.background='#ff6b35';el.badge.style.boxShadow='0 0 30px #ff6b3555';}
+    else if(unlocked>=24){el.badge.textContent='✦ LEGENDARY SAGE';el.badge.style.background='#a855f7';el.badge.style.boxShadow='0 0 20px #a855f744';}
+    else if(unlocked>=12){el.badge.textContent='✦ MASTER OF PATHS';el.badge.style.background='#3b82f6';el.badge.style.boxShadow='0 0 20px #3b82f644';}
+    else if(unlocked>=6){el.badge.textContent='✦ SEEKER';el.badge.style.background='#22d3ee';el.badge.style.boxShadow='0 0 20px #22d3ee33';}
+    else if(unlocked>=1){el.badge.textContent='✦ APPRENTICE';el.badge.style.background='#f5c542';el.badge.style.boxShadow='0 0 16px #f5c54244';}
+    else{el.badge.textContent='✦ INITIATE';el.badge.style.background='#64748b';el.badge.style.boxShadow='none';}
+    if(state.hp<=0){state.hp=1;}
+  }
+
+  function applyState(s){
+    state.hp=s.hp||10;
+    state.role=s.role||'⚔️ Nomad';
+    state.step=s.step||0;
+    state.flags=s.flags||{};
+    state.inventory=s.inventory||[];
+    if(s.endings){for(let i=0;i<36;i++){if(s.endings[i])endings[i]=true;}}
+    updateUI();
+  }
+
+  function defaultState(){
+    return{hp:10,role:'⚔️ Nomad',step:0,flags:{},inventory:[],endings:new Array(36).fill(false)};
+  }
+
+  function resetGame(){
+    const d=defaultState();
+    state={hp:d.hp,role:d.role,step:0,flags:{},inventory:[],endings:new Array(36).fill(false)};
+    endings.fill(false);
+    hintCount=0;
+    renderNode(0);
+    updateUI();
+  }
+
+  function renderNode(id){
+    const node=nodes[id];
+    if(!node){
+      el.story.textContent='The threads of fate unravel... return to the beginning.';
+      el.choices.innerHTML='';
       return;
     }
-    const DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/save.json';
-    let state = {};
-    const endingFlags = new Array(36).fill(false);
-    let endingCount = 0;
-    let achievementUnlocked = false;
-    const choicesEl = document.getElementById('choices');
-    const storyText = document.getElementById('story-text');
-    const roleDisplay = document.getElementById('role-display');
-    const hpSpan = document.getElementById('hp');
-    const endingSpan = document.getElementById('endings');
-    const endingCountSpan = document.getElementById('endingCount');
-    const badgeEl = document.getElementById('achievement-badge');
-    function updateUI() {
-      hpSpan.textContent = '❤️ ' + state.hp;
-      const unlocked = endingFlags.filter(Boolean).length;
-      endingCount = unlocked;
-      endingSpan.textContent = '🏆 ' + unlocked + '/36';
-      endingCountSpan.textContent = unlocked;
-      roleDisplay.textContent = state.role || '⚔️ Wanderer';
-      if (unlocked >= 36) {
-        badgeEl.textContent = '✦ GRAND MASTER · ALL ENDINGS';
-        badgeEl.style.background = '#ffb347';
-      } else if (unlocked >= 18) {
-        badgeEl.textContent = '✦ SAGE · ' + unlocked + '/36';
-        badgeEl.style.background = '#9f7aea';
-      } else if (unlocked >= 6) {
-        badgeEl.textContent = '✦ SEEKER · ' + unlocked + '/36';
-        badgeEl.style.background = '#63b3ed';
-      } else {
-        badgeEl.textContent = '✦ ACHIEVEMENT';
-        badgeEl.style.background = '#f5c542';
-      }
+    el.story.textContent=node.text;
+    if(node.role)state.role=node.role;
+    if(node.hpDelta){
+      state.hp=Math.min(15,Math.max(1,state.hp+node.hpDelta));
     }
-    function applyState(s) {
-      state.hp = s.hp || 10;
-      state.role = s.role || '⚔️ Wanderer';
-      state.step = s.step || 0;
-      state.flags = s.flags || {};
-      if (s.endings) {
-        for (let i = 0; i < 36; i++) {
-          if (s.endings[i]) endingFlags[i] = true;
-        }
-      }
-      achievementUnlocked = !!s.achievementUnlocked;
-      updateUI();
+    if(node.inventoryAdd){
+      if(!state.inventory)state.inventory=[];
+      state.inventory.push(node.inventoryAdd);
     }
-    function getDefaultState() {
-      return {
-        hp: 10,
-        role: '⚔️ Wanderer',
-        step: 0,
-        flags: {},
-        endings: new Array(36).fill(false),
-        achievementUnlocked: false
-      };
+    if(node.flags){for(let k in node.flags)state.flags[k]=node.flags[k];}
+    if(node.endingIndex!==undefined&&node.endingIndex>=0&&node.endingIndex<36){
+      if(!endings[node.endingIndex]){
+        endings[node.endingIndex]=true;
+        achievementCount++;
+      }
+      el.panel.classList.add('ending-glow');
+      setTimeout(()=>el.panel.classList.remove('ending-glow'),800);
     }
-    function resetGame() {
-      const def = getDefaultState();
-      state = { hp: def.hp, role: def.role, step: 0, flags: {}, endings: new Array(36).fill(false), achievementUnlocked: false };
-      endingFlags.fill(false);
-      achievementUnlocked = false;
-      renderStep(0);
-      updateUI();
-    }
-    function renderStep(stepId) {
-      const node = storyNodes[stepId];
-      if (!node) {
-        storyText.textContent = 'The path fades into mist… (error)';
-        choicesEl.innerHTML = '';
-        return;
-      }
-      storyText.textContent = node.text;
-      if (node.role) state.role = node.role;
-      if (node.hpDelta) {
-        state.hp = Math.min(12, Math.max(1, state.hp + node.hpDelta));
-        if (state.hp <= 0) { state.hp = 1; }
-      }
-      if (node.endingIndex !== undefined && node.endingIndex >= 0 && node.endingIndex < 36) {
-        if (!endingFlags[node.endingIndex]) {
-          endingFlags[node.endingIndex] = true;
-          achievementUnlocked = true;
-        }
-        if (endingFlags.filter(Boolean).length >= 36) {
-          badgeEl.textContent = '✦ GRAND MASTER · ALL ENDINGS';
-        }
-      }
-      if (node.flags) {
-        for (let k in node.flags) state.flags[k] = node.flags[k];
-      }
-      if (node.achievement) achievementUnlocked = true;
-      choicesEl.innerHTML = '';
-      if (node.choices && node.choices.length) {
-        node.choices.forEach((c, idx) => {
-          const btn = document.createElement('button');
-          btn.className = 'choice-btn';
-          let label = c.label;
-          if (c.condition && !c.condition(state)) {
-            btn.disabled = true;
-            label = '🔒 ' + label;
-          }
-          btn.textContent = label;
-          btn.addEventListener('click', function(e) {
-            if (btn.disabled) return;
-            if (c.next !== undefined) {
-              renderStep(c.next);
-            } else if (c.endingIndex !== undefined) {
-              const endIdx = c.endingIndex;
-              if (!endingFlags[endIdx]) {
-                endingFlags[endIdx] = true;
-                achievementUnlocked = true;
-              }
-              renderStep('ending_' + endIdx);
-            } else {
-              renderStep(0);
-            }
-            updateUI();
-          });
-          choicesEl.appendChild(btn);
-        });
-      } else {
-        const btn = document.createElement('button');
-        btn.className = 'choice-btn';
-        btn.textContent = '⟳ Continue';
-        btn.addEventListener('click', function() {
-          renderStep(0);
+    el.choices.innerHTML='';
+    if(node.choices&&node.choices.length){
+      node.choices.forEach((c)=>{
+        const btn=document.createElement('button');
+        btn.className='choice';
+        let label=c.label;
+        let disabled=false;
+        if(c.condition&&!c.condition(state)){disabled=true;label='🔒 '+label;}
+        if(c.requireEndings&&endings.filter(Boolean).length<c.requireEndings){disabled=true;label='🔒 '+label+' ('+c.requireEndings+' fates)';}
+        btn.innerHTML=label+(c.hint?'<span class="badge">'+c.hint+'</span>':'');
+        btn.disabled=disabled;
+        btn.addEventListener('click',()=>{
+          if(btn.disabled)return;
+          if(c.next!==undefined){renderNode(c.next);}
+          else if(c.endingIndex!==undefined){
+            const ei=c.endingIndex;
+            if(!endings[ei]){endings[ei]=true;achievementCount++;}
+            renderNode('end_'+ei);
+          }else{renderNode(0);}
           updateUI();
         });
-        choicesEl.appendChild(btn);
-      }
-      updateUI();
-      state.step = stepId;
+        el.choices.appendChild(btn);
+      });
+    }else{
+      const btn=document.createElement('button');
+      btn.className='choice';
+      btn.textContent='⟳ Return to crossroads';
+      btn.addEventListener('click',()=>{renderNode(0);updateUI();});
+      el.choices.appendChild(btn);
     }
-    const storyNodes = {
-      0: {
-        text: 'You stand at the crossroads of Aethra. Three paths unfurl. Which will you take?',
-        role: '⚔️ Wanderer',
-        choices: [
-          { label: '🌲 Forest of Whispers', next: 1 },
-          { label: '🏜️ Sunken Dunes', next: 2 },
-          { label: '🌊 Ashen Coast', next: 3 }
-        ]
-      },
-      1: {
-        text: 'The forest hums with ancient magic. A spirit offers you a boon: +2 HP, but you lose memory of your past.',
-        hpDelta: 2,
-        choices: [
-          { label: 'Accept the boon', next: 4, flags: { memory: false } },
-          { label: 'Refuse and press deeper', next: 5 }
-        ]
-      },
-      2: {
-        text: 'Scorching winds cut through the dunes. A ruined city reveals a hidden vault.',
-        choices: [
-          { label: 'Enter the vault (risk)', next: 6 },
-          { label: 'Turn back', next: 0 }
-        ]
-      },
-      3: {
-        text: 'The coast is littered with wreckage. A stranded sailor begs for aid.',
-        choices: [
-          { label: 'Help the sailor', next: 7, flags: { savedSailor: true } },
-          { label: 'Loot the wreck', next: 8 }
-        ]
-      },
-      4: {
-        text: 'You feel stronger but hollow. The spirit cackles. You are bound to the forest forever.',
-        endingIndex: 0,
-        choices: []
-      },
-      5: {
-        text: 'You find a hidden grove. An old hermit teaches you the way of the blade.',
-        role: '⚔️ Blademaster',
-        choices: [
-          { label: 'Train with him', next: 9 },
-          { label: 'Leave', next: 0 }
-        ]
-      },
-      6: {
-        text: 'The vault is a trap! You escape with a cursed artifact. HP -3.',
-        hpDelta: -3,
-        choices: [
-          { label: 'Throw it away', next: 10 },
-          { label: 'Keep it', next: 11 }
-        ]
-      },
-      7: {
-        text: 'The sailor gives you a compass that points to treasure. But the sea calls you…',
-        choices: [
-          { label: 'Follow the compass', next: 12 },
-          { label: 'Return to shore', next: 0 }
-        ]
-      },
-      8: {
-        text: 'You find a cursed crown. It whispers dark secrets. Your mind twists.',
-        endingIndex: 1,
-        choices: []
-      },
-      9: {
-        text: 'You become a master of the blade. But the hermit reveals his true form: a demon.',
-        choices: [
-          { label: 'Fight the demon', next: 13 },
-          { label: 'Flee', next: 0 }
-        ]
-      },
-      10: {
-        text: 'The artifact shatters, releasing a spirit. It grants you a glimpse of all endings.',
-        endingIndex: 2,
-        choices: []
-      },
-      11: {
-        text: 'The artifact devours your soul. You become a lich.',
-        endingIndex: 3,
-        choices: []
-      },
-      12: {
-        text: 'The compass leads to a sunken temple. You awaken an ancient god.',
-        endingIndex: 4,
-        choices: []
-      },
-      13: {
-        text: 'You slay the demon but are mortally wounded. Your legend ends.',
-        endingIndex: 5,
-        choices: []
-      },
+    state.step=id;
+    updateUI();
+    el.panel.classList.remove('fade-in');
+    void el.panel.offsetWidth;
+    el.panel.classList.add('fade-in');
+  }
+
+  const nodes={};
+
+  // CORE NODES
+  nodes[0]={
+    text:'🌌 The Nexus of Chronos. Three paths spiral into infinity. Each choice weaves a new fate. Which thread will you pull?',
+    role:'⚔️ Nomad',
+    choices:[
+      {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
+      {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
+      {label:'🌊 Abyssal Trench',next:3,hint:'mystery'}
+    ]
+  };
+
+  nodes[1]={
+    text:'The Labyrinth breathes with sentient flora. A Dryad offers you the Fruit of Rebirth (+3 HP) but you forget a part of yourself.',
+    hpDelta:3,
+    choices:[
+      {label:'🍎 Accept the fruit',next:4,flags:{memory:false}},
+      {label:'🌱 Refuse and delve deeper',next:5}
+    ]
+  };
+
+  nodes[2]={
+    text:'The Wastes shimmer with heat. A colossal skeleton of a god lies half-buried. Its ribcage hides a vault.',
+    choices:[
+      {label:'⚰️ Enter the vault',next:6},
+      {label:'🏃 Turn back',next:0}
+    ]
+  };
+
+  nodes[3]={
+    text:'The Trench pulses with bioluminescence. A drowned city spirals downward. A siren offers you a deal.',
+    choices:[
+      {label:'🎵 Accept the siren\'s deal',next:7,flags:{sirenDeal:true}},
+      {label:'🏊 Dive alone into the abyss',next:8}
+    ]
+  };
+
+  nodes[4]={text:'The Fruit binds you to the Labyrinth. You become its eternal guardian, watching over all who enter.',endingIndex:0,choices:[]};
+  nodes[5]={text:'You find a grove of memory. An ancient treant teaches you the way of the Roots.',role:'🌳 Rootwarden',choices:[{label:'🌿 Learn the Rootway',next:9},{label:'🚶 Leave',next:0}]};
+  nodes[6]={text:'The vault contains a shard of the god\'s heart. It pulses with power. But the god\'s curse drains you.',hpDelta:-2,choices:[{label:'💎 Keep the shard',next:10,flags:{godShard:true}},{label:'🗑️ Discard it',next:11}]};
+  nodes[7]={text:'The siren grants you gills and a map to the sunken throne. But you can never leave the deep.',endingIndex:1,choices:[]};
+  nodes[8]={text:'You find a relic of the drowned king. It shows you all possible deaths.',endingIndex:2,choices:[]};
+  nodes[9]={text:'The Rootwarden reveals the Labyrinth\'s heart. You become one with the forest.',endingIndex:3,choices:[]};
+  nodes[10]={text:'The shard awakens the god. You become its vessel. Immortal, but hollow.',endingIndex:4,choices:[]};
+  nodes[11]={text:'The shard shatters, releasing a wave of pure fate. You glimpse the entire web of endings.',endingIndex:5,choices:[]};
+
+  // EXPANDED 36 ENDINGS (nodes 12-35 mapped to endings 6-29)
+  for(let i=12;i<36;i++){
+    const endIdx=i-6;
+    nodes[i]={
+      text:'🌀 You step through a rift in reality. A new fate crystallizes around you. The Chronos weaves your story into its tapestry.',
+      endingIndex:endIdx,
+      choices:[]
     };
-    for (let i = 0; i < 36; i++) {
-      if (!storyNodes['ending_' + i]) {
-        storyNodes['ending_' + i] = {
-          text: '✨ ENDING ' + (i+1) + ' · You have reached a unique fate. The threads of Aethra remember.',
-          endingIndex: i,
-          choices: [{ label: 'Return to the crossroads', next: 0 }]
-        };
-      }
-    }
-    storyNodes[0].choices.push({ label: '✨ Seek the hidden ending', next: 14 });
-    storyNodes[14] = {
-      text: 'You find a mirror that shows all possibilities. To unlock the final ending, you must have seen at least 30 endings.',
-      choices: [
-        { label: 'Gaze into the mirror', next: 15, condition: (s) => endingFlags.filter(Boolean).length >= 30 },
-        { label: 'Walk away', next: 0 }
-      ]
+    nodes['end_'+(i-6)]={
+      text:'✨ FATE #'+(i-5)+' · You have claimed a unique destiny. The threads of Chronos remember your name.',
+      endingIndex:(i-6),
+      choices:[{label:'⟳ Return to the Nexus',next:0}]
     };
-    storyNodes[15] = {
-      text: 'The mirror shatters. You become the Keeper of All Ends. The universe bows.',
-      endingIndex: 35,
-      choices: []
+  }
+
+  // HIDDEN ENDINGS (30-35)
+  nodes[30]={text:'You find the Mirror of Aethra. It reflects all your past lives. To unlock the final truth, you must have witnessed 30 fates.',choices:[{label:'🪞 Gaze into the mirror',next:31,requireEndings:30},{label:'🚶 Walk away',next:0}]};
+  nodes[31]={text:'The mirror fractures. You become the Weaver of All Fates. The universe acknowledges you.',endingIndex:30,choices:[]};
+  nodes[32]={text:'You stumble upon a tear in the fabric of Chronos. You step through.',endingIndex:31,choices:[]};
+  nodes[33]={text:'A celestial being offers you omniscience. You accept.',endingIndex:32,choices:[]};
+  nodes[34]={text:'You reject all fate and forge your own path. The system breaks.',endingIndex:33,choices:[]};
+  nodes[35]={text:'You find the First Thread. You become the origin.',endingIndex:34,choices:[]};
+
+  // EXTRA CHOICES ADDED TO NEXUS (node 0) AFTER UNLOCKING
+  // dynamic injection via condition
+  const originalChoices=nodes[0].choices;
+  nodes[0].choices=[
+    {label:'🌿 Verdant Labyrinth',next:1,hint:'life +2'},
+    {label:'🏜️ Obsidian Wastes',next:2,hint:'risk + treasure'},
+    {label:'🌊 Abyssal Trench',next:3,hint:'mystery'},
+    {label:'🪞 Mirror of Aethra',next:30,requireEndings:12,hint:'12+ fates'},
+    {label:'🌀 Rift Walker',next:32,requireEndings:24,hint:'24+ fates'},
+    {label:'🌌 Celestial Pact',next:33,requireEndings:30,hint:'30+ fates'}
+  ];
+
+  // FIREBASE
+  function saveToFirebase(){
+    const payload={
+      hp:state.hp,
+      role:state.role,
+      step:state.step,
+      flags:state.flags||{},
+      inventory:state.inventory||[],
+      endings:endings,
+      achievementCount:achievementCount
     };
-    function saveToFirebase() {
-      const payload = {
-        hp: state.hp,
-        role: state.role,
-        step: state.step,
-        flags: state.flags || {},
-        endings: endingFlags,
-        achievementUnlocked: achievementUnlocked
-      };
-      fetch(DB_URL, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(r => {
-        if (r.ok) alert('💾 Save successful.');
-        else alert('⚠️ Save error.');
-      }).catch(() => alert('⚠️ Network error.'));
+    fetch(DB_URL,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(r=>{if(r.ok)alert('💾 Fate saved.');else alert('⚠️ Save failed.');})
+    .catch(()=>alert('⚠️ Network error.'));
+  }
+
+  function loadFromFirebase(){
+    fetch(DB_URL).then(r=>r.json()).then(data=>{
+      if(data){applyState(data);renderNode(data.step||0);alert('📂 Fate restored.');}
+      else{alert('⚠️ No save found.');}
+    }).catch(()=>alert('⚠️ Load error.'));
+  }
+
+  // HINT SYSTEM
+  function showHint(){
+    const unlocked=endings.filter(Boolean).length;
+    if(unlocked>=36){alert('🔮 You have mastered all 36 fates. You are the Weaver.');return;}
+    const remaining=36-unlocked;
+    const hints=[
+      'Try the Forest path for early endings.',
+      'The Dunes hold cursed treasures.',
+      'The Coast leads to deep mysteries.',
+      'Return to the Nexus after unlocking 12+ fates.',
+      'The Mirror appears after 12 fates.',
+      'The Rift opens after 24 fates.',
+      'Celestial Pact requires 30 fates.',
+      'Explore every branch. Some endings are hidden in loops.',
+      'Save often. Load to retry branches.'
+    ];
+    alert('🔮 '+hints[hintCount%hints.length]+' ('+remaining+' fates remaining)');
+    hintCount++;
+  }
+
+  document.getElementById('resetBtn').addEventListener('click',resetGame);
+  document.getElementById('saveBtn').addEventListener('click',saveToFirebase);
+  document.getElementById('loadBtn').addEventListener('click',loadFromFirebase);
+  document.getElementById('hintBtn').addEventListener('click',showHint);
+
+  resetGame();
+  window.addEventListener('load',()=>{
+    if(/android/i.test(navigator.userAgent)){
+      document.getElementById('game').style.display='flex';
+      document.getElementById('ban').style.display='none';
     }
-    function loadFromFirebase() {
-      fetch(DB_URL)
-        .then(r => r.json())
-        .then(data => {
-          if (data) {
-            applyState(data);
-            renderStep(data.step || 0);
-            alert('📂 Load successful.');
-          } else {
-            alert('⚠️ No save found.');
-          }
-        }).catch(() => alert('⚠️ Load error.'));
-    }
-    document.getElementById('resetBtn').addEventListener('click', resetGame);
-    document.getElementById('saveBtn').addEventListener('click', saveToFirebase);
-    document.getElementById('loadBtn').addEventListener('click', loadFromFirebase);
-    resetGame();
-    window.addEventListener('load', function() {
-      if (/android/i.test(navigator.userAgent)) {
-        document.getElementById('game').style.display = 'flex';
-        document.getElementById('ban-message').style.display = 'none';
-      }
-    });
-  })();
+  });
+})();
 </script>
 </body>
 </html>
