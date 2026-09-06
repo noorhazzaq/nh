@@ -3,33 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>FOUR PATHS RPG</title>
+<title>NEON 4 PATHS RPG</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;font-family:system-ui,'Segoe UI',Roboto,sans-serif;background:#0b0e14;color:#e8edf5;touch-action:manipulation}
-#app{display:flex;flex-direction:column;width:100%;height:100%;max-width:720px;margin:0 auto;padding:12px;background:linear-gradient(145deg,#131a24,#0b0f16);box-shadow:0 0 40px rgba(0,0,0,0.8)}
-#screen{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:8px;border-radius:28px;background:rgba(20,28,40,0.5);backdrop-filter:blur(4px);border:1px solid #2d3f52;min-height:0}
-#title{font-size:clamp(1.6rem,8vw,2.8rem);font-weight:700;letter-spacing:2px;text-shadow:0 0 12px #3b6ea0;color:#b4d9ff;margin-bottom:6px;text-align:center}
-#sub{font-size:clamp(0.7rem,2.5vw,1rem);color:#7b9ec0;text-align:center;margin-bottom:12px;border-bottom:1px solid #2a3a4a;padding-bottom:8px;width:80%}
-#story{width:100%;min-height:clamp(120px,30vh,200px);padding:12px 10px;background:#0d141e;border-radius:18px;border:1px solid #2c4055;font-size:clamp(0.95rem,2.8vw,1.25rem);line-height:1.5;display:flex;align-items:center;justify-content:center;text-align:center;color:#d6e6ff;box-shadow:inset 0 0 20px #00000055;overflow-y:auto;word-break:break-word}
-#choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:14px 0;flex:0 0 auto}
-.choice{background:#1d2b3a;border:1px solid #3d5770;border-radius:60px;padding:clamp(10px,2.5vh,16px) 6px;font-size:clamp(0.8rem,2.2vw,1.1rem);font-weight:600;color:#d0e2ff;text-align:center;cursor:pointer;box-shadow:0 4px 0 #0a1118;transition:all 0.08s ease;touch-action:manipulation;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.choice:active{transform:translateY(3px);box-shadow:0 1px 0 #0a1118;background:#2a3f54}
-.choice.disabled{opacity:0.3;pointer-events:none;filter:grayscale(0.6)}
-#info-panel{display:flex;justify-content:space-between;width:100%;padding:6px 10px;background:#111c28;border-radius:40px;border:1px solid #2a3d50;font-size:clamp(0.6rem,1.8vw,0.9rem);color:#9ab8d6;flex-wrap:wrap;gap:4px 8px;margin-top:4px}
-.badge{background:#1f3142;padding:2px 12px;border-radius:40px;border:1px solid #3c5770}
-#resetBtn{background:#2a1f2e;border:1px solid #6b4a5a;border-radius:40px;padding:6px 14px;font-weight:700;color:#eac6d4;cursor:pointer;font-size:clamp(0.7rem,2vw,0.95rem);transition:0.1s;touch-action:manipulation}
-#resetBtn:active{background:#432f3b;transform:scale(0.95)}
-@media(max-width:480px){#choices{gap:8px}.choice{border-radius:30px;padding:12px 4px;font-size:0.85rem}}
-@media(orientation:landscape) and (max-height:500px){#story{min-height:80px;padding:8px}#choices{gap:6px;margin:8px 0}.choice{padding:8px 4px}}
+html,body{width:100%;height:100%;overflow:hidden;background:#06080c;font-family:'Segoe UI',system-ui,sans-serif;touch-action:manipulation}
+#app{display:flex;flex-direction:column;width:100%;height:100%;max-width:480px;margin:0 auto;padding:10px;background:radial-gradient(ellipse at 30% 20%,#0f1a2a,#05080c);box-shadow:0 0 60px #00a6ff22}
+#screen{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:10px 6px;border-radius:32px;background:rgba(8,16,28,0.65);backdrop-filter:blur(8px);border:1px solid #2a6a9a;box-shadow:0 0 30px #0088ff33,inset 0 0 60px #00224455;min-height:0;position:relative}
+#screen::before{content:'';position:absolute;inset:-2px;border-radius:34px;padding:2px;background:conic-gradient(from 0deg,#00ccff,#a855f7,#00ccff,#a855f7,#00ccff);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none;opacity:0.5;animation:borderPulse 3s ease-in-out infinite}
+@keyframes borderPulse{0%,100%{opacity:0.3}50%{opacity:0.9}}
+#title{font-size:clamp(1.8rem,9vw,3rem);font-weight:900;background:linear-gradient(135deg,#7dd3fc,#a78bfa,#7dd3fc);background-size:300% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 40px #0088ff66,0 0 80px #a855f744;letter-spacing:3px;margin-bottom:2px;filter:drop-shadow(0 0 20px #00aaff55);animation:gradientShift 4s ease-in-out infinite}
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+#sub{font-size:clamp(0.6rem,2vw,0.9rem);color:#7ab8e6;letter-spacing:4px;text-transform:uppercase;text-shadow:0 0 20px #0088ff66;border-bottom:1px solid #2a6a9a55;padding-bottom:6px;width:75%;text-align:center;margin-bottom:8px}
+#story{width:100%;min-height:clamp(100px,28vh,180px);padding:14px 12px;background:rgba(0,12,28,0.7);border-radius:20px;border:1px solid #2a8acc66;box-shadow:inset 0 0 40px #001a3366,0 0 30px #0088ff22;font-size:clamp(0.9rem,2.6vw,1.2rem);line-height:1.6;display:flex;align-items:center;justify-content:center;text-align:center;color:#d6ecff;overflow-y:auto;word-break:break-word;backdrop-filter:blur(4px);transition:all 0.2s;text-shadow:0 0 12px #0088ff55}
+#choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:12px 0;flex:0 0 auto}
+.choice{background:linear-gradient(145deg,#0f1f2e,#08141f);border:1px solid #2a7aaa;border-radius:60px;padding:clamp(10px,2.4vh,16px) 4px;font-size:clamp(0.7rem,2.1vw,1rem);font-weight:700;color:#b8dcff;text-align:center;cursor:pointer;box-shadow:0 4px 0 #001a2a,0 0 20px #0088ff22;transition:all 0.1s ease;touch-action:manipulation;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;text-shadow:0 0 8px #0088ff44}
+.choice::after{content:'';position:absolute;inset:1px;border-radius:60px;background:linear-gradient(135deg,#00aaff11,#a855f711);pointer-events:none;opacity:0}
+.choice:active{transform:translateY(3px);box-shadow:0 1px 0 #001a2a,0 0 40px #00aaff66;background:linear-gradient(145deg,#1a2f42,#0b1a28);border-color:#4a9adf}
+.choice.disabled{opacity:0.25;pointer-events:none;filter:grayscale(0.8);box-shadow:none}
+.choice[data-idx="0"]{border-color:#ff6b6b88;box-shadow:0 4px 0 #4a1a1a,0 0 25px #ff6b6b33}
+.choice[data-idx="1"]{border-color:#6b6bff88;box-shadow:0 4px 0 #1a1a4a,0 0 25px #6b6bff33}
+.choice[data-idx="2"]{border-color:#6bff6b88;box-shadow:0 4px 0 #1a4a1a,0 0 25px #6bff6b33}
+.choice[data-idx="3"]{border-color:#ffb86b88;box-shadow:0 4px 0 #4a2a1a,0 0 25px #ffb86b33}
+#info-panel{display:flex;justify-content:space-between;align-items:center;width:100%;padding:6px 12px;background:rgba(0,12,24,0.7);border-radius:60px;border:1px solid #2a7aaa66;backdrop-filter:blur(4px);font-size:clamp(0.55rem,1.7vw,0.85rem);color:#8ac0e6;flex-wrap:wrap;gap:4px 6px;margin-top:4px;box-shadow:0 0 20px #0088ff22}
+.badge{background:rgba(0,20,44,0.7);padding:2px 14px;border-radius:40px;border:1px solid #3a8acc66;box-shadow:0 0 15px #0088ff22;text-shadow:0 0 8px #0088ff66;font-weight:600;color:#b0dcff}
+#resetBtn{background:linear-gradient(145deg,#1a0a1e,#2a1028);border:1px solid #b06a8a;border-radius:40px;padding:4px 16px;font-weight:800;color:#f0c8da;cursor:pointer;font-size:clamp(0.6rem,1.8vw,0.9rem);transition:0.1s;touch-action:manipulation;box-shadow:0 0 25px #b06a8a33;text-shadow:0 0 12px #ff88aa44;letter-spacing:1px}
+#resetBtn:active{background:linear-gradient(145deg,#2a1428,#3a1a30);transform:scale(0.94);box-shadow:0 0 40px #ff88aa66}
+@media(max-width:420px){#choices{gap:7px}.choice{border-radius:30px;padding:10px 2px;font-size:0.75rem;white-space:normal}}
+@media(orientation:landscape) and (max-height:500px){#story{min-height:70px;padding:8px}#choices{gap:6px;margin:6px 0}.choice{padding:6px 2px;font-size:0.7rem}#info-panel{padding:4px 8px}}
+.glow-pulse{animation:glowPulse 2.2s ease-in-out infinite}
+@keyframes glowPulse{0%,100%{text-shadow:0 0 8px #0088ff44}50%{text-shadow:0 0 25px #00aaffaa,0 0 60px #a855f766}}
 </style>
 </head>
 <body>
 <div id="app">
 <div id="screen">
-<div id="title">✦ 4 PATHS ✦</div>
+<div id="title">✦ NEON 4 ✦</div>
 <div id="sub">role · story · ending · consequence</div>
-<div id="story">Choose your role to begin the prophecy.</div>
+<div id="story" class="glow-pulse">Choose your role to begin the prophecy.</div>
 <div id="choices">
 <div class="choice" data-idx="0">⚔️ WARRIOR</div>
 <div class="choice" data-idx="1">🌀 MAGE</div>
@@ -49,30 +59,30 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:system-ui,'Segoe UI
 "use strict";
 const STATE={role:null,path:0,step:0,ending:null,consequence:null,storyIndex:0,gameOver:false};
 const ROLES=[
-{id:'warrior',label:'WARRIOR',icon:'⚔️',color:'#b87333'},
-{id:'mage',label:'MAGE',icon:'🌀',color:'#6a5acd'},
-{id:'rogue',label:'ROGUE',icon:'🗡️',color:'#2e8b57'},
-{id:'cleric',label:'CLERIC',icon:'🛡️',color:'#c0a050'}
+{id:'warrior',label:'WARRIOR',icon:'⚔️',color:'#ff6b6b'},
+{id:'mage',label:'MAGE',icon:'🌀',color:'#6b6bff'},
+{id:'rogue',label:'ROGUE',icon:'🗡️',color:'#6bff6b'},
+{id:'cleric',label:'CLERIC',icon:'🛡️',color:'#ffb86b'}
 ];
 const STORIES=[
-{role:'warrior',text:'You are Kaelen, the Iron Vanguard. The northland burns. Your kin are scattered. A warlock offers a cursed blade — but your oath demands honor. Choose your path.',choices:['Take the cursed blade','Refuse and rally the clans','Seek the mountain oracle','March alone to the dark keep']},
-{role:'mage',text:'Lyra of the Amber Spire. The Veil tears — demons seep through. The High Council is paralyzed. You hold a forbidden scroll that could seal the rift — or destroy the realm.',choices:['Read the forbidden scroll','Burn the scroll and fight','Summon the elder elemental','Flee to the southern isles']},
-{role:'rogue',text:'Shadow — no true name. The Crimson Syndicate betrayed you. A vial of ichor can give you godlike speed, but each use consumes your memory. The assassin\'s guild watches.',choices:['Drink the ichor','Sell the vial for gold','Ambush the guildmaster','Disguise and infiltrate']},
-{role:'cleric',text:'Seraphine, Lightbringer. The plague of undeath spreads from the catacombs. Your faith wavers — a demon offers a cure in exchange for your soul. The cathedral is besieged.',choices:['Accept the demon\'s pact','Purify the catacombs with fire','Preach hope to the survivors','Seek the lost relic of dawn']}
+{role:'warrior',text:'Kaelen, Iron Vanguard. Northland burns. Kin scattered. A warlock offers a cursed blade — but honor demands a choice.',choices:['Take cursed blade','Rally the clans','Seek mountain oracle','March alone to dark keep']},
+{role:'mage',text:'Lyra of Amber Spire. The Veil tears — demons seep through. The High Council is frozen. A forbidden scroll could seal the rift.',choices:['Read forbidden scroll','Burn scroll & fight','Summon elder elemental','Flee to southern isles']},
+{role:'rogue',text:'Shadow — no true name. Crimson Syndicate betrayed you. A vial of ichor grants godlike speed, but consumes memory.',choices:['Drink the ichor','Sell vial for gold','Ambush guildmaster','Disguise & infiltrate']},
+{role:'cleric',text:'Seraphine, Lightbringer. Undeath spreads from catacombs. Faith wavers — a demon offers a cure for your soul.',choices:['Accept demon pact','Purify with fire','Preach hope to survivors','Seek lost relic of dawn']}
 ];
 const CONSEQUENCES=[
-{role:'warrior',choice0:'Cursed blade consumes you — you become a dark warlord.',choice1:'Clans unite under your banner, the north is free.',choice2:'The oracle reveals a forgotten alliance — victory is certain.',choice3:'Alone you slay the warlock, but die from your wounds.'},
-{role:'mage',choice0:'The scroll unleashes chaos — you become a living rift.',choice1:'Fire purges the demons, but half the city burns.',choice2:'Elemental crushes the demons, but you lose control.',choice3:'You survive, but the realm falls to darkness.'},
-{role:'rogue',choice0:'Speed unmatched — you become a ghost, but forget your past.',choice1:'Gold buys power — you lead a new syndicate.',choice2:'You kill the guildmaster — but become the new tyrant.',choice3:'You escape, free, but the ichor is lost forever.'},
-{role:'cleric',choice0:'Your soul is damned — you become a death knight.',choice1:'Fire cleanses the catacombs, but you are scarred.',choice2:'Hope rallies the people — a new age of faith.',choice3:'Relic burns the undead — you ascend as a saint.'}
+{role:'warrior',choice0:'Cursed blade consumes — you become a dark warlord.',choice1:'Clans unite under your banner — north is free.',choice2:'Oracle reveals alliance — victory assured.',choice3:'Alone you slay warlock, but die from wounds.'},
+{role:'mage',choice0:'Scroll unleashes chaos — you become a living rift.',choice1:'Fire purges demons, half the city burns.',choice2:'Elemental crushes demons, but you lose control.',choice3:'You survive, but realm falls to darkness.'},
+{role:'rogue',choice0:'Speed unmatched — ghost, but forget your past.',choice1:'Gold buys power — you lead new syndicate.',choice2:'Kill guildmaster — become new tyrant.',choice3:'Escape free, but ichor is lost forever.'},
+{role:'cleric',choice0:'Soul damned — you become a death knight.',choice1:'Fire cleanses catacombs, you are scarred.',choice2:'Hope rallies people — new age of faith.',choice3:'Relic burns undead — you ascend as saint.'}
 ];
 const ENDINGS={
-warrior:['Dark Warlord','Northward King','Oracle\'s Champion','Martyr of the North'],
+warrior:['Dark Warlord','Northward King','Oracle Champion','Martyr of North'],
 mage:['Riftwalker','Ashen Reformer','Elemental Thrall','Fugitive Seer'],
 rogue:['Memoryless Phantom','Gold Emperor','Shadow Tyrant','Free Exile'],
 cleric:['Death Knight','Scarred Purifier','Radiant Prophet','Ascended Saint']
 };
-const pathLabels=['FIRST PATH','SECOND PATH','THIRD PATH','FOURTH PATH'];
+const pathLabels=['FIRST','SECOND','THIRD','FOURTH'];
 
 const storyEl=document.getElementById('story');
 const choicesEl=document.getElementById('choices');
@@ -87,9 +97,13 @@ roleDisplay.textContent=r?`ROLE: ${r.icon} ${r.label}`:'ROLE: —';
 pathDisplay.textContent=`PATH: ${STATE.path+1}/4`;
 endingDisplay.textContent=STATE.ending?`ENDING: ${STATE.ending}`:'ENDING: —';
 if(STATE.gameOver){
-storyEl.textContent=`${STATE.consequence||'The prophecy ends.'} [GAME OVER]`;
+storyEl.textContent=`${STATE.consequence||'The prophecy ends.'} ✦ GAME OVER`;
 document.querySelectorAll('.choice').forEach(b=>b.classList.add('disabled'));
+storyEl.classList.remove('glow-pulse');
+storyEl.style.textShadow='0 0 30px #ff6b6b88,0 0 60px #ff6b6b44';
 }else{
+storyEl.classList.add('glow-pulse');
+storyEl.style.textShadow='';
 const story=STORIES.find(s=>s.role===STATE.role?.id);
 if(story&&STATE.step<4){
 storyEl.textContent=story.text;
@@ -106,8 +120,14 @@ btn.dataset.idx=i;
 storyEl.textContent='Your legend is written. The realm remembers your deeds.';
 document.querySelectorAll('.choice').forEach(b=>b.classList.add('disabled'));
 }else{
-storyEl.textContent='Choose your role to begin.';
-document.querySelectorAll('.choice').forEach(b=>b.classList.remove('disabled'));
+storyEl.textContent='Choose your role to begin the prophecy.';
+document.querySelectorAll('.choice').forEach((btn,i)=>{
+btn.classList.remove('disabled');
+if(i<4){
+btn.textContent=ROLES[i]?`${ROLES[i].icon} ${ROLES[i].label}`:'—';
+btn.dataset.idx=i;
+}else{btn.classList.add('disabled');}
+});
 }
 }
 }
@@ -181,6 +201,8 @@ STATE.ending=null;
 STATE.consequence=null;
 STATE.gameOver=false;
 storyEl.textContent='Choose your role to begin the prophecy.';
+storyEl.classList.add('glow-pulse');
+storyEl.style.textShadow='';
 const btns=document.querySelectorAll('.choice');
 btns.forEach((btn,i)=>{
 btn.classList.remove('disabled');
@@ -235,7 +257,7 @@ choicesEl.addEventListener('click',handleChoice);
 resetBtn.addEventListener('click',resetGame);
 document.addEventListener('touchmove',function(e){if(e.target.closest('#story')||e.target.closest('.choice')){e.preventDefault();}},{passive:false});
 if(/android/i.test(navigator.userAgent)===false){
-document.body.innerHTML='<div style="display:flex;height:100vh;align-items:center;justify-content:center;background:#0b0e14;color:#d0dae8;font-size:1.8rem;padding:20px;text-align:center;font-family:sans-serif;">🚫 ANDROID BROWSER ONLY<br><span style="font-size:1rem;color:#6a7f96">this experience is crafted for Android devices</span></div>';
+document.body.innerHTML='<div style="display:flex;height:100vh;align-items:center;justify-content:center;background:#06080c;color:#b0c8e0;font-size:1.8rem;padding:20px;text-align:center;font-family:sans-serif;flex-direction:column;gap:12px">🚫 ANDROID BROWSER ONLY<br><span style="font-size:1rem;color:#4a7a9a">this neon realm is forged for Android devices</span></div>';
 return;
 }
 }
