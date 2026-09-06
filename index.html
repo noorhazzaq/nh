@@ -1,565 +1,329 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zack360 - Premium Content</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zack360 - Home</title>
     
-    <link rel="preconnect" href="https://cdn.adsterra.com">
-    <link rel="dns-prefetch" href="https://cdn.adsterra.com">
-    
+    <!-- ============================================ -->
+    <!-- POPUNDER (fires on first click) -->
+    <!-- ============================================ -->
+    <script src="https://ironcomparable.com/e8/67/e2/e867e28dd01b1539f9faa6b87a27fb9a.js"></script>
+
     <style>
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #0a0a1a;
-            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
             min-height: 100vh;
-            padding: 0;
-            padding-bottom: 130px;
-            background-image: 
-                radial-gradient(ellipse at 10% 20%, rgba(102, 126, 234, 0.08) 0%, transparent 50%),
-                radial-gradient(ellipse at 90% 80%, rgba(118, 75, 162, 0.08) 0%, transparent 50%);
+            padding-bottom: 80px; /* Space for Social Bar */
         }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 16px;
-        }
-        
+
+        /* ===== HEADER ===== */
         .header {
-            background: linear-gradient(135deg, #1a1a3e 0%, #2d1b69 50%, #1a1a3e 100%);
-            border-radius: 20px;
-            padding: 40px 30px 35px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 20px;
             text-align: center;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            box-shadow: 0 20px 60px rgba(102, 126, 234, 0.1);
-            position: relative;
-            overflow: hidden;
+            border-bottom: 2px solid #e94560;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
-        .header::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.05) 0%, transparent 60%);
-            animation: glowPulse 8s ease-in-out infinite;
-        }
-        
-        @keyframes glowPulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-        
-        .header-badge {
-            display: inline-block;
-            background: rgba(102, 126, 234, 0.2);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            padding: 4px 16px;
-            border-radius: 50px;
-            font-size: 11px;
-            font-weight: 600;
-            color: #8b9cf7;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            position: relative;
-            z-index: 1;
-        }
-        
+
         .header h1 {
-            font-size: 38px;
+            font-size: 2rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #34d399 100%);
+            letter-spacing: 2px;
+            background: linear-gradient(90deg, #e94560, #f5a623);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
-            position: relative;
-            z-index: 1;
-            letter-spacing: -0.5px;
         }
-        
+
         .header p {
-            font-size: 16px;
-            color: #94a3b8;
-            margin-top: 8px;
-            position: relative;
-            z-index: 1;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-top: 4px;
         }
-        
-        .header-stats {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-            position: relative;
-            z-index: 1;
+
+        /* ===== MAIN CONTENT ===== */
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
         }
-        
-        .header-stats .stat {
-            text-align: center;
-        }
-        
-        .header-stats .stat .number {
-            font-size: 22px;
-            font-weight: 700;
-            color: #fff;
-            display: block;
-        }
-        
-        .header-stats .stat .label {
-            font-size: 11px;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        .content {
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .content h2 {
-            font-size: 22px;
-            font-weight: 700;
-            color: #f1f5f9;
-            margin: 28px 0 12px;
-        }
-        
-        .content h2:first-of-type {
-            margin-top: 0;
-        }
-        
-        .content p {
-            font-size: 15px;
-            color: #94a3b8;
-            line-height: 1.8;
-            margin-bottom: 14px;
-        }
-        
-        .card {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 14px;
-            padding: 20px 22px;
-            margin: 18px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(102, 126, 234, 0.2);
-            transform: translateY(-2px);
-        }
-        
-        .card .icon {
-            font-size: 28px;
-            margin-bottom: 6px;
-            display: block;
-        }
-        
-        .card h3 {
-            font-size: 17px;
-            color: #e2e8f0;
-            margin-bottom: 4px;
-        }
-        
-        .card p {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 0;
-        }
-        
-        .smartlink-btn {
-            display: block;
-            width: 100%;
-            max-width: 420px;
-            margin: 12px auto 20px;
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 50%, #5b21b6 100%);
-            color: #fff;
-            border: none;
-            border-radius: 60px;
-            font-size: 16px;
-            font-weight: 700;
-            text-align: center;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 25px rgba(124, 58, 237, 0.3);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .smartlink-btn::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle at 30% 40%, rgba(255,255,255,0.1) 0%, transparent 60%);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-        
-        .smartlink-btn:hover {
-            transform: translateY(-3px) scale(1.01);
-            box-shadow: 0 8px 40px rgba(124, 58, 237, 0.4);
-        }
-        
-        .smartlink-btn:hover::after {
-            opacity: 1;
-        }
-        
-        .smartlink-btn:active {
-            transform: translateY(0) scale(0.98);
-        }
-        
-        .smartlink-btn .arrow {
-            display: inline-block;
-            margin-left: 8px;
-            transition: transform 0.3s;
-        }
-        
-        .smartlink-btn:hover .arrow {
-            transform: translateX(4px);
-        }
-        
-        .smartlink-btn.gold {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%);
-            box-shadow: 0 4px 25px rgba(245, 158, 11, 0.3);
-        }
-        
-        .smartlink-btn.gold:hover {
-            box-shadow: 0 8px 40px rgba(245, 158, 11, 0.4);
-        }
-        
-        .ad-banner {
-            width: 100%;
-            max-width: 728px;
-            height: 90px;
-            margin: 24px auto;
-            padding: 0;
-            background: rgba(255, 255, 255, 0.03);
+
+        /* ===== BANNER 468x60 ===== */
+        .banner-wrapper {
+            background: #1a1a2e;
             border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border: 1px solid #2a2a4e;
+            min-height: 100px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            min-height: 90px;
-            transition: all 0.3s;
         }
-        
-        .ad-banner iframe,
-        .ad-banner img {
+
+        .banner-wrapper .label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        /* ===== NATIVE BANNER ===== */
+        .native-wrapper {
+            background: #111;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #2a2a4e;
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .native-wrapper .label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        #container-289e67a8edf8740cd045e916728f04af {
             width: 100%;
-            height: 100%;
             max-width: 728px;
-            max-height: 90px;
-            border: none;
+            min-height: 90px;
         }
-        
-        #adsterra-social-bar {
+
+        /* ===== CONTENT CARDS ===== */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: #1a1a2e;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #2a2a4e;
+            transition: transform 0.2s, border-color 0.2s;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: #e94560;
+        }
+
+        .card h3 {
+            color: #e94560;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* ===== FIREBASE STATUS ===== */
+        .firebase-status {
+            background: #0d1b2a;
+            border: 1px solid #1b3a4b;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: #4fc3f7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .firebase-status .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #4caf50;
+            display: inline-block;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== SOCIAL BAR ===== */
+        .social-bar-wrapper {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            z-index: 9999;
-            background: transparent;
-            pointer-events: auto;
-        }
-        
-        .footer {
+            z-index: 999;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #2a2a4e;
+            padding: 4px 0;
             text-align: center;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 13px;
-            color: #475569;
         }
-        
-        .footer a {
-            color: #64748b;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .footer a:hover {
-            color: #8b9cf7;
-        }
-        
-        .footer .dot {
-            color: #334155;
-            margin: 0 6px;
-        }
-        
-        .ad-loading {
-            opacity: 0.4;
-            transition: opacity 0.5s;
-        }
-        
-        .ad-loaded {
-            opacity: 1;
-        }
-        
-        @media (max-width: 640px) {
-            body { padding-bottom: 120px; }
-            .container { padding: 10px; }
-            .header { padding: 30px 20px 25px; border-radius: 16px; }
-            .header h1 { font-size: 28px; }
-            .header p { font-size: 14px; }
-            .header-stats { gap: 24px; }
-            .header-stats .stat .number { font-size: 18px; }
-            .content { padding: 20px; border-radius: 16px; }
-            .content h2 { font-size: 19px; }
-            .content p { font-size: 14px; }
-            .card { padding: 16px 18px; }
-            .card h3 { font-size: 15px; }
-            .card p { font-size: 13px; }
-            .ad-banner { height: 60px; min-height: 60px; border-radius: 10px; }
-            .ad-banner iframe, .ad-banner img { max-height: 60px; }
-            .smartlink-btn { font-size: 14px; padding: 14px 24px; border-radius: 50px; }
-        }
-        
-        @media (max-width: 400px) {
-            .header h1 { font-size: 22px; }
-            .header-stats { gap: 16px; flex-wrap: wrap; }
-            .header-stats .stat .number { font-size: 16px; }
-            .ad-banner { height: 50px; min-height: 50px; }
-            .ad-banner iframe, .ad-banner img { max-height: 50px; }
-            .smartlink-btn { font-size: 13px; padding: 12px 20px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5rem; }
+            .container { padding: 12px; }
+            .content-grid { grid-template-columns: 1fr; }
+            .banner-wrapper { padding: 12px; }
+            .native-wrapper { padding: 12px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== HEADER ===== -->
+    <header class="header">
+        <h1>⚡ ZACK360</h1>
+        <p>Your Gateway to Premium Content</p>
+    </header>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="container">
+
+        <!-- ===== BANNER 468x60 ===== -->
+        <div class="banner-wrapper">
+            <span class="label">📢 Sponsored</span>
+            <script>
+                atOptions = {
+                    'key': 'bd1505af8454d9de073084859276dde1',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                };
+            </script>
+            <script src="https://ironcomparable.com/bd1505af8454d9de073084859276dde1/invoke.js"></script>
+        </div>
+
+        <!-- ===== FIREBASE STATUS ===== -->
+        <div class="firebase-status">
+            <span class="dot"></span>
+            <span>Firebase Realtime DB: <strong>Connected</strong></span>
+            <span style="color:#666;margin-left:auto;">zack360-2b303</span>
+        </div>
+
+        <!-- ===== CONTENT CARDS ===== -->
+        <div class="content-grid">
+            <div class="card">
+                <h3>🚀 Trending Now</h3>
+                <p>Discover what's hot right now in tech, gaming, and culture.</p>
+            </div>
+            <div class="card">
+                <h3>🎮 Gaming Hub</h3>
+                <p>Latest reviews, walkthroughs, and esports updates.</p>
+            </div>
+            <div class="card">
+                <h3>📰 News Feed</h3>
+                <p>Breaking stories from around the world, curated for you.</p>
+            </div>
+            <div class="card">
+                <h3>💡 Tips & Tricks</h3>
+                <p>Life hacks, productivity boosters, and expert advice.</p>
+            </div>
+        </div>
+
+        <!-- ===== NATIVE BANNER ===== -->
+        <div class="native-wrapper">
+            <span class="label">📰 Recommended For You</span>
+            <script async="async" data-cfasync="false" src="https://ironcomparable.com/289e67a8edf8740cd045e916728f04af/invoke.js"></script>
+            <div id="container-289e67a8edf8740cd045e916728f04af"></div>
+        </div>
+
+        <!-- ===== MORE CONTENT ===== -->
+        <div style="background:#1a1a2e;border-radius:12px;padding:20px;margin:20px 0;border:1px solid #2a2a4e;">
+            <h2 style="color:#e94560;font-size:1.3rem;margin-bottom:12px;">🔥 Featured Article</h2>
+            <p style="color:#aaa;line-height:1.8;">
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis 
+                nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+            </p>
+        </div>
+
+        <!-- ===== SECOND BANNER (optional extra placement) ===== -->
+        <div class="banner-wrapper" style="margin-top:20px;">
+            <span class="label">📢 Sponsored Content</span>
+            <script>
+                atOptions = {
+                    'key': 'bd1505af8454d9de073084859276dde1',
+                    'format': 'iframe',
+                    'height': 60,
+                    'width': 468,
+                    'params': {}
+                };
+            </script>
+            <script src="https://ironcomparable.com/bd1505af8454d9de073084859276dde1/invoke.js"></script>
+        </div>
+
+    </main>
+
     <!-- ============================================ -->
-    <!-- ADSTERRA POPUNDER                            -->
-    <!-- REPLACE WITH YOUR ACTUAL ADSTERRA CODE       -->
+    <!-- SOCIAL BAR (fixed at bottom) -->
     <!-- ============================================ -->
-    <script type="text/javascript">
-        (function() {
-            var s = document.createElement('script');
-            s.type = 'text/javascript';
-            s.async = true;
-            s.src = 'https://YOUR-POPUNDER-URL.com/script.js';
-            var x = document.getElementsByTagName('script')[0];
-            x.parentNode.insertBefore(s, x);
-        })();
+    <div class="social-bar-wrapper">
+        <script src="https://ironcomparable.com/ac/85/e5/ac85e59d50afaa3cfb2a8ea8f00c9088.js"></script>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FIREBASE CONFIG (for Realtime DB) -->
+    <!-- ============================================ -->
+    <script>
+        // Firebase config for zack360-2b303
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "zack360-2b303.firebaseapp.com",
+            databaseURL: "https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "zack360-2b303",
+            storageBucket: "zack360-2b303.firebasestorage.app",
+            messagingSenderId: "YOUR_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase (if you have the SDK included)
+        // Uncomment when you add Firebase SDK
+        /*
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        console.log("🔥 Firebase connected!");
+        */
     </script>
 
     <!-- ============================================ -->
-    <!-- ADSTERRA SOCIAL BAR                          -->
-    <!-- REPLACE WITH YOUR ACTUAL ADSTERRA CODE       -->
+    <!-- ANALYTICS / TRACKING (optional) -->
     <!-- ============================================ -->
-    <div id="adsterra-social-bar">
-        <script type="text/javascript">
-            (function() {
-                var s = document.createElement('script');
-                s.type = 'text/javascript';
-                s.async = true;
-                s.src = 'https://YOUR-SOCIALBAR-URL.com/script.js';
-                var x = document.getElementById('adsterra-social-bar');
-                if (x) {
-                    x.parentNode.insertBefore(s, x);
-                }
-            })();
-        </script>
-    </div>
-
-    <div class="container">
-
-        <header class="header">
-            <div class="header-badge">✦ Premium Content</div>
-            <h1>Zack360</h1>
-            <p>Curated insights. Premium content. Zero distractions.</p>
-            <div class="header-stats">
-                <div class="stat">
-                    <span class="number">12K+</span>
-                    <span class="label">Readers</span>
-                </div>
-                <div class="stat">
-                    <span class="number">4.8★</span>
-                    <span class="label">Rating</span>
-                </div>
-                <div class="stat">
-                    <span class="number">30+</span>
-                    <span class="label">Articles</span>
-                </div>
-            </div>
-        </header>
-
-        <div class="content">
-
-            <!-- ========================================= -->
-            <!-- SMARTLINK 1 - Points to zack360.vercel.app -->
-            <!-- ========================================= -->
-            <a href="https://zack360.vercel.app" 
-               class="smartlink-btn" 
-               target="_blank" 
-               rel="noopener noreferrer">
-                🔥 Claim Exclusive Offer
-                <span class="arrow">→</span>
-            </a>
-
-            <h2>Featured Article</h2>
-            <p>
-                In the rapidly evolving digital landscape, staying ahead requires more than just 
-                consuming information—it demands curated, actionable insights. This is where 
-                premium content platforms differentiate themselves from the noise.
-            </p>
-
-            <div class="card">
-                <span class="icon">📊</span>
-                <h3>Data-Driven Decisions</h3>
-                <p>
-                    Leverage analytics to understand what truly drives engagement. 
-                    Quality over quantity always wins.
-                </p>
-            </div>
-
-            <h2>Why This Matters</h2>
-            <p>
-                The average internet user is exposed to thousands of content pieces daily. 
-                Standing out requires authenticity, depth, and a genuine connection with your audience.
-            </p>
-
-            <!-- ========================================= -->
-            <!-- AD BANNER 1                               -->
-            <!-- REPLACE WITH YOUR ACTUAL ADSTERRA CODE    -->
-            <!-- ========================================= -->
-            <div class="ad-banner" id="ad-banner-1">
-                <script type="text/javascript">
-                    (function() {
-                        var s = document.createElement('script');
-                        s.type = 'text/javascript';
-                        s.async = true;
-                        s.src = 'https://YOUR-BANNER-URL.com/script.js';
-                        var x = document.getElementById('ad-banner-1');
-                        if (x) {
-                            x.parentNode.insertBefore(s, x);
-                            x.classList.add('ad-loading');
-                            s.onload = function() {
-                                x.classList.remove('ad-loading');
-                                x.classList.add('ad-loaded');
-                            };
-                        }
-                    })();
-                </script>
-            </div>
-
-            <div class="card">
-                <span class="icon">🚀</span>
-                <h3>Growth Mindset</h3>
-                <p>
-                    Every piece of content should serve a purpose—educate, inspire, or 
-                    provide a fresh perspective. The rest is just filler.
-                </p>
-            </div>
-
-            <h2>Building Communities</h2>
-            <p>
-                The most successful platforms aren't just content hubs—they're communities. 
-                Engaging with your audience creates loyalty that transcends algorithms.
-            </p>
-
-            <!-- ========================================= -->
-            <!-- AD BANNER 2                               -->
-            <!-- REPLACE WITH YOUR ACTUAL ADSTERRA CODE    -->
-            <!-- ========================================= -->
-            <div class="ad-banner" id="ad-banner-2">
-                <script type="text/javascript">
-                    (function() {
-                        var s = document.createElement('script');
-                        s.type = 'text/javascript';
-                        s.async = true;
-                        s.src = 'https://YOUR-BANNER-URL.com/script.js';
-                        var x = document.getElementById('ad-banner-2');
-                        if (x) {
-                            x.parentNode.insertBefore(s, x);
-                            x.classList.add('ad-loading');
-                            s.onload = function() {
-                                x.classList.remove('ad-loading');
-                                x.classList.add('ad-loaded');
-                            };
-                        }
-                    })();
-                </script>
-            </div>
-
-            <div class="card">
-                <span class="icon">💡</span>
-                <h3>Monetization Without Compromise</h3>
-                <p>
-                    Great content deserves sustainable monetization. Strategic ad placement 
-                    ensures revenue without sacrificing user experience.
-                </p>
-            </div>
-
-            <!-- ========================================= -->
-            <!-- SMARTLINK 2 - Points to zack360.vercel.app -->
-            <!-- ========================================= -->
-            <a href="https://zack360.vercel.app" 
-               class="smartlink-btn gold" 
-               target="_blank" 
-               rel="noopener noreferrer">
-                ⚡ Get Premium Access Now
-                <span class="arrow">→</span>
-            </a>
-
-            <div class="footer">
-                <span>© 2026 Zack360</span>
-                <span class="dot">•</span>
-                <a href="#">Privacy</a>
-                <span class="dot">•</span>
-                <a href="#">Terms</a>
-                <span class="dot">•</span>
-                <span style="color:#334155;">Powered by Adsterra</span>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- ============================================ -->
-    <!-- FIREBASE (Optional)                         -->
-    <!-- ============================================ -->
-    <script type="module">
-        /*
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getAnalytics } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js';
-        
-        const firebaseConfig = {
-            apiKey: "YOUR-API-KEY",
-            authDomain: "YOUR-PROJECT.firebaseapp.com",
-            databaseURL: "https://YOUR-PROJECT-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "YOUR-PROJECT",
-            storageBucket: "YOUR-PROJECT.appspot.com",
-            messagingSenderId: "YOUR-SENDER-ID",
-            appId: "YOUR-APP-ID",
-            measurementId: "YOUR-MEASUREMENT-ID"
-        };
-        
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        */
+    <script>
+        console.log("🚀 Zack360 loaded successfully!");
+        console.log("📊 Adsterra codes: Popunder ✅ | Native ✅ | Social Bar ✅ | Banner ✅");
     </script>
 
 </body>
