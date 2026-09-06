@@ -1,231 +1,507 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>AI LOGIC · 999</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;min-height:100vh;min-height:100dvh;background:#080b12;display:flex;justify-content:center;align-items:center;font-family:'Courier New',monospace;touch-action:manipulation}
-#game{width:100%;max-width:500px;padding:10px;margin:auto;display:flex;flex-direction:column;gap:10px}
-#screen{background:#111a24;border:2px solid #2a3f55;border-radius:20px;padding:18px 14px;min-height:38vh;box-shadow:0 6px 0 #0a111a;display:flex;flex-direction:column;justify-content:space-between}
-#story{color:#c8dcee;font-size:clamp(0.9rem,3.8vw,1.25rem);line-height:1.7;text-shadow:0 1px 0 #1d2a38;word-break:break-word;white-space:pre-wrap}
-#stats{display:flex;justify-content:space-between;color:#6e8aa0;font-size:clamp(0.65rem,2.2vw,0.85rem);border-top:1px solid #233242;padding-top:10px;margin-top:10px;letter-spacing:0.2px}
-.stat span{color:#aac8e0;font-weight:bold}
-#choices{display:flex;flex-direction:column;gap:7px;margin-top:6px}
-.choice-btn{background:#1b2737;border:2px solid #314a62;border-radius:50px;padding:13px 16px;color:#d4e6f5;font-size:clamp(0.85rem,3vw,1.05rem);font-weight:600;text-align:left;transition:all 0.04s ease;box-shadow:0 4px 0 #0d1520;letter-spacing:0.3px;touch-action:manipulation;cursor:pointer;width:100%;font-family:inherit}
-.choice-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #0d1520;background:#293c50;border-color:#4a6a88}
-.choice-btn:disabled{opacity:0.25;transform:translateY(2px);box-shadow:0 2px 0 #0d1520;pointer-events:none}
-#reset-area{display:flex;justify-content:center;gap:12px;margin-top:4px;flex-wrap:wrap}
-.reset-btn{background:transparent;border:1px solid #314a62;border-radius:40px;padding:9px 20px;color:#6e8aa0;font-size:clamp(0.65rem,1.8vw,0.8rem);font-weight:500;letter-spacing:0.8px;transition:0.08s;touch-action:manipulation;cursor:pointer;font-family:inherit}
-.reset-btn:active{background:#17232f;color:#aac8e0;border-color:#4a6a88}
-.hidden{display:none !important}
-#ai-badge{color:#3a5a78;font-size:clamp(0.55rem,1.5vw,0.7rem);text-align:center;letter-spacing:2px;margin-top:2px}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>∀rcana · 36 ends</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    body {
+      background: #0b0d12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100dvh;
+      min-height: 100vh;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      padding: 8px;
+    }
+    #game {
+      background: #151a22;
+      max-width: 600px;
+      width: 100%;
+      border-radius: 36px 36px 28px 28px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.7);
+      padding: 20px 16px 24px;
+      color: #e7e9ee;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border: 1px solid #2e3643;
+      transition: all 0.1s;
+    }
+    #header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      background: #1f2631;
+      padding: 10px 14px;
+      border-radius: 60px;
+      border: 1px solid #3d4657;
+      letter-spacing: 0.3px;
+    }
+    #stats span {
+      background: #2b3342;
+      padding: 4px 12px;
+      border-radius: 30px;
+      margin: 0 3px;
+      font-weight: 600;
+      color: #bcc9e6;
+    }
+    #achievement-badge {
+      background: #f5c542;
+      color: #12161e;
+      padding: 4px 14px;
+      border-radius: 40px;
+      font-weight: 700;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: 1px solid #ffd966;
+      box-shadow: 0 0 8px #f5c54255;
+      display: inline-block;
+    }
+    #story-box {
+      background: #0f131c;
+      border-radius: 28px;
+      padding: 20px 18px;
+      min-height: 150px;
+      border: 1px solid #2f384a;
+      box-shadow: inset 0 4px 8px #00000033;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #story-text {
+      font-size: 1rem;
+      line-height: 1.5;
+      font-weight: 400;
+      color: #d3dbe8;
+      word-break: break-word;
+    }
+    #role-display {
+      font-size: 0.8rem;
+      background: #1e2633;
+      padding: 6px 14px;
+      border-radius: 40px;
+      align-self: flex-start;
+      border: 1px solid #4d5a70;
+      color: #b3c7e6;
+    }
+    #choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 6px 0 4px;
+    }
+    .choice-btn {
+      background: #1f2735;
+      border: 1px solid #3b465c;
+      border-radius: 60px;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 500;
+      color: #dce3f0;
+      text-align: left;
+      transition: all 0.08s linear;
+      width: 100%;
+      box-shadow: 0 2px 0 #0b0f16;
+      letter-spacing: 0.2px;
+    }
+    .choice-btn:active {
+      background: #2e3a50;
+      transform: scale(0.98);
+      border-color: #7b8db0;
+      box-shadow: 0 1px 0 #0b0f16;
+    }
+    .choice-btn:disabled {
+      opacity: 0.45;
+      transform: none;
+      pointer-events: none;
+    }
+    #footer-actions {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 6px;
+    }
+    .action-btn {
+      background: #1e2633;
+      border: 1px solid #3f4a60;
+      border-radius: 40px;
+      padding: 10px 18px;
+      color: #c8d4e9;
+      font-weight: 600;
+      font-size: 0.8rem;
+      flex: 1 1 auto;
+      text-align: center;
+      transition: 0.08s linear;
+      box-shadow: 0 2px 0 #0b0f16;
+      min-width: 80px;
+    }
+    .action-btn:active {
+      background: #2b364b;
+      transform: scale(0.96);
+      border-color: #6e81a8;
+    }
+    .action-btn:disabled {
+      opacity: 0.3;
+      transform: none;
+      pointer-events: none;
+    }
+    #ending-counter {
+      background: #0f131c;
+      border-radius: 40px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      border: 1px solid #3a445a;
+      color: #a9bddb;
+      text-align: center;
+      display: inline-block;
+      margin: 0 auto;
+    }
+    #ban-message {
+      display: none;
+      background: #1f0f12;
+      color: #ffb3b3;
+      padding: 30px 16px;
+      border-radius: 40px;
+      text-align: center;
+      border: 1px solid #b34a4a;
+      font-weight: 600;
+    }
+    @media (max-width: 480px) {
+      #game { padding: 14px 10px; }
+      .choice-btn { padding: 12px 16px; font-size: 0.95rem; }
+    }
+    @media (min-width: 768px) {
+      #game { padding: 28px 24px; }
+    }
+  </style>
 </head>
 <body>
 <div id="game">
-<div id="screen">
-<div id="story">⟡  AI LOGIC MACHINE  ⟡<br>999 formula active</div>
-<div id="stats"><div>❤️ <span id="hp">10</span></div><div>🧠 <span id="ending">0</span>/999</div><div>⚙️ <span id="flag">0</span></div></div>
-</div>
-<div id="choices"></div>
-<div id="reset-area"><button class="reset-btn" id="reset-btn">⟲ RESET</button><button class="reset-btn" id="logic-btn">⚡ LOGIC</button></div>
-<div id="ai-badge">AI · DETERMINISTIC 999</div>
+  <div id="header">
+    <div id="stats"><span id="hp">❤️ 10</span><span id="endings">🏆 0/36</span></div>
+    <div id="achievement-badge">✦ ACHIEVEMENT</div>
+  </div>
+  <div id="story-box">
+    <div id="story-text">The Veil of Aethra · choose your path</div>
+    <div id="role-display">⚔️ Wanderer</div>
+  </div>
+  <div id="choices"></div>
+  <div id="footer-actions">
+    <button class="action-btn" id="resetBtn">⟲ RESTART</button>
+    <button class="action-btn" id="saveBtn">💾 SAVE</button>
+    <button class="action-btn" id="loadBtn">📂 LOAD</button>
+  </div>
+  <div id="ending-counter">⚡ ENDINGS UNLOCKED: <span id="endingCount">0</span> / 36</div>
+  <div id="ban-message">⚠️ ANDROID BROWSER ONLY · ACCESS DENIED</div>
 </div>
 <script>
-(function(){
-const storyEl=document.getElementById('story');
-const hpEl=document.getElementById('hp');
-const endingEl=document.getElementById('ending');
-const flagEl=document.getElementById('flag');
-const choicesEl=document.getElementById('choices');
-const resetBtn=document.getElementById('reset-btn');
-const logicBtn=document.getElementById('logic-btn');
-
-// --- deterministic 999 formula (no random) ---
-const ENDING_WORDS = ['Fate','Void','Star','Ash','Echo','Rift','Soul','Crown','Frost','Flux'];
-function generateEndingTitle(n){
-const w=ENDING_WORDS[n % 10];
-return `#${n} · ${w}${n}`;
-}
-
-// AI logic machine: deterministic path generator
-function aiLogic(ending, hp, flag){
-// formula: (ending * 7 + flag * 13 + hp * 3) % 20 → deterministic choice index
-const idx = (ending * 7 + flag * 13 + hp * 3) % 20;
-const pool = [
-'analyze pattern','compute trajectory','optimize path','decode glyph','simulate future',
-'calibrate flux','map anomaly','sync matrix','purge noise','engage core',
-'filter signal','amplify echo','stabilize rift','quantize soul','crown iteration',
-'frost compile','flux override','recurse timeline','branch entropy','merge causality'
-];
-return pool[idx];
-}
-
-// deterministic HP delta (no random)
-function hpDelta(ending, flag){
-return ((ending * 3 + flag * 7) % 5) - 2; // -2,-1,0,1,2
-}
-
-// deterministic bonus/penalty (no random)
-function conditionalMod(ending){
-let mod=0;
-if(ending % 3 === 0) mod += 1;
-if(ending % 7 === 0) mod -= 2;
-if(ending % 11 === 0) mod += 2;
-if(ending % 13 === 0) mod -= 1;
-return mod;
-}
-
-// 999 formula: deterministic progression
-function nextState(state){
-let {hp, ending, flag, path} = state;
-if(ending >= 999) return state;
-
-// deterministic choice label (AI logic)
-const choice = aiLogic(ending, hp, flag);
-
-// deterministic HP change
-let delta = hpDelta(ending, flag);
-delta += conditionalMod(ending);
-hp = Math.max(0, Math.min(12, hp + delta));
-
-// flag update: deterministic hash (no random)
-flag = (flag * 31 + choice.length * 7 + ending * 3) % 99 + 1;
-
-// ending increment (capped)
-ending = Math.min(999, ending + 1);
-
-// push choice to path
-path.push(choice);
-
-return {hp, ending, flag, path};
-}
-
-// --- state management ---
-let state = {hp:10, ending:0, flag:1, path:[]};
-
-function getEndingFragment(){
-if(state.ending === 999) return '✦ ALL 999 FORMULAS RESOLVED ✦';
-if(state.ending > 800) return '⚡ NEARING LOGIC COMPLETION';
-if(state.ending > 500) return '⟡ DEEP RECURSION ACTIVE';
-if(state.ending > 100) return '⟡ MATRIX EXPANDING';
-if(state.ending > 20) return '⟡ PATTERN EMERGING';
-return '⟡ INITIALIZING LOGIC';
-}
-
-function renderScene(){
-hpEl.textContent=state.hp;
-endingEl.textContent=state.ending;
-flagEl.textContent=state.flag;
-
-const title = state.ending === 999 ? '✦ FINAL ✦' : generateEndingTitle(state.ending);
-const frag = getEndingFragment();
-let desc = '';
-if(state.ending === 999) desc = 'All 999 logic gates aligned. Infinite loop resolved.';
-else if(state.ending > 800) desc = 'Causality woven. 99% formula complete.';
-else if(state.ending > 500) desc = 'Recursive depth exceeds threshold.';
-else if(state.ending > 100) desc = 'AI logic machines expanding decision space.';
-else if(state.ending > 20) desc = 'Deterministic paths converging.';
-else desc = 'Initializing 999-formula engine.';
-
-if(state.hp <= 0){
-desc = '⚠️ LOGIC OVERFLOW · SYSTEM RESET REQUIRED';
-}
-
-storyEl.textContent = `⟡ ${title} ⟡\n${frag}\n${desc}`;
-
-choicesEl.innerHTML='';
-if(state.hp <= 0){
-const btn=document.createElement('button');
-btn.className='choice-btn';
-btn.textContent='⟳ RESTART LOGIC';
-btn.addEventListener('click', resetGame);
-choicesEl.appendChild(btn);
-renderAIStatus();
-return;
-}
-
-if(state.ending >= 999){
-storyEl.textContent='✦  ALL 999 FORMULAS  ✦\nDeterministic logic complete.\nAll paths resolved.';
-const btn=document.createElement('button');
-btn.className='choice-btn';
-btn.textContent='⟳ BEGIN NEW CYCLE';
-btn.addEventListener('click', resetGame);
-choicesEl.appendChild(btn);
-renderAIStatus();
-return;
-}
-
-// deterministic choice (AI logic machine)
-const next = nextState(state);
-const choiceLabel = next.path[next.path.length-1] || 'compute';
-const btn=document.createElement('button');
-btn.className='choice-btn';
-btn.textContent=`▶ ${choiceLabel}`;
-btn.addEventListener('click', ()=>{
-if(state.hp <= 0 || state.ending >= 999) return;
-// apply deterministic transition
-const newState = nextState(state);
-state.hp = newState.hp;
-state.ending = newState.ending;
-state.flag = newState.flag;
-state.path = newState.path;
-renderScene();
-});
-choicesEl.appendChild(btn);
-renderAIStatus();
-}
-
-function renderAIStatus(){
-// show deterministic formula preview
-if(state.ending < 999 && state.hp > 0){
-const preview = aiLogic(state.ending, state.hp, state.flag);
-const delta = hpDelta(state.ending, state.flag) + conditionalMod(state.ending);
-const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
-document.getElementById('ai-badge').textContent = `AI · next: ${preview}  |  δHP: ${deltaStr}  |  F: ${state.flag}`;
-} else {
-document.getElementById('ai-badge').textContent = 'AI · DETERMINISTIC 999 · COMPLETE';
-}
-}
-
-function resetGame(){
-state = {hp:10, ending:0, flag:1, path:[]};
-renderScene();
-}
-
-// manual logic step (for demonstration)
-function stepLogic(){
-if(state.hp <= 0 || state.ending >= 999) return;
-const newState = nextState(state);
-state.hp = newState.hp;
-state.ending = newState.ending;
-state.flag = newState.flag;
-state.path = newState.path;
-renderScene();
-}
-
-// --- android-only block ---
-function blockNonAndroid(){
-const ua=navigator.userAgent||navigator.vendor||window.opera;
-if(/android/i.test(ua))return;
-document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#080b12;color:#5a7a92;font-family:monospace;font-size:1.3rem;padding:2rem;text-align:center;">⛔  ANDROID-ONLY LOGIC ENGINE</div>';
-document.body.style.margin='0';document.body.style.padding='0';
-}
-blockNonAndroid();
-
-// event binding
-resetBtn.addEventListener('click', resetGame);
-logicBtn.addEventListener('click', stepLogic);
-
-// error containment (enterprise)
-window.addEventListener('error', function(e){ e.preventDefault(); resetGame(); return true; });
-window.addEventListener('unhandledrejection', function(e){ e.preventDefault(); resetGame(); return true; });
-
-// init
-resetGame();
-})();
+  (function() {
+    if (!/android/i.test(navigator.userAgent)) {
+      document.getElementById('game').style.display = 'none';
+      document.getElementById('ban-message').style.display = 'block';
+      return;
+    }
+    const DB_URL = 'https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/save.json';
+    let state = {};
+    const endingFlags = new Array(36).fill(false);
+    let endingCount = 0;
+    let achievementUnlocked = false;
+    const choicesEl = document.getElementById('choices');
+    const storyText = document.getElementById('story-text');
+    const roleDisplay = document.getElementById('role-display');
+    const hpSpan = document.getElementById('hp');
+    const endingSpan = document.getElementById('endings');
+    const endingCountSpan = document.getElementById('endingCount');
+    const badgeEl = document.getElementById('achievement-badge');
+    function updateUI() {
+      hpSpan.textContent = '❤️ ' + state.hp;
+      const unlocked = endingFlags.filter(Boolean).length;
+      endingCount = unlocked;
+      endingSpan.textContent = '🏆 ' + unlocked + '/36';
+      endingCountSpan.textContent = unlocked;
+      roleDisplay.textContent = state.role || '⚔️ Wanderer';
+      if (unlocked >= 36) {
+        badgeEl.textContent = '✦ GRAND MASTER · ALL ENDINGS';
+        badgeEl.style.background = '#ffb347';
+      } else if (unlocked >= 18) {
+        badgeEl.textContent = '✦ SAGE · ' + unlocked + '/36';
+        badgeEl.style.background = '#9f7aea';
+      } else if (unlocked >= 6) {
+        badgeEl.textContent = '✦ SEEKER · ' + unlocked + '/36';
+        badgeEl.style.background = '#63b3ed';
+      } else {
+        badgeEl.textContent = '✦ ACHIEVEMENT';
+        badgeEl.style.background = '#f5c542';
+      }
+    }
+    function applyState(s) {
+      state.hp = s.hp || 10;
+      state.role = s.role || '⚔️ Wanderer';
+      state.step = s.step || 0;
+      state.flags = s.flags || {};
+      if (s.endings) {
+        for (let i = 0; i < 36; i++) {
+          if (s.endings[i]) endingFlags[i] = true;
+        }
+      }
+      achievementUnlocked = !!s.achievementUnlocked;
+      updateUI();
+    }
+    function getDefaultState() {
+      return {
+        hp: 10,
+        role: '⚔️ Wanderer',
+        step: 0,
+        flags: {},
+        endings: new Array(36).fill(false),
+        achievementUnlocked: false
+      };
+    }
+    function resetGame() {
+      const def = getDefaultState();
+      state = { hp: def.hp, role: def.role, step: 0, flags: {}, endings: new Array(36).fill(false), achievementUnlocked: false };
+      endingFlags.fill(false);
+      achievementUnlocked = false;
+      renderStep(0);
+      updateUI();
+    }
+    function renderStep(stepId) {
+      const node = storyNodes[stepId];
+      if (!node) {
+        storyText.textContent = 'The path fades into mist… (error)';
+        choicesEl.innerHTML = '';
+        return;
+      }
+      storyText.textContent = node.text;
+      if (node.role) state.role = node.role;
+      if (node.hpDelta) {
+        state.hp = Math.min(12, Math.max(1, state.hp + node.hpDelta));
+        if (state.hp <= 0) { state.hp = 1; }
+      }
+      if (node.endingIndex !== undefined && node.endingIndex >= 0 && node.endingIndex < 36) {
+        if (!endingFlags[node.endingIndex]) {
+          endingFlags[node.endingIndex] = true;
+          achievementUnlocked = true;
+        }
+        if (endingFlags.filter(Boolean).length >= 36) {
+          badgeEl.textContent = '✦ GRAND MASTER · ALL ENDINGS';
+        }
+      }
+      if (node.flags) {
+        for (let k in node.flags) state.flags[k] = node.flags[k];
+      }
+      if (node.achievement) achievementUnlocked = true;
+      choicesEl.innerHTML = '';
+      if (node.choices && node.choices.length) {
+        node.choices.forEach((c, idx) => {
+          const btn = document.createElement('button');
+          btn.className = 'choice-btn';
+          let label = c.label;
+          if (c.condition && !c.condition(state)) {
+            btn.disabled = true;
+            label = '🔒 ' + label;
+          }
+          btn.textContent = label;
+          btn.addEventListener('click', function(e) {
+            if (btn.disabled) return;
+            if (c.next !== undefined) {
+              renderStep(c.next);
+            } else if (c.endingIndex !== undefined) {
+              const endIdx = c.endingIndex;
+              if (!endingFlags[endIdx]) {
+                endingFlags[endIdx] = true;
+                achievementUnlocked = true;
+              }
+              renderStep('ending_' + endIdx);
+            } else {
+              renderStep(0);
+            }
+            updateUI();
+          });
+          choicesEl.appendChild(btn);
+        });
+      } else {
+        const btn = document.createElement('button');
+        btn.className = 'choice-btn';
+        btn.textContent = '⟳ Continue';
+        btn.addEventListener('click', function() {
+          renderStep(0);
+          updateUI();
+        });
+        choicesEl.appendChild(btn);
+      }
+      updateUI();
+      state.step = stepId;
+    }
+    const storyNodes = {
+      0: {
+        text: 'You stand at the crossroads of Aethra. Three paths unfurl. Which will you take?',
+        role: '⚔️ Wanderer',
+        choices: [
+          { label: '🌲 Forest of Whispers', next: 1 },
+          { label: '🏜️ Sunken Dunes', next: 2 },
+          { label: '🌊 Ashen Coast', next: 3 }
+        ]
+      },
+      1: {
+        text: 'The forest hums with ancient magic. A spirit offers you a boon: +2 HP, but you lose memory of your past.',
+        hpDelta: 2,
+        choices: [
+          { label: 'Accept the boon', next: 4, flags: { memory: false } },
+          { label: 'Refuse and press deeper', next: 5 }
+        ]
+      },
+      2: {
+        text: 'Scorching winds cut through the dunes. A ruined city reveals a hidden vault.',
+        choices: [
+          { label: 'Enter the vault (risk)', next: 6 },
+          { label: 'Turn back', next: 0 }
+        ]
+      },
+      3: {
+        text: 'The coast is littered with wreckage. A stranded sailor begs for aid.',
+        choices: [
+          { label: 'Help the sailor', next: 7, flags: { savedSailor: true } },
+          { label: 'Loot the wreck', next: 8 }
+        ]
+      },
+      4: {
+        text: 'You feel stronger but hollow. The spirit cackles. You are bound to the forest forever.',
+        endingIndex: 0,
+        choices: []
+      },
+      5: {
+        text: 'You find a hidden grove. An old hermit teaches you the way of the blade.',
+        role: '⚔️ Blademaster',
+        choices: [
+          { label: 'Train with him', next: 9 },
+          { label: 'Leave', next: 0 }
+        ]
+      },
+      6: {
+        text: 'The vault is a trap! You escape with a cursed artifact. HP -3.',
+        hpDelta: -3,
+        choices: [
+          { label: 'Throw it away', next: 10 },
+          { label: 'Keep it', next: 11 }
+        ]
+      },
+      7: {
+        text: 'The sailor gives you a compass that points to treasure. But the sea calls you…',
+        choices: [
+          { label: 'Follow the compass', next: 12 },
+          { label: 'Return to shore', next: 0 }
+        ]
+      },
+      8: {
+        text: 'You find a cursed crown. It whispers dark secrets. Your mind twists.',
+        endingIndex: 1,
+        choices: []
+      },
+      9: {
+        text: 'You become a master of the blade. But the hermit reveals his true form: a demon.',
+        choices: [
+          { label: 'Fight the demon', next: 13 },
+          { label: 'Flee', next: 0 }
+        ]
+      },
+      10: {
+        text: 'The artifact shatters, releasing a spirit. It grants you a glimpse of all endings.',
+        endingIndex: 2,
+        choices: []
+      },
+      11: {
+        text: 'The artifact devours your soul. You become a lich.',
+        endingIndex: 3,
+        choices: []
+      },
+      12: {
+        text: 'The compass leads to a sunken temple. You awaken an ancient god.',
+        endingIndex: 4,
+        choices: []
+      },
+      13: {
+        text: 'You slay the demon but are mortally wounded. Your legend ends.',
+        endingIndex: 5,
+        choices: []
+      },
+    };
+    for (let i = 0; i < 36; i++) {
+      if (!storyNodes['ending_' + i]) {
+        storyNodes['ending_' + i] = {
+          text: '✨ ENDING ' + (i+1) + ' · You have reached a unique fate. The threads of Aethra remember.',
+          endingIndex: i,
+          choices: [{ label: 'Return to the crossroads', next: 0 }]
+        };
+      }
+    }
+    storyNodes[0].choices.push({ label: '✨ Seek the hidden ending', next: 14 });
+    storyNodes[14] = {
+      text: 'You find a mirror that shows all possibilities. To unlock the final ending, you must have seen at least 30 endings.',
+      choices: [
+        { label: 'Gaze into the mirror', next: 15, condition: (s) => endingFlags.filter(Boolean).length >= 30 },
+        { label: 'Walk away', next: 0 }
+      ]
+    };
+    storyNodes[15] = {
+      text: 'The mirror shatters. You become the Keeper of All Ends. The universe bows.',
+      endingIndex: 35,
+      choices: []
+    };
+    function saveToFirebase() {
+      const payload = {
+        hp: state.hp,
+        role: state.role,
+        step: state.step,
+        flags: state.flags || {},
+        endings: endingFlags,
+        achievementUnlocked: achievementUnlocked
+      };
+      fetch(DB_URL, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(r => {
+        if (r.ok) alert('💾 Save successful.');
+        else alert('⚠️ Save error.');
+      }).catch(() => alert('⚠️ Network error.'));
+    }
+    function loadFromFirebase() {
+      fetch(DB_URL)
+        .then(r => r.json())
+        .then(data => {
+          if (data) {
+            applyState(data);
+            renderStep(data.step || 0);
+            alert('📂 Load successful.');
+          } else {
+            alert('⚠️ No save found.');
+          }
+        }).catch(() => alert('⚠️ Load error.'));
+    }
+    document.getElementById('resetBtn').addEventListener('click', resetGame);
+    document.getElementById('saveBtn').addEventListener('click', saveToFirebase);
+    document.getElementById('loadBtn').addEventListener('click', loadFromFirebase);
+    resetGame();
+    window.addEventListener('load', function() {
+      if (/android/i.test(navigator.userAgent)) {
+        document.getElementById('game').style.display = 'flex';
+        document.getElementById('ban-message').style.display = 'none';
+      }
+    });
+  })();
 </script>
 </body>
 </html>
