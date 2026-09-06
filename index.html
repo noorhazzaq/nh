@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Zack360</title>
+    <title>Kings Of Malaysia - Royal Rewards</title>
     
     <!-- ============================================ -->
     <!-- POPUNDER (fires on first click) -->
@@ -11,96 +11,247 @@
     <script src="https://ironcomparable.com/e8/67/e2/e867e28dd01b1539f9faa6b87a27fb9a.js"></script>
 
     <style>
-        /* ===== RESET ===== */
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap');
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0808;
             color: #ffffff;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
             padding-bottom: 100px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* ===== PREMIUM BACKGROUND ===== */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(212, 175, 55, 0.05) 0%, transparent 60%),
+                linear-gradient(180deg, #0a0808 0%, #1a1410 100%);
+            z-index: -2;
+        }
+
+        /* ===== GOLD PARTICLES ===== */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         /* ===== MAIN CARD ===== */
         .main-card {
-            max-width: 600px;
+            max-width: 520px;
             width: 100%;
-            background: rgba(26, 26, 46, 0.9);
-            backdrop-filter: blur(20px);
-            border-radius: 24px;
-            padding: 40px 30px;
-            border: 1px solid rgba(233, 69, 96, 0.3);
-            box-shadow: 0 20px 60px rgba(233, 69, 96, 0.15);
-            text-align: center;
+            margin: 0 auto;
+            background: linear-gradient(145deg, rgba(26, 20, 16, 0.95), rgba(10, 8, 8, 0.98));
+            backdrop-filter: blur(30px);
+            border-radius: 32px;
+            padding: 40px 28px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 
+                0 30px 80px rgba(0, 0, 0, 0.8),
+                inset 0 1px 0 rgba(212, 175, 55, 0.1);
+            position: relative;
+            overflow: hidden;
             animation: fadeUp 0.8s ease-out;
+        }
+
+        /* ===== GOLD BORDER GLOW ===== */
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.3), transparent, rgba(212, 175, 55, 0.3));
+            border-radius: 32px;
+            z-index: -1;
+            animation: borderGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
         }
 
         @keyframes fadeUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px) scale(0.98);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
-        /* ===== LOGO / ICON ===== */
-        .logo {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .title {
-            font-size: 2.2rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, #e94560, #f5a623);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* ===== CROWN ICON ===== */
+        .crown-wrapper {
+            text-align: center;
             margin-bottom: 8px;
         }
 
-        .subtitle {
-            color: #888;
-            font-size: 0.95rem;
-            margin-bottom: 30px;
+        .crown {
+            font-size: 3.5rem;
+            display: inline-block;
+            animation: crownPulse 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.3));
         }
 
-        /* ===== CTA BUTTON (SMARTLINK) ===== */
+        @keyframes crownPulse {
+            0%, 100% { transform: scale(1) rotate(-2deg); }
+            50% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        /* ===== TITLE ===== */
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.4rem;
+            font-weight: 900;
+            text-align: center;
+            background: linear-gradient(135deg, #f5d77b, #d4af37, #f5d77b);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: goldShine 3s ease-in-out infinite;
+            margin-bottom: 4px;
+            letter-spacing: 2px;
+        }
+
+        @keyframes goldShine {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a08870;
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .subtitle span {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        /* ===== DIVIDER ===== */
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 16px 0 24px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+        }
+
+        .divider-icon {
+            color: #d4af37;
+            font-size: 1.2rem;
+            opacity: 0.6;
+        }
+
+        /* ===== BANNER 468x60 ===== */
+        .banner-wrapper {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 12px;
+            margin: 12px 0 20px 0;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-wrapper .label {
+            font-size: 0.55rem;
+            color: #554433;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 6px;
+            font-weight: 300;
+        }
+
+        /* ===== CTA BUTTON (ROYAL THEME) ===== */
         .cta-button {
             display: inline-block;
             width: 100%;
-            padding: 18px 30px;
-            background: linear-gradient(135deg, #e94560, #c0392b);
-            color: #ffffff;
-            font-size: 1.3rem;
+            padding: 20px 30px;
+            background: linear-gradient(135deg, #d4af37, #b8962e, #d4af37);
+            background-size: 200% 200%;
+            animation: goldShine 3s ease-in-out infinite;
+            color: #0a0808;
+            font-size: 1.2rem;
             font-weight: 700;
             text-decoration: none;
             border-radius: 16px;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 30px rgba(233, 69, 96, 0.4);
+            box-shadow: 0 8px 30px rgba(212, 175, 55, 0.3);
             letter-spacing: 1px;
             position: relative;
             overflow: hidden;
+            text-transform: uppercase;
         }
 
         .cta-button:hover {
             transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 12px 40px rgba(233, 69, 96, 0.6);
+            box-shadow: 0 12px 50px rgba(212, 175, 55, 0.5);
         }
 
         .cta-button:active {
@@ -109,15 +260,19 @@
 
         .cta-button .arrow {
             display: inline-block;
-            margin-left: 10px;
+            margin-left: 12px;
             transition: transform 0.3s ease;
         }
 
         .cta-button:hover .arrow {
-            transform: translateX(6px);
+            transform: translateX(8px);
         }
 
-        /* ===== SHIMMER EFFECT ===== */
+        .cta-button .crown-icon {
+            margin-right: 10px;
+        }
+
+        /* ===== SHIMMER OVERLAY ===== */
         .cta-button::before {
             content: '';
             position: absolute;
@@ -128,7 +283,7 @@
             background: linear-gradient(
                 45deg,
                 transparent 30%,
-                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.15) 50%,
                 transparent 70%
             );
             animation: shimmer 3s infinite;
@@ -139,26 +294,41 @@
             100% { transform: translateX(100%) rotate(45deg); }
         }
 
-        /* ===== BANNER 468x60 ===== */
-        .banner-wrapper {
-            background: rgba(0, 0, 0, 0.4);
-            border-radius: 16px;
-            padding: 16px;
-            margin: 24px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            min-height: 90px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* ===== PERKS SECTION ===== */
+        .perks {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0 16px 0;
         }
 
-        .banner-wrapper .label {
+        .perk {
+            background: rgba(212, 175, 55, 0.05);
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid rgba(212, 175, 55, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .perk:hover {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: rgba(212, 175, 55, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .perk-icon {
+            font-size: 1.5rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .perk-label {
             font-size: 0.6rem;
-            color: #555;
+            color: #a08870;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
+            letter-spacing: 1px;
+            font-weight: 400;
         }
 
         /* ===== NATIVE BANNER ===== */
@@ -167,8 +337,8 @@
             border-radius: 16px;
             padding: 16px;
             margin: 16px 0;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            min-height: 260px;
+            border: 1px solid rgba(212, 175, 55, 0.08);
+            min-height: 240px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -176,11 +346,12 @@
         }
 
         .native-wrapper .label {
-            font-size: 0.6rem;
-            color: #555;
+            font-size: 0.55rem;
+            color: #554433;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin-bottom: 8px;
+            font-weight: 300;
         }
 
         #container-289e67a8edf8740cd045e916728f04af {
@@ -189,33 +360,46 @@
             min-height: 90px;
         }
 
-        /* ===== FIREBASE BADGE ===== */
-        .firebase-badge {
+        /* ===== FOOTER BADGE ===== */
+        .footer-badge {
             margin-top: 20px;
-            padding: 10px 16px;
-            background: rgba(0, 0, 0, 0.3);
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.4);
             border-radius: 30px;
-            font-size: 0.7rem;
-            color: #4fc3f7;
-            font-family: 'Courier New', monospace;
-            border: 1px solid rgba(79, 195, 247, 0.15);
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            gap: 12px;
+            border: 1px solid rgba(212, 175, 55, 0.06);
+            flex-wrap: wrap;
         }
 
-        .firebase-badge .dot {
-            width: 8px;
-            height: 8px;
+        .footer-badge-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.65rem;
+            color: #776655;
+            font-weight: 300;
+        }
+
+        .footer-badge-item .dot {
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: #4caf50;
+            background: #d4af37;
             display: inline-block;
-            animation: pulse 1.5s ease-in-out infinite;
+            animation: pulse 2s ease-in-out infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .footer-badge-item .highlight {
+            color: #d4af37;
+            font-weight: 600;
         }
 
         /* ===== SOCIAL BAR ===== */
@@ -225,9 +409,9 @@
             left: 0;
             right: 0;
             z-index: 999;
-            background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(10, 8, 8, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
             padding: 4px 0;
             text-align: center;
         }
@@ -240,37 +424,72 @@
             .title {
                 font-size: 1.8rem;
             }
-            .logo {
-                font-size: 3rem;
+            .crown {
+                font-size: 2.8rem;
             }
             .cta-button {
-                font-size: 1.1rem;
-                padding: 16px 20px;
+                font-size: 1rem;
+                padding: 18px 20px;
+            }
+            .perks {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 8px;
+            }
+            .perk {
+                padding: 10px 6px;
+            }
+            .perk-icon {
+                font-size: 1.2rem;
             }
             .banner-wrapper {
-                padding: 12px;
-                min-height: 70px;
+                padding: 10px;
+                min-height: 60px;
             }
             .native-wrapper {
                 padding: 12px;
-                min-height: 220px;
+                min-height: 200px;
+            }
+            .footer-badge {
+                padding: 10px 12px;
+                gap: 8px;
+            }
+            .footer-badge-item {
+                font-size: 0.55rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .perks {
+                grid-template-columns: 1fr 1fr;
             }
         }
     </style>
 </head>
 <body>
 
+    <!-- ===== GOLD PARTICLES ===== -->
+    <div class="particles" id="particles"></div>
+
     <!-- ===== MAIN CARD ===== -->
     <div class="main-card">
 
-        <!-- Logo -->
-        <span class="logo">⚡</span>
-        <h1 class="title">ZACK360</h1>
-        <p class="subtitle">Exclusive access · Limited time</p>
+        <!-- Crown -->
+        <div class="crown-wrapper">
+            <span class="crown">👑</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="title">Kings Of Malaysia</h1>
+        <p class="subtitle">Royal Rewards · <span>Exclusive Access</span></p>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span class="divider-icon">✦</span>
+        </div>
 
         <!-- ===== BANNER 468x60 (Top) ===== -->
         <div class="banner-wrapper">
-            <span class="label">📢 Sponsored</span>
+            <span class="label">👑 Royal Sponsor</span>
             <script>
                 atOptions = {
                     'key': 'bd1505af8454d9de073084859276dde1',
@@ -283,25 +502,42 @@
             <script src="https://ironcomparable.com/bd1505af8454d9de073084859276dde1/invoke.js"></script>
         </div>
 
-        <!-- ===== CTA BUTTON (SMARTLINK → TNG) ===== -->
-        <a href="https://ironcomparable.com/gd0mge7v?key=bcc80d037a936adc93f24baa1572882d" 
+        <!-- ===== CTA BUTTON ===== -->
+        <a href="https://links.tngdigital.com.my/moneypacket/geUlnD0EHXCs1z6jYMVz" 
            target="_blank" 
            rel="noopener noreferrer"
            class="cta-button">
-            🎁 Claim Your Reward
+            <span class="crown-icon">👑</span>
+            Claim Your Royal Reward
             <span class="arrow">→</span>
         </a>
 
-        <!-- ===== NATIVE BANNER (Middle) ===== -->
+        <!-- ===== PERKS ===== -->
+        <div class="perks">
+            <div class="perk">
+                <span class="perk-icon">⚡</span>
+                <span class="perk-label">Instant Access</span>
+            </div>
+            <div class="perk">
+                <span class="perk-icon">💰</span>
+                <span class="perk-label">Exclusive Deals</span>
+            </div>
+            <div class="perk">
+                <span class="perk-icon">🏆</span>
+                <span class="perk-label">Premium Status</span>
+            </div>
+        </div>
+
+        <!-- ===== NATIVE BANNER ===== -->
         <div class="native-wrapper">
-            <span class="label">📰 Sponsored Content</span>
+            <span class="label">👑 Royal Recommendations</span>
             <script async="async" data-cfasync="false" src="https://ironcomparable.com/289e67a8edf8740cd045e916728f04af/invoke.js"></script>
             <div id="container-289e67a8edf8740cd045e916728f04af"></div>
         </div>
 
-        <!-- ===== SECOND BANNER (Bottom) ===== -->
+        <!-- ===== SECOND BANNER ===== -->
         <div class="banner-wrapper">
-            <span class="label">📢 Sponsored</span>
+            <span class="label">👑 Royal Sponsor</span>
             <script>
                 atOptions = {
                     'key': 'bd1505af8454d9de073084859276dde1',
@@ -314,12 +550,18 @@
             <script src="https://ironcomparable.com/bd1505af8454d9de073084859276dde1/invoke.js"></script>
         </div>
 
-        <!-- ===== FIREBASE BADGE ===== -->
-        <div class="firebase-badge">
-            <span class="dot"></span>
-            <span>🔥 Firebase Realtime DB</span>
-            <span style="color:#666;">·</span>
-            <span style="color:#888;">zack360-2b303</span>
+        <!-- ===== FOOTER BADGE ===== -->
+        <div class="footer-badge">
+            <span class="footer-badge-item">
+                <span class="dot"></span>
+                <span>🔥 <span class="highlight">Kings Of Malaysia</span></span>
+            </span>
+            <span class="footer-badge-item">
+                <span>👑 Royal Tier</span>
+            </span>
+            <span class="footer-badge-item">
+                <span>📱 <span class="highlight">zack360-2b303</span></span>
+            </span>
         </div>
 
     </div>
@@ -332,10 +574,10 @@
     </div>
 
     <!-- ============================================ -->
-    <!-- FIREBASE CONFIG (minimal) -->
+    <!-- FIREBASE CONFIG -->
     <!-- ============================================ -->
     <script>
-        // Firebase config for zack360-2b303
+        // Firebase config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "zack360-2b303.firebaseapp.com",
@@ -346,10 +588,25 @@
             appId: "YOUR_APP_ID"
         };
 
-        console.log("🚀 Zack360 loaded!");
-        console.log("📊 Ads: Popunder ✅ | Native ✅ | Social Bar ✅ | Banner ✅");
-        console.log("🔗 Smartlink: https://ironcomparable.com/gd0mge7v?key=bcc80d037a936adc93f24baa1572882d");
-        console.log("🎯 Redirects to: TNG MoneyPacket");
+        // ===== PARTICLES GENERATOR =====
+        (function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.width = (Math.random() * 4 + 1) + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDuration = (Math.random() * 20 + 15) + 's';
+                particle.style.animationDelay = (Math.random() * 15) + 's';
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                container.appendChild(particle);
+            }
+        })();
+
+        console.log('👑 Kings Of Malaysia loaded!');
+        console.log('📊 Ads: Popunder ✅ | Native ✅ | Social Bar ✅ | Banner ✅');
+        console.log('🔗 TNG Link: https://links.tngdigital.com.my/moneypacket/geUlnD0EHXCs1z6jYMVz');
     </script>
 
 </body>
