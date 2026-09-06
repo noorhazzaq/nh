@@ -3,841 +3,254 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>METAL GEAR SOLID: PEACE WALKER 2026</title>
+    <title>My Website</title>
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}html,body{width:100%;height:100%;overflow:hidden;background:#0a0a0f;font-family:'Courier New',monospace;touch-action:none;user-select:none;-webkit-user-select:none}canvas{display:block;width:100vw;height:100vh;background:radial-gradient(circle at center,#1a2a1a,#0a0a0f)}#ui{position:fixed;bottom:1.5vh;left:0;width:100%;display:flex;justify-content:center;gap:1vw;padding:0 1vw;z-index:10;pointer-events:none;flex-wrap:wrap}#ui>*{pointer-events:auto;background:rgba(0,15,10,0.9);backdrop-filter:blur(10px);border:1px solid rgba(0,255,180,0.2);border-radius:6px;padding:1vh 1.8vw;color:#7fffd4;font-size:clamp(0.5rem,1.4vh,0.9rem);font-weight:700;letter-spacing:0.1em;box-shadow:0 0 20px rgba(0,255,180,0.03);transition:all 0.08s;min-width:55px;text-align:center;cursor:pointer;text-transform:uppercase}#ui>*:active{transform:scale(0.9);background:rgba(0,255,180,0.15);border-color:rgba(0,255,180,0.4)}#hud{position:fixed;top:1vh;left:1vw;z-index:10;color:#7fffd4;font-size:clamp(0.5rem,1.2vh,0.85rem);background:rgba(0,10,8,0.8);backdrop-filter:blur(6px);padding:0.6vh 1vw;border-radius:4px;border:1px solid rgba(0,255,180,0.08);line-height:1.5;pointer-events:none;font-family:'Courier New',monospace;letter-spacing:0.02em}#hud span{color:#ffd866;font-weight:700}#hud2{position:fixed;top:1vh;right:1vw;z-index:10;color:#7fffd4;font-size:clamp(0.45rem,1vh,0.75rem);background:rgba(0,10,8,0.8);backdrop-filter:blur(6px);padding:0.6vh 1vw;border-radius:4px;border:1px solid rgba(0,255,180,0.08);pointer-events:none;text-align:right;font-family:'Courier New',monospace;line-height:1.6;letter-spacing:0.02em}#hud2 span{color:#ffd866;font-weight:700}#alert{position:fixed;top:6vh;left:50%;transform:translateX(-50%);z-index:10;color:#ff3333;font-size:clamp(0.8rem,2.2vh,1.6rem);background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);padding:0.8vh 2.5vw;border-radius:3px;border:2px solid rgba(255,50,50,0.3);pointer-events:none;opacity:0;transition:opacity 0.15s;font-weight:700;text-shadow:0 0 20px rgba(255,0,0,0.2);letter-spacing:0.12em}#alert.show{opacity:1}#msg{position:fixed;bottom:8vh;left:50%;transform:translateX(-50%);z-index:10;color:#b0e0ff;font-size:clamp(0.55rem,1.4vh,0.9rem);background:rgba(0,0,0,0.6);backdrop-filter:blur(4px);padding:0.5vh 1.5vw;border-radius:16px;border:1px solid rgba(100,200,255,0.08);pointer-events:none;opacity:0;transition:opacity 0.2s;white-space:nowrap;font-weight:400;letter-spacing:0.04em}#msg.show{opacity:1}#basePanel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:20;background:rgba(0,10,8,0.95);backdrop-filter:blur(20px);border:1px solid rgba(0,255,180,0.2);border-radius:12px;padding:2vh 2vw;color:#7fffd4;font-size:clamp(0.6rem,1.4vh,0.9rem);display:none;max-width:90vw;max-height:80vh;overflow-y:auto;min-width:300px}#basePanel h2{color:#ffd866;margin-bottom:1vh;font-size:clamp(0.8rem,1.8vh,1.2rem);text-align:center;letter-spacing:0.15em}#basePanel .stat{display:flex;justify-content:space-between;padding:0.3vh 0;border-bottom:1px solid rgba(0,255,180,0.05)}#basePanel .stat span{color:#b0e0ff}#basePanel .close{position:absolute;top:0.5vh;right:1vw;cursor:pointer;color:#ff6644;font-size:clamp(1rem,2vh,1.4rem)}#basePanel .close:hover{color:#ff3333}#basePanel .btn{background:rgba(0,255,180,0.1);border:1px solid rgba(0,255,180,0.2);border-radius:4px;padding:0.5vh 1vw;cursor:pointer;color:#7fffd4;margin:0.3vh;font-size:clamp(0.5rem,1.2vh,0.8rem);transition:all 0.1s}#basePanel .btn:hover{background:rgba(0,255,180,0.2)}#basePanel .btn:active{transform:scale(0.95)}#basePanel .grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5vh;margin:0.5vh 0}@media(max-width:600px){#ui{gap:0.6vw;bottom:1vh}#ui>*{padding:0.6vh 2.5vw;font-size:clamp(0.4rem,1.2vh,0.65rem);min-width:40px;border-radius:4px}#hud{font-size:clamp(0.4rem,1vh,0.65rem);padding:0.4vh 1.5vw}#hud2{font-size:clamp(0.35rem,0.9vh,0.6rem);padding:0.4vh 1.5vw}#msg{font-size:clamp(0.45rem,1.2vh,0.7rem);bottom:6vh}#alert{font-size:clamp(0.6rem,1.8vh,1rem)}#basePanel{padding:1.5vh 3vw;min-width:85vw}}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+            padding: 15px;
+            padding-bottom: 120px;
+        }
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            padding: 30px 25px;
+            border-radius: 14px 14px 0 0;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-top: 6px;
+        }
+        .content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+        }
+        .content h2 {
+            font-size: 20px;
+            margin: 20px 0 10px;
+            color: #1a1a2e;
+        }
+        .content h2:first-of-type {
+            margin-top: 0;
+        }
+        .content p {
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 14px;
+        }
+        .card {
+            background: #f8f9fc;
+            padding: 18px 20px;
+            border-radius: 10px;
+            margin: 16px 0;
+            border-left: 4px solid #667eea;
+        }
+        .card h3 {
+            font-size: 17px;
+            margin-bottom: 4px;
+            color: #1a1a2e;
+        }
+        .card p {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 0;
+        }
+
+        /* Banner Ad Container - Centered with spacing */
+        .ad-banner {
+            text-align: center;
+            margin: 24px 0;
+            padding: 12px 0;
+            background: #fafafa;
+            border-radius: 10px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .ad-banner img,
+        .ad-banner iframe {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Social Bar - Fixed bottom */
+        #adsterra-social-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background: transparent;
+            pointer-events: auto;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 28px;
+            padding-top: 18px;
+            border-top: 1px solid #eee;
+            font-size: 13px;
+            color: #aaa;
+        }
+
+        @media (max-width: 480px) {
+            body { padding: 10px; padding-bottom: 110px; }
+            .header { padding: 22px 18px; }
+            .header h1 { font-size: 22px; }
+            .content { padding: 18px; }
+            .content h2 { font-size: 18px; }
+        }
     </style>
 </head>
 <body>
-    <div id="hud">❤️ <span id="hp">100</span> &nbsp;⚡ <span id="stamina">100</span> &nbsp;🔫 <span id="ammo">18</span> &nbsp;🗡️ <span id="knife">3</span> &nbsp;🏹 <span id="lvl">1</span></div>
-    <div id="hud2">📡 <span id="enemyCount">0</span> &nbsp;🚨 <span id="alertLevel">CLEAR</span><br>💰 <span id="gmp">0</span> &nbsp;👥 <span id="staffCount">0</span></div>
-    <div id="alert">⚠️ ALERT</div>
-    <div id="msg">🔹 MISSION START</div>
-    <div id="ui"><div id="btnAtk">🔫 Attack</div><div id="btnCQC">🥋 CQC</div><div id="btnSneak">👣 Sneak</div><div id="btnItem">📦 Item</div><div id="btnBase">🏗️ Base</div><div id="btnFulton">🎈 Fulton</div></div>
-    <div id="basePanel">
-        <div class="close" id="closeBase">✕</div>
-        <h2>🏗️ MOTHER BASE</h2>
-        <div class="stat"><span>Staff</span><span id="bStaff">0</span></div>
-        <div class="stat"><span>Combat</span><span id="bCombat">0</span></div>
-        <div class="stat"><span>R&D</span><span id="bRD">0</span></div>
-        <div class="stat"><span>Medical</span><span id="bMedical">0</span></div>
-        <div class="stat"><span>GMP</span><span id="bGMP">0</span></div>
-        <div class="stat"><span>Fulton Balloons</span><span id="bFulton">0</span></div>
-        <div style="margin-top:1vh;text-align:center">
-            <div class="btn" id="btnDevelop">🔧 Develop Weapons</div>
-            <div class="btn" id="btnOuterOps">🎯 Outer Ops</div>
-            <div class="btn" id="btnRecruit">👤 Recruit</div>
-        </div>
-    </div>
-    <canvas id="gameCanvas"></canvas>
-    <script>
-        (function(){
-            const canvas=document.getElementById('gameCanvas');
-            const ctx=canvas.getContext('2d');
-            let W,H;
-            function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}
-            window.addEventListener('resize',resize);resize();
 
-            const hpEl=document.getElementById('hp'),staminaEl=document.getElementById('stamina');
-            const ammoEl=document.getElementById('ammo'),knifeEl=document.getElementById('knife');
-            const lvlEl=document.getElementById('lvl'),enemyCountEl=document.getElementById('enemyCount');
-            const alertLevelEl=document.getElementById('alertLevel'),alertEl=document.getElementById('alert');
-            const msgEl=document.getElementById('msg'),gmpEl=document.getElementById('gmp');
-            const staffCountEl=document.getElementById('staffCount');
-            const bStaff=document.getElementById('bStaff'),bCombat=document.getElementById('bCombat');
-            const bRD=document.getElementById('bRD'),bMedical=document.getElementById('bMedical');
-            const bGMP=document.getElementById('bGMP'),bFulton=document.getElementById('bFulton');
-            const basePanel=document.getElementById('basePanel');
-            let msgTimeout=null,alertTimeout=null;
-
-            function showMsg(t){msgEl.textContent=t;msgEl.classList.add('show');if(msgTimeout)clearTimeout(msgTimeout);msgTimeout=setTimeout(()=>msgEl.classList.remove('show'),1500)}
-            function showAlert(t){alertEl.textContent=t;alertEl.classList.add('show');if(alertTimeout)clearTimeout(alertTimeout);alertTimeout=setTimeout(()=>alertEl.classList.remove('show'),2000)}
-
-            // MOTHER BASE
-            const motherBase={
-                staff:0,combat:0,rd:0,medical:0,gmp:100,fultons:3,
-                weapons:['M1911','M16','RPG-7'],weaponLevel:1,
-                outerOps:0,recruits:0
-            };
-
-            // PLAYER
-            const player={
-                x:W/2,y:H/2,hp:100,maxHp:100,stamina:100,maxStamina:100,
-                ammo:18,knife:3,lvl:1,xp:0,xpNext:30,
-                baseAtk:10,baseDef:4,atk:10,def:4,
-                stealth:true,sneaking:false,alertTimer:0,
-                dir:0,speed:1.8,holding:false,interrogating:false,
-                fultonTarget:null
-            };
-
-            let enemies=[],bullets=[],particles=[],items=[],fultons=[];
-            let gameTime=0,frameCount=0,alertLevel=0,alertCooldown=0;
-            let missionActive=true,bossActive=false,bossDefeated=0;
-            let keys={up:false,down:false,left:false,right:false};
-
-            // BOSS SYSTEM
-            class Boss{
-                constructor(type){
-                    this.type=type||'PUPA';
-                    this.x=W/2+Math.random()*200-100;
-                    this.y=H/2+Math.random()*200-100;
-                    this.maxHp=200+player.lvl*20;
-                    this.hp=this.maxHp;
-                    this.atk=18+player.lvl*2;
-                    this.def=8+player.lvl;
-                    this.size=45;
-                    this.phase=1;
-                    this.timer=0;
-                    this.dead=false;
-                    this.hitTimer=0;
-                    this.angle=0;
-                    this.speed=0.6;
-                    this.attackTimer=0;
-                    this.weakPoint=false;
-                    this.staggerTimer=0;
-                }
-                update(dt){
-                    if(this.dead)return;
-                    this.hitTimer=Math.max(0,this.hitTimer-dt);
-                    this.timer+=dt;
-                    this.attackTimer-=dt;
-                    this.staggerTimer=Math.max(0,this.staggerTimer-dt);
-                    const dx=player.x-this.x,dy=player.y-this.y;
-                    const dist=Math.sqrt(dx*dx+dy*dy);
-                    const angle=Math.atan2(dy,dx);
-
-                    if(this.staggerTimer>0){
-                        this.angle+=dt*0.5;
-                        return;
-                    }
-
-                    if(dist>150){
-                        this.x+=Math.cos(angle)*this.speed*dt*60;
-                        this.y+=Math.sin(angle)*this.speed*dt*60;
-                    }else if(dist<80){
-                        this.x-=Math.cos(angle)*this.speed*dt*60;
-                        this.y-=Math.sin(angle)*this.speed*dt*60;
-                    }
-
-                    this.angle+=dt*0.3;
-
-                    if(this.attackTimer<=0&&dist<200){
-                        this.attackTimer=2;
-                        const dmg=this.atk+Math.floor(Math.random()*5);
-                        let actual=Math.max(1,dmg-Math.floor(player.def*0.3));
-                        if(player.sneaking)actual*=0.4;
-                        player.hp-=actual;
-                        createHitParticles(player.x,player.y,'#ff4444',15);
-                        showMsg('💥 BOSS -'+actual+' HP');
-                        if(player.hp<=0){player.hp=0;missionActive=false;showMsg('💀 MISSION FAILED');setTimeout(()=>resetGame(),2000)}
-                        updateUI();
-                    }
-
-                    if(this.hp<this.maxHp*0.3&&this.phase===1){
-                        this.phase=2;
-                        this.speed=1.2;
-                        showAlert('⚠️ PHASE 2!');
-                    }
-
-                    if(this.hp<=0){
-                        this.dead=true;
-                        bossDefeated++;
-                        motherBase.gmp+=200+player.lvl*50;
-                        player.xp+=80+player.lvl*20;
-                        checkLevelUp();
-                        showMsg('🏆 BOSS DEFEATED!');
-                        createHitParticles(this.x,this.y,'#ffdd44',40);
-                        setTimeout(()=>{if(!bossActive){spawnEnemy();spawnEnemy();spawnEnemy()}},500);
-                    }
-                }
-                draw(ctx){
-                    if(this.dead)return;
-                    ctx.save();
-                    ctx.translate(this.x,this.y);
-                    const s=this.size;
-                    ctx.shadowColor='rgba(255,200,50,0.2)';
-                    ctx.shadowBlur=30;
-                    const color=this.hitTimer>0?'#fff':this.phase===1?'#ff6644':'#ff2244';
-                    ctx.beginPath();
-                    ctx.arc(0,0,s,0,Math.PI*2);
-                    ctx.fillStyle=color;
-                    ctx.fill();
-                    ctx.strokeStyle='rgba(255,200,50,0.4)';
-                    ctx.lineWidth=3;
-                    ctx.stroke();
-                    ctx.shadowBlur=0;
-                    ctx.fillStyle='#fff';
-                    ctx.font='bold 20px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.textBaseline='middle';
-                    ctx.fillText('🤖 '+this.type,0,-s-15);
-                    ctx.font='bold 12px sans-serif';
-                    ctx.fillStyle='#ff8844';
-                    ctx.fillText('PHASE '+this.phase,0,s+15);
-                    const hpW=60,hpH=5;
-                    ctx.fillStyle='rgba(0,0,0,0.7)';
-                    ctx.fillRect(-hpW/2,-s-8,hpW,hpH);
-                    ctx.fillStyle=this.hp/this.maxHp>0.5?'#4caf50':this.hp/this.maxHp>0.2?'#ffaa44':'#f44336';
-                    ctx.fillRect(-hpW/2,-s-8,hpW*(this.hp/this.maxHp),hpH);
-                    if(this.weakPoint){
-                        ctx.fillStyle='rgba(255,255,0,0.3)';
-                        ctx.beginPath();
-                        ctx.arc(0,0,s*0.7,0,Math.PI*2);
-                        ctx.fill();
-                    }
-                    ctx.restore();
-                }
-                takeDamage(dmg){
-                    const actual=Math.max(1,dmg-this.def*0.2);
-                    this.hp-=actual;
-                    this.hitTimer=0.15;
-                    this.staggerTimer=0.3;
-                    if(this.hp<this.maxHp*0.5&&Math.random()<0.2)this.weakPoint=true;
-                    return Math.floor(actual);
-                }
-            }
-
-            let boss=null;
-
-            // ENEMY CLASS
-            class Enemy{
-                constructor(x,y){
-                    this.x=x;this.y=y;
-                    this.maxHp=30+Math.floor(Math.random()*15)+player.lvl*2;
-                    this.hp=this.maxHp;
-                    this.atk=5+Math.floor(Math.random()*3)+player.lvl*0.8;
-                    this.def=1+Math.floor(Math.random()*2)+Math.floor(player.lvl*0.3);
-                    this.size=14+Math.floor(Math.random()*5);
-                    this.speed=0.4+Math.random()*0.3;
-                    this.angle=Math.random()*Math.PI*2;
-                    this.state='patrol';
-                    this.alertTimer=0;
-                    this.dead=false;
-                    this.hitTimer=0;
-                    this.patrolAngle=this.angle;
-                    this.detectionRange=120+Math.random()*60;
-                    this.attackCooldown=0;
-                    this.type=Math.random()>0.6?'🪖':Math.random()>0.3?'👤':'👾';
-                    this.fultoned=false;
-                    this.interrogated=false;
-                }
-                update(dt){
-                    if(this.dead||this.fultoned)return;
-                    this.hitTimer=Math.max(0,this.hitTimer-dt);
-                    this.attackCooldown=Math.max(0,this.attackCooldown-dt);
-                    const dx=player.x-this.x,dy=player.y-this.y;
-                    const dist=Math.sqrt(dx*dx+dy*dy);
-                    const angleToPlayer=Math.atan2(dy,dx);
-                    let angleDiff=angleToPlayer-this.angle;
-                    while(angleDiff>Math.PI)angleDiff-=Math.PI*2;
-                    while(angleDiff<-Math.PI)angleDiff+=Math.PI*2;
-                    const inView=Math.abs(angleDiff)<1.3;
-                    const canSee=dist<this.detectionRange&&inView&&!player.sneaking;
-
-                    if(canSee&&!player.stealth){
-                        this.state='chase';
-                        this.alertTimer=3;
-                        if(alertLevel<1){alertLevel=1;showAlert('⚠️ CAUTION')}
-                    }else if(this.alertTimer>0){
-                        this.alertTimer-=dt;
-                        this.state='chase';
-                    }else if(dist<60){
-                        this.state='attack';
-                    }else{
-                        this.state='patrol';
-                    }
-
-                    if(this.state==='chase'||this.state==='attack'){
-                        const moveSpeed=this.speed*(this.state==='attack'?1.4:1);
-                        const moveX=Math.cos(angleToPlayer)*moveSpeed*dt*60;
-                        const moveY=Math.sin(angleToPlayer)*moveSpeed*dt*60;
-                        this.x+=moveX;this.y+=moveY;
-                        this.angle=angleToPlayer;
-                        if(dist<50&&this.attackCooldown<=0){
-                            this.attackCooldown=1.2;
-                            let dmg=this.atk+Math.floor(Math.random()*3)-1;
-                            if(player.sneaking)dmg*=0.4;
-                            dmg=Math.max(1,dmg-Math.floor(player.def*0.3));
-                            player.hp-=dmg;
-                            createHitParticles(player.x,player.y,'#ff3333',8);
-                            showMsg('💥 -'+dmg+' HP');
-                            if(player.hp<=0){player.hp=0;missionActive=false;showMsg('💀 MISSION FAILED');setTimeout(()=>resetGame(),2000)}
-                            updateUI();
-                        }
-                    }else{
-                        this.patrolAngle+=dt*0.3*(Math.random()>0.98?1:-1);
-                        this.x+=Math.cos(this.patrolAngle)*this.speed*dt*30;
-                        this.y+=Math.sin(this.patrolAngle)*this.speed*dt*30;
-                        this.angle=this.patrolAngle;
-                    }
-
-                    if(this.x<15)this.x=15;if(this.x>W-15)this.x=W-15;
-                    if(this.y<15)this.y=15;if(this.y>H-15)this.y=H-15;
-
-                    if(this.hp<=0&&!this.dead){
-                        this.dead=true;
-                        const loot=5+Math.floor(Math.random()*10)+player.lvl*2;
-                        motherBase.gmp+=loot;
-                        player.xp+=8+player.lvl*2;
-                        checkLevelUp();
-                        showMsg('💀 +'+loot+' GMP');
-                        createHitParticles(this.x,this.y,'#ffdd44',15);
-                        if(Math.random()<0.15){
-                            items.push({x:this.x,y:this.y,type:'📦',value:10+Math.floor(Math.random()*20)});
-                        }
-                        updateUI();
-                    }
-                }
-                draw(ctx){
-                    if(this.dead||this.fultoned)return;
-                    ctx.save();
-                    ctx.translate(this.x,this.y);
-                    const s=this.size;
-                    ctx.shadowColor='rgba(255,100,50,0.1)';
-                    ctx.shadowBlur=10;
-                    const color=this.state==='chase'?'#ff6644':this.state==='attack'?'#ff2222':'#44aa88';
-                    ctx.beginPath();
-                    ctx.arc(0,0,s,0,Math.PI*2);
-                    ctx.fillStyle=this.hitTimer>0?'#fff':color;
-                    ctx.fill();
-                    ctx.strokeStyle='rgba(0,255,180,0.2)';
-                    ctx.lineWidth=1;ctx.stroke();
-                    ctx.shadowBlur=0;
-                    ctx.fillStyle='#fff';
-                    ctx.font='bold 12px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.textBaseline='middle';
-                    ctx.fillText(this.type,0,-s-8);
-                    ctx.font='bold 7px sans-serif';
-                    ctx.fillStyle=this.state==='chase'?'#ff6644':this.state==='attack'?'#ff2222':'#66ccaa';
-                    ctx.fillText(this.state.toUpperCase(),0,s+10);
-                    const hpW=24,hpH=3;
-                    ctx.fillStyle='rgba(0,0,0,0.6)';
-                    ctx.fillRect(-hpW/2,-s-5,hpW,hpH);
-                    ctx.fillStyle=this.hp/this.maxHp>0.5?'#4caf50':'#f44336';
-                    ctx.fillRect(-hpW/2,-s-5,hpW*(this.hp/this.maxHp),hpH);
-                    if(this.interrogated){
-                        ctx.fillStyle='rgba(255,255,0,0.3)';
-                        ctx.beginPath();
-                        ctx.arc(0,0,s*1.2,0,Math.PI*2);
-                        ctx.fill();
-                    }
-                    ctx.restore();
-                }
-                takeDamage(dmg){
-                    const actual=Math.max(1,dmg-this.def*0.3);
-                    this.hp-=actual;
-                    this.hitTimer=0.15;
-                    this.state='chase';
-                    this.alertTimer=2;
-                    if(alertLevel<2){alertLevel=2;showAlert('🚨 ALERT!')}
-                    return Math.floor(actual);
-                }
-                fulton(){
-                    if(this.dead||this.fultoned)return false;
-                    this.fultoned=true;
-                    motherBase.staff++;
-                    motherBase.combat+=Math.floor(Math.random()*3)+1;
-                    motherBase.rd+=Math.floor(Math.random()*2);
-                    motherBase.medical+=Math.floor(Math.random()*2);
-                    motherBase.gmp+=20;
-                    showMsg('🎈 FULTON RECOVERED!');
-                    createHitParticles(this.x,this.y,'#88ffaa',20);
-                    updateUI();
-                    return true;
-                }
-                interrogate(){
-                    if(this.dead||this.fultoned||this.interrogated)return false;
-                    this.interrogated=true;
-                    const info=Math.floor(Math.random()*20)+5;
-                    motherBase.gmp+=info;
-                    showMsg('🗣️ Intel +'+info+' GMP');
-                    return true;
-                }
-            }
-
-            function resetGame(){
-                player.hp=player.maxHp;player.stamina=player.maxStamina;
-                player.ammo=18;player.knife=3;player.lvl=1;player.xp=0;player.xpNext=30;
-                player.atk=player.baseAtk;player.def=player.baseDef;
-                player.x=W/2;player.y=H/2;player.stealth=true;player.sneaking=false;
-                enemies=[];bullets=[];particles=[];items=[];fultons=[];
-                alertLevel=0;boss=null;bossActive=false;missionActive=true;
-                motherBase.staff=0;motherBase.combat=0;motherBase.rd=0;
-                motherBase.medical=0;motherBase.gmp=100;motherBase.fultons=3;
-                alertEl.classList.remove('show');
-                for(let i=0;i<4;i++)spawnEnemy();
-                updateUI();showMsg('🔄 MISSION RESTART');
-                basePanel.style.display='none';
-            }
-
-            function spawnEnemy(){
-                if(enemies.length>=8)return;
-                const angle=Math.random()*Math.PI*2;
-                const dist=180+Math.random()*250;
-                const x=Math.max(30,Math.min(W-30,player.x+Math.cos(angle)*dist));
-                const y=Math.max(30,Math.min(H-30,player.y+Math.sin(angle)*dist));
-                enemies.push(new Enemy(x,y));
-            }
-
-            function spawnBoss(){
-                if(boss&&!boss.dead)return;
-                bossActive=true;
-                boss=new Boss(['PUPA','CHRYSALIS','COCOON','PEACE WALKER'][bossDefeated%4]);
-                showAlert('🤖 BOSS FIGHT!');
-                showMsg('⚔️ '+boss.type+' APPEARED!');
-                enemies=enemies.filter(e=>e.dead);
-                for(let i=0;i<2;i++)spawnEnemy();
-            }
-
-            function checkLevelUp(){
-                while(player.xp>=player.xpNext){
-                    player.xp-=player.xpNext;
-                    player.lvl++;
-                    player.xpNext=Math.floor(player.xpNext*1.5)+20;
-                    player.maxHp+=8;player.hp=player.maxHp;
-                    player.baseAtk+=2+Math.floor(player.lvl*0.4);
-                    player.baseDef+=1+Math.floor(player.lvl*0.25);
-                    player.atk=player.baseAtk;player.def=player.baseDef;
-                    player.maxStamina+=5;player.stamina=player.maxStamina;
-                    showMsg('⬆️ LEVEL '+player.lvl+'!');
-                    if(player.lvl%3===0)spawnBoss();
-                    else{spawnEnemy();spawnEnemy();}
-                }
-                updateUI();
-            }
-
-            function createHitParticles(x,y,color,n=15){
-                for(let i=0;i<n;i++){
-                    const angle=Math.random()*Math.PI*2;
-                    const speed=1+Math.random()*5;
-                    particles.push({
-                        x,y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed-1,
-                        life:0.4+Math.random()*0.6,maxLife:0.6+Math.random()*0.4,
-                        size:2+Math.random()*5,color
-                    });
-                }
-            }
-
-            // ACTIONS
-            function attackAction(){
-                if(!missionActive||bossActive&&boss&&!boss.dead)return;
-                if(player.ammo<=0){showMsg('❌ No ammo!');return}
-                player.ammo--;
-                const angle=player.dir;
-                const bx=player.x+Math.cos(angle)*30;
-                const by=player.y+Math.sin(angle)*30;
-                bullets.push({x:bx,y:by,vx:Math.cos(angle)*9,vy:Math.sin(angle)*9,life:1.8});
-                createHitParticles(bx,by,'#88ffaa',5);
-                let hit=false;
-                for(const e of enemies){
-                    if(e.dead||e.fultoned)continue;
-                    const dx=e.x-bx,dy=e.y-by;
-                    if(dx*dx+dy*dy<2000){
-                        const dmg=e.takeDamage(player.atk+Math.floor(Math.random()*4));
-                        showMsg('🔫 '+dmg+' dmg');
-                        hit=true;break;
-                    }
-                }
-                if(!hit&&boss&&bossActive&&!boss.dead){
-                    const dx=boss.x-bx,dy=boss.y-by;
-                    if(dx*dx+dy*dy<4000){
-                        const dmg=boss.takeDamage(player.atk+Math.floor(Math.random()*3));
-                        showMsg('🔫 BOSS -'+dmg+' HP');
-                        hit=true;
-                    }
-                }
-                if(!hit)showMsg('🔫 Miss!');
-                if(alertLevel<2){alertLevel=1;showAlert('⚠️ GUNFIRE')}
-                updateUI();
-            }
-
-            function cqcAction(){
-                if(!missionActive)return;
-                if(player.knife<=0){showMsg('❌ No knives!');return}
-                let hit=false;
-                const targets=boss&&bossActive&&!boss.dead?[boss,...enemies]:enemies;
-                for(const e of targets){
-                    if(e.dead||e.fultoned)continue;
-                    const dx=e.x-player.x,dy=e.y-player.y;
-                    if(dx*dx+dy*dy<3600){
-                        if(e instanceof Boss){
-                            const dmg=e.takeDamage(player.atk*1.4+Math.floor(Math.random()*5));
-                            showMsg('🥊 BOSS CQC! '+dmg+' dmg');
-                            createHitParticles(e.x,e.y,'#ff8844',20);
-                            player.knife--;
-                            hit=true;break;
-                        }else{
-                            const dmg=e.takeDamage(player.atk*1.5+Math.floor(Math.random()*5));
-                            showMsg('🥋 CQC! '+dmg+' dmg');
-                            createHitParticles(e.x,e.y,'#ff8844',15);
-                            player.knife--;
-                            if(!e.dead&&Math.random()<0.3){e.interrogate()}
-                            hit=true;break;
-                        }
-                    }
-                }
-                if(!hit){showMsg('🥋 No target!')}
-                updateUI();
-            }
-
-            function fultonAction(){
-                if(!missionActive)return;
-                if(motherBase.fultons<=0){showMsg('❌ No fulton balloons!');return}
-                let target=null;let minDist=Infinity;
-                for(const e of enemies){
-                    if(e.dead||e.fultoned)continue;
-                    const dx=e.x-player.x,dy=e.y-player.y;
-                    const d=dx*dx+dy*dy;
-                    if(d<minDist&&d<2500){minDist=d;target=e}
-                }
-                if(!target){showMsg('🎈 No enemy nearby');return}
-                if(target.fulton()){
-                    motherBase.fultons--;
-                    fultons.push({x:target.x,y:target.y,life:2,goingUp:true});
-                    updateUI();
-                }
-            }
-
-            function sneakAction(){
-                player.sneaking=!player.sneaking;
-                player.stealth=player.sneaking;
-                showMsg(player.sneaking?'👣 Stealth ON':'👣 Stealth OFF');
-                if(player.sneaking&&alertLevel>0){
-                    alertLevel=Math.max(0,alertLevel-0.3);
-                    if(alertLevel<0.5)alertEl.classList.remove('show');
-                }
-            }
-
-            function itemAction(){
-                if(!missionActive)return;
-                if(player.hp>=player.maxHp){showMsg('❤️ Full HP');return}
-                const heal=20+Math.floor(Math.random()*15);
-                player.hp=Math.min(player.maxHp,player.hp+heal);
-                showMsg('📦 +'+heal+' HP');
-                updateUI();
-            }
-
-            function toggleBase(){
-                if(basePanel.style.display==='none'||basePanel.style.display===''){
-                    basePanel.style.display='block';
-                    updateBaseUI();
-                }else{
-                    basePanel.style.display='none';
-                }
-            }
-
-            function updateBaseUI(){
-                bStaff.textContent=motherBase.staff;
-                bCombat.textContent=motherBase.combat;
-                bRD.textContent=motherBase.rd;
-                bMedical.textContent=motherBase.medical;
-                bGMP.textContent=motherBase.gmp;
-                bFulton.textContent=motherBase.fultons;
-            }
-
-            function developWeapons(){
-                if(motherBase.gmp<100){showMsg('❌ Need 100 GMP');return}
-                if(motherBase.rd<3){showMsg('❌ Need R&D 3');return}
-                motherBase.gmp-=100;
-                motherBase.rd-=3;
-                player.atk+=3;
-                player.baseAtk+=3;
-                showMsg('🔧 Weapon Upgraded! +3 ATK');
-                updateBaseUI();updateUI();
-            }
-
-            function outerOps(){
-                if(motherBase.combat<2){showMsg('❌ Need 2 combat staff');return}
-                motherBase.combat-=2;
-                const reward=30+Math.floor(Math.random()*50)+player.lvl*10;
-                motherBase.gmp+=reward;
-                motherBase.outerOps++;
-                player.xp+=15;
-                checkLevelUp();
-                showMsg('🎯 Outer Ops success! +'+reward+' GMP');
-                updateBaseUI();updateUI();
-            }
-
-            function recruitAction(){
-                if(motherBase.gmp<50){showMsg('❌ Need 50 GMP');return}
-                motherBase.gmp-=50;
-                const r=Math.floor(Math.random()*5)+1;
-                motherBase.staff+=r;
-                motherBase.combat+=Math.floor(Math.random()*2);
-                motherBase.rd+=Math.floor(Math.random()*2);
-                motherBase.medical+=Math.floor(Math.random()*2);
-                showMsg('👤 Recruited '+r+' staff!');
-                updateBaseUI();updateUI();
-            }
-
-            function updateUI(){
-                hpEl.textContent=Math.floor(player.hp);
-                staminaEl.textContent=Math.floor(player.stamina);
-                ammoEl.textContent=player.ammo;
-                knifeEl.textContent=player.knife;
-                lvlEl.textContent=player.lvl;
-                const alive=enemies.filter(e=>!e.dead&&!e.fultoned).length;
-                enemyCountEl.textContent=alive+(boss&&bossActive&&!boss.dead?1:0);
-                alertLevelEl.textContent=alertLevel>=2?'🔴 ALERT':alertLevel>=0.5?'🟡 CAUTION':'🟢 CLEAR';
-                gmpEl.textContent=motherBase.gmp;
-                staffCountEl.textContent=motherBase.staff;
-                updateBaseUI();
-            }
-
-            function update(dt){
-                if(!missionActive)return;
-                gameTime+=dt;frameCount++;
-
-                // Player movement
-                player.dir+=(keys.right?0.04:0)-(keys.left?0.04:0);
-                let mx=0,my=0;
-                if(keys.up){mx+=Math.cos(player.dir)*player.speed;my+=Math.sin(player.dir)*player.speed}
-                if(keys.down){mx-=Math.cos(player.dir)*player.speed*0.4;my-=Math.sin(player.dir)*player.speed*0.4}
-                if(mx||my){
-                    const len=Math.sqrt(mx*mx+my*my);
-                    mx=mx/len*player.speed*(player.sneaking?0.5:1);
-                    my=my/len*player.speed*(player.sneaking?0.5:1);
-                    player.x+=mx;player.y+=my;
-                    player.stamina=Math.max(0,player.stamina-0.05*(player.sneaking?0.2:0.8));
-                    if(player.stamina<8)player.speed=1.2;
-                    else player.speed=1.8;
-                }else{
-                    player.stamina=Math.min(player.maxStamina,player.stamina+0.06);
-                }
-                if(player.stamina<3&&player.sneaking){player.sneaking=false;player.stealth=false;showMsg('💨 Out of stamina!')}
-                player.x=Math.max(20,Math.min(W-20,player.x));
-                player.y=Math.max(20,Math.min(H-20,player.y));
-
-                // Alert decay
-                if(alertLevel>0)alertCooldown-=dt;
-                if(alertCooldown<=0&&alertLevel>0){
-                    alertLevel=Math.max(0,alertLevel-dt*0.12);
-                    if(alertLevel<0.3)alertEl.classList.remove('show');
-                }
-
-                // Update enemies
-                for(const e of enemies)e.update(dt);
-                enemies=enemies.filter(e=>!e.dead);
-
-                // Update boss
-                if(boss&&bossActive)boss.update(dt);
-                if(boss&&boss.dead){bossActive=false;boss=null}
-
-                // Update bullets
-                for(let i=bullets.length-1;i>=0;i--){
-                    const b=bullets[i];
-                    b.x+=b.vx;b.y+=b.vy;b.life-=dt;
-                    if(b.life<=0||b.x<0||b.x>W||b.y<0||b.y>H)bullets.splice(i,1);
-                }
-
-                // Update fultons
-                for(let i=fultons.length-1;i>=0;i--){
-                    const f=fultons[i];
-                    f.y-=2;f.life-=dt;
-                    if(f.life<=0)fultons.splice(i,1);
-                }
-
-                // Update particles
-                for(let i=particles.length-1;i>=0;i--){
-                    const p=particles[i];
-                    p.x+=p.vx;p.y+=p.vy;p.vy+=0.03;p.life-=dt;
-                    p.vx*=0.97;p.vy*=0.97;
-                    if(p.life<=0)particles.splice(i,1);
-                }
-
-                // Spawn enemies
-                if(frameCount%120===0&&enemies.length<5&&!bossActive)spawnEnemy();
-                if(Math.random()<0.0005&&enemies.length<6&&!bossActive)spawnEnemy();
-
-                // Fulton balloon pickup
-                for(let i=items.length-1;i>=0;i--){
-                    const it=items[i];
-                    const dx=it.x-player.x,dy=it.y-player.y;
-                    if(dx*dx+dy*dy<1600){
-                        motherBase.gmp+=it.value;
-                        showMsg('📦 +'+it.value+' GMP');
-                        items.splice(i,1);
-                        updateUI();
-                    }
-                }
-
-                updateUI();
-            }
-
-            function draw(){
-                ctx.clearRect(0,0,W,H);
-                const grad=ctx.createRadialGradient(player.x,player.y,50,player.x,player.y,500);
-                grad.addColorStop(0,'#1a2a1a');grad.addColorStop(1,'#0a0a0f');
-                ctx.fillStyle=grad;ctx.fillRect(0,0,W,H);
-
-                // Grid
-                ctx.fillStyle='rgba(255,255,255,0.015)';
-                ctx.fillRect(0,0,W,H);
-                ctx.strokeStyle='rgba(255,255,255,0.01)';
-                ctx.lineWidth=0.5;
-                for(let i=0;i<W;i+=50){ctx.beginPath();ctx.moveTo(i,0);ctx.lineTo(i,H);ctx.stroke()}
-                for(let i=0;i<H;i+=50){ctx.beginPath();ctx.moveTo(0,i);ctx.lineTo(W,i);ctx.stroke()}
-
-                // Items
-                for(const it of items){
-                    ctx.fillStyle='#ffd866';
-                    ctx.font='20px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.textBaseline='middle';
-                    ctx.fillText(it.type,it.x,it.y);
-                }
-
-                // Fultons
-                for(const f of fultons){
-                    ctx.fillStyle='rgba(255,255,100,0.3)';
-                    ctx.beginPath();
-                    ctx.arc(f.x,f.y,8,0,Math.PI*2);
-                    ctx.fill();
-                    ctx.fillStyle='#ffdd44';
-                    ctx.font='24px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.textBaseline='middle';
-                    ctx.fillText('🎈',f.x,f.y-10);
-                }
-
-                // Particles
-                for(const p of particles){
-                    ctx.globalAlpha=(p.life/p.maxLife)*0.9;
-                    ctx.fillStyle=p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x,p.y,p.size*(0.5+(p.life/p.maxLife)*0.5),0,Math.PI*2);
-                    ctx.fill();
-                }
-                ctx.globalAlpha=1;
-
-                // Enemies
-                for(const e of enemies)e.draw(ctx);
-
-                // Boss
-                if(boss&&bossActive)boss.draw(ctx);
-
-                // Bullets
-                for(const b of bullets){
-                    ctx.shadowColor='#88ffaa';
-                    ctx.shadowBlur=15;
-                    ctx.fillStyle='#88ffaa';
-                    ctx.beginPath();
-                    ctx.arc(b.x,b.y,4,0,Math.PI*2);
-                    ctx.fill();
-                    ctx.shadowBlur=0;
-                }
-
-                // Player
-                ctx.save();
-                ctx.translate(player.x,player.y);
-                ctx.rotate(player.dir);
-                const glow=ctx.createRadialGradient(0,0,5,0,0,35);
-                glow.addColorStop(0,player.sneaking?'rgba(0,255,180,0.08)':'rgba(80,200,255,0.05)');
-                glow.addColorStop(1,'rgba(80,200,255,0)');
-                ctx.fillStyle=glow;ctx.beginPath();ctx.arc(0,0,35,0,Math.PI*2);ctx.fill();
-                ctx.shadowColor=player.sneaking?'rgba(0,255,180,0.12)':'rgba(80,200,255,0.08)';
-                ctx.shadowBlur=15;
-                ctx.fillStyle=player.sneaking?'#44ddbb':'#42a5f5';
-                ctx.beginPath();
-                ctx.arc(0,0,14,0,Math.PI*2);
-                ctx.fill();
-                ctx.strokeStyle='rgba(255,255,255,0.2)';
-                ctx.lineWidth=1.5;ctx.stroke();
-                ctx.shadowBlur=0;
-                ctx.fillStyle='#fff';
-                ctx.font='bold 14px sans-serif';
-                ctx.textAlign='center';
-                ctx.textBaseline='middle';
-                ctx.fillText('🐍',0,-22);
-                if(player.sneaking){
-                    ctx.fillStyle='rgba(0,255,180,0.1)';
-                    ctx.beginPath();
-                    ctx.arc(0,0,20,0,Math.PI*2);
-                    ctx.fill();
-                }
-                ctx.restore();
-
-                // Boss HP bar (if boss active)
-                if(boss&&bossActive&&!boss.dead){
-                    ctx.fillStyle='rgba(0,0,0,0.6)';
-                    ctx.fillRect(W/2-150,8,300,8);
-                    ctx.fillStyle='#ff4444';
-                    ctx.fillRect(W/2-150,8,300*(boss.hp/boss.maxHp),8);
-                    ctx.fillStyle='#fff';
-                    ctx.font='bold 10px sans-serif';
-                    ctx.textAlign='center';
-                    ctx.fillText(boss.type+' ['+Math.floor(boss.hp)+'/'+boss.maxHp+']',W/2,22);
-                }
-            }
-
-            // Input
-            document.addEventListener('keydown',(e)=>{
-                if(e.key==='w'||e.key==='W')keys.up=true;
-                if(e.key==='s'||e.key==='S')keys.down=true;
-                if(e.key==='a'||e.key==='A')keys.left=true;
-                if(e.key==='d'||e.key==='D')keys.right=true;
-                if(e.key===' '||e.key==='f')attackAction();
-                if(e.key==='c')cqcAction();
-                if(e.key==='x')sneakAction();
-                if(e.key==='z')itemAction();
-                if(e.key==='v')fultonAction();
-                if(e.key==='b'||e.key==='B')toggleBase();
-                if(e.key==='r'||e.key==='R')resetGame();
-            });
-            document.addEventListener('keyup',(e)=>{
-                if(e.key==='w'||e.key==='W')keys.up=false;
-                if(e.key==='s'||e.key==='S')keys.down=false;
-                if(e.key==='a'||e.key==='A')keys.left=false;
-                if(e.key==='d'||e.key==='D')keys.right=false;
-            });
-
-            // Touch controls
-            let touchX=null,touchY=null,touchId=null;
-            canvas.addEventListener('touchstart',(e)=>{
-                e.preventDefault();
-                const t=e.touches[0];
-                touchX=t.clientX;touchY=t.clientY;touchId=t.identifier;
-            },{passive:false});
-            canvas.addEventListener('touchmove',(e)=>{
-                e.preventDefault();
-                const t=e.touches[0];
-                if(t.identifier!==touchId)return;
-                const dx=t.clientX-touchX,dy=t.clientY-touchY;
-                if(Math.abs(dx)>25||Math.abs(dy)>25){
-                    player.dir=Math.atan2(dy,dx);
-                    keys.up=true;
-                    touchX=t.clientX;touchY=t.clientY;
-                }
-            },{passive:false});
-            canvas.addEventListener('touchend',(e)=>{keys.up=false;keys.down=false;keys.left=false;keys.right=false;touchX=null;touchY=null;touchId=null},{passive:false});
-
-            // UI buttons
-            document.getElementById('btnAtk').addEventListener('click',attackAction);
-            document.getElementById('btnCQC').addEventListener('click',cqcAction);
-            document.getElementById('btnSneak').addEventListener('click',sneakAction);
-            document.getElementById('btnItem').addEventListener('click',itemAction);
-            document.getElementById('btnBase').addEventListener('click',toggleBase);
-            document.getElementById('btnFulton').addEventListener('click',fultonAction);
-            document.getElementById('closeBase').addEventListener('click',()=>{basePanel.style.display='none'});
-            document.getElementById('btnDevelop').addEventListener('click',developWeapons);
-            document.getElementById('btnOuterOps').addEventListener('click',outerOps);
-            document.getElementById('btnRecruit').addEventListener('click',recruitAction);
-
-            // Init
-            player.x=W/2;player.y=H/2;
-            for(let i=0;i<4;i++)spawnEnemy();
-            updateUI();showMsg('🎯 PEACE WALKER 2026');
-            showMsg('🔹 Use WASD move | F attack | C CQC | X sneak | V fulton | B base');
-
-            function loop(t){const dt=Math.min(0.05,1/60);update(dt);draw();requestAnimationFrame(loop)}
-            loop(0);
-            window.addEventListener('resize',()=>{
-                resize();
-                player.x=Math.min(W-30,Math.max(30,player.x));
-                player.y=Math.min(H-30,Math.max(30,player.y));
-            });
+    <!-- ============================================ -->
+    <!-- ADSTERRA POPUNDER - Place in <head>          -->
+    <!-- REPLACE 'YOUR-POPUNDER-URL' with actual URL  -->
+    <!-- ============================================ -->
+    <script type="text/javascript">
+        (function() {
+            var s = document.createElement('script');
+            s.type = 'text/javascript';
+            s.async = true;
+            s.src = 'https://YOUR-POPUNDER-URL.com/script.js';
+            var x = document.getElementsByTagName('script')[0];
+            x.parentNode.insertBefore(s, x);
         })();
     </script>
+
+    <!-- ============================================ -->
+    <!-- ADSTERRA SOCIAL BAR - Place before </body>   -->
+    <!-- REPLACE 'YOUR-SOCIALBAR-URL' with actual URL -->
+    <!-- ============================================ -->
+    <div id="adsterra-social-bar">
+        <script type="text/javascript">
+            (function() {
+                var s = document.createElement('script');
+                s.type = 'text/javascript';
+                s.async = true;
+                s.src = 'https://YOUR-SOCIALBAR-URL.com/script.js';
+                var x = document.getElementById('adsterra-social-bar');
+                x.parentNode.insertBefore(s, x);
+            })();
+        </script>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MAIN CONTENT                                 -->
+    <!-- ============================================ -->
+    <div class="container">
+
+        <div class="header">
+            <h1>🚀 My Website</h1>
+            <p>Content you love. Ads that keep it free.</p>
+        </div>
+
+        <div class="content">
+
+            <h2>Welcome</h2>
+            <p>This page is monetized with Adsterra. Popunder, Social Bar, and Banner ads work together to maximize revenue while keeping your experience clean.</p>
+
+            <!-- ========================================= -->
+            <!-- ADSTERRA BANNER AD - Placement #1         -->
+            <!-- REPLACE 'YOUR-BANNER-URL' with actual URL -->
+            <!-- ========================================= -->
+            <div class="ad-banner">
+                <script type="text/javascript">
+                    (function() {
+                        var s = document.createElement('script');
+                        s.type = 'text/javascript';
+                        s.async = true;
+                        s.src = 'https://YOUR-BANNER-URL.com/script.js';
+                        var x = document.querySelector('.ad-banner');
+                        if (x) {
+                            x.parentNode.insertBefore(s, x);
+                        }
+                    })();
+                </script>
+            </div>
+
+            <div class="card">
+                <h3>📊 Why Multiple Ad Formats Work</h3>
+                <p>Popunders capture attention without interrupting. Social Bars stay visible at all times. Banners integrate naturally into content. Each format targets different user behavior.</p>
+            </div>
+
+            <h2>Getting Started with Adsterra</h2>
+            <p>Adsterra requires zero traffic minimums. Approval takes minutes. Fill rate is 100%. This makes it the ideal starting point for new publishers.</p>
+
+            <!-- ========================================= -->
+            <!-- ADSTERRA BANNER AD - Placement #2         -->
+            <!-- REPLACE 'YOUR-BANNER-URL' with actual URL -->
+            <!-- ========================================= -->
+            <div class="ad-banner">
+                <script type="text/javascript">
+                    (function() {
+                        var s = document.createElement('script');
+                        s.type = 'text/javascript';
+                        s.async = true;
+                        s.src = 'https://YOUR-BANNER-URL.com/script.js';
+                        var x = document.querySelectorAll('.ad-banner')[1];
+                        if (x) {
+                            x.parentNode.insertBefore(s, x);
+                        }
+                    })();
+                </script>
+            </div>
+
+            <div class="card">
+                <h3>💡 Pro Tip: Optimize Ad Placement</h3>
+                <p>Place banners within content, not just at the bottom. Above-the-fold banners and mid-content placements typically perform best.</p>
+            </div>
+
+            <h2>Maximizing Revenue</h2>
+            <p>Combine Popunder + Social Bar + Banner to capture impressions across all user interactions. More formats = more revenue opportunities.</p>
+
+            <!-- ========================================= -->
+            <!-- ADSTERRA BANNER AD - Placement #3         -->
+            <!-- REPLACE 'YOUR-BANNER-URL' with actual URL -->
+            <!-- ========================================= -->
+            <div class="ad-banner">
+                <script type="text/javascript">
+                    (function() {
+                        var s = document.createElement('script');
+                        s.type = 'text/javascript';
+                        s.async = true;
+                        s.src = 'https://YOUR-BANNER-URL.com/script.js';
+                        var x = document.querySelectorAll('.ad-banner')[2];
+                        if (x) {
+                            x.parentNode.insertBefore(s, x);
+                        }
+                    })();
+                </script>
+            </div>
+
+            <div class="footer-note">
+                &copy; 2026 My Website · Powered by Adsterra
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
