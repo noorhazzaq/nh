@@ -3,33 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>ΣNDLESS 999</title>
+<title>AI LOGIC · 999</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-tap-highlight-color:transparent}
-html,body{width:100%;min-height:100vh;min-height:100dvh;background:#0b0e14;display:flex;justify-content:center;align-items:center;font-family:'Courier New',monospace;touch-action:manipulation}
-#game{width:100%;max-width:480px;padding:12px;margin:auto;display:flex;flex-direction:column;gap:12px}
-#screen{background:#1a1f2a;border:2px solid #3d4a5c;border-radius:24px;padding:20px 16px;min-height:40vh;box-shadow:0 8px 0 #0f1219;display:flex;flex-direction:column;justify-content:space-between}
-#story{color:#d0e0f0;font-size:clamp(0.95rem,4vw,1.3rem);line-height:1.6;text-shadow:0 1px 0 #2a3440;word-break:break-word;white-space:pre-wrap}
-#stats{display:flex;justify-content:space-between;color:#7a8fa0;font-size:clamp(0.7rem,2.5vw,0.9rem);border-top:1px solid #2d3848;padding-top:12px;margin-top:12px;letter-spacing:0.3px}
-.stat span{color:#b0d0e8;font-weight:bold}
-#choices{display:flex;flex-direction:column;gap:8px;margin-top:8px}
-.choice-btn{background:#222b38;border:2px solid #3e5066;border-radius:60px;padding:14px 18px;color:#dceaf5;font-size:clamp(0.9rem,3.2vw,1.1rem);font-weight:600;text-align:left;transition:all 0.05s ease;box-shadow:0 4px 0 #0f141c;letter-spacing:0.5px;touch-action:manipulation;cursor:pointer;width:100%;font-family:inherit}
-.choice-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #0f141c;background:#2f3c4e;border-color:#5a7088}
-.choice-btn:disabled{opacity:0.3;transform:translateY(2px);box-shadow:0 2px 0 #0f141c;pointer-events:none}
-#reset-area{display:flex;justify-content:center;margin-top:6px}
-#reset-btn{background:transparent;border:1px solid #3d5066;border-radius:40px;padding:10px 24px;color:#7a93aa;font-size:clamp(0.7rem,2vw,0.85rem);font-weight:500;letter-spacing:1px;transition:0.1s;touch-action:manipulation;cursor:pointer;font-family:inherit}
-#reset-btn:active{background:#1f2a38;color:#b0cce0;border-color:#5a7a99}
+html,body{width:100%;min-height:100vh;min-height:100dvh;background:#080b12;display:flex;justify-content:center;align-items:center;font-family:'Courier New',monospace;touch-action:manipulation}
+#game{width:100%;max-width:500px;padding:10px;margin:auto;display:flex;flex-direction:column;gap:10px}
+#screen{background:#111a24;border:2px solid #2a3f55;border-radius:20px;padding:18px 14px;min-height:38vh;box-shadow:0 6px 0 #0a111a;display:flex;flex-direction:column;justify-content:space-between}
+#story{color:#c8dcee;font-size:clamp(0.9rem,3.8vw,1.25rem);line-height:1.7;text-shadow:0 1px 0 #1d2a38;word-break:break-word;white-space:pre-wrap}
+#stats{display:flex;justify-content:space-between;color:#6e8aa0;font-size:clamp(0.65rem,2.2vw,0.85rem);border-top:1px solid #233242;padding-top:10px;margin-top:10px;letter-spacing:0.2px}
+.stat span{color:#aac8e0;font-weight:bold}
+#choices{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.choice-btn{background:#1b2737;border:2px solid #314a62;border-radius:50px;padding:13px 16px;color:#d4e6f5;font-size:clamp(0.85rem,3vw,1.05rem);font-weight:600;text-align:left;transition:all 0.04s ease;box-shadow:0 4px 0 #0d1520;letter-spacing:0.3px;touch-action:manipulation;cursor:pointer;width:100%;font-family:inherit}
+.choice-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #0d1520;background:#293c50;border-color:#4a6a88}
+.choice-btn:disabled{opacity:0.25;transform:translateY(2px);box-shadow:0 2px 0 #0d1520;pointer-events:none}
+#reset-area{display:flex;justify-content:center;gap:12px;margin-top:4px;flex-wrap:wrap}
+.reset-btn{background:transparent;border:1px solid #314a62;border-radius:40px;padding:9px 20px;color:#6e8aa0;font-size:clamp(0.65rem,1.8vw,0.8rem);font-weight:500;letter-spacing:0.8px;transition:0.08s;touch-action:manipulation;cursor:pointer;font-family:inherit}
+.reset-btn:active{background:#17232f;color:#aac8e0;border-color:#4a6a88}
 .hidden{display:none !important}
+#ai-badge{color:#3a5a78;font-size:clamp(0.55rem,1.5vw,0.7rem);text-align:center;letter-spacing:2px;margin-top:2px}
 </style>
 </head>
 <body>
 <div id="game">
 <div id="screen">
-<div id="story">⟡  ENDLESS  ⟡<br>choose your path</div>
-<div id="stats"><div>❤️ <span id="hp">10</span></div><div>🔮 <span id="ending">0</span>/999</div><div>⚡ <span id="flag">0</span></div></div>
+<div id="story">⟡  AI LOGIC MACHINE  ⟡<br>999 formula active</div>
+<div id="stats"><div>❤️ <span id="hp">10</span></div><div>🧠 <span id="ending">0</span>/999</div><div>⚙️ <span id="flag">0</span></div></div>
 </div>
 <div id="choices"></div>
-<div id="reset-area"><button id="reset-btn">⟲ RESTART</button></div>
+<div id="reset-area"><button class="reset-btn" id="reset-btn">⟲ RESET</button><button class="reset-btn" id="logic-btn">⚡ LOGIC</button></div>
+<div id="ai-badge">AI · DETERMINISTIC 999</div>
 </div>
 <script>
 (function(){
@@ -39,116 +41,190 @@ const endingEl=document.getElementById('ending');
 const flagEl=document.getElementById('flag');
 const choicesEl=document.getElementById('choices');
 const resetBtn=document.getElementById('reset-btn');
+const logicBtn=document.getElementById('logic-btn');
 
-let state={
-hp:10,
-ending:0,
-flag:0,
-path:[]
-};
-
-const endings=[];
-for(let i=1;i<=999;i++){
-endings.push(`Ending #${i} · ${['Fate','Void','Star','Ash','Echo','Rift','Soul','Crown','Frost','Flux'][i%10]} ${i}`);
+// --- deterministic 999 formula (no random) ---
+const ENDING_WORDS = ['Fate','Void','Star','Ash','Echo','Rift','Soul','Crown','Frost','Flux'];
+function generateEndingTitle(n){
+const w=ENDING_WORDS[n % 10];
+return `#${n} · ${w}${n}`;
 }
 
-function shuffleArray(arr){for(let i=arr.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}return arr;}
+// AI logic machine: deterministic path generator
+function aiLogic(ending, hp, flag){
+// formula: (ending * 7 + flag * 13 + hp * 3) % 20 → deterministic choice index
+const idx = (ending * 7 + flag * 13 + hp * 3) % 20;
+const pool = [
+'analyze pattern','compute trajectory','optimize path','decode glyph','simulate future',
+'calibrate flux','map anomaly','sync matrix','purge noise','engage core',
+'filter signal','amplify echo','stabilize rift','quantize soul','crown iteration',
+'frost compile','flux override','recurse timeline','branch entropy','merge causality'
+];
+return pool[idx];
+}
+
+// deterministic HP delta (no random)
+function hpDelta(ending, flag){
+return ((ending * 3 + flag * 7) % 5) - 2; // -2,-1,0,1,2
+}
+
+// deterministic bonus/penalty (no random)
+function conditionalMod(ending){
+let mod=0;
+if(ending % 3 === 0) mod += 1;
+if(ending % 7 === 0) mod -= 2;
+if(ending % 11 === 0) mod += 2;
+if(ending % 13 === 0) mod -= 1;
+return mod;
+}
+
+// 999 formula: deterministic progression
+function nextState(state){
+let {hp, ending, flag, path} = state;
+if(ending >= 999) return state;
+
+// deterministic choice label (AI logic)
+const choice = aiLogic(ending, hp, flag);
+
+// deterministic HP change
+let delta = hpDelta(ending, flag);
+delta += conditionalMod(ending);
+hp = Math.max(0, Math.min(12, hp + delta));
+
+// flag update: deterministic hash (no random)
+flag = (flag * 31 + choice.length * 7 + ending * 3) % 99 + 1;
+
+// ending increment (capped)
+ending = Math.min(999, ending + 1);
+
+// push choice to path
+path.push(choice);
+
+return {hp, ending, flag, path};
+}
+
+// --- state management ---
+let state = {hp:10, ending:0, flag:1, path:[]};
 
 function getEndingFragment(){
-const idx=Math.min(state.ending,998);
-return endings[idx]||'Endless Loop';
-}
-
-function generateChoices(count){
-const base=shuffleArray(['venture deeper','examine the rune','follow the light','turn back','whisper the name','drink from spring','open the chest','climb the spire','cross the bridge','enter the mist','kneel before stone','sing the old tune','touch the mirror','step into shadow','break the chain','offer a coin','read the scroll','light the torch','dig the earth','wait for dawn']);
-return base.slice(0,count).map(t=>t.charAt(0).toUpperCase()+t.slice(1));
-}
-
-function updateUI(){
-hpEl.textContent=Math.max(0,state.hp);
-endingEl.textContent=Math.min(999,state.ending);
-flagEl.textContent=state.flag;
+if(state.ending === 999) return '✦ ALL 999 FORMULAS RESOLVED ✦';
+if(state.ending > 800) return '⚡ NEARING LOGIC COMPLETION';
+if(state.ending > 500) return '⟡ DEEP RECURSION ACTIVE';
+if(state.ending > 100) return '⟡ MATRIX EXPANDING';
+if(state.ending > 20) return '⟡ PATTERN EMERGING';
+return '⟡ INITIALIZING LOGIC';
 }
 
 function renderScene(){
-updateUI();
-const frag=getEndingFragment();
-const prefix=state.ending>0?`✦ ${frag} ✦\n`:'⟡  ENDLESS  ⟡\n';
-const suffix=state.ending>=998?'\n✧ You have witnessed 999 endings ✧':'\n— the path shifts —';
-let desc='';
-if(state.ending<10)desc='A dim corridor stretches before you.';
-else if(state.ending<100)desc='The labyrinth breathes with ancient memory.';
-else if(state.ending<500)desc='Reality bends around your footsteps.';
-else if(state.ending<800)desc='Echoes of a thousand choices pulse.';
-else desc='The threshold of all endings gleams.';
-if(state.hp<=0){desc='⚰️  You have fallen. But endings persist.';}
-storyEl.textContent=prefix+desc+suffix;
-const choiceCount=state.hp>0?Math.min(3,1+Math.floor(state.ending/200)+1):1;
-let labels=generateChoices(choiceCount);
-if(state.hp<=0){labels=['Rise again (restart)'];}
-choicesEl.innerHTML='';
-labels.forEach(label=>{
-const btn=document.createElement('button');
-btn.className='choice-btn';
-btn.textContent=label;
-btn.addEventListener('click',(e)=>{
-e.preventDefault();
-if(state.hp<=0){resetGame();return;}
-handleChoice(label);
-});
-choicesEl.appendChild(btn);
-});
-if(state.ending>=999){
-storyEl.textContent='✦  THE FINAL ENDING  ✦\nAll 999 threads woven.\nYou stand beyond infinity.';
-choicesEl.innerHTML='';
-const btn=document.createElement('button');
-btn.className='choice-btn';
-btn.textContent='⟳ Begin anew';
-btn.addEventListener('click',resetGame);
-choicesEl.appendChild(btn);
-}
+hpEl.textContent=state.hp;
+endingEl.textContent=state.ending;
+flagEl.textContent=state.flag;
+
+const title = state.ending === 999 ? '✦ FINAL ✦' : generateEndingTitle(state.ending);
+const frag = getEndingFragment();
+let desc = '';
+if(state.ending === 999) desc = 'All 999 logic gates aligned. Infinite loop resolved.';
+else if(state.ending > 800) desc = 'Causality woven. 99% formula complete.';
+else if(state.ending > 500) desc = 'Recursive depth exceeds threshold.';
+else if(state.ending > 100) desc = 'AI logic machines expanding decision space.';
+else if(state.ending > 20) desc = 'Deterministic paths converging.';
+else desc = 'Initializing 999-formula engine.';
+
+if(state.hp <= 0){
+desc = '⚠️ LOGIC OVERFLOW · SYSTEM RESET REQUIRED';
 }
 
-function handleChoice(label){
-if(state.hp<=0)return;
-state.ending=Math.min(999,state.ending+1);
-state.flag=(state.flag+label.length)%99+1;
-const hpDelta=Math.floor(Math.random()*5)-1;
-state.hp=Math.max(0,state.hp+hpDelta);
-if(state.hp===0)state.hp=0;
-if(state.ending%3===0)state.hp=Math.min(12,state.hp+1);
-if(state.ending%7===0)state.hp=Math.max(0,state.hp-2);
-if(state.hp<=0)state.hp=0;
-state.path.push(label);
-if(state.ending>=999)state.ending=999;
-updateUI();
+storyEl.textContent = `⟡ ${title} ⟡\n${frag}\n${desc}`;
+
+choicesEl.innerHTML='';
+if(state.hp <= 0){
+const btn=document.createElement('button');
+btn.className='choice-btn';
+btn.textContent='⟳ RESTART LOGIC';
+btn.addEventListener('click', resetGame);
+choicesEl.appendChild(btn);
+renderAIStatus();
+return;
+}
+
+if(state.ending >= 999){
+storyEl.textContent='✦  ALL 999 FORMULAS  ✦\nDeterministic logic complete.\nAll paths resolved.';
+const btn=document.createElement('button');
+btn.className='choice-btn';
+btn.textContent='⟳ BEGIN NEW CYCLE';
+btn.addEventListener('click', resetGame);
+choicesEl.appendChild(btn);
+renderAIStatus();
+return;
+}
+
+// deterministic choice (AI logic machine)
+const next = nextState(state);
+const choiceLabel = next.path[next.path.length-1] || 'compute';
+const btn=document.createElement('button');
+btn.className='choice-btn';
+btn.textContent=`▶ ${choiceLabel}`;
+btn.addEventListener('click', ()=>{
+if(state.hp <= 0 || state.ending >= 999) return;
+// apply deterministic transition
+const newState = nextState(state);
+state.hp = newState.hp;
+state.ending = newState.ending;
+state.flag = newState.flag;
+state.path = newState.path;
 renderScene();
+});
+choicesEl.appendChild(btn);
+renderAIStatus();
+}
+
+function renderAIStatus(){
+// show deterministic formula preview
+if(state.ending < 999 && state.hp > 0){
+const preview = aiLogic(state.ending, state.hp, state.flag);
+const delta = hpDelta(state.ending, state.flag) + conditionalMod(state.ending);
+const deltaStr = delta > 0 ? `+${delta}` : `${delta}`;
+document.getElementById('ai-badge').textContent = `AI · next: ${preview}  |  δHP: ${deltaStr}  |  F: ${state.flag}`;
+} else {
+document.getElementById('ai-badge').textContent = 'AI · DETERMINISTIC 999 · COMPLETE';
+}
 }
 
 function resetGame(){
-state={hp:10,ending:0,flag:0,path:[]};
-updateUI();
+state = {hp:10, ending:0, flag:1, path:[]};
 renderScene();
 }
 
+// manual logic step (for demonstration)
+function stepLogic(){
+if(state.hp <= 0 || state.ending >= 999) return;
+const newState = nextState(state);
+state.hp = newState.hp;
+state.ending = newState.ending;
+state.flag = newState.flag;
+state.path = newState.path;
+renderScene();
+}
+
+// --- android-only block ---
 function blockNonAndroid(){
 const ua=navigator.userAgent||navigator.vendor||window.opera;
 if(/android/i.test(ua))return;
-document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0b0e14;color:#6a7f92;font-family:monospace;font-size:1.4rem;padding:2rem;text-align:center;">⛔  This experience is crafted for Android devices only.</div>';
+document.body.innerHTML='<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#080b12;color:#5a7a92;font-family:monospace;font-size:1.3rem;padding:2rem;text-align:center;">⛔  ANDROID-ONLY LOGIC ENGINE</div>';
 document.body.style.margin='0';document.body.style.padding='0';
 }
-
 blockNonAndroid();
+
+// event binding
+resetBtn.addEventListener('click', resetGame);
+logicBtn.addEventListener('click', stepLogic);
+
+// error containment (enterprise)
+window.addEventListener('error', function(e){ e.preventDefault(); resetGame(); return true; });
+window.addEventListener('unhandledrejection', function(e){ e.preventDefault(); resetGame(); return true; });
+
+// init
 resetGame();
-
-// enterprise-level error containment
-window.addEventListener('error',function(e){e.preventDefault();resetGame();return true;});
-window.addEventListener('unhandledrejection',function(e){e.preventDefault();resetGame();return true;});
-
-// loop-free: every interaction is user-triggered
-// layout: flex + clamp + vw/vh + max-width 480px
-// bug-free: no intervals, no recursion, safe random
-
 })();
 </script>
 </body>
