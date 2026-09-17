@@ -1,404 +1,251 @@
 <!DOCTYPE html>
-<html lang="ms" data-theme="dark" data-density="comfortable" data-contrast="normal">
+<html lang="ms">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a12">
-<title>Cosmic Chat</title>
-<link rel="stylesheet" href="styles.css">
+<title>Editor Mobile</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;overflow:hidden;font-family:system-ui,sans-serif;background:#0a0a0f;color:#eee}
+  .app{display:flex;flex-direction:column;height:100dvh}
+
+  header{
+    padding:12px 14px;background:#12121a;border-bottom:1px solid #222;
+    display:flex;align-items:center;gap:8px;flex-wrap:wrap;flex-shrink:0
+  }
+  header h1{font-size:13px;font-weight:700;color:#7c5cff;white-space:nowrap}
+  .fname{
+    flex:1;min-width:0;font-size:11.5px;color:#666;
+    padding:6px 10px;background:#1a1a24;border:1px solid #2a2a3a;
+    border-radius:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+  }
+  button{
+    padding:10px 14px;background:#1a1a24;border:1px solid #2a2a3a;
+    border-radius:9px;color:#ccc;font-size:13px;font-weight:600;
+    cursor:pointer;white-space:nowrap;font-family:inherit;
+    -webkit-tap-highlight-color:transparent;touch-action:manipulation
+  }
+  button:active{background:#22222e}
+  button.primary{background:linear-gradient(135deg,#7c5cff,#22d3ee);border:none;color:#fff}
+  button.primary:disabled{opacity:.4}
+  button.danger{background:#2a1a1a;border-color:#3a2a2a;color:#ff8a8a}
+
+  #editor{
+    flex:1;width:100%;padding:14px;background:#0a0a0f;color:#e0e0e0;
+    font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:13px;
+    line-height:1.55;border:none;outline:none;resize:none;
+    tab-size:2;white-space:pre;overflow:auto;-webkit-text-size-adjust:100%
+  }
+  #editor::selection{background:#7c5cff44}
+
+  footer{
+    padding:8px 14px;background:#0f0f16;border-top:1px solid #222;
+    font-size:11.5px;color:#666;display:flex;align-items:center;
+    justify-content:space-between;gap:10px;flex-shrink:0;
+    padding-bottom:calc(8px + env(safe-area-inset-bottom))
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:#22c55e;display:inline-block;margin-right:6px}
+  .dot.busy{background:#f59e0b;animation:pulse 1s infinite}
+  .dot.err{background:#ff6b6b}
+  .dot.warn{background:#f59e0b}
+  @keyframes pulse{50%{opacity:.4}}
+
+  .hint{
+    position:fixed;inset:0;background:rgba(5,5,12,.9);backdrop-filter:blur(10px);
+    display:grid;place-items:center;padding:20px;z-index:50
+  }
+  .hint.hidden{display:none}
+  .hint-card{
+    max-width:520px;width:100%;padding:24px;background:linear-gradient(160deg,#1a1a2a,#12121e);
+    border:1px solid #2a2a3a;border-radius:18px;text-align:center
+  }
+  .hint-card .big{font-size:48px;margin-bottom:10px}
+  .hint-card h2{margin:0 0 8px;font-size:18px}
+  .hint-card p{margin:0 0 16px;font-size:13.5px;color:#888;line-height:1.6}
+  .warn-box{
+    background:#2a1a0a;border:1px solid #4a3a1a;color:#f5c97a;
+    padding:12px 14px;border-radius:10px;font-size:12px;margin-bottom:16px;
+    text-align:left;line-height:1.5
+  }
+  .hint-card button{width:100%;padding:14px;font-size:15px;margin-top:6px}
+
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+    background:#1a1a24;border:1px solid #2a2a3a;color:#fff;
+    padding:11px 18px;border-radius:10px;font-size:13px;
+    opacity:0;pointer-events:none;transition:all .25s;z-index:100;
+    max-width:90vw;text-align:center
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast.ok{border-color:#22c55e;color:#6ee7a3}
+  .toast.err{border-color:#ff6b6b;color:#ff8a8a}
+
+  @media(max-width:520px){
+    header h1{display:none}
+    button{padding:9px 12px;font-size:12.5px}
+    #editor{font-size:12.5px}
+  }
+</style>
 </head>
 <body>
-<div class="bgl bgm"></div>
-<div class="bgl bgn"></div>
 
-<!-- MODALS -->
-<div class="md hidden" id="nameModal"><div class="mc">
-<h2>Selamat Datang</h2><p>Masukkan nama paparan anda.</p>
-<input id="nameInput" maxlength="20" placeholder="Nama" autocomplete="off">
-<div class="err" id="nameErr">Sila masukkan nama 2–20 aksara.</div>
-<button id="nameBtn">Masuk Sembang</button>
-</div></div>
+<div class="app">
+  <header>
+    <h1>✏️ Editor</h1>
+    <span class="fname" id="fname">(tiada fail)</span>
+    <button id="openBtn">📂 Buka</button>
+    <button id="saveBtn" class="primary" disabled>💾 Simpan</button>
+    <button id="saveAsBtn" disabled>📁 Salin</button>
+  </header>
 
-<div class="md hidden" id="settingsModal"><div class="mc">
-<h2>Tetapan</h2>
-<label>Tema</label>
-<div class="sg">
-<button class="ghost" data-set="theme" data-val="dark">🌙 Gelap</button>
-<button class="ghost" data-set="theme" data-val="light">☀️ Cerah</button>
-<button class="ghost" data-set="theme" data-val="neon">💜 Neon</button>
-<button class="ghost" data-set="theme" data-val="retro">📼 Retro</button>
-<button class="ghost" data-set="theme" data-val="pastel">🌸 Pastel</button>
-<button class="ghost" data-set="theme" data-val="mono">⚫ Mono</button>
-</div>
-<label>Kepadatan</label>
-<div class="sg">
-<button class="ghost" data-set="density" data-val="comfortable">Selesa</button>
-<button class="ghost" data-set="density" data-val="compact">Padat</button>
-</div>
-<label>Kontras</label>
-<div class="sg">
-<button class="ghost" data-set="contrast" data-val="normal">Biasa</button>
-<button class="ghost" data-set="contrast" data-val="high">Tinggi</button>
-</div>
-<label>Saiz fon: <span id="fontSizeVal">15</span>px</label>
-<input type="range" id="fontSizeRange" min="12" max="20" value="15">
-<label>Bahasa</label>
-<select id="langSelect"><option value="ms">Bahasa Melayu</option><option value="en">English</option></select>
-<div class="row">
-<button class="ghost" id="soundToggle">🔔 Bunyi: On</button>
-<button class="ghost" id="dndToggle">🌙 DND: Off</button>
-</div>
-<div class="row">
-<button class="ghost" id="notifBtn">📱 Notifikasi</button>
-<button class="ghost" id="tsToggle">🕐 Masa: On</button>
-</div>
-<div class="row">
-<button class="ghost" id="vibrateToggle">📳 Getar: Off</button>
-<button class="ghost" id="censorToggle">🚫 Tapis: Off</button>
-</div>
-<div class="row">
-<button class="ghost" id="ttsToggle">🔊 Baca: Off</button>
-<button class="ghost" id="autoAwayToggle">😴 Auto-away: Off</button>
-</div>
-<div class="row">
-<button class="ghost" id="shortcutsBtn">⌨️ Pintasan</button>
-<button class="ghost" id="statsBtn">📊 Statistik</button>
-</div>
-<div class="row">
-<button class="ghost" id="exportBtn">⬇️ TXT</button>
-<button class="ghost" id="exportJsonBtn">⬇️ JSON</button>
-</div>
-<div class="row">
-<button class="ghost" id="printBtn">🖨️ Cetak</button>
-<button class="ghost" id="backupBtn">💾 Backup</button>
-</div>
-<div class="row">
-<button class="ghost" id="restoreBtn">♻️ Restore</button>
-<button class="ghost" id="downloadMediaBtn">📦 Media</button>
-</div>
-<button id="settingsClose">Tutup</button>
-</div></div>
+  <textarea id="editor" spellcheck="false" autocorrect="off" autocapitalize="off"
+    placeholder="Buka fail HTML untuk mula mengedit…"></textarea>
 
-<div class="md hidden" id="profileModal"><div class="mc">
-<h2>Profil Saya</h2>
-<div style="display:flex;justify-content:center;margin-bottom:10px">
-<div id="profileAvatar" class="ua" style="width:68px;height:68px;font-size:24px;cursor:pointer;border:2px solid var(--bd)">?</div>
-</div>
-<input type="file" id="avatarInput" accept="image/*" hidden>
-<button class="ghost" id="avatarBtn">📷 Tukar Avatar</button>
-<label>Nama</label><input id="profileName" maxlength="20">
-<label>Bio</label><input id="profileBio" maxlength="80">
-<label>Status</label>
-<select id="profileStatus">
-<option value="online">🟢 Online</option><option value="away">🟡 Away</option><option value="busy">🔴 Busy</option>
-</select>
-<label>Font mesej</label>
-<select id="profileFont"><option value="default">Default</option><option value="mono">Mono</option><option value="serif">Serif</option></select>
-<div class="row">
-<button class="ghost" id="profileCancel">Batal</button>
-<button id="profileSave">Simpan</button>
-</div>
-</div></div>
-
-<div class="md hidden" id="userProfileModal"><div class="mc">
-<h2 id="upName">—</h2><p id="upBio">—</p>
-<div id="upAvatar" class="ua" style="width:68px;height:68px;font-size:24px;margin:0 auto 12px"></div>
-<div class="row">
-<button class="ghost" id="upBlock">🚫 Blok</button>
-<button class="ghost" id="upMute">🔇 Mute</button>
-</div>
-<div class="row" style="margin-top:5px">
-<button class="ghost" id="upDM">💬 DM</button>
-<button class="ghost" id="upCall">📞 Panggil</button>
-</div>
-<button class="ghost" id="upClose" style="margin-top:5px">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="shortcutsModal"><div class="mc">
-<h2>Pintasan</h2>
-<div class="rk"><span>Hantar</span><span class="kbd">Enter</span></div>
-<div class="rk"><span>Baris baharu</span><span class="kbd">Shift+Enter</span></div>
-<div class="rk"><span>Fokus</span><span class="kbd">/</span></div>
-<div class="rk"><span>Cari</span><span class="kbd">Ctrl+F</span></div>
-<div class="rk"><span>Tutup</span><span class="kbd">Esc</span></div>
-<div class="rk"><span>Balas</span><span class="kbd">R</span></div>
-<div class="rk"><span>Edit</span><span class="kbd">E</span></div>
-<div class="rk"><span>Sidebar</span><span class="kbd">Ctrl+B</span></div>
-<div class="rk"><span>Tema</span><span class="kbd">Ctrl+J</span></div>
-<div class="rk"><span>Emoji</span><span class="kbd">Ctrl+E</span></div>
-<div class="rk"><span>Pomodoro</span><span class="kbd">Ctrl+P</span></div>
-<div class="rk"><span>Multi-select</span><span class="kbd">Ctrl+A</span></div>
-<button id="shortcutsClose" style="margin-top:10px">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="statsModal"><div class="mc">
-<h2>📊 Statistik</h2><div id="statsBody"></div>
-<button id="statsClose" style="margin-top:12px">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="pollModal"><div class="mc">
-<h2>Buat Undian</h2>
-<label>Soalan</label><input id="pollQ" maxlength="120">
-<label>Pilihan (satu per baris)</label><textarea id="pollOps"></textarea>
-<div class="row">
-<button class="ghost" id="pollCancel">Batal</button>
-<button id="pollCreate">Hantar</button>
-</div>
-</div></div>
-
-<div class="md hidden" id="timerModal"><div class="mc">
-<h2 id="timerTitle">⏱️ Pemasa</h2>
-<p id="timerDisplay" style="font-size:44px;font-weight:700;color:var(--ac2);margin:14px 0">00:00</p>
-<div class="row">
-<button class="ghost" id="timerStart">Mula</button>
-<button class="ghost" id="timerReset">Reset</button>
-</div>
-<label>Mod</label>
-<select id="timerMode"><option value="countdown">Countdown</option><option value="pomodoro">Pomodoro</option></select>
-<label>Minit</label><input type="number" id="timerMin" value="5" min="1" max="120">
-<button id="timerClose">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="tttModal"><div class="mc">
-<h2>❌⭕ Tic-Tac-Toe</h2>
-<p id="tttStatus">Giliran anda (X)</p>
-<div class="ttt" id="tttBoard">
-<button data-i="0"></button><button data-i="1"></button><button data-i="2"></button>
-<button data-i="3"></button><button data-i="4"></button><button data-i="5"></button>
-<button data-i="6"></button><button data-i="7"></button><button data-i="8"></button>
-</div>
-<button id="tttReset">Main Semula</button>
-<button class="ghost" id="tttClose">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="todoModal"><div class="mc">
-<h2>✅ Tugasan</h2>
-<div style="display:flex;gap:6px;margin-bottom:10px">
-<input id="todoInput" placeholder="Tambah…" style="margin:0">
-<button id="todoAdd" style="width:auto;margin:0;padding:10px 16px">+</button>
-</div>
-<div id="todoList" style="text-align:left;max-height:300px;overflow-y:auto"></div>
-<button id="todoClose" style="margin-top:10px">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="notesModal"><div class="mc">
-<h2>📝 Nota Kongsi</h2>
-<textarea id="notesText" style="min-height:200px;text-align:left"></textarea>
-<button id="notesSave">Simpan</button>
-<button class="ghost" id="notesClose">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="roomsModal"><div class="mc">
-<h2>🚪 Bilik</h2>
-<div style="display:flex;gap:6px;margin-bottom:10px">
-<input id="roomInput" placeholder="Nama bilik" style="margin:0">
-<button id="roomJoin" style="width:auto;margin:0;padding:10px 16px">→</button>
-</div>
-<div id="roomList" style="text-align:left;max-height:200px;overflow-y:auto"></div>
-<button id="roomClose" style="margin-top:10px">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="dmModal"><div class="mc">
-<h2>💬 Mesej Peribadi</h2>
-<p id="dmTarget">—</p>
-<textarea id="dmText" placeholder="Taip mesej…"></textarea>
-<button id="dmSend">Hantar</button>
-<button class="ghost" id="dmClose">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="callModal"><div class="mc">
-<h2>📞 Panggilan</h2>
-<video id="callVideo" autoplay playsinline style="width:100%;border-radius:12px;background:#000;margin-bottom:10px"></video>
-<button class="danger" id="callEnd">Tamat</button>
-</div></div>
-
-<div class="md hidden" id="translateModal"><div class="mc">
-<h2>🌐 Terjemah</h2>
-<p id="translateSrc" style="font-style:italic;color:var(--txd)">—</p>
-<label>Bahasa sasaran</label>
-<select id="translateLang">
-<option value="en">English</option><option value="ms">Bahasa Melayu</option>
-<option value="zh">中文</option><option value="ja">日本語</option>
-<option value="ar">العربية</option><option value="es">Español</option>
-</select>
-<div id="translateResult" style="padding:10px;background:var(--glass2);border-radius:10px;margin:10px 0;text-align:left"></div>
-<button id="translateGo">Terjemah</button>
-<button class="ghost" id="translateClose">Tutup</button>
-</div></div>
-
-<div class="md hidden" id="tagModal"><div class="mc">
-<h2>🏷️ Tanda Mesej</h2>
-<input id="tagInput" placeholder="Nama tanda" maxlength="20">
-<div id="tagColors" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:10px 0"></div>
-<button id="tagSave">Simpan</button>
-<button class="ghost" id="tagClose">Tutup</button>
-</div></div>
-
-<div class="img-edit" id="imgEdit">
-<img id="imgEditPreview" alt="">
-<div class="filters" id="imgFilters">
-<button data-f="none" class="active">Asal</button>
-<button data-f="grayscale">Kelabu</button>
-<button data-f="sepia">Sepia</button>
-<button data-f="blur">Kabur</button>
-<button data-f="brightness">Cerah</button>
-<button data-f="contrast">Kontras</button>
-<button data-f="invert">Songsang</button>
-</div>
-<div class="actions">
-<button class="cancel" id="imgEditCancel">Batal</button>
-<button class="ok" id="imgEditOk">Guna</button>
-</div>
+  <footer>
+    <span><span class="dot" id="statusDot"></span><span id="statusText">Sedia</span></span>
+    <span id="info">Ctrl+S = Simpan</span>
+  </footer>
 </div>
 
-<div class="vw" id="viewer">
-<button class="cls" id="viewerClose">✕</button>
-<img id="viewerImg" alt="">
-<div class="zb">
-<button id="zoomOut">−</button>
-<span id="zoomVal">100%</span>
-<button id="zoomIn">+</button>
-<button id="zoomReset">⟲</button>
-</div>
-</div>
-
-<div class="banner" id="banner">
-<div class="bav" id="bannerAv">?</div>
-<div class="bbody"><strong id="bannerName">—</strong><span id="bannerMsg">—</span></div>
+<div class="hint" id="hint">
+  <div class="hint-card">
+    <div class="big">📝</div>
+    <h2>Editor HTML Mobile</h2>
+    <p>Edit fail HTML dari telefon dan simpan terus ke storan Android anda.</p>
+    <div class="warn-box">
+      ⚠️ <b>Perlu Chrome Android versi 132+</b> (Januari 2025 ke atas). Kemas kini Chrome dari Play Store jika perlu.
+    </div>
+    <button id="openNow" class="primary">📂 Buka Fail Sekarang</button>
+  </div>
 </div>
 
-<div class="tst" id="toast"></div>
-<div class="ovl" id="sidebarOverlay"></div>
-<input type="file" id="fileInput" accept="image/*" multiple hidden>
-<input type="file" id="restoreInput" accept=".json" hidden>
+<div class="toast" id="toast"></div>
 
-<!-- MAIN -->
-<div class="app" id="app" style="display:none">
-<header>
-<button class="hb" id="sidebarToggle" title="Pengguna">☰</button>
-<div class="brand">
-<div class="blogo">🌌</div>
-<div class="bt">
-<h1>Cosmic Chat <span style="opacity:.5;font-size:10.5px">v5</span></h1>
-<p><span class="sd" id="statusDot"></span> <span id="onlineText">Menyambung…</span> · <span id="roomLabel">utama</span></p>
-</div>
-</div>
-<div class="ha">
-<button class="hb" id="roomsToggle" title="Bilik">🚪</button>
-<button class="hb" id="searchToggle" title="Cari">🔍</button>
-<button class="hb" id="starredToggle" title="Berbintang">⭐</button>
-<button class="hb" id="pollToggle" title="Undian">📊</button>
-<button class="hb" id="timerToggle" title="Pemasa">⏱️</button>
-<button class="hb" id="todoToggle" title="Tugasan">✅</button>
-<button class="hb" id="notesToggle" title="Nota">📝</button>
-<button class="hb" id="gameToggle" title="Game">🎮</button>
-<button class="hb" id="quickToggle" title="Alat">🧰</button>
-<button class="hb" id="settingsToggle" title="Tetapan">⚙️</button>
-<div class="uc" id="userChip">
-<div class="ua" id="myAvatar">?</div>
-<span class="un" id="myName">—</span>
-</div>
-</div>
-</header>
+<script>
+const $ = id => document.getElementById(id);
+let fileHandle = null;
+let original = "";
+let dirty = false;
 
-<div class="quick-bar hidden" id="quickBar">
-<button data-tool="calc">🧮 Kalkulator</button>
-<button data-tool="weather">🌤️ Cuaca</button>
-<button data-tool="worldclock">🌍 Jam Dunia</button>
-<button data-tool="qr">📱 QR</button>
-<button data-tool="meme">🎨 Meme</button>
-<button data-tool="ocr">🔍 OCR</button>
-<button data-tool="convert">📐 Tukar Unit</button>
-<button data-tool="currency">💱 Mata Wang</button>
-<button data-tool="translate">🌐 Terjemah</button>
-<button data-tool="whiteboard">🎨 Papan Putih</button>
-</div>
+function toast(msg, type) {
+  const t = $("toast");
+  t.textContent = msg;
+  t.className = "toast show " + (type || "");
+  setTimeout(() => t.className = "toast", 2600);
+}
+function setStatus(text, type) {
+  $("statusText").textContent = text;
+  const d = $("statusDot");
+  d.className = "dot";
+  if (type) d.classList.add(type);
+}
 
-<div class="srch" id="searchBar">
-<span>🔍</span>
-<input id="searchInput" placeholder="Cari…">
-<select id="searchField">
-<option value="all">Semua</option><option value="text">Teks</option><option value="name">Nama</option>
-</select>
-<select id="searchDate">
-<option value="any">Bila-bila</option><option value="1h">1 jam</option><option value="24h">24 jam</option><option value="7d">7 hari</option>
-</select>
-<span id="searchCount" style="color:var(--txd);font-size:11px">0/0</span>
-<button id="searchPrev">▲</button>
-<button id="searchNext">▼</button>
-<button id="searchClose">✕</button>
-</div>
+const editor = $("editor");
+const hasFSA = "showOpenFilePicker" in window;
 
-<div class="msel" id="mselBar">
-<span class="msel-count" id="mselCount">0 dipilih</span>
-<button id="mselForward">↪️</button>
-<button id="mselCopy">⧉</button>
-<button id="mselArchive">📦</button>
-<button class="danger" id="mselDelete">🗑</button>
-<button id="mselCancel">Batal</button>
-</div>
+async function openFile() {
+  if (!hasFSA) {
+    toast("Chrome anda tidak menyokong. Kemas kini Chrome.", "err");
+    return;
+  }
+  try {
+    const [h] = await window.showOpenFilePicker({
+      types: [{ description: "HTML", accept: { "text/html": [".html", ".htm"] } }],
+      multiple: false
+    });
+    fileHandle = h;
+    const file = await h.getFile();
+    const text = await file.text();
+    original = text;
+    editor.value = text;
+    dirty = false;
+    $("fname").textContent = file.name;
+    $("saveBtn").disabled = false;
+    $("saveAsBtn").disabled = false;
+    $("hint").classList.add("hidden");
+    setStatus("Dibuka: " + file.name, "ok");
+    toast("Fail dibuka", "ok");
+  } catch (e) {
+    if (e.name !== "AbortError") {
+      toast("Gagal: " + e.message, "err");
+      setStatus("Gagal buka", "err");
+    }
+  }
+}
 
-<div class="pb2" id="pinnedBar">
-<span>📌</span>
-<div class="b"><strong id="pinnedName">—</strong><span id="pinnedText">—</span></div>
-<button id="pinnedJump">↗</button>
-<button id="pinnedClose">✕</button>
-</div>
+async function saveFile() {
+  if (!fileHandle) { openFile(); return; }
+  try {
+    setStatus("Menyimpan…", "busy");
+    const w = await fileHandle.createWritable();
+    await w.write(editor.value);
+    await w.close();
+    original = editor.value;
+    dirty = false;
+    setStatus("Disimpan: " + fileHandle.name, "ok");
+    toast("Disimpan ke telefon", "ok");
+  } catch (e) {
+    setStatus("Gagal simpan: " + e.message, "err");
+    toast("Gagal simpan: " + e.message, "err");
+  }
+}
 
-<div class="layout">
-<aside class="sb" id="sidebar">
-<div class="pnl" style="flex:1">
-<h3>Dalam Talian <span class="ct" id="userCount">0</span></h3>
-<div class="ps" id="userList"></div>
-</div>
-<div class="pnl">
-<h3>Baru Dilihat</h3>
-<div class="ps" id="recentList" style="max-height:100px"></div>
-</div>
-</aside>
+async function saveAsFile() {
+  if (!hasFSA) return;
+  try {
+    const h = await window.showSaveFilePicker({
+      suggestedName: fileHandle ? fileHandle.name : "index.html",
+      types: [{ description: "HTML", accept: { "text/html": [".html"] } }]
+    });
+    const w = await h.createWritable();
+    await w.write(editor.value);
+    await w.close();
+    fileHandle = h;
+    original = editor.value;
+    dirty = false;
+    $("fname").textContent = h.name;
+    $("saveBtn").disabled = false;
+    $("saveAsBtn").disabled = false;
+    setStatus("Disimpan sebagai: " + h.name, "ok");
+    toast("Fail baharu disimpan", "ok");
+  } catch (e) {
+    if (e.name !== "AbortError") toast("Gagal: " + e.message, "err");
+  }
+}
 
-<div class="mw">
-<div class="msgs" id="messages"></div>
-<div class="typing" id="typingIndicator">
-<span id="typingText">—</span>
-<span class="dots"><span></span><span></span><span></span></span>
-</div>
-<button class="sbtn" id="scrollBottom">⬇<span class="bg2 hidden" id="scrollBadge">0</span></button>
-</div>
-</div>
+editor.addEventListener("input", () => {
+  if (!dirty && fileHandle) {
+    dirty = true;
+    setStatus("Ada perubahan belum disimpan", "warn");
+  }
+});
 
-<div class="cmp">
-<div class="rp" id="replyPreview"><div class="b"><strong id="replyName">—</strong><span id="replyText">—</span></div><button id="replyClose">✕</button></div>
-<div class="ep" id="editPreview"><div class="b"><strong>Edit</strong><span id="editText">—</span></div><button id="editClose">✕</button></div>
-<div class="sp" id="schedulePreview"><div class="b"><strong>⏰ Dijadual</strong><span id="scheduleText">—</span></div><button id="scheduleClose">✕</button></div>
-<div class="ip" id="imagePreview">
-<img id="previewImg" alt="">
-<div class="info"><strong id="previewName">—</strong><span id="previewSize">—</span></div>
-<button id="previewRemove">✕</button>
-</div>
+editor.addEventListener("keydown", e => {
+  if (e.key === "Tab") {
+    e.preventDefault();
+    const s = editor.selectionStart, en = editor.selectionEnd;
+    editor.value = editor.value.slice(0, s) + "  " + editor.value.slice(en);
+    editor.selectionStart = editor.selectionEnd = s + 2;
+  }
+});
 
-<div class="cr" id="composerRow">
-<button class="ib" id="imageBtn" title="Lampir">📎</button>
-<button class="ib" id="emojiBtn" title="Emoji">😀</button>
-<button class="ib" id="voiceBtn" title="Suara">🎤</button>
-<textarea id="textInput" rows="1" placeholder="Taip mesej…" maxlength="2000" enterkeyhint="send"></textarea>
-<button class="ib sb2" id="sendBtn" disabled>➤</button>
-<div class="ac" id="autocomplete"></div>
-<div class="ep2" id="emojiPicker">
-<div class="tabs" id="emojiTabs"></div>
-<div class="recent-label">Baru</div>
-<div class="grid" id="emojiRecent"></div>
-<div class="recent-label">Semua</div>
-<div class="grid" id="emojiGrid"></div>
-</div>
-</div>
-<div class="cb" id="cooldownBar"><span id="cooldownFill"></span></div>
-</div>
-</div>
-</div>
+$("openBtn").onclick = openFile;
+$("saveBtn").onclick = saveFile;
+$("saveAsBtn").onclick = saveAsFile;
+$("openNow").onclick = openFile;
 
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="app.js"></script>
+window.addEventListener("beforeunload", e => {
+  if (dirty) { e.preventDefault(); e.returnValue = ""; }
+});
+
+if (!hasFSA) {
+  document.querySelector(".warn-box").innerHTML =
+    "❌ Pelayar ini <b>tidak menyokong</b> File System Access API. Guna <b>Chrome Android 132+</b> dan pastikan laman dihoskan melalui <b>HTTPS</b>.";
+  setStatus("Pelayar tidak disokong", "err");
+} else {
+  setStatus("Sedia — tekan Buka", "ok");
+}
+</script>
 </body>
 </html>
