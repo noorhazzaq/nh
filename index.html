@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Zack360 Blogger - Ultra Animated Public Reader</title>
 <style>
   :root {
@@ -21,7 +21,8 @@
     background: var(--bg-gradient); 
     color: var(--text-main); 
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-    height: 100vh; 
+    height: 100vh;
+    height: 100dvh; /* Dynamic viewport height fix for mobile browsers */
     display: flex; 
     flex-direction: column;
     overflow: hidden;
@@ -37,15 +38,16 @@
   header { 
     background: rgba(15, 23, 42, 0.85); 
     backdrop-filter: var(--glass-blur);
-    padding: 14px 20px; 
+    padding: 12px 16px; 
     display: flex; 
     justify-content: space-between; 
     align-items: center; 
     border-bottom: 1px solid var(--card-border); 
     z-index: 10;
+    flex-shrink: 0;
   }
   header h1 { 
-    font-size: 1.15rem; 
+    font-size: 1.1rem; 
     background: linear-gradient(90deg, #38bdf8, #818cf8, #c084fc, #38bdf8);
     background-size: 300% 100%;
     -webkit-background-clip: text;
@@ -63,16 +65,16 @@
   .header-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
   }
 
   .header-login-btn {
     background: rgba(56, 189, 248, 0.1);
     border: 1px solid rgba(56, 189, 248, 0.4);
     color: var(--cyan-accent);
-    padding: 5px 14px;
+    padding: 5px 12px;
     border-radius: 20px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -80,8 +82,8 @@
   .header-login-btn:hover { background: rgba(56, 189, 248, 0.2); }
 
   .user-badge {
-    font-size: 0.72rem;
-    padding: 5px 12px;
+    font-size: 0.68rem;
+    padding: 4px 10px;
     border-radius: 20px;
     font-weight: 600;
     text-transform: uppercase;
@@ -97,10 +99,11 @@
     backdrop-filter: var(--glass-blur);
     border-bottom: 1px solid var(--card-border); 
     z-index: 10;
+    flex-shrink: 0;
   }
   nav button { 
-    flex: 1; padding: 14px; background: none; border: none; 
-    color: var(--text-sub); font-weight: 700; font-size: 0.82rem; 
+    flex: 1; padding: 12px; background: none; border: none; 
+    color: var(--text-sub); font-weight: 700; font-size: 0.8rem; 
     cursor: pointer; border-bottom: 2px solid transparent; 
     transition: all 0.3s ease;
   }
@@ -110,18 +113,32 @@
     background: rgba(56, 189, 248, 0.05); 
   }
 
-  .container { flex: 1; overflow: hidden; position: relative; z-index: 5; }
-  .view { display: none; height: 100%; overflow-y: auto; padding: 18px; }
+  .container { 
+    flex: 1; 
+    overflow: hidden; 
+    position: relative; 
+    z-index: 5; 
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view { 
+    display: none; 
+    height: 100%; 
+    overflow-y: auto; 
+    padding: 14px; 
+    box-sizing: border-box;
+  }
   .view.active { display: flex; flex-direction: column; }
 
   /* SEARCH BAR */
-  .search-wrapper { margin-bottom: 16px; }
+  .search-wrapper { margin-bottom: 14px; flex-shrink: 0; }
 
   /* BLOG CARDS */
   .blog-card { 
     background: var(--card-bg); 
     backdrop-filter: var(--glass-blur);
-    border-radius: 14px; padding: 18px; margin-bottom: 16px; 
+    border-radius: 14px; padding: 16px; margin-bottom: 14px; 
     border: 1px solid var(--card-border); 
     position: relative; overflow: hidden;
     cursor: pointer; transition: transform 0.2s ease, border-color 0.2s ease;
@@ -131,77 +148,102 @@
     border-color: rgba(56, 189, 248, 0.3);
   }
   .blog-card img.post-preview-img {
-    width: 100%; max-height: 220px; object-fit: cover;
-    border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--card-border);
+    width: 100%; max-height: 200px; object-fit: cover;
+    border-radius: 10px; margin-bottom: 10px; border: 1px solid var(--card-border);
   }
-  .blog-card h2 { font-size: 1.15rem; margin-bottom: 8px; color: var(--text-main); }
+  .blog-card h2 { font-size: 1.1rem; margin-bottom: 6px; color: var(--text-main); }
   .blog-card p { 
-    font-size: 0.9rem; color: #cbd5e1; margin-bottom: 12px; 
+    font-size: 0.85rem; color: #cbd5e1; margin-bottom: 10px; 
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
   .meta-info {
-    font-size: 0.73rem; color: var(--text-sub);
+    font-size: 0.72rem; color: var(--text-sub);
     display: flex; justify-content: space-between; align-items: center;
   }
-  .meta-info .time-tag { color: #64748b; font-size: 0.7rem; }
+  .meta-info .time-tag { color: #64748b; font-size: 0.68rem; }
   
   .admin-actions { display: flex; gap: 8px; margin-top: 10px; }
   .btn-sm {
-    padding: 4px 10px; font-size: 0.72rem; border-radius: 6px; font-weight: 600;
+    padding: 4px 10px; font-size: 0.7rem; border-radius: 6px; font-weight: 600;
     cursor: pointer; border: none; transition: 0.2s;
   }
   .btn-edit { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
   .btn-delete { background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); }
   .btn-sm:hover { filter: brightness(1.2); }
 
-  /* CHAT */
+  /* CHAT TAB FIXES */
+  #chatTab {
+    display: none;
+    height: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 10px;
+  }
+  #chatTab.active { display: flex; }
+
   .chat-history { 
-    flex: 1; overflow-y: auto; background: rgba(7, 10, 19, 0.75); 
-    backdrop-filter: var(--glass-blur); border-radius: 14px; 
-    padding: 14px; border: 1px solid var(--card-border); 
-    margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; 
+    flex: 1; 
+    overflow-y: auto; 
+    background: rgba(7, 10, 19, 0.75); 
+    backdrop-filter: var(--glass-blur); 
+    border-radius: 12px; 
+    padding: 12px; 
+    border: 1px solid var(--card-border); 
+    margin-bottom: 8px; 
+    display: flex; 
+    flex-direction: column; 
+    gap: 8px; 
   }
   .chat-msg { 
-    background: rgba(30, 41, 59, 0.7); padding: 10px 14px; 
+    background: rgba(30, 41, 59, 0.7); padding: 8px 12px; 
     border-radius: 10px; border-left: 3px solid var(--cyan-accent); 
-    max-width: 88%; position: relative;
+    max-width: 90%; position: relative;
   }
-  .chat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-  .chat-msg .user { font-size: 0.75rem; color: var(--cyan-accent); font-weight: 700; }
-  .chat-msg .chat-time { font-size: 0.68rem; color: #64748b; }
-  .chat-msg .text { font-size: 0.88rem; color: #e2e8f0; white-space: pre-wrap; }
+  .chat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px; }
+  .chat-msg .user { font-size: 0.72rem; color: var(--cyan-accent); font-weight: 700; }
+  .chat-msg .chat-time { font-size: 0.65rem; color: #64748b; }
+  .chat-msg .text { font-size: 0.85rem; color: #e2e8f0; white-space: pre-wrap; word-break: break-word; }
   .chat-msg img.chat-img {
-    max-width: 100%; max-height: 200px; border-radius: 8px; margin-top: 8px;
+    max-width: 100%; max-height: 180px; border-radius: 8px; margin-top: 6px;
     border: 1px solid var(--card-border); display: block; cursor: pointer; transition: opacity 0.2s;
   }
   .chat-msg img.chat-img:hover { opacity: 0.85; }
 
+  .chat-form {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-shrink: 0;
+    padding-bottom: env(safe-area-inset-bottom, 4px);
+  }
+
   /* FORMS & INPUTS */
   .form-card {
     background: var(--card-bg); backdrop-filter: var(--glass-blur);
-    border-radius: 14px; padding: 20px; border: 1px solid var(--card-border);
-    display: flex; flex-direction: column; gap: 14px; max-width: 500px; margin: 0 auto; width: 100%;
+    border-radius: 14px; padding: 18px; border: 1px solid var(--card-border);
+    display: flex; flex-direction: column; gap: 12px; max-width: 500px; margin: 0 auto; width: 100%;
   }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 0.78rem; color: var(--cyan-accent); font-weight: 700; text-transform: uppercase; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label { font-size: 0.75rem; color: var(--cyan-accent); font-weight: 700; text-transform: uppercase; }
   .form-control {
     background: rgba(30, 41, 59, 0.6); border: 1px solid var(--card-border);
-    border-radius: 10px; padding: 12px; color: white; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+    border-radius: 8px; padding: 10px; color: white; font-size: 0.85rem; outline: none; transition: border-color 0.2s;
   }
   .form-control:focus { border-color: var(--cyan-accent); }
   textarea.form-control { resize: vertical; min-height: 100px; }
 
   .file-label-btn {
     background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.4);
-    color: var(--cyan-accent); padding: 10px; border-radius: 10px; font-size: 0.82rem;
+    color: var(--cyan-accent); padding: 8px 10px; border-radius: 8px; font-size: 0.78rem;
     font-weight: 700; text-align: center; cursor: pointer; display: block; transition: background 0.2s;
   }
   .file-label-btn:hover { background: rgba(56, 189, 248, 0.25); }
 
   .btn { 
     background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); 
-    color: white; border: none; padding: 12px 18px; border-radius: 10px; 
-    font-weight: 700; cursor: pointer; transition: all 0.3s ease;
+    color: white; border: none; padding: 10px 14px; border-radius: 8px; 
+    font-weight: 700; font-size: 0.85rem; cursor: pointer; transition: all 0.3s ease;
   }
   .btn-logout { background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); }
   .btn-cancel { background: rgba(255, 255, 255, 0.1); color: var(--text-sub); }
@@ -209,29 +251,29 @@
 
   /* EMPTY STATES */
   .empty-state {
-    text-align: center; padding: 40px 20px; color: var(--text-sub); font-size: 0.9rem;
+    text-align: center; padding: 30px 10px; color: var(--text-sub); font-size: 0.85rem;
   }
 
   /* MODALS & OVERLAYS */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(7, 10, 19, 0.85);
     backdrop-filter: blur(12px); display: flex; justify-content: center;
-    align-items: center; padding: 20px; z-index: 100; opacity: 0;
+    align-items: center; padding: 16px; z-index: 100; opacity: 0;
     pointer-events: none; transition: opacity 0.3s ease;
   }
   .modal-overlay.active { opacity: 1; pointer-events: auto; }
   .modal-card {
     background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(56, 189, 248, 0.3);
-    border-radius: 16px; width: 100%; max-width: 600px; max-height: 80vh;
+    border-radius: 16px; width: 100%; max-width: 600px; max-height: 85vh;
     display: flex; flex-direction: column; overflow: hidden;
   }
-  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; }
+  .modal-header { padding: 14px 18px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; }
   .btn-close { background: none; border: none; color: #cbd5e1; font-size: 1.2rem; cursor: pointer; }
-  .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-  .modal-body img { width: 100%; max-height: 350px; object-fit: cover; border-radius: 10px; margin-bottom: 14px; cursor: pointer; }
+  .modal-body { padding: 18px; overflow-y: auto; flex: 1; }
+  .modal-body img { width: 100%; max-height: 300px; object-fit: cover; border-radius: 10px; margin-bottom: 12px; cursor: pointer; }
   .modal-footer { 
-    padding: 12px 20px; border-top: 1px solid var(--card-border); 
-    font-size: 0.78rem; color: #64748b; display: flex; justify-content: space-between; 
+    padding: 12px 18px; border-top: 1px solid var(--card-border); 
+    font-size: 0.75rem; color: #64748b; display: flex; justify-content: space-between; 
   }
 
   /* LIGHTBOX */
@@ -245,24 +287,17 @@
 
   /* TOAST NOTIFICATIONS */
   #toastContainer {
-    position: fixed; bottom: 20px; right: 20px; z-index: 150;
+    position: fixed; bottom: 16px; right: 16px; z-index: 150;
     display: flex; flex-direction: column; gap: 8px; pointer-events: none;
   }
   .toast {
     background: rgba(15, 23, 42, 0.95); border: 1px solid var(--cyan-accent);
-    color: var(--text-main); padding: 10px 18px; border-radius: 10px; font-size: 0.82rem;
+    color: var(--text-main); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.4); backdrop-filter: blur(8px);
     animation: toastIn 0.3s forwards, toastOut 0.3s 2.7s forwards;
   }
   @keyframes toastIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   @keyframes toastOut { from { opacity: 1; } to { opacity: 0; } }
-
-  /* MOBILE RESPONSIVENESS */
-  @media (max-width: 600px) {
-    .chat-form { flex-wrap: wrap; }
-    #chatUser { width: 100% !important; }
-    .meta-info { flex-direction: column; align-items: flex-start; gap: 4px; }
-  }
 </style>
 </head>
 <body>
@@ -295,22 +330,24 @@
   <!-- TAB 2: CHAT -->
   <div id="chatTab" class="view">
     <div class="chat-history" id="chatStream"></div>
+    
     <div id="chatImagePreviewArea" style="display:none; padding:6px 12px; background:rgba(30, 41, 59, 0.8); border-radius:8px; margin-bottom:8px; justify-content:space-between; align-items:center;">
       <span style="font-size:0.75rem; color:var(--cyan-accent);">📷 Image Attached</span>
       <button onclick="clearChatImage()" style="background:none; border:none; color:#f87171; cursor:pointer; font-weight:bold;">✕ Remove</button>
     </div>
-    <div class="chat-form" style="display:flex; gap:8px; align-items:center;">
-      <input type="text" id="chatUser" class="form-control" placeholder="Your Name" style="width: 25%;" value="Guest">
-      <input type="text" id="chatInput" class="form-control" placeholder="Type a message..." style="flex: 1;" onkeypress="if(event.key==='Enter') sendChatMessage()">
-      <label class="file-label-btn" style="padding: 10px 12px; margin:0;">
+
+    <div class="chat-form">
+      <input type="text" id="chatUser" class="form-control" placeholder="Name" style="width: 70px; flex-shrink: 0;" value="Guest">
+      <input type="text" id="chatInput" class="form-control" placeholder="Message..." style="flex: 1; min-width: 0;" onkeypress="if(event.key==='Enter') sendChatMessage()">
+      <label class="file-label-btn" style="padding: 10px; margin: 0; flex-shrink: 0;">
         📷
         <input type="file" id="chatFileInput" accept="image/*" style="display:none;" onchange="handleChatImageUpload(this)">
       </label>
-      <button class="btn" onclick="sendChatMessage()">Send</button>
+      <button class="btn" style="padding: 10px 14px; flex-shrink: 0;" onclick="sendChatMessage()">Send</button>
     </div>
   </div>
 
-  <!-- TAB 3: CREATE POST (Only zack360) -->
+  <!-- TAB 3: CREATE POST -->
   <div id="createTab" class="view">
     <div class="form-card">
       <div class="form-group">
@@ -340,7 +377,7 @@
   <!-- TAB 4: LOGIN FORM -->
   <div id="loginTab" class="view">
     <div class="form-card" id="loginBox">
-      <div id="loginFields" style="display: flex; flex-direction: column; gap: 14px;">
+      <div id="loginFields" style="display: flex; flex-direction: column; gap: 12px;">
         <div class="form-group">
           <label>Username</label>
           <input type="text" id="loginUser" class="form-control" placeholder="Username...">
@@ -352,9 +389,9 @@
         <button class="btn" onclick="handleLogin()">Login as Admin</button>
       </div>
 
-      <div id="logoutFields" style="display: none; flex-direction: column; gap: 14px; text-align: center;">
-        <p style="color: var(--cyan-accent); font-weight: 700; font-size: 1rem;">Logged in as zack360</p>
-        <p style="font-size: 0.85rem; color: var(--text-sub);">You have full access to create, edit, and delete posts and chats.</p>
+      <div id="logoutFields" style="display: none; flex-direction: column; gap: 12px; text-align: center;">
+        <p style="color: var(--cyan-accent); font-weight: 700; font-size: 0.95rem;">Logged in as zack360</p>
+        <p style="font-size: 0.8rem; color: var(--text-sub);">You have full access to create, edit, and delete posts and chats.</p>
         <button class="btn btn-logout" onclick="handleLogout()">Logout</button>
       </div>
     </div>
@@ -382,12 +419,12 @@
 
 <!-- CUSTOM CONFIRMATION MODAL -->
 <div class="modal-overlay" id="confirmModal" onclick="closeConfirmModal(false)">
-  <div class="modal-card" style="max-width: 380px;" onclick="event.stopPropagation()">
+  <div class="modal-card" style="max-width: 360px;" onclick="event.stopPropagation()">
     <div class="modal-header">
       <span style="font-size:0.75rem; color:#f87171; font-weight:bold;">CONFIRM ACTION</span>
     </div>
     <div class="modal-body">
-      <p id="confirmModalText" style="font-size: 0.9rem; color: #e2e8f0;"></p>
+      <p id="confirmModalText" style="font-size: 0.88rem; color: #e2e8f0;"></p>
     </div>
     <div class="modal-footer" style="justify-content: flex-end; gap: 8px;">
       <button class="btn btn-sm btn-cancel" onclick="closeConfirmModal(false)">Cancel</button>
