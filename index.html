@@ -1867,6 +1867,10 @@ const state = {
 
   chatRetryTimer:null,
 
+  postsDown:false,
+
+  chatDown:false,
+
   streamsDown:0,
 
   attachedPostImage:"",
@@ -2460,7 +2464,9 @@ function openStream({
   getRetryMs,
   setRetryMs,
   getRetryTimer,
-  setRetryTimer
+  setRetryTimer,
+  getDown,
+  setDown
 }){
 
   const existingSource=getSource();
@@ -2505,9 +2511,11 @@ function openStream({
 
       onData(data || {});
 
-      if(getRetryMs()!==STREAM_RETRY_BASE_MS){
+      setRetryMs(STREAM_RETRY_BASE_MS);
 
-        setRetryMs(STREAM_RETRY_BASE_MS);
+      if(getDown()){
+
+        setDown(false);
 
         state.streamsDown=Math.max(0,state.streamsDown-1);
 
@@ -2531,9 +2539,15 @@ function openStream({
 
   function scheduleRetry(){
 
-    state.streamsDown+=1;
+    if(!getDown()){
 
-    updateStreamBanner();
+      setDown(true);
+
+      state.streamsDown+=1;
+
+      updateStreamBanner();
+
+    }
 
     const delay=getRetryMs();
 
@@ -2547,7 +2561,9 @@ function openStream({
         getRetryMs,
         setRetryMs,
         getRetryTimer,
-        setRetryTimer
+        setRetryTimer,
+        getDown,
+        setDown
       });
 
     },delay);
@@ -2593,7 +2609,11 @@ function streamPosts(){
 
     getRetryTimer:()=>state.postsRetryTimer,
 
-    setRetryTimer:t=>{state.postsRetryTimer=t;}
+    setRetryTimer:t=>{state.postsRetryTimer=t;},
+
+    getDown:()=>state.postsDown,
+
+    setDown:v=>{state.postsDown=v;}
 
   });
 
@@ -3762,7 +3782,11 @@ function streamChat(){
 
     getRetryTimer:()=>state.chatRetryTimer,
 
-    setRetryTimer:t=>{state.chatRetryTimer=t;}
+    setRetryTimer:t=>{state.chatRetryTimer=t;},
+
+    getDown:()=>state.chatDown,
+
+    setDown:v=>{state.chatDown=v;}
 
   });
 
@@ -3931,7 +3955,7 @@ function buildChatMessage(id,msg){
   box.className=
     "chat-msg"+
     (
-      msg.user===state.user
+      msg.clientId===state.clientId
         ? " mine"
         : ""
     );
@@ -4162,6 +4186,8 @@ async function sendChatMessage(){
   const payload={
 
     user:user,
+
+    clientId:state.clientId,
 
     text:text,
 
