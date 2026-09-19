@@ -45,3 +45,4631 @@ html[data-theme="light"]{
   --sub:#475569;
   --muted:#64748b;
   --nav:rgba(255,255,255,.96);
+  --header:rgba(255,255,255,.92);
+  --input:#f1f5f9;
+  --modal:#fff;
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 50% -10%,var(--bg2),var(--bg) 55%);
+  transition:background .25s,color .25s;
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  touch-action:manipulation;
+}
+
+body.modal-open{
+  overflow:hidden;
+}
+
+.offline-banner{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:1000;
+  padding:6px 12px;
+  padding-top:calc(6px + env(safe-area-inset-top));
+  background:#b45309;
+  color:white;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+}
+
+body.offline .offline-banner{
+  display:block;
+}
+
+.reconnect-banner{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:999;
+  padding:6px 12px;
+  padding-top:calc(6px + env(safe-area-inset-top));
+  background:#7c2d12;
+  color:white;
+  text-align:center;
+  font-size:12px;
+  font-weight:700;
+}
+
+body.offline .reconnect-banner{
+  display:none;
+}
+
+body.stream-down .reconnect-banner{
+  display:block;
+}
+
+/* HEADER */
+
+header{
+  position:relative;
+  z-index:10;
+  height:60px;
+  min-height:60px;
+  padding:
+    env(safe-area-inset-top)
+    14px
+    0
+    14px;
+  background:var(--header);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.header-inner{
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+
+.brand-mark{
+  width:31px;
+  height:31px;
+  border-radius:10px;
+  display:grid;
+  place-items:center;
+  flex-shrink:0;
+  color:white;
+  font-size:14px;
+  font-weight:900;
+  background:linear-gradient(135deg,#0284c7,#6366f1);
+  box-shadow:0 4px 18px rgba(56,189,248,.22);
+}
+
+header h1{
+  font-size:15px;
+  font-weight:900;
+  letter-spacing:.4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  background:linear-gradient(90deg,#38bdf8,#818cf8,#c084fc);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:7px;
+}
+
+.icon-btn{
+  width:38px;
+  height:38px;
+  border:1px solid var(--border);
+  background:var(--surface2);
+  color:var(--text);
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  cursor:pointer;
+}
+
+.user-badge{
+  max-width:80px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  padding:5px 9px;
+  border-radius:20px;
+  font-size:10px;
+  font-weight:800;
+  border:1px solid var(--border);
+}
+
+.user-badge.admin{
+  color:var(--accent);
+  background:rgba(56,189,248,.1);
+  border-color:rgba(56,189,248,.35);
+}
+
+.user-badge.guest{
+  color:var(--sub);
+}
+
+/* MAIN */
+
+.app{
+  position:relative;
+  z-index:2;
+  height:calc(100dvh - 60px);
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+}
+
+/* VIEWS */
+
+.view{
+  display:none;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+}
+
+.view.active{
+  display:flex;
+  flex-direction:column;
+}
+
+/* FEED */
+
+#blogTab{
+  padding:12px 12px calc(var(--bottom-nav) + 14px);
+}
+
+.search-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:10px;
+  flex-shrink:0;
+}
+
+.search-box{
+  position:relative;
+  flex:1;
+}
+
+.search-box input{
+  width:100%;
+  height:46px;
+  padding:0 42px 0 15px;
+  border-radius:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--text);
+  outline:none;
+  font-size:16px;
+}
+
+.search-box input:focus{
+  border-color:var(--accent);
+}
+
+.search-clear{
+  position:absolute;
+  right:7px;
+  top:7px;
+  width:32px;
+  height:32px;
+  border:0;
+  border-radius:50%;
+  background:transparent;
+  color:var(--muted);
+  display:none;
+}
+
+.search-clear.show{
+  display:grid;
+  place-items:center;
+}
+
+.category-scroll{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  scrollbar-width:none;
+  padding-bottom:3px;
+  margin-bottom:10px;
+  flex-shrink:0;
+}
+
+.category-scroll::-webkit-scrollbar{
+  display:none;
+}
+
+.category-chip{
+  flex-shrink:0;
+  padding:7px 12px;
+  border:1px solid var(--border);
+  border-radius:20px;
+  background:var(--surface);
+  color:var(--sub);
+  font-size:12px;
+  font-weight:700;
+}
+
+.category-chip.active{
+  color:var(--accent);
+  border-color:rgba(56,189,248,.45);
+  background:rgba(56,189,248,.1);
+}
+
+.feed{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  scrollbar-width:none;
+}
+
+.feed::-webkit-scrollbar{
+  display:none;
+}
+
+/* CARDS */
+
+.blog-card{
+  position:relative;
+  margin-bottom:11px;
+  padding:13px;
+  border-radius:17px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+  overflow:hidden;
+  cursor:pointer;
+  transform:translateZ(0);
+  transition:transform .16s,border-color .16s;
+}
+
+.blog-card:active{
+  transform:scale(.985);
+}
+
+.post-image{
+  width:100%;
+  aspect-ratio:16/8.8;
+  object-fit:cover;
+  display:block;
+  border-radius:12px;
+  margin-bottom:11px;
+  background:var(--input);
+}
+
+.post-category{
+  display:inline-flex;
+  padding:4px 8px;
+  border-radius:8px;
+  color:var(--accent);
+  background:rgba(56,189,248,.09);
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:6px;
+}
+
+.blog-card h2{
+  font-size:18px;
+  line-height:1.25;
+  margin-bottom:6px;
+  letter-spacing:-.2px;
+}
+
+.excerpt{
+  color:var(--sub);
+  font-size:13px;
+  line-height:1.5;
+  display:-webkit-box;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+  margin-bottom:11px;
+}
+
+.card-meta{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.author{
+  color:var(--sub);
+  font-size:11px;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.card-stats{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  flex-shrink:0;
+}
+
+.stat-btn{
+  min-height:34px;
+  padding:5px 8px;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:var(--muted);
+  font-size:11px;
+  display:flex;
+  align-items:center;
+  gap:3px;
+}
+
+.stat-btn.liked{
+  color:#f472b6;
+  background:rgba(244,114,182,.08);
+}
+
+.stat-btn:disabled{
+  opacity:.6;
+}
+
+.stat-time{
+  color:var(--muted);
+  font-size:10px;
+}
+
+.card-actions{
+  display:flex;
+  gap:7px;
+  margin-top:10px;
+}
+
+.small-btn{
+  min-height:36px;
+  padding:7px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:11px;
+  font-weight:800;
+}
+
+.edit-btn{
+  color:var(--accent);
+  background:rgba(56,189,248,.08);
+}
+
+.delete-btn{
+  color:var(--danger);
+  background:var(--danger-bg);
+}
+
+.load-more{
+  width:100%;
+  min-height:44px;
+  margin:2px 0 12px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  background:var(--surface);
+  color:var(--accent);
+  font-size:12px;
+  font-weight:800;
+}
+
+/* SKELETON */
+
+.skeleton{
+  height:190px;
+  margin-bottom:11px;
+  border-radius:17px;
+  border:1px solid var(--border);
+  background:
+    linear-gradient(
+      100deg,
+      transparent 20%,
+      rgba(255,255,255,.07) 40%,
+      transparent 60%
+    ),
+    var(--surface);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+}
+
+@keyframes shimmer{
+  from{background-position:200% 0}
+  to{background-position:-200% 0}
+}
+
+/* EMPTY */
+
+.empty-state{
+  padding:55px 20px;
+  text-align:center;
+  color:var(--sub);
+  font-size:13px;
+}
+
+.empty-icon{
+  display:block;
+  font-size:38px;
+  margin-bottom:10px;
+  opacity:.7;
+}
+
+.empty-state strong{
+  display:block;
+  color:var(--text);
+  font-size:15px;
+  margin-bottom:5px;
+}
+
+/* CHAT */
+
+#chatTab{
+  padding:8px 9px calc(var(--bottom-nav) + 8px);
+}
+
+.chat-history{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  padding:5px 3px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+  scrollbar-width:none;
+}
+
+.chat-history::-webkit-scrollbar{
+  display:none;
+}
+
+.chat-load{
+  flex-shrink:0;
+  margin-bottom:7px;
+}
+
+.chat-msg{
+  max-width:88%;
+  padding:9px 11px;
+  border-radius:14px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+}
+
+.chat-msg.mine{
+  align-self:flex-end;
+  border-left:1px solid var(--border);
+  border-right:3px solid var(--accent);
+}
+
+.chat-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:3px;
+}
+
+.chat-user{
+  color:var(--accent);
+  font-size:11px;
+  font-weight:800;
+}
+
+.chat-time{
+  color:var(--muted);
+  font-size:9px;
+  white-space:nowrap;
+}
+
+.chat-text{
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:var(--text);
+  font-size:13px;
+  line-height:1.45;
+}
+
+.chat-img{
+  display:block;
+  width:auto;
+  max-width:100%;
+  max-height:230px;
+  margin-top:7px;
+  border-radius:11px;
+  border:1px solid var(--border);
+  object-fit:cover;
+}
+
+.chat-actions{
+  display:flex;
+  gap:6px;
+  margin-top:7px;
+}
+
+.chat-actions button{
+  min-height:30px;
+}
+
+.chat-preview{
+  display:none;
+  align-items:center;
+  gap:9px;
+  padding:7px;
+  margin-bottom:7px;
+  border-radius:12px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  flex-shrink:0;
+}
+
+.chat-preview.show{
+  display:flex;
+}
+
+.chat-preview img{
+  width:45px;
+  height:45px;
+  object-fit:cover;
+  border-radius:8px;
+}
+
+.preview-text{
+  flex:1;
+  min-width:0;
+  color:var(--accent);
+  font-size:11px;
+  font-weight:800;
+}
+
+.chat-preview button{
+  width:34px;
+  height:34px;
+  border:0;
+  border-radius:50%;
+  background:var(--danger-bg);
+  color:var(--danger);
+}
+
+.chat-composer{
+  flex-shrink:0;
+  display:flex;
+  align-items:flex-end;
+  gap:6px;
+  padding-bottom:calc(4px + env(safe-area-inset-bottom));
+}
+
+.chat-name{
+  width:76px;
+  flex-shrink:0;
+}
+
+.chat-message-wrap{
+  flex:1;
+  min-width:0;
+}
+
+.chat-input{
+  width:100%;
+  min-height:44px;
+  max-height:110px;
+  resize:none;
+  font-size:16px!important;
+}
+
+.attach-btn,
+.send-btn{
+  width:44px;
+  min-width:44px;
+  height:44px;
+  padding:0!important;
+  border-radius:13px!important;
+}
+
+.attach-btn{
+  display:grid;
+  place-items:center;
+  background:var(--surface);
+  border:1px solid var(--border);
+  color:var(--accent);
+}
+
+.send-btn{
+  display:grid;
+  place-items:center;
+}
+
+/* FORMS */
+
+.form-scroll{
+  flex:1;
+  overflow-y:auto;
+  padding:12px 12px calc(var(--bottom-nav) + 18px);
+}
+
+.form-card{
+  width:100%;
+  max-width:560px;
+  margin:0 auto;
+  padding:15px;
+  border-radius:18px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.form-title{
+  font-size:20px;
+  margin-bottom:3px;
+}
+
+.form-subtitle{
+  color:var(--sub);
+  font-size:12px;
+  margin-bottom:17px;
+}
+
+.form-group{
+  margin-bottom:13px;
+}
+
+.form-group label{
+  display:block;
+  color:var(--accent);
+  font-size:10px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  margin-bottom:5px;
+}
+
+.form-control{
+  width:100%;
+  min-height:44px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--input);
+  color:var(--text);
+  padding:10px 12px;
+  outline:none;
+  font-size:16px;
+}
+
+.form-control:focus{
+  border-color:var(--accent);
+}
+
+textarea.form-control{
+  min-height:170px;
+  resize:none;
+  line-height:1.5;
+}
+
+.file-btn{
+  width:100%;
+  min-height:44px;
+  display:grid;
+  place-items:center;
+  border:1px dashed rgba(56,189,248,.45);
+  border-radius:12px;
+  background:rgba(56,189,248,.07);
+  color:var(--accent);
+  font-size:12px;
+  font-weight:800;
+}
+
+#postImageStatus{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:11px;
+}
+
+.counter{
+  text-align:right;
+  margin-top:4px;
+  color:var(--muted);
+  font-size:10px;
+}
+
+.counter.warn{
+  color:#f59e0b;
+}
+
+.primary-btn{
+  width:100%;
+  min-height:46px;
+  border:0;
+  border-radius:13px;
+  background:linear-gradient(135deg,#0284c7,#4f46e5);
+  color:white;
+  font-size:13px;
+  font-weight:900;
+  box-shadow:0 6px 20px rgba(2,132,199,.18);
+}
+
+.primary-btn:disabled{
+  opacity:.55;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  position:fixed;
+  z-index:50;
+  left:0;
+  right:0;
+  bottom:0;
+  height:calc(var(--bottom-nav) + env(safe-area-inset-bottom));
+  padding-bottom:env(safe-area-inset-bottom);
+  display:flex;
+  background:var(--nav);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-top:1px solid var(--border);
+}
+
+.nav-item{
+  position:relative;
+  flex:1;
+  border:0;
+  background:none;
+  color:var(--muted);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  font-size:9px;
+  font-weight:800;
+}
+
+.nav-icon{
+  font-size:20px;
+  line-height:1;
+}
+
+.nav-item.active{
+  color:var(--accent);
+}
+
+.nav-item.active::before{
+  content:"";
+  position:absolute;
+  top:0;
+  width:34px;
+  height:2px;
+  background:var(--accent);
+  border-radius:0 0 4px 4px;
+}
+
+.nav-badge{
+  position:absolute;
+  top:8px;
+  margin-left:27px;
+  min-width:16px;
+  height:16px;
+  padding:0 4px;
+  display:none;
+  place-items:center;
+  border-radius:20px;
+  background:#ef4444;
+  color:white;
+  font-size:8px;
+}
+
+/* POST READER */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  background:rgba(0,0,0,.78);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s;
+}
+
+.modal.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+.reader{
+  width:100%;
+  height:94dvh;
+  background:var(--modal);
+  border-radius:22px 22px 0 0;
+  border:1px solid var(--border);
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  transform:translateY(25px);
+  transition:transform .25s;
+}
+
+.modal.active .reader{
+  transform:translateY(0);
+}
+
+.reader-header{
+  flex-shrink:0;
+  height:54px;
+  padding:0 13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+
+.reader-label{
+  color:var(--accent);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.6px;
+}
+
+.close-btn{
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:50%;
+  background:var(--surface2);
+  color:var(--text);
+  font-size:17px;
+}
+
+.reader-body{
+  flex:1;
+  min-height:0;
+  overflow-y:auto;
+  padding:16px 15px 30px;
+}
+
+.reader-category{
+  display:inline-flex;
+  padding:5px 9px;
+  border-radius:8px;
+  color:var(--accent);
+  background:rgba(56,189,248,.1);
+  font-size:10px;
+  font-weight:900;
+  margin-bottom:9px;
+}
+
+.reader-title{
+  font-size:27px;
+  line-height:1.16;
+  letter-spacing:-.7px;
+  margin-bottom:7px;
+}
+
+.reader-meta{
+  color:var(--sub);
+  font-size:11px;
+  margin-bottom:15px;
+}
+
+.reader-img{
+  width:100%;
+  max-height:330px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:17px;
+  background:var(--input);
+}
+
+.reader-content{
+  white-space:pre-line;
+  font-size:16px;
+  line-height:1.72;
+  color:var(--text);
+  word-break:break-word;
+}
+
+.reader-footer{
+  flex-shrink:0;
+  padding:9px 12px calc(9px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--border);
+  display:flex;
+  gap:7px;
+}
+
+.reader-action{
+  flex:1;
+  min-height:42px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  color:var(--text);
+  font-size:12px;
+  font-weight:800;
+}
+
+.reader-action.liked{
+  color:#f472b6;
+}
+
+/* EDIT / CONFIRM */
+
+.small-modal{
+  align-items:center;
+  padding:15px;
+}
+
+.small-card{
+  width:100%;
+  max-width:480px;
+  max-height:85dvh;
+  overflow:auto;
+  padding:16px;
+  border-radius:18px;
+  background:var(--modal);
+  border:1px solid var(--border);
+}
+
+.modal-title{
+  font-size:16px;
+  margin-bottom:15px;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:7px;
+  margin-top:14px;
+}
+
+.modal-buttons button{
+  flex:1;
+  min-height:42px;
+}
+
+.cancel-btn{
+  border:1px solid var(--border);
+  border-radius:11px;
+  background:var(--surface2);
+  color:var(--sub);
+}
+
+.danger-btn{
+  border:0;
+  border-radius:11px;
+  background:#dc2626;
+  color:white;
+}
+
+/* LIGHTBOX */
+
+#lightbox{
+  align-items:center;
+  justify-content:center;
+  padding:15px;
+  background:rgba(0,0,0,.94);
+}
+
+#lightbox img{
+  max-width:96vw;
+  max-height:92dvh;
+  object-fit:contain;
+  border-radius:8px;
+}
+
+/* TOAST */
+
+#toasts{
+  position:fixed;
+  z-index:300;
+  left:12px;
+  right:12px;
+  bottom:calc(var(--bottom-nav) + env(safe-area-inset-bottom) + 10px);
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:7px;
+  pointer-events:none;
+}
+
+.toast{
+  max-width:90%;
+  padding:10px 13px;
+  border-radius:12px;
+  background:var(--modal);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-size:12px;
+  font-weight:700;
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+  animation:toastIn .2s ease;
+}
+
+.toast.success{
+  border-color:var(--success);
+}
+
+.toast.error{
+  border-color:var(--danger);
+}
+
+@keyframes toastIn{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* AUTH */
+
+.login-info{
+  padding:12px;
+  border-radius:12px;
+  background:rgba(56,189,248,.07);
+  color:var(--sub);
+  font-size:11px;
+  line-height:1.5;
+  margin-bottom:14px;
+}
+
+.logout-box{
+  text-align:center;
+}
+
+.admin-name{
+  color:var(--accent);
+  font-weight:900;
+  margin-bottom:5px;
+}
+
+.logout-btn{
+  margin-top:15px;
+  width:100%;
+  min-height:44px;
+  border:0;
+  border-radius:12px;
+  background:#dc2626;
+  color:white;
+  font-weight:800;
+}
+
+/* MOBILE TOUCH */
+
+@media (hover:hover){
+  .blog-card:hover{
+    border-color:rgba(56,189,248,.3);
+  }
+
+  button:hover{
+    filter:brightness(1.08);
+  }
+}
+
+@media (min-width:700px){
+  .app{
+    max-width:680px;
+    margin:auto;
+    width:100%;
+    border-left:1px solid var(--border);
+    border-right:1px solid var(--border);
+  }
+
+  header{
+    max-width:680px;
+    margin:auto;
+  }
+
+  .bottom-nav{
+    max-width:680px;
+    margin:auto;
+    left:50%;
+    right:auto;
+    width:100%;
+    transform:translateX(-50%);
+  }
+}
+
+/* REDUCED MOTION */
+
+@media (prefers-reduced-motion:reduce){
+  *,
+  *::before,
+  *::after{
+    animation-duration:.01ms!important;
+    transition-duration:.01ms!important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="offline-banner">
+  ⚠️ Offline — changes will sync when connection returns
+</div>
+
+<div class="reconnect-banner">
+  ⚠️ Live updates interrupted — retrying…
+</div>
+
+<header>
+  <div class="header-inner">
+
+    <div class="brand">
+      <div class="brand-mark">Z</div>
+      <h1>ZACK360 BLOGGER</h1>
+    </div>
+
+    <div class="header-actions">
+      <span id="userBadge" class="user-badge guest">Guest</span>
+
+      <button
+        id="themeToggle"
+        class="icon-btn"
+        onclick="toggleTheme()"
+        aria-label="Toggle theme">
+        🌙
+      </button>
+    </div>
+
+  </div>
+</header>
+
+<div class="app">
+
+  <!-- BLOG -->
+
+  <section id="blogTab" class="view active">
+
+    <div class="search-row">
+
+      <div class="search-box">
+        <input
+          id="searchInput"
+          type="search"
+          inputmode="search"
+          autocomplete="off"
+          placeholder="Search posts..."
+          aria-label="Search posts"
+          oninput="onSearchInput()">
+
+        <button
+          id="searchClear"
+          class="search-clear"
+          onclick="clearSearch()"
+          aria-label="Clear search">
+          ✕
+        </button>
+      </div>
+
+    </div>
+
+    <div id="categoryScroll" class="category-scroll">
+      <button class="category-chip active" data-category="all"
+        onclick="selectCategory('all',this)">
+        All
+      </button>
+    </div>
+
+    <div id="blogFeed" class="feed"></div>
+
+    <button
+      id="loadMorePosts"
+      class="load-more"
+      style="display:none"
+      onclick="loadMorePosts()">
+      Load older posts
+    </button>
+
+  </section>
+
+
+  <!-- CHAT -->
+
+  <section id="chatTab" class="view">
+
+    <button
+      id="loadMoreChat"
+      class="load-more chat-load"
+      style="display:none"
+      onclick="loadMoreChat()">
+      Load older messages
+    </button>
+
+    <div id="chatStream" class="chat-history"></div>
+
+    <div id="chatPreview" class="chat-preview">
+
+      <img id="chatPreviewImage" alt="Selected image">
+
+      <div class="preview-text">
+        Image ready
+      </div>
+
+      <button onclick="clearChatImage()" aria-label="Remove image">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="chat-composer">
+
+      <input
+        id="chatUser"
+        class="form-control chat-name"
+        type="text"
+        maxlength="20"
+        value="Guest"
+        placeholder="Name"
+        aria-label="Your name">
+
+      <div class="chat-message-wrap">
+
+        <textarea
+          id="chatInput"
+          class="form-control chat-input"
+          maxlength="500"
+          rows="1"
+          placeholder="Message..."
+          aria-label="Message"></textarea>
+
+      </div>
+
+      <label class="attach-btn" aria-label="Attach image">
+        📷
+        <input
+          id="chatFileInput"
+          type="file"
+          accept="image/*"
+          hidden
+          onchange="handleChatImageUpload(this)">
+      </label>
+
+      <button
+        id="chatSendBtn"
+        class="primary-btn send-btn"
+        onclick="sendChatMessage()"
+        aria-label="Send">
+        ➤
+      </button>
+
+    </div>
+
+  </section>
+
+
+  <!-- CREATE -->
+
+  <section id="createTab" class="view">
+
+    <div class="form-scroll">
+
+      <div class="form-card">
+
+        <h2 class="form-title">Create Post</h2>
+
+        <p class="form-subtitle">
+          Publish a new article to Zack360 Blogger.
+        </p>
+
+        <div class="form-group">
+          <label>Author</label>
+
+          <input
+            id="postAuthor"
+            class="form-control"
+            value="zack360"
+            readonly>
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+
+          <select id="postCategory" class="form-control">
+            <option value="General">General</option>
+            <option value="Technology">Technology</option>
+            <option value="Android">Android</option>
+            <option value="Tutorials">Tutorials</option>
+            <option value="News">News</option>
+            <option value="Personal">Personal</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Article Title</label>
+
+          <input
+            id="postTitle"
+            class="form-control"
+            maxlength="120"
+            placeholder="Enter article title...">
+        </div>
+
+        <div class="form-group">
+
+          <label>Cover Image</label>
+
+          <label class="file-btn">
+            📷 Choose Image
+            <input
+              id="postFileInput"
+              type="file"
+              accept="image/*"
+              hidden
+              onchange="handlePostImageUpload(this)">
+          </label>
+
+          <div id="postImageStatus">
+            No image attached.
+          </div>
+
+        </div>
+
+        <div class="form-group">
+
+          <label>Article Content</label>
+
+          <textarea
+            id="postContent"
+            class="form-control"
+            maxlength="8000"
+            placeholder="Write your article..."></textarea>
+
+          <div id="postContentCounter" class="counter">
+            0 / 8000
+          </div>
+
+        </div>
+
+        <button
+          id="publishBtn"
+          class="primary-btn"
+          onclick="publishPost()">
+          Publish Post
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <!-- LOGIN -->
+
+  <section id="loginTab" class="view">
+
+    <div class="form-scroll">
+
+      <div class="form-card">
+
+        <h2 class="form-title">Admin Access</h2>
+
+        <p class="form-subtitle">
+          Sign in to manage Zack360 Blogger.
+        </p>
+
+        <div id="loginFields">
+
+          <div class="login-info">
+            Admin access is required for publishing,
+            editing and deleting content.
+          </div>
+
+          <div class="form-group">
+
+            <label>Username</label>
+
+            <input
+              id="loginUser"
+              class="form-control"
+              autocomplete="username"
+              placeholder="Username">
+
+          </div>
+
+          <div class="form-group">
+
+            <label>Password</label>
+
+            <input
+              id="loginPass"
+              class="form-control"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Password">
+
+          </div>
+
+          <div id="loginError" class="counter"></div>
+
+          <button
+            class="primary-btn"
+            onclick="handleLogin()">
+            Login
+          </button>
+
+        </div>
+
+
+        <div id="logoutFields" class="logout-box" style="display:none">
+
+          <div class="admin-name">
+            Logged in as zack360
+          </div>
+
+          <p style="font-size:12px;color:var(--sub)">
+            You can create, edit and delete posts
+            and moderate chat messages.
+          </p>
+
+          <button
+            class="logout-btn"
+            onclick="handleLogout()">
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottom-nav" role="navigation">
+
+  <button
+    id="navBlog"
+    class="nav-item active"
+    onclick="showTab('blogTab',this)">
+
+    <span class="nav-icon">⌂</span>
+    <span>Home</span>
+
+  </button>
+
+
+  <button
+    id="navChat"
+    class="nav-item"
+    onclick="showTab('chatTab',this)">
+
+    <span class="nav-icon">💬</span>
+    <span>Chat</span>
+
+    <span id="chatUnread" class="nav-badge">0</span>
+
+  </button>
+
+
+  <button
+    id="navCreate"
+    class="nav-item"
+    style="display:none"
+    onclick="showTab('createTab',this)">
+
+    <span class="nav-icon">＋</span>
+    <span>Create</span>
+
+  </button>
+
+
+  <button
+    id="navLogin"
+    class="nav-item"
+    onclick="showTab('loginTab',this)">
+
+    <span class="nav-icon">♙</span>
+    <span>Admin</span>
+
+  </button>
+
+</nav>
+
+
+<!-- POST READER -->
+
+<div
+  id="postModal"
+  class="modal"
+  onclick="closePostModal(event)"
+  role="dialog"
+  aria-modal="true">
+
+  <article class="reader" onclick="event.stopPropagation()">
+
+    <div class="reader-header">
+
+      <span class="reader-label">
+        ARTICLE
+      </span>
+
+      <button
+        class="close-btn"
+        onclick="closePostModal()"
+        aria-label="Close">
+        ✕
+      </button>
+
+    </div>
+
+    <div class="reader-body">
+
+      <span id="readerCategory" class="reader-category">
+        General
+      </span>
+
+      <h2 id="readerTitle" class="reader-title"></h2>
+
+      <div id="readerMeta" class="reader-meta"></div>
+
+      <img
+        id="readerImage"
+        class="reader-img"
+        style="display:none"
+        alt="Article image"
+        onclick="openLightbox(this.src)">
+
+      <div
+        id="readerContent"
+        class="reader-content"></div>
+
+    </div>
+
+    <div class="reader-footer">
+
+      <button
+        id="readerLike"
+        class="reader-action"
+        onclick="likeFromReader()">
+        🤍 Like
+      </button>
+
+      <button
+        class="reader-action"
+        onclick="shareCurrentPost()">
+        ↗ Share
+      </button>
+
+    </div>
+
+  </article>
+
+</div>
+
+
+<!-- EDIT -->
+
+<div id="editModal" class="modal small-modal">
+
+  <div class="small-card">
+
+    <h3 id="editModalTitle" class="modal-title">
+      Edit
+    </h3>
+
+    <div id="editTitleGroup" class="form-group">
+
+      <label>Title</label>
+
+      <input
+        id="editTitle"
+        class="form-control"
+        maxlength="120">
+
+    </div>
+
+    <div id="editCategoryGroup" class="form-group">
+
+      <label>Category</label>
+
+      <select id="editCategory" class="form-control">
+        <option>General</option>
+        <option>Technology</option>
+        <option>Android</option>
+        <option>Tutorials</option>
+        <option>News</option>
+        <option>Personal</option>
+      </select>
+
+    </div>
+
+    <div class="form-group">
+
+      <label id="editContentLabel">
+        Content
+      </label>
+
+      <textarea
+        id="editContent"
+        class="form-control"></textarea>
+
+    </div>
+
+    <div class="modal-buttons">
+
+      <button
+        class="cancel-btn"
+        onclick="closeEditModal()">
+        Cancel
+      </button>
+
+      <button
+        id="editSaveBtn"
+        class="primary-btn"
+        onclick="saveEdit()">
+        Save
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- CONFIRM -->
+
+<div id="confirmModal" class="modal small-modal">
+
+  <div class="small-card">
+
+    <h3 class="modal-title">
+      Confirm action
+    </h3>
+
+    <p
+      id="confirmText"
+      style="font-size:13px;color:var(--sub);line-height:1.5">
+    </p>
+
+    <div class="modal-buttons">
+
+      <button
+        class="cancel-btn"
+        onclick="closeConfirm(false)">
+        Cancel
+      </button>
+
+      <button
+        class="danger-btn"
+        onclick="closeConfirm(true)">
+        Delete
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- LIGHTBOX -->
+
+<div
+  id="lightbox"
+  class="modal"
+  onclick="closeLightbox()">
+
+  <img
+    id="lightboxImage"
+    alt="Full image"
+    onclick="event.stopPropagation()">
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toasts" aria-live="polite"></div>
+
+
+<script>
+(function(){
+
+"use strict";
+
+/* =========================================================
+   CONFIG
+   ========================================================= */
+
+const RTDB_URL =
+"https://zack360-2b303-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+const ADMIN_USER = "zack360";
+const ADMIN_PASS = "zack360";
+
+const POSTS_PAGE = 15;
+const CHAT_PAGE = 25;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const STREAM_RETRY_BASE_MS = 1500;
+const STREAM_RETRY_MAX_MS = 20000;
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+const state = {
+
+  user:localStorage.getItem("zack360_user") || null,
+
+  clientId:getClientId(),
+
+  posts:{},
+
+  postsLimit:POSTS_PAGE,
+
+  chat:{},
+
+  chatLimit:CHAT_PAGE,
+
+  postsSource:null,
+
+  chatSource:null,
+
+  postsRetryMs:STREAM_RETRY_BASE_MS,
+
+  chatRetryMs:STREAM_RETRY_BASE_MS,
+
+  postsRetryTimer:null,
+
+  chatRetryTimer:null,
+
+  streamsDown:0,
+
+  attachedPostImage:"",
+
+  attachedChatImage:"",
+
+  searchQuery:"",
+
+  selectedCategory:"all",
+
+  currentPostId:null,
+
+  confirmCallback:null,
+
+  editCallback:null,
+
+  chatLastSeen:Number(
+    localStorage.getItem("zack360_chat_seen") || 0
+  ),
+
+  publishing:false,
+
+  sending:false,
+
+  liking:new Set(),
+
+  chatRendered:new Map()
+
+};
+
+
+/* =========================================================
+   CLIENT ID
+   ========================================================= */
+
+function getClientId(){
+
+  let id=localStorage.getItem("zack360_client_id");
+
+  if(!id){
+
+    id =
+      "c_" +
+      Math.random().toString(36).slice(2,10) +
+      Date.now().toString(36);
+
+    localStorage.setItem("zack360_client_id",id);
+
+  }
+
+  return id;
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+function toast(message,type=""){
+
+  const box=document.createElement("div");
+
+  box.className="toast "+type;
+
+  box.textContent=message;
+
+  document.getElementById("toasts").appendChild(box);
+
+  setTimeout(()=>{
+
+    box.style.opacity="0";
+
+    box.style.transform="translateY(6px)";
+
+    setTimeout(()=>box.remove(),220);
+
+  },3000);
+
+}
+
+
+/* =========================================================
+   THEME
+   ========================================================= */
+
+function applyTheme(theme){
+
+  document.documentElement.dataset.theme=theme;
+
+  document.getElementById("themeToggle").textContent =
+    theme==="light" ? "🌙" : "☀️";
+
+  localStorage.setItem("zack360_theme",theme);
+
+}
+
+function toggleTheme(){
+
+  const current=
+    document.documentElement.dataset.theme || "dark";
+
+  applyTheme(current==="dark" ? "light" : "dark");
+
+}
+
+
+/* =========================================================
+   ONLINE
+   ========================================================= */
+
+function updateOnline(){
+
+  document.body.classList.toggle(
+    "offline",
+    !navigator.onLine
+  );
+
+}
+
+window.addEventListener("online",updateOnline);
+window.addEventListener("offline",updateOnline);
+
+
+/* =========================================================
+   DATE
+   ========================================================= */
+
+function formatDate(timestamp){
+
+  const n=Number(timestamp);
+
+  if(!n) return "";
+
+  const diff=Date.now()-n;
+
+  if(diff<45000) return "just now";
+
+  const sec=Math.floor(diff/1000);
+
+  const min=Math.floor(sec/60);
+
+  if(min<60) return min+"m ago";
+
+  const hr=Math.floor(min/60);
+
+  if(hr<24) return hr+"h ago";
+
+  const day=Math.floor(hr/24);
+
+  if(day<7) return day+"d ago";
+
+  const d=new Date(n);
+
+  return d.toLocaleDateString([],{
+    month:"short",
+    day:"numeric",
+    year:d.getFullYear()===new Date().getFullYear()
+      ? undefined
+      :"numeric"
+  });
+
+}
+
+setInterval(()=>{
+
+  document.querySelectorAll("[data-ts]").forEach(el=>{
+    el.textContent=formatDate(el.dataset.ts);
+  });
+
+},60000);
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+function openModal(id){
+
+  document.getElementById(id).classList.add("active");
+
+  document.body.classList.add("modal-open");
+
+}
+
+function closeModal(id){
+
+  document.getElementById(id).classList.remove("active");
+
+  if(!document.querySelector(".modal.active")){
+
+    document.body.classList.remove("modal-open");
+
+  }
+
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+function updateAuthUI(){
+
+  const admin=state.user===ADMIN_USER;
+
+  const badge=document.getElementById("userBadge");
+
+  const create=document.getElementById("navCreate");
+
+  const loginFields=document.getElementById("loginFields");
+
+  const logoutFields=document.getElementById("logoutFields");
+
+  if(admin){
+
+    badge.textContent="Admin";
+    badge.className="user-badge admin";
+
+    create.style.display="flex";
+
+    loginFields.style.display="none";
+    logoutFields.style.display="block";
+
+    document.getElementById("chatUser").value=ADMIN_USER;
+
+  }else{
+
+    badge.textContent="Guest";
+    badge.className="user-badge guest";
+
+    create.style.display="none";
+
+    loginFields.style.display="block";
+    logoutFields.style.display="none";
+
+    if(
+      document.activeElement!==
+      document.getElementById("chatUser")
+    ){
+
+      document.getElementById("chatUser").value="Guest";
+
+    }
+
+  }
+
+  renderPosts();
+
+  renderChat();
+
+}
+
+function handleLogin(){
+
+  const username=
+    document.getElementById("loginUser").value.trim();
+
+  const password=
+    document.getElementById("loginPass").value.trim();
+
+  const error=document.getElementById("loginError");
+
+  if(username===ADMIN_USER && password===ADMIN_PASS){
+
+    state.user=ADMIN_USER;
+
+    localStorage.setItem(
+      "zack360_user",
+      ADMIN_USER
+    );
+
+    document.getElementById("loginUser").value="";
+    document.getElementById("loginPass").value="";
+
+    error.textContent="";
+
+    updateAuthUI();
+
+    showTab(
+      "blogTab",
+      document.getElementById("navBlog")
+    );
+
+    toast("Welcome back, zack360","success");
+
+  }else{
+
+    error.textContent="Invalid credentials.";
+
+    toast("Invalid admin credentials","error");
+
+  }
+
+}
+
+function handleLogout(){
+
+  state.user=null;
+
+  localStorage.removeItem("zack360_user");
+
+  updateAuthUI();
+
+  showTab(
+    "blogTab",
+    document.getElementById("navBlog")
+  );
+
+  toast("Logged out");
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+function showTab(id,button){
+
+  document.querySelectorAll(".view")
+    .forEach(v=>v.classList.remove("active"));
+
+  document.querySelectorAll(".nav-item")
+    .forEach(b=>b.classList.remove("active"));
+
+  const tab=document.getElementById(id);
+
+  if(!tab)return;
+
+  if(id==="createTab" && state.user!==ADMIN_USER){
+
+    toast("Admin login required","error");
+
+    showTab("loginTab",document.getElementById("navLogin"));
+
+    return;
+
+  }
+
+  tab.classList.add("active");
+
+  if(button)button.classList.add("active");
+
+  if(id==="chatTab"){
+
+    state.chatLastSeen=Date.now();
+
+    localStorage.setItem(
+      "zack360_chat_seen",
+      String(state.chatLastSeen)
+    );
+
+    updateChatBadge();
+
+    setTimeout(()=>{
+
+      const chat=document.getElementById("chatStream");
+
+      chat.scrollTop=chat.scrollHeight;
+
+    },30);
+
+  }
+
+}
+
+
+/* =========================================================
+   IMAGE PROCESSING
+   ========================================================= */
+
+function processImage(file,callback){
+
+  if(!file.type.startsWith("image/")){
+
+    toast("Please choose an image","error");
+
+    return;
+
+  }
+
+  if(file.size>MAX_FILE_SIZE){
+
+    toast("Image must be under 5MB","error");
+
+    return;
+
+  }
+
+  const reader=new FileReader();
+
+  reader.onerror=()=>{
+    toast("Could not read image","error");
+  };
+
+  reader.onload=e=>{
+
+    const img=new Image();
+
+    img.onerror=()=>{
+      toast("Invalid image","error");
+    };
+
+    img.onload=()=>{
+
+      const max=480;
+
+      let w=img.width;
+      let h=img.height;
+
+      if(w>max || h>max){
+
+        if(w>h){
+
+          h*=max/w;
+          w=max;
+
+        }else{
+
+          w*=max/h;
+          h=max;
+
+        }
+
+      }
+
+      const canvas=document.createElement("canvas");
+
+      canvas.width=Math.round(w);
+      canvas.height=Math.round(h);
+
+      const context=canvas.getContext("2d");
+
+      context.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+      const data=canvas.toDataURL(
+        "image/jpeg",
+        .52
+      );
+
+      const kb=Math.round(
+        data.length*0.75/1024
+      );
+
+      callback(data,kb);
+
+    };
+
+    img.src=e.target.result;
+
+  };
+
+  reader.readAsDataURL(file);
+
+}
+
+
+/* =========================================================
+   SEARCH / CATEGORY
+   ========================================================= */
+
+function onSearchInput(){
+
+  clearTimeout(window.searchTimer);
+
+  window.searchTimer=setTimeout(()=>{
+
+    state.searchQuery=
+      document.getElementById("searchInput")
+        .value
+        .toLowerCase()
+        .trim();
+
+    document
+      .getElementById("searchClear")
+      .classList.toggle(
+        "show",
+        !!state.searchQuery
+      );
+
+    state.postsLimit=POSTS_PAGE;
+
+    renderPosts();
+
+  },150);
+
+}
+
+function clearSearch(){
+
+  const input=document.getElementById("searchInput");
+
+  input.value="";
+
+  state.searchQuery="";
+
+  document
+    .getElementById("searchClear")
+    .classList.remove("show");
+
+  renderPosts();
+
+  input.focus();
+
+}
+
+function selectCategory(category,button){
+
+  state.selectedCategory=category;
+
+  document
+    .querySelectorAll(".category-chip")
+    .forEach(x=>x.classList.remove("active"));
+
+  if(button)button.classList.add("active");
+
+  state.postsLimit=POSTS_PAGE;
+
+  renderPosts();
+
+}
+
+function buildCategories(){
+
+  const box=document.getElementById("categoryScroll");
+
+  const categories=new Set(["all"]);
+
+  Object.values(state.posts).forEach(post=>{
+
+    if(post && post.category){
+
+      categories.add(post.category);
+
+    }
+
+  });
+
+  const current=state.selectedCategory;
+
+  box.innerHTML="";
+
+  categories.forEach(category=>{
+
+    const btn=document.createElement("button");
+
+    btn.className=
+      "category-chip"+
+      (category===current ? " active":"");
+
+    btn.textContent=
+      category==="all" ? "All" : category;
+
+    btn.onclick=()=>selectCategory(
+      category,
+      btn
+    );
+
+    box.appendChild(btn);
+
+  });
+
+}
+
+
+/* =========================================================
+   LIVE STREAM HELPERS (with reconnect)
+   ========================================================= */
+
+function updateStreamBanner(){
+
+  document.body.classList.toggle(
+    "stream-down",
+    state.streamsDown>0
+  );
+
+}
+
+function openStream({
+  path,
+  onData,
+  getSource,
+  setSource,
+  getRetryMs,
+  setRetryMs,
+  getRetryTimer,
+  setRetryTimer
+}){
+
+  const existingSource=getSource();
+
+  if(existingSource){
+
+    existingSource.close();
+
+  }
+
+  const existingTimer=getRetryTimer();
+
+  if(existingTimer){
+
+    clearTimeout(existingTimer);
+
+    setRetryTimer(null);
+
+  }
+
+  let source;
+
+  try{
+
+    source=new EventSource(RTDB_URL+path);
+
+  }catch(e){
+
+    scheduleRetry();
+
+    return;
+
+  }
+
+  setSource(source);
+
+  source.addEventListener("put",event=>{
+
+    try{
+
+      const data=JSON.parse(event.data).data;
+
+      onData(data || {});
+
+      if(getRetryMs()!==STREAM_RETRY_BASE_MS){
+
+        setRetryMs(STREAM_RETRY_BASE_MS);
+
+        state.streamsDown=Math.max(0,state.streamsDown-1);
+
+        updateStreamBanner();
+
+      }
+
+    }catch(e){}
+
+  });
+
+  source.onerror=()=>{
+
+    source.close();
+
+    setSource(null);
+
+    scheduleRetry();
+
+  };
+
+  function scheduleRetry(){
+
+    state.streamsDown+=1;
+
+    updateStreamBanner();
+
+    const delay=getRetryMs();
+
+    const timer=setTimeout(()=>{
+
+      openStream({
+        path,
+        onData,
+        getSource,
+        setSource,
+        getRetryMs,
+        setRetryMs,
+        getRetryTimer,
+        setRetryTimer
+      });
+
+    },delay);
+
+    setRetryTimer(timer);
+
+    setRetryMs(
+      Math.min(delay*2,STREAM_RETRY_MAX_MS)
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   POSTS STREAM
+   ========================================================= */
+
+function streamPosts(){
+
+  openStream({
+
+    path:"posts.json",
+
+    onData:data=>{
+
+      state.posts=data;
+
+      buildCategories();
+
+      renderPosts();
+
+    },
+
+    getSource:()=>state.postsSource,
+
+    setSource:s=>{state.postsSource=s;},
+
+    getRetryMs:()=>state.postsRetryMs,
+
+    setRetryMs:v=>{state.postsRetryMs=v;},
+
+    getRetryTimer:()=>state.postsRetryTimer,
+
+    setRetryTimer:t=>{state.postsRetryTimer=t;}
+
+  });
+
+}
+
+
+/* =========================================================
+   LIKES
+   ========================================================= */
+
+function likedSet(){
+
+  try{
+
+    return new Set(
+      JSON.parse(
+        localStorage.getItem(
+          "zack360_liked"
+        ) || "[]"
+      )
+    );
+
+  }catch(e){
+
+    return new Set();
+
+  }
+
+}
+
+function saveLiked(set){
+
+  localStorage.setItem(
+    "zack360_liked",
+    JSON.stringify([...set])
+  );
+
+}
+
+function countLikes(post){
+
+  if(!post || !post.likes)return 0;
+
+  return typeof post.likes==="number"
+    ? post.likes
+    : Object.keys(post.likes).length;
+
+}
+
+function toggleLike(id,event){
+
+  if(event){
+
+    event.preventDefault();
+    event.stopPropagation();
+
+  }
+
+  if(state.liking.has(id))return;
+
+  const post=state.posts[id];
+
+  if(!post)return;
+
+  state.liking.add(id);
+
+  const liked=likedSet();
+
+  const already=liked.has(id);
+
+  const likes=
+    typeof post.likes==="object" &&
+    post.likes
+      ? {...post.likes}
+      : {};
+
+  if(already){
+
+    delete likes[state.clientId];
+
+    liked.delete(id);
+
+  }else{
+
+    likes[state.clientId]=true;
+
+    liked.add(id);
+
+  }
+
+  post.likes=likes;
+
+  saveLiked(liked);
+
+  renderPosts();
+
+  updateReaderButtons();
+
+  fetch(
+    RTDB_URL+
+    "posts/"+
+    encodeURIComponent(id)+
+    "/likes/"+
+    encodeURIComponent(state.clientId)+
+    ".json",
+    {
+
+      method:already
+        ? "DELETE"
+        : "PUT",
+
+      headers:{
+        "Content-Type":
+          "application/json"
+      },
+
+      body:already
+        ? undefined
+        : "true"
+
+    }
+  )
+  .catch(()=>{
+
+    toast("Could not save like","error");
+
+  })
+  .finally(()=>{
+
+    state.liking.delete(id);
+
+  });
+
+}
+
+
+/* =========================================================
+   RENDER POSTS
+   ========================================================= */
+
+function renderPosts(){
+
+  const feed=document.getElementById("blogFeed");
+
+  const load=document.getElementById(
+    "loadMorePosts"
+  );
+
+  const entries=
+    Object.entries(state.posts)
+      .filter(
+        ([,post])=>
+          post &&
+          post.title
+      )
+      .sort(
+        (a,b)=>
+          (b[1].timestamp||0)-
+          (a[1].timestamp||0)
+      );
+
+  const q=state.searchQuery;
+
+  let filtered=entries;
+
+  if(q){
+
+    filtered=filtered.filter(
+      ([,post])=>{
+
+        const text=[
+          post.title,
+          post.content,
+          post.author,
+          post.category
+        ]
+        .join(" ")
+        .toLowerCase();
+
+        return text.includes(q);
+
+      }
+    );
+
+  }
+
+  if(state.selectedCategory!=="all"){
+
+    filtered=filtered.filter(
+      ([,post])=>
+        (post.category||"General")===
+        state.selectedCategory
+    );
+
+  }
+
+  feed.innerHTML="";
+
+  if(filtered.length===0){
+
+    feed.innerHTML=`
+
+      <div class="empty-state">
+
+        <span class="empty-icon">📝</span>
+
+        <strong>
+          ${q ? "No matching posts" : "No posts yet"}
+        </strong>
+
+        <span>
+          ${
+            q
+              ? "Try another search."
+              : "New articles will appear here."
+          }
+        </span>
+
+      </div>
+
+    `;
+
+    load.style.display="none";
+
+    return;
+
+  }
+
+  const visible=
+    filtered.slice(
+      0,
+      state.postsLimit
+    );
+
+  const liked=likedSet();
+
+  const fragment=
+    document.createDocumentFragment();
+
+  visible.forEach(
+    ([id,post])=>{
+
+      fragment.appendChild(
+        buildPostCard(
+          id,
+          post,
+          liked
+        )
+      );
+
+    }
+  );
+
+  feed.appendChild(fragment);
+
+  if(filtered.length>state.postsLimit){
+
+    load.style.display="block";
+
+    load.textContent=
+      "Load older posts · "+
+      (filtered.length-state.postsLimit);
+
+  }else{
+
+    load.style.display="none";
+
+  }
+
+}
+
+function buildPostCard(id,post,liked){
+
+  const card=document.createElement("article");
+
+  card.className="blog-card";
+
+  card.onclick=()=>{
+    openPostModal(id);
+  };
+
+  if(post.image){
+
+    const img=document.createElement("img");
+
+    img.className="post-image";
+
+    img.src=post.image;
+
+    img.loading="lazy";
+
+    img.alt=post.title||"Post image";
+
+    card.appendChild(img);
+
+  }
+
+  const category=document.createElement("span");
+
+  category.className="post-category";
+
+  category.textContent=
+    post.category||"General";
+
+  card.appendChild(category);
+
+  const title=document.createElement("h2");
+
+  title.textContent=post.title;
+
+  card.appendChild(title);
+
+  const excerpt=document.createElement("p");
+
+  excerpt.className="excerpt";
+
+  excerpt.textContent=post.content||"";
+
+  card.appendChild(excerpt);
+
+  const meta=document.createElement("div");
+
+  meta.className="card-meta";
+
+  const author=document.createElement("span");
+
+  author.className="author";
+
+  author.textContent=
+    "By "+(post.author||"Contributor");
+
+  meta.appendChild(author);
+
+  const stats=document.createElement("div");
+
+  stats.className="card-stats";
+
+  const views=document.createElement("span");
+
+  views.className="stat-time";
+
+  views.textContent="👁 "+(post.views||0);
+
+  stats.appendChild(views);
+
+  const like=document.createElement("button");
+
+  like.className=
+    "stat-btn"+
+    (liked.has(id) ? " liked":"");
+
+  like.disabled=state.liking.has(id);
+
+  like.textContent=
+    (liked.has(id) ? "❤️ " : "🤍 ")+
+    countLikes(post);
+
+  like.onclick=e=>{
+    toggleLike(id,e);
+  };
+
+  stats.appendChild(like);
+
+  const time=document.createElement("span");
+
+  time.className="stat-time";
+
+  time.dataset.ts=String(
+    post.timestamp||""
+  );
+
+  time.textContent=
+    formatDate(post.timestamp);
+
+  stats.appendChild(time);
+
+  meta.appendChild(stats);
+
+  card.appendChild(meta);
+
+
+  if(state.user===ADMIN_USER){
+
+    const actions=document.createElement("div");
+
+    actions.className="card-actions";
+
+    actions.onclick=e=>{
+      e.stopPropagation();
+    };
+
+    const edit=document.createElement("button");
+
+    edit.className="small-btn edit-btn";
+
+    edit.textContent="Edit";
+
+    edit.onclick=e=>{
+
+      e.stopPropagation();
+
+      openEditPost(id);
+
+    };
+
+    const del=document.createElement("button");
+
+    del.className="small-btn delete-btn";
+
+    del.textContent="Delete";
+
+    del.onclick=e=>{
+
+      e.stopPropagation();
+
+      askConfirm(
+        "Delete this post permanently?",
+        ()=>deletePost(id)
+      );
+
+    };
+
+    actions.append(
+      edit,
+      del
+    );
+
+    card.appendChild(actions);
+
+  }
+
+  return card;
+
+}
+
+function loadMorePosts(){
+
+  state.postsLimit+=POSTS_PAGE;
+
+  renderPosts();
+
+}
+
+
+/* =========================================================
+   POST READER
+   ========================================================= */
+
+function openPostModal(id){
+
+  const post=state.posts[id];
+
+  if(!post)return;
+
+  state.currentPostId=id;
+
+  document.getElementById(
+    "readerTitle"
+  ).textContent=post.title||"";
+
+  document.getElementById(
+    "readerCategory"
+  ).textContent=
+    post.category||"General";
+
+  document.getElementById(
+    "readerMeta"
+  ).textContent=
+    "By "+
+    (post.author||"Contributor")+
+    " · "+
+    formatDate(post.timestamp);
+
+  document.getElementById(
+    "readerContent"
+  ).textContent=
+    post.content||"";
+
+  const image=document.getElementById(
+    "readerImage"
+  );
+
+  if(post.image){
+
+    image.src=post.image;
+
+    image.style.display="block";
+
+  }else{
+
+    image.style.display="none";
+
+    image.removeAttribute("src");
+
+  }
+
+  updateReaderButtons();
+
+  openModal("postModal");
+
+  incrementViews(id);
+
+}
+
+function closePostModal(event){
+
+  if(
+    !event ||
+    event.target===
+      document.getElementById("postModal")
+  ){
+
+    closeModal("postModal");
+
+  }
+
+}
+
+function updateReaderButtons(){
+
+  const id=state.currentPostId;
+
+  if(!id)return;
+
+  const liked=likedSet();
+
+  const like=document.getElementById(
+    "readerLike"
+  );
+
+  like.textContent=
+    liked.has(id)
+      ? "❤️ Liked"
+      : "🤍 Like";
+
+  like.classList.toggle(
+    "liked",
+    liked.has(id)
+  );
+
+}
+
+function likeFromReader(){
+
+  if(!state.currentPostId)return;
+
+  toggleLike(
+    state.currentPostId
+  );
+
+}
+
+function incrementViews(id){
+
+  const post=state.posts[id];
+
+  if(!post)return;
+
+  const next=
+    Number(post.views||0)+1;
+
+  post.views=next;
+
+  fetch(
+    RTDB_URL+
+    "posts/"+
+    encodeURIComponent(id)+
+    "/views.json",
+    {
+
+      method:"PUT",
+
+      headers:{
+        "Content-Type":
+          "application/json"
+      },
+
+      body:String(next)
+
+    }
+  ).catch(()=>{});
+
+}
+
+
+/* =========================================================
+   SHARE
+   ========================================================= */
+
+async function shareCurrentPost(){
+
+  const id=state.currentPostId;
+
+  if(!id)return;
+
+  const post=state.posts[id];
+
+  if(!post)return;
+
+  const url=
+    location.href.split("#")[0]+
+    "#post="+encodeURIComponent(id);
+
+  try{
+
+    if(navigator.share){
+
+      await navigator.share({
+
+        title:post.title,
+
+        text:
+          (post.content||"")
+          .slice(0,160),
+
+        url:url
+
+      });
+
+    }else{
+
+      await navigator.clipboard.writeText(url);
+
+      toast("Post link copied","success");
+
+    }
+
+  }catch(e){
+
+    if(e.name!=="AbortError"){
+
+      toast("Unable to share","error");
+
+    }
+
+  }
+
+}
+
+
+/* =========================================================
+   CREATE POST
+   ========================================================= */
+
+async function publishPost(){
+
+  if(state.user!==ADMIN_USER){
+
+    toast("Admin login required","error");
+
+    return;
+
+  }
+
+  if(state.publishing)return;
+
+  const title=
+    document.getElementById(
+      "postTitle"
+    ).value.trim();
+
+  const content=
+    document.getElementById(
+      "postContent"
+    ).value.trim();
+
+  const category=
+    document.getElementById(
+      "postCategory"
+    ).value;
+
+  if(!title){
+
+    toast("Enter a title","error");
+
+    return;
+
+  }
+
+  if(!content){
+
+    toast("Enter article content","error");
+
+    return;
+
+  }
+
+  state.publishing=true;
+
+  const button=document.getElementById(
+    "publishBtn"
+  );
+
+  button.disabled=true;
+
+  button.textContent="Publishing...";
+
+  try{
+
+    const response=await fetch(
+      RTDB_URL+"posts.json",
+      {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+
+          author:ADMIN_USER,
+
+          title:title,
+
+          category:category,
+
+          content:content,
+
+          image:
+            state.attachedPostImage||"",
+
+          timestamp:Date.now(),
+
+          views:0,
+
+          likes:{}
+
+        })
+
+      }
+    );
+
+    if(!response.ok){
+
+      throw new Error();
+
+    }
+
+    document.getElementById(
+      "postTitle"
+    ).value="";
+
+    document.getElementById(
+      "postContent"
+    ).value="";
+
+    document.getElementById(
+      "postCategory"
+    ).value="General";
+
+    state.attachedPostImage="";
+
+    document.getElementById(
+      "postImageStatus"
+    ).textContent=
+      "No image attached.";
+
+    localStorage.removeItem(
+      "zack360_draft"
+    );
+
+    updateCounter();
+
+    showTab(
+      "blogTab",
+      document.getElementById("navBlog")
+    );
+
+    toast("Post published","success");
+
+  }catch(e){
+
+    toast(
+      "Failed to publish post",
+      "error"
+    );
+
+  }finally{
+
+    state.publishing=false;
+
+    button.disabled=false;
+
+    button.textContent="Publish Post";
+
+  }
+
+}
+
+
+/* =========================================================
+   POST IMAGE
+   ========================================================= */
+
+function handlePostImageUpload(input){
+
+  if(!input.files?.[0])return;
+
+  processImage(
+    input.files[0],
+    (base64,kb)=>{
+
+      state.attachedPostImage=base64;
+
+      const status=document.getElementById(
+        "postImageStatus"
+      );
+
+      status.textContent=
+        "✓ Image attached · ~"+
+        kb+
+        " KB";
+
+      status.style.color="var(--accent)";
+
+      saveDraft();
+
+    }
+  );
+
+  input.value="";
+
+}
+
+
+/* =========================================================
+   DRAFT
+   ========================================================= */
+
+function saveDraft(){
+
+  try{
+
+    localStorage.setItem(
+      "zack360_draft",
+      JSON.stringify({
+
+        title:
+          document.getElementById(
+            "postTitle"
+          ).value,
+
+        content:
+          document.getElementById(
+            "postContent"
+          ).value,
+
+        category:
+          document.getElementById(
+            "postCategory"
+          ).value,
+
+        image:
+          state.attachedPostImage
+
+      })
+    );
+
+  }catch(e){
+
+    // Storage quota exceeded (large image) — skip silently,
+    // the in-memory draft is still intact for this session.
+
+  }
+
+}
+
+function loadDraft(){
+
+  try{
+
+    const draft=JSON.parse(
+      localStorage.getItem(
+        "zack360_draft"
+      ) || "null"
+    );
+
+    if(!draft)return;
+
+    document.getElementById(
+      "postTitle"
+    ).value=draft.title||"";
+
+    document.getElementById(
+      "postContent"
+    ).value=draft.content||"";
+
+    document.getElementById(
+      "postCategory"
+    ).value=draft.category||"General";
+
+    if(draft.image){
+
+      state.attachedPostImage=draft.image;
+
+      const status=document.getElementById(
+        "postImageStatus"
+      );
+
+      status.textContent=
+        "✓ Image attached from draft";
+
+      status.style.color=
+        "var(--accent)";
+
+    }
+
+  }catch(e){}
+
+}
+
+
+/* =========================================================
+   COUNTER
+   ========================================================= */
+
+function updateCounter(){
+
+  const content=
+    document.getElementById(
+      "postContent"
+    );
+
+  const counter=
+    document.getElementById(
+      "postContentCounter"
+    );
+
+  const length=content.value.length;
+
+  counter.textContent=
+    length+" / 8000";
+
+  counter.classList.toggle(
+    "warn",
+    length>7000
+  );
+
+}
+
+
+/* =========================================================
+   EDIT POST
+   ========================================================= */
+
+function openEditPost(id){
+
+  if(state.user!==ADMIN_USER)return;
+
+  const post=state.posts[id];
+
+  if(!post)return;
+
+  document.getElementById(
+    "editModalTitle"
+  ).textContent="Edit Post";
+
+  document.getElementById(
+    "editTitleGroup"
+  ).style.display="block";
+
+  document.getElementById(
+    "editCategoryGroup"
+  ).style.display="block";
+
+  document.getElementById(
+    "editContentLabel"
+  ).textContent="Content";
+
+  document.getElementById(
+    "editTitle"
+  ).value=post.title||"";
+
+  document.getElementById(
+    "editCategory"
+  ).value=post.category||"General";
+
+  document.getElementById(
+    "editContent"
+  ).value=post.content||"";
+
+  state.editCallback=async()=>{
+
+    const response=await fetch(
+      RTDB_URL+
+      "posts/"+
+      encodeURIComponent(id)+
+      ".json",
+      {
+
+        method:"PATCH",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+
+          title:
+            document.getElementById(
+              "editTitle"
+            ).value.trim(),
+
+          category:
+            document.getElementById(
+              "editCategory"
+            ).value,
+
+          content:
+            document.getElementById(
+              "editContent"
+            ).value.trim()
+
+        })
+
+      }
+    );
+
+    if(!response.ok){
+
+      throw new Error();
+
+    }
+
+  };
+
+  openModal("editModal");
+
+}
+
+function closeEditModal(){
+
+  closeModal("editModal");
+
+  state.editCallback=null;
+
+}
+
+async function saveEdit(){
+
+  if(!state.editCallback)return;
+
+  const button=document.getElementById(
+    "editSaveBtn"
+  );
+
+  button.disabled=true;
+
+  button.textContent="Saving...";
+
+  try{
+
+    await state.editCallback();
+
+    toast("Updated","success");
+
+    closeEditModal();
+
+  }catch(e){
+
+    toast("Update failed","error");
+
+  }finally{
+
+    button.disabled=false;
+
+    button.textContent="Save";
+
+  }
+
+}
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+
+function askConfirm(message,callback){
+
+  document.getElementById(
+    "confirmText"
+  ).textContent=message;
+
+  state.confirmCallback=callback;
+
+  openModal("confirmModal");
+
+}
+
+function closeConfirm(result){
+
+  closeModal("confirmModal");
+
+  const callback=
+    state.confirmCallback;
+
+  state.confirmCallback=null;
+
+  if(result && callback){
+
+    callback();
+
+  }
+
+}
+
+async function deletePost(id){
+
+  if(state.user!==ADMIN_USER)return;
+
+  try{
+
+    const response=await fetch(
+      RTDB_URL+
+      "posts/"+
+      encodeURIComponent(id)+
+      ".json",
+      {
+        method:"DELETE"
+      }
+    );
+
+    if(!response.ok)throw new Error();
+
+    toast("Post deleted","success");
+
+  }catch(e){
+
+    toast("Delete failed","error");
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT STREAM
+   ========================================================= */
+
+function streamChat(){
+
+  openStream({
+
+    path:"chat.json",
+
+    onData:data=>{
+
+      state.chat=data;
+
+      renderChat();
+
+      updateChatBadge();
+
+    },
+
+    getSource:()=>state.chatSource,
+
+    setSource:s=>{state.chatSource=s;},
+
+    getRetryMs:()=>state.chatRetryMs,
+
+    setRetryMs:v=>{state.chatRetryMs=v;},
+
+    getRetryTimer:()=>state.chatRetryTimer,
+
+    setRetryTimer:t=>{state.chatRetryTimer=t;}
+
+  });
+
+}
+
+
+/* =========================================================
+   CHAT RENDER
+   ========================================================= */
+
+function renderChat(){
+
+  const stream=
+    document.getElementById(
+      "chatStream"
+    );
+
+  const load=
+    document.getElementById(
+      "loadMoreChat"
+    );
+
+  const entries=
+    Object.entries(state.chat)
+      .filter(
+        ([,msg])=>
+          msg &&
+          (msg.text || msg.image)
+      )
+      .sort(
+        (a,b)=>
+          (a[1].timestamp||0)-
+          (b[1].timestamp||0)
+      );
+
+  if(!entries.length){
+
+    stream.innerHTML=`
+
+      <div class="empty-state">
+
+        <span class="empty-icon">💬</span>
+
+        <strong>No messages yet</strong>
+
+        <span>
+          Start the conversation.
+        </span>
+
+      </div>
+
+    `;
+
+    load.style.display="none";
+
+    return;
+
+  }
+
+  const active=
+    document.getElementById(
+      "chatTab"
+    ).classList.contains("active");
+
+  const nearBottom=
+    stream.scrollHeight-
+    stream.scrollTop-
+    stream.clientHeight<
+    100;
+
+  const visible=
+    entries.slice(-state.chatLimit);
+
+  const ids=new Set(
+    visible.map(([id])=>id)
+  );
+
+  state.chatRendered.forEach(
+    (item,id)=>{
+
+      if(!ids.has(id)){
+
+        item.remove();
+
+        state.chatRendered.delete(id);
+
+      }
+
+    }
+  );
+
+  const fragment=
+    document.createDocumentFragment();
+
+  visible.forEach(
+    ([id,msg])=>{
+
+      let element=
+        state.chatRendered.get(id);
+
+      if(!element){
+
+        element=buildChatMessage(
+          id,
+          msg
+        );
+
+        state.chatRendered.set(
+          id,
+          element
+        );
+
+      }else{
+
+        const fresh=
+          buildChatMessage(
+            id,
+            msg
+          );
+
+        element.replaceChildren(
+          ...fresh.childNodes
+        );
+
+      }
+
+      fragment.appendChild(element);
+
+    }
+  );
+
+  stream.innerHTML="";
+
+  stream.appendChild(fragment);
+
+  if(
+    active ||
+    nearBottom
+  ){
+
+    stream.scrollTop=
+      stream.scrollHeight;
+
+  }
+
+  if(entries.length>state.chatLimit){
+
+    load.style.display="block";
+
+    load.textContent=
+      "Load older messages · "+
+      (entries.length-state.chatLimit);
+
+  }else{
+
+    load.style.display="none";
+
+  }
+
+}
+
+function buildChatMessage(id,msg){
+
+  const box=document.createElement("div");
+
+  box.className=
+    "chat-msg"+
+    (
+      msg.user===state.user
+        ? " mine"
+        : ""
+    );
+
+  box.dataset.id=id;
+
+  const header=document.createElement(
+    "div"
+  );
+
+  header.className="chat-header";
+
+  const user=document.createElement(
+    "span"
+  );
+
+  user.className="chat-user";
+
+  user.textContent=
+    msg.user||"Guest";
+
+  const time=document.createElement(
+    "span"
+  );
+
+  time.className="chat-time";
+
+  time.dataset.ts=
+    String(msg.timestamp||"");
+
+  time.textContent=
+    formatDate(msg.timestamp);
+
+  header.append(
+    user,
+    time
+  );
+
+  box.appendChild(header);
+
+  if(msg.text){
+
+    const text=document.createElement(
+      "div"
+    );
+
+    text.className="chat-text";
+
+    text.textContent=msg.text;
+
+    box.appendChild(text);
+
+  }
+
+  if(msg.image){
+
+    const image=document.createElement(
+      "img"
+    );
+
+    image.className="chat-img";
+
+    image.src=msg.image;
+
+    image.alt="Chat image";
+
+    image.loading="lazy";
+
+    image.onclick=()=>openLightbox(
+      msg.image
+    );
+
+    box.appendChild(image);
+
+  }
+
+  if(state.user===ADMIN_USER){
+
+    const actions=document.createElement(
+      "div"
+    );
+
+    actions.className="chat-actions";
+
+    const edit=document.createElement(
+      "button"
+    );
+
+    edit.className=
+      "small-btn edit-btn";
+
+    edit.textContent="Edit";
+
+    edit.onclick=()=>{
+      openEditChat(id);
+    };
+
+    const del=document.createElement(
+      "button"
+    );
+
+    del.className=
+      "small-btn delete-btn";
+
+    del.textContent="Delete";
+
+    del.onclick=()=>{
+
+      askConfirm(
+        "Delete this chat message?",
+        ()=>deleteChat(id)
+      );
+
+    };
+
+    actions.append(
+      edit,
+      del
+    );
+
+    box.appendChild(actions);
+
+  }
+
+  return box;
+
+}
+
+function loadMoreChat(){
+
+  state.chatLimit+=CHAT_PAGE;
+
+  renderChat();
+
+}
+
+
+/* =========================================================
+   CHAT BADGE
+   ========================================================= */
+
+function updateChatBadge(){
+
+  const badge=
+    document.getElementById(
+      "chatUnread"
+    );
+
+  const active=
+    document.getElementById(
+      "chatTab"
+    ).classList.contains("active");
+
+  if(active){
+
+    badge.style.display="none";
+
+    return;
+
+  }
+
+  const unread=
+    Object.values(state.chat)
+      .filter(
+        msg=>
+          msg &&
+          msg.timestamp>
+          state.chatLastSeen
+      ).length;
+
+  if(unread){
+
+    badge.textContent=
+      unread>99 ? "99+" : unread;
+
+    badge.style.display="grid";
+
+  }else{
+
+    badge.style.display="none";
+
+  }
+
+}
+
+
+/* =========================================================
+   SEND CHAT
+   ========================================================= */
+
+async function sendChatMessage(){
+
+  if(state.sending)return;
+
+  const user=
+    document.getElementById(
+      "chatUser"
+    ).value.trim() ||
+    "Guest";
+
+  const input=
+    document.getElementById(
+      "chatInput"
+    );
+
+  const text=input.value.trim();
+
+  if(
+    !text &&
+    !state.attachedChatImage
+  ){
+
+    return;
+
+  }
+
+  state.sending=true;
+
+  const button=
+    document.getElementById(
+      "chatSendBtn"
+    );
+
+  button.disabled=true;
+
+  button.textContent="…";
+
+  const payload={
+
+    user:user,
+
+    text:text,
+
+    image:
+      state.attachedChatImage||"",
+
+    timestamp:Date.now()
+
+  };
+
+  input.value="";
+
+  autoResizeChat();
+
+  clearChatImage();
+
+  try{
+
+    const response=await fetch(
+      RTDB_URL+"chat.json",
+      {
+
+        method:"POST",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify(payload)
+
+      }
+    );
+
+    if(!response.ok)throw new Error();
+
+  }catch(e){
+
+    toast(
+      "Failed to send message",
+      "error"
+    );
+
+  }finally{
+
+    state.sending=false;
+
+    button.disabled=false;
+
+    button.textContent="➤";
+
+    input.focus();
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT IMAGE
+   ========================================================= */
+
+function handleChatImageUpload(input){
+
+  if(!input.files?.[0])return;
+
+  processImage(
+    input.files[0],
+    base64=>{
+
+      state.attachedChatImage=base64;
+
+      document.getElementById(
+        "chatPreviewImage"
+      ).src=base64;
+
+      document.getElementById(
+        "chatPreview"
+      ).classList.add("show");
+
+    }
+  );
+
+  input.value="";
+
+}
+
+function clearChatImage(){
+
+  state.attachedChatImage="";
+
+  document.getElementById(
+    "chatPreview"
+  ).classList.remove("show");
+
+  document.getElementById(
+    "chatPreviewImage"
+  ).removeAttribute("src");
+
+}
+
+
+/* =========================================================
+   EDIT CHAT
+   ========================================================= */
+
+function openEditChat(id){
+
+  if(state.user!==ADMIN_USER)return;
+
+  const msg=state.chat[id];
+
+  if(!msg)return;
+
+  document.getElementById(
+    "editModalTitle"
+  ).textContent="Edit Message";
+
+  document.getElementById(
+    "editTitleGroup"
+  ).style.display="none";
+
+  document.getElementById(
+    "editCategoryGroup"
+  ).style.display="none";
+
+  document.getElementById(
+    "editContentLabel"
+  ).textContent="Message";
+
+  document.getElementById(
+    "editContent"
+  ).value=msg.text||"";
+
+  state.editCallback=async()=>{
+
+    const response=await fetch(
+      RTDB_URL+
+      "chat/"+
+      encodeURIComponent(id)+
+      ".json",
+      {
+
+        method:"PATCH",
+
+        headers:{
+          "Content-Type":
+            "application/json"
+        },
+
+        body:JSON.stringify({
+
+          text:
+            document.getElementById(
+              "editContent"
+            ).value.trim()
+
+        })
+
+      }
+    );
+
+    if(!response.ok)throw new Error();
+
+  };
+
+  openModal("editModal");
+
+}
+
+async function deleteChat(id){
+
+  if(state.user!==ADMIN_USER)return;
+
+  try{
+
+    const response=await fetch(
+      RTDB_URL+
+      "chat/"+
+      encodeURIComponent(id)+
+      ".json",
+      {
+        method:"DELETE"
+      }
+    );
+
+    if(!response.ok)throw new Error();
+
+    toast(
+      "Message deleted",
+      "success"
+    );
+
+  }catch(e){
+
+    toast(
+      "Delete failed",
+      "error"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CHAT INPUT
+   ========================================================= */
+
+function autoResizeChat(){
+
+  const input=
+    document.getElementById(
+      "chatInput"
+    );
+
+  input.style.height="44px";
+
+  input.style.height=
+    Math.min(
+      input.scrollHeight,
+      110
+    )+"px";
+
+}
+
+document.getElementById(
+  "chatInput"
+).addEventListener(
+  "input",
+  autoResizeChat
+);
+
+document.getElementById(
+  "chatInput"
+).addEventListener(
+  "keydown",
+  event=>{
+
+    if(
+      event.key==="Enter" &&
+      !event.shiftKey
+    ){
+
+      event.preventDefault();
+
+      sendChatMessage();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   LIGHTBOX
+   ========================================================= */
+
+function openLightbox(src){
+
+  document.getElementById(
+    "lightboxImage"
+  ).src=src;
+
+  openModal("lightbox");
+
+}
+
+function closeLightbox(){
+
+  closeModal("lightbox");
+
+}
+
+
+/* =========================================================
+   KEYBOARD / BACK
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event=>{
+
+    if(event.key!=="Escape")return;
+
+    if(
+      document.getElementById(
+        "lightbox"
+      ).classList.contains("active")
+    ){
+
+      closeLightbox();
+
+    }else if(
+      document.getElementById(
+        "confirmModal"
+      ).classList.contains("active")
+    ){
+
+      closeConfirm(false);
+
+    }else if(
+      document.getElementById(
+        "editModal"
+      ).classList.contains("active")
+    ){
+
+      closeEditModal();
+
+    }else if(
+      document.getElementById(
+        "postModal"
+      ).classList.contains("active")
+    ){
+
+      closePostModal();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   DRAFT LISTENERS
+   ========================================================= */
+
+document.getElementById(
+  "postTitle"
+).addEventListener(
+  "input",
+  ()=>{
+
+    clearTimeout(window.draftTimer);
+
+    window.draftTimer=
+      setTimeout(saveDraft,400);
+
+  }
+);
+
+document.getElementById(
+  "postContent"
+).addEventListener(
+  "input",
+  ()=>{
+
+    updateCounter();
+
+    clearTimeout(window.draftTimer);
+
+    window.draftTimer=
+      setTimeout(saveDraft,400);
+
+  }
+);
+
+document.getElementById(
+  "postCategory"
+).addEventListener(
+  "change",
+  saveDraft
+);
+
+
+/* =========================================================
+   HASH OPEN
+   ========================================================= */
+
+function openHashPost(){
+
+  const hash=
+    location.hash;
+
+  if(!hash.startsWith("#post="))
+    return;
+
+  const id=
+    decodeURIComponent(
+      hash.slice(6)
+    );
+
+  if(state.posts[id]){
+
+    setTimeout(
+      ()=>openPostModal(id),
+      300
+    );
+
+  }
+
+}
+
+window.addEventListener(
+  "hashchange",
+  openHashPost
+);
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+function init(){
+
+  applyTheme(
+    localStorage.getItem(
+      "zack360_theme"
+    ) || "dark"
+  );
+
+  updateOnline();
+
+  updateAuthUI();
+
+  loadDraft();
+
+  updateCounter();
+
+  streamPosts();
+
+  streamChat();
+
+  updateChatBadge();
+
+  openHashPost();
+
+}
+
+init();
+
+
+/* =========================================================
+   EXPOSE
+   ========================================================= */
+
+window.toggleTheme=toggleTheme;
+
+window.showTab=showTab;
+
+window.handleLogin=handleLogin;
+
+window.handleLogout=handleLogout;
+
+window.publishPost=publishPost;
+
+window.onSearchInput=onSearchInput;
+
+window.clearSearch=clearSearch;
+
+window.selectCategory=selectCategory;
+
+window.loadMorePosts=loadMorePosts;
+
+window.loadMoreChat=loadMoreChat;
+
+window.sendChatMessage=sendChatMessage;
+
+window.handlePostImageUpload=
+  handlePostImageUpload;
+
+window.handleChatImageUpload=
+  handleChatImageUpload;
+
+window.clearChatImage=
+  clearChatImage;
+
+window.openPostModal=
+  openPostModal;
+
+window.closePostModal=
+  closePostModal;
+
+window.likeFromReader=
+  likeFromReader;
+
+window.shareCurrentPost=
+  shareCurrentPost;
+
+window.openLightbox=
+  openLightbox;
+
+window.closeLightbox=
+  closeLightbox;
+
+window.closeEditModal=
+  closeEditModal;
+
+window.saveEdit=
+  saveEdit;
+
+window.closeConfirm=
+  closeConfirm;
+
+window.openEditPost=
+  openEditPost;
+
+window.openEditChat=
+  openEditChat;
+
+window.deletePost=
+  deletePost;
+
+window.deleteChat=
+  deleteChat;
+
+})();
+</script>
+
+</body>
+</html>
