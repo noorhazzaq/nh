@@ -3,146 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@zack360 — 8Bit Chat</title>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <title>@zack360 — Glass Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* ---------- Asas ---------- */
+        /* ---------- Asas & Pemboleh Ubah ---------- */
         :root {
-            --bg-dark: #1a1a1a;
-            --bg-panel: #2a2a2a;
-            --green: #00ff00;
-            --green-dim: #008800;
-            --magenta: #ff00ff;
-            --magenta-dark: #cc00cc;
-            --yellow: #ffff00;
-            --black: #000000;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            --text-main: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --accent: #a78bfa; /* Ungu lembut */
+            --accent-glow: rgba(167, 139, 250, 0.4);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Press Start 2P', cursive;
+            font-family: 'Inter', sans-serif;
         }
 
+        /* Latar Belakang Gradien Gelap */
         body {
-            background-color: var(--bg-dark);
-            color: var(--green);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            padding: 20px;
-            image-rendering: pixelated;
+            overflow: hidden;
+            position: relative;
         }
 
-        /* ---------- Bekas Utama ---------- */
+        /* Kesan Cahaya Latar Belakang (Blob) */
+        .bg-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            opacity: 0.5;
+        }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: #4c1d95;
+            top: -10%;
+            left: -10%;
+        }
+        .blob-2 {
+            width: 500px;
+            height: 500px;
+            background: #1e3a8a;
+            bottom: -20%;
+            right: -10%;
+        }
+
+        /* ---------- Bekas Utama (Panel Kaca) ---------- */
         .container {
             width: 100%;
-            max-width: 600px;
-            height: 90vh;
-            background-color: var(--bg-panel);
-            border: 4px solid var(--green);
-            padding: 15px;
+            max-width: 700px;
+            height: 85vh;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 24px;
             display: flex;
             flex-direction: column;
-            box-shadow: 8px 8px 0 var(--black);
+            box-shadow: var(--glass-shadow);
+            z-index: 1;
         }
 
         h1 {
-            font-size: 16px;
+            font-size: 1.5rem;
+            font-weight: 600;
             text-align: center;
-            color: var(--magenta);
-            text-shadow: 2px 2px var(--black);
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #c4b5fd, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         /* ---------- Kotak Sembang ---------- */
         #chat-box {
             flex: 1;
             overflow-y: auto;
-            border: 2px solid var(--green);
-            background-color: var(--black);
             padding: 10px;
-            margin-bottom: 10px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--text-muted) transparent;
+        }
+        
+        #chat-box::-webkit-scrollbar {
+            width: 6px;
+        }
+        #chat-box::-webkit-scrollbar-thumb {
+            background: var(--text-muted);
+            border-radius: 10px;
         }
 
         .message {
-            font-size: 10px;
-            line-height: 1.5;
+            font-size: 0.9rem;
+            line-height: 1.4;
             word-wrap: break-word;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 16px;
+            border-radius: 12px;
+            max-width: 85%;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .message .user {
-            color: var(--magenta);
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.8rem;
+            display: block;
+            margin-bottom: 4px;
         }
 
         .message .text {
-            color: var(--green);
+            color: var(--text-main);
         }
 
         .message .img-container {
-            margin-top: 5px;
+            margin-top: 10px;
+            border-radius: 8px;
+            overflow: hidden;
             max-width: 100%;
         }
 
         .message img {
             max-width: 100%;
-            border: 2px solid var(--green);
-            image-rendering: pixelated;
+            display: block;
+            border-radius: 8px;
         }
 
         /* ---------- Kawalan Input ---------- */
         .input-area {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
+            margin-top: 15px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 15px;
         }
 
         .input-row {
             display: flex;
-            gap: 5px;
+            gap: 10px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 10px;
-            background-color: var(--black);
-            border: 2px solid var(--green);
-            color: var(--green);
-            font-size: 10px;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
+            font-size: 0.9rem;
+            border-radius: 12px;
             outline: none;
+            transition: all 0.2s ease;
         }
 
         input[type="text"]::placeholder {
-            color: var(--green-dim);
+            color: var(--text-muted);
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
 
         button {
-            padding: 10px 15px;
-            background-color: var(--magenta);
-            color: var(--black);
-            border: 2px solid var(--green);
+            padding: 14px 20px;
+            background: var(--accent);
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 10px;
-            font-weight: bold;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px var(--accent-glow);
         }
 
         button:hover {
-            background-color: var(--magenta-dark);
+            background: #9061f9;
+            transform: translateY(-1px);
         }
 
         button:active {
-            transform: translate(2px, 2px);
-            box-shadow: none;
+            transform: translateY(1px);
         }
 
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         /* ---------- Muat Naik Imej ---------- */
@@ -150,6 +221,7 @@
             position: relative;
             overflow: hidden;
             display: inline-block;
+            width: 100%;
         }
 
         .file-input-wrapper input[type="file"] {
@@ -162,29 +234,42 @@
         }
 
         .file-btn {
-            padding: 10px 15px;
-            background-color: var(--green);
-            color: var(--black);
-            border: 2px solid var(--magenta);
-            font-size: 10px;
-            font-weight: bold;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            transition: all 0.2s ease;
+        }
+
+        .file-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
         }
 
         /* ---------- Status ---------- */
         #status {
-            font-size: 8px;
-            color: var(--yellow);
+            font-size: 0.75rem;
+            color: var(--text-muted);
             text-align: center;
-            margin-top: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Latar Belakang Blob -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
     <div class="container">
-        <h1>@ZACK360 8BIT CHAT</h1>
+        <h1>@ZACK360 GLASS</h1>
 
         <div id="chat-box"></div>
 
@@ -272,7 +357,7 @@
 
             const userSpan = document.createElement('span');
             userSpan.className = 'user';
-            userSpan.textContent = `${data.user}: `;
+            userSpan.textContent = data.user;
 
             const textSpan = document.createElement('span');
             textSpan.className = 'text';
