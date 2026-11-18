@@ -7,28 +7,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Chart.js untuk Graf -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* ---------- Asas & Pemboleh Ubah ---------- */
+        /* ================= ASAS ================= */
         :root {
             --glass-bg: rgba(255, 255, 255, 0.08);
             --glass-border: rgba(255, 255, 255, 0.15);
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.6);
-            --accent: #a78bfa;
-            --accent-glow: rgba(167, 139, 250, 0.4);
+            --accent: #818cf8;
+            --accent-glow: rgba(129, 140, 248, 0.4);
             --green: #34d399;
             --red: #f87171;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
 
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
@@ -52,14 +46,15 @@
         .blob-1 { width: 400px; height: 400px; background: #4c1d95; top: -10%; left: -10%; }
         .blob-2 { width: 500px; height: 500px; background: #1e3a8a; bottom: -20%; right: -10%; }
 
+        /* ================= SUSUN ATUR ================= */
         .app-wrapper {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             gap: 20px;
             width: 100%;
             max-width: 1200px;
             height: 85vh;
             z-index: 1;
-            flex-wrap: wrap;
         }
 
         .panel {
@@ -68,17 +63,15 @@
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 24px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             box-shadow: var(--glass-shadow);
+            overflow: hidden;
         }
 
-        .chat-panel { flex: 1; min-width: 300px; }
-        .log-panel { flex: 1.2; min-width: 350px; overflow-y: auto; }
-
         h1 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             text-align: center;
             margin-bottom: 15px;
@@ -87,7 +80,33 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* ---------- Kotak Sembang ---------- */
+        /* ================= TAB MOBILE ================= */
+        .tabs { display: none; }
+
+        @media (max-width: 768px) {
+            .app-wrapper { grid-template-columns: 1fr; height: auto; }
+            .panel { display: none; height: 80vh; }
+            .panel.active { display: flex; }
+            .tabs {
+                display: flex;
+                gap: 10px;
+                margin-bottom: 15px;
+                z-index: 1;
+                position: relative;
+            }
+            .tabs button {
+                flex: 1;
+                padding: 12px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid var(--glass-border);
+                color: var(--text-main);
+                border-radius: 12px;
+                font-weight: 600;
+            }
+            .tabs button.active { background: var(--accent); }
+        }
+
+        /* ================= SEMBANG ================= */
         #chat-box {
             flex: 1;
             overflow-y: auto;
@@ -110,27 +129,17 @@
             animation: fadeIn 0.3s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .message .user {
-            font-weight: 600;
-            color: var(--accent);
-            font-size: 0.8rem;
-            display: block;
-            margin-bottom: 4px;
-        }
-
+        .message .user { font-weight: 600; color: var(--accent); font-size: 0.8rem; display: block; margin-bottom: 4px; }
         .message .img-container { margin-top: 10px; border-radius: 8px; overflow: hidden; max-width: 100%; }
         .message img { max-width: 100%; display: block; border-radius: 8px; }
 
-        /* ---------- Input Umum ---------- */
+        /* ================= INPUT ================= */
         .input-area { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
         .input-row { display: flex; gap: 10px; }
 
-        input[type="text"], input[type="number"], input[type="date"], select {
+        input, select {
             flex: 1;
             padding: 12px 14px;
             background: rgba(0, 0, 0, 0.3);
@@ -140,7 +149,6 @@
             border-radius: 12px;
             outline: none;
             transition: all 0.2s ease;
-            width: 100%;
         }
 
         input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
@@ -149,7 +157,7 @@
         button {
             padding: 12px 18px;
             background: var(--accent);
-            color: #ffffff;
+            color: #fff;
             border: none;
             border-radius: 12px;
             font-size: 0.85rem;
@@ -157,36 +165,22 @@
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 15px var(--accent-glow);
-            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
 
-        button:hover { background: #9061f9; transform: translateY(-1px); }
+        button:hover { background: #6d7cf5; transform: translateY(-1px); }
         button:active { transform: translateY(1px); }
         button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
         button.danger { background: var(--red); box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3); }
-        button.danger:hover { background: #ef4444; }
 
-        /* ---------- Log Kerja & Carta ---------- */
+        /* ================= LOG KERJA ================= */
         .log-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .log-form .input-row { flex-wrap: wrap; }
-        .log-form .input-row > * { flex: 1; min-width: 120px; }
+        .filter-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; gap: 10px; }
 
-        .filter-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            gap: 10px;
-        }
-
-        .charts-container {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-            height: 200px;
-        }
-
+        .charts-container { display: flex; gap: 15px; margin-bottom: 20px; height: 200px; }
         .chart-box {
             flex: 1;
             background: rgba(0, 0, 0, 0.2);
@@ -204,7 +198,6 @@
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 15px;
-            font-size: 0.85rem;
         }
         .summary div { text-align: center; flex: 1; }
         .summary .label { color: var(--text-muted); font-size: 0.7rem; display: block; margin-bottom: 4px; }
@@ -219,6 +212,7 @@
             border-radius: 12px;
             padding: 12px;
             font-size: 0.85rem;
+            animation: fadeIn 0.3s ease-in-out;
         }
         .log-item .top-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
         .log-item .date { font-weight: 600; color: var(--accent); }
@@ -226,15 +220,25 @@
         .log-item .expense { color: var(--red); font-size: 0.8rem; }
         .log-item .note { color: var(--text-muted); font-size: 0.8rem; margin-top: 5px; font-style: italic; }
 
-        #status { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px; }
-
-        /* Mobile */
-        @media (max-width: 768px) {
-            .app-wrapper { flex-direction: column; height: auto; }
-            .chat-panel, .log-panel { height: 80vh; }
-            .charts-container { flex-direction: column; height: auto; }
-            .chart-box { height: 200px; }
+        /* ================= TOAST ================= */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 999;
         }
+        .toast.show { opacity: 1; transform: translateY(0); }
+
+        #status { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -242,9 +246,15 @@
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
 
+    <!-- TABS (Mobile Only) -->
+    <div class="tabs">
+        <button class="active" data-target="chat-panel">Sembang</button>
+        <button data-target="log-panel">Log Kerja</button>
+    </div>
+
     <div class="app-wrapper">
         <!-- PANEL SEMBANG -->
-        <div class="panel chat-panel">
+        <div class="panel chat-panel active" id="chat-panel">
             <h1>@ZACK360 CHAT</h1>
             <div id="chat-box"></div>
             <div class="input-area">
@@ -261,7 +271,7 @@
         </div>
 
         <!-- PANEL LOG KERJA -->
-        <div class="panel log-panel">
+        <div class="panel log-panel" id="log-panel">
             <h1>LOG KERJA LALAMOVE</h1>
             
             <div class="filter-row">
@@ -269,39 +279,26 @@
             </div>
 
             <div class="charts-container">
-                <div class="chart-box">
-                    <canvas id="lineChart"></canvas>
-                </div>
-                <div class="chart-box">
-                    <canvas id="pieChart"></canvas>
-                </div>
+                <div class="chart-box"><canvas id="lineChart"></canvas></div>
+                <div class="chart-box"><canvas id="pieChart"></canvas></div>
             </div>
 
             <div class="summary">
-                <div>
-                    <span class="label">Pendapatan</span>
-                    <span class="value green" id="sum-income">RM0</span>
-                </div>
-                <div>
-                    <span class="label">Perbelanjaan</span>
-                    <span class="value red" id="sum-expense">RM0</span>
-                </div>
-                <div>
-                    <span class="label">Baki</span>
-                    <span class="value" id="sum-balance">RM0</span>
-                </div>
+                <div><span class="label">Pendapatan</span><span class="value green" id="sum-income">RM0</span></div>
+                <div><span class="label">Perbelanjaan</span><span class="value red" id="sum-expense">RM0</span></div>
+                <div><span class="label">Baki</span><span class="value" id="sum-balance">RM0</span></div>
             </div>
 
             <div class="log-form">
                 <div class="input-row">
                     <input type="date" id="log-date">
-                    <input type="number" id="log-trips" placeholder="Bil. Trip" min="0">
+                    <input type="number" id="log-trips" placeholder="Bil. Trip" min="0" max="100">
                 </div>
                 <div class="input-row">
-                    <input type="number" id="log-income" placeholder="Pendapatan (RM)" min="0" step="0.01">
-                    <input type="number" id="log-expense" placeholder="Perbelanjaan (RM)" min="0" step="0.01">
+                    <input type="number" id="log-income" placeholder="Pendapatan (RM)" min="0" max="9999" step="0.01">
+                    <input type="number" id="log-expense" placeholder="Perbelanjaan (RM)" min="0" max="9999" step="0.01">
                 </div>
-                <input type="text" id="log-note" placeholder="Catatan (pilihan)">
+                <input type="text" id="log-note" placeholder="Catatan (pilihan)" maxlength="100">
                 <button id="add-log-btn">TAMBAH LOG</button>
             </div>
 
@@ -309,10 +306,11 @@
         </div>
     </div>
 
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
     <script type="module">
-        /* ============================================================
-           KONFIGURASI FIREBASE — GANTIKAN DENGAN MAKLUMAT ANDA
-           ============================================================ */
+        /* ================= KONFIGURASI ================= */
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "zack360-2b303.firebaseapp.com",
@@ -324,20 +322,19 @@
         };
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, onValue, remove, serverTimestamp, limitToLast, query } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        /* ============================================================
-           ELEMEN DOM
-           ============================================================ */
+        /* ================= ELEMEN ================= */
         const chatBox = document.getElementById('chat-box');
         const msgInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
         const usernameInput = document.getElementById('username');
         const setNameBtn = document.getElementById('set-name-btn');
         const statusDiv = document.getElementById('status');
+        const toast = document.getElementById('toast');
 
         const monthFilter = document.getElementById('month-filter');
         const logDate = document.getElementById('log-date');
@@ -352,12 +349,17 @@
         const sumBalance = document.getElementById('sum-balance');
 
         let currentUser = localStorage.getItem('zack360_user') || '';
-        let allLogs = []; // Simpan semua log mentah dari Firebase
+        let allLogs = [];
         let lineChart, pieChart;
 
-        /* ============================================================
-           PENGURUSAN NAMA PENGGUNA
-           ============================================================ */
+        /* ================= TOAST ================= */
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        /* ================= NAMA PENGGUNA ================= */
         function setUserName(name) {
             if (!name) return;
             localStorage.setItem('zack360_user', name);
@@ -374,15 +376,26 @@
             if (name) setUserName(name);
         });
 
-        /* ============================================================
-           SEMBANG
-           ============================================================ */
+        /* ================= SEMBANG ================= */
         function renderMessage(data) {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message';
-            msgDiv.innerHTML = `<span class="user">${data.user}</span><span class="text">${data.text || ''}</span>`;
+            const userSpan = document.createElement('span');
+            userSpan.className = 'user';
+            userSpan.textContent = data.user;
+            const textSpan = document.createElement('span');
+            textSpan.className = 'text';
+            textSpan.textContent = data.text || '';
+            msgDiv.appendChild(userSpan);
+            msgDiv.appendChild(textSpan);
             if (data.imageUrl) {
-                msgDiv.innerHTML += `<div class="img-container"><img src="${data.imageUrl}" loading="lazy"></div>`;
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'img-container';
+                const img = document.createElement('img');
+                img.src = data.imageUrl;
+                img.loading = 'lazy';
+                imgContainer.appendChild(img);
+                msgDiv.appendChild(imgContainer);
             }
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
@@ -390,64 +403,60 @@
 
         sendBtn.addEventListener('click', () => {
             const text = msgInput.value.trim();
-            if (!currentUser) return alert('Sila tetapkan nama anda dahulu.');
+            if (!currentUser) return showToast('Sila tetapkan nama anda dahulu.');
             if (!text) return;
-            push(ref(db, 'chats'), { user: currentUser, text, timestamp: serverTimestamp() });
+            push(ref(db, 'chats'), { user: currentUser, text, timestamp: serverTimestamp() })
+                .catch(() => showToast('Gagal menghantar mesej.'));
             msgInput.value = '';
         });
 
-        onChildAdded(ref(db, 'chats'), (snap) => renderMessage(snap.val()));
+        // Hadkan kepada 50 mesej terakhir
+        const chatQuery = query(ref(db, 'chats'), limitToLast(50));
+        onChildAdded(chatQuery, (snap) => renderMessage(snap.val()));
 
-        /* ============================================================
-           LOG KERJA & CARTA
-           ============================================================ */
-        // Tetapkan tarikh & bulan semasa
+        /* ================= LOG KERJA ================= */
         logDate.valueAsDate = new Date();
         const now = new Date();
         monthFilter.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-        // Fungsi Kemas Kini UI (Berdasarkan Bulan Dipilih)
+        function formatCurrency(val) { return `RM${val.toFixed(2)}`; }
+
         function updateUI() {
             const selectedMonth = monthFilter.value;
             if (!selectedMonth) return;
 
-            // 1. Tapis log mengikut bulan
             const filteredLogs = allLogs.filter(log => log.date.startsWith(selectedMonth));
-            
-            // Susun ikut tarikh menaik (untuk carta)
             filteredLogs.sort((a, b) => a.date.localeCompare(b.date));
 
-            // 2. Kira Ringkasan
-            let totalIncome = 0;
-            let totalExpense = 0;
-            filteredLogs.forEach(log => {
-                totalIncome += log.income;
-                totalExpense += log.expense;
-            });
+            let totalIncome = 0, totalExpense = 0;
+            filteredLogs.forEach(log => { totalIncome += log.income; totalExpense += log.expense; });
             const balance = totalIncome - totalExpense;
 
-            sumIncome.textContent = `RM${totalIncome.toFixed(2)}`;
-            sumExpense.textContent = `RM${totalExpense.toFixed(2)}`;
-            sumBalance.textContent = `RM${balance.toFixed(2)}`;
+            sumIncome.textContent = formatCurrency(totalIncome);
+            sumExpense.textContent = formatCurrency(totalExpense);
+            sumBalance.textContent = formatCurrency(balance);
             sumBalance.className = `value ${balance >= 0 ? 'green' : 'red'}`;
 
-            // 3. Render Senarai Log
+            // Senarai log
             logList.innerHTML = '';
-            const reversedLogs = [...filteredLogs].reverse(); // Terbaru di atas
-            reversedLogs.forEach((log, index) => {
+            const reversedLogs = [...filteredLogs].reverse();
+            reversedLogs.forEach(log => {
                 const item = document.createElement('div');
                 item.className = 'log-item';
-                item.innerHTML = `
-                    <div class="top-row">
-                        <span class="date">${log.date}</span>
-                        <span class="income">+RM${log.income.toFixed(2)}</span>
-                    </div>
-                    <div class="top-row">
-                        <span>${log.trips} trip</span>
-                        <span class="expense">-RM${log.expense.toFixed(2)}</span>
-                    </div>
-                    ${log.note ? `<div class="note">"${log.note}"</div>` : ''}
-                `;
+                const topRow1 = document.createElement('div');
+                topRow1.className = 'top-row';
+                topRow1.innerHTML = `<span class="date">${log.date}</span><span class="income">+RM${log.income.toFixed(2)}</span>`;
+                const topRow2 = document.createElement('div');
+                topRow2.className = 'top-row';
+                topRow2.innerHTML = `<span>${log.trips} trip</span><span class="expense">-RM${log.expense.toFixed(2)}</span>`;
+                item.appendChild(topRow1);
+                item.appendChild(topRow2);
+                if (log.note) {
+                    const noteDiv = document.createElement('div');
+                    noteDiv.className = 'note';
+                    noteDiv.textContent = `"${log.note}"`;
+                    item.appendChild(noteDiv);
+                }
                 if (log.user === currentUser) {
                     const delBtn = document.createElement('button');
                     delBtn.textContent = 'PADAM';
@@ -456,20 +465,22 @@
                     delBtn.style.padding = '6px 10px';
                     delBtn.style.fontSize = '0.7rem';
                     delBtn.onclick = () => {
-                        if (confirm('Padam log ini?')) remove(ref(db, 'logs/' + log.key));
+                        if (confirm('Padam log ini?')) {
+                            remove(ref(db, 'logs/' + log.key))
+                                .then(() => showToast('Log dipadam.'))
+                                .catch(() => showToast('Gagal memadam log.'));
+                        }
                     };
                     item.appendChild(delBtn);
                 }
                 logList.appendChild(item);
             });
 
-            // 4. Kemas Kini Carta
             updateCharts(filteredLogs, totalIncome, totalExpense);
         }
 
         function updateCharts(logs, totalIncome, totalExpense) {
-            // Persediaan Data Line Chart (Ikut Tarikh)
-            const dates = logs.map(log => log.date.slice(8, 10)); // Ambil hari sahaja (DD)
+            const dates = logs.map(log => log.date.slice(8, 10));
             const incomeData = logs.map(log => log.income);
             const expenseData = logs.map(log => log.expense);
 
@@ -480,22 +491,8 @@
                 data: {
                     labels: dates,
                     datasets: [
-                        {
-                            label: 'Pendapatan',
-                            data: incomeData,
-                            borderColor: '#34d399',
-                            backgroundColor: 'rgba(52, 211, 153, 0.2)',
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: 'Perbelanjaan',
-                            data: expenseData,
-                            borderColor: '#f87171',
-                            backgroundColor: 'rgba(248, 113, 113, 0.2)',
-                            tension: 0.3,
-                            fill: true
-                        }
+                        { label: 'Pendapatan', data: incomeData, borderColor: '#34d399', backgroundColor: 'rgba(52, 211, 153, 0.2)', tension: 0.3, fill: true },
+                        { label: 'Perbelanjaan', data: expenseData, borderColor: '#f87171', backgroundColor: 'rgba(248, 113, 113, 0.2)', tension: 0.3, fill: true }
                     ]
                 },
                 options: {
@@ -509,32 +506,24 @@
                 }
             });
 
-            // Persediaan Data Pie Chart
             if (pieChart) pieChart.destroy();
             const ctxPie = document.getElementById('pieChart').getContext('2d');
             pieChart = new Chart(ctxPie, {
                 type: 'doughnut',
                 data: {
                     labels: ['Pendapatan Bersih', 'Perbelanjaan'],
-                    datasets: [{
-                        data: [totalIncome - totalExpense, totalExpense],
-                        backgroundColor: ['#a78bfa', '#f87171'],
-                        borderWidth: 0
-                    }]
+                    datasets: [{ data: [totalIncome - totalExpense, totalExpense], backgroundColor: ['#818cf8', '#f87171'], borderWidth: 0 }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom', labels: { color: '#fff', font: { size: 10 } } }
-                    }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#fff', font: { size: 10 } } } }
                 }
             });
         }
 
-        // Simpan log baru
         addLogBtn.addEventListener('click', () => {
-            if (!currentUser) return alert('Sila tetapkan nama anda dahulu.');
+            if (!currentUser) return showToast('Sila tetapkan nama anda dahulu.');
             const date = logDate.value;
             const trips = parseInt(logTrips.value) || 0;
             const income = parseFloat(logIncome.value) || 0;
@@ -542,37 +531,39 @@
             const note = logNote.value.trim();
 
             if (!date || (income === 0 && expense === 0 && trips === 0)) {
-                return alert('Sila isi tarikh dan sekurang-kurangnya satu nilai.');
+                return showToast('Sila isi tarikh dan sekurang-kurangnya satu nilai.');
             }
 
-            push(ref(db, 'logs'), {
-                user: currentUser,
-                date,
-                trips,
-                income,
-                expense,
-                note,
-                timestamp: serverTimestamp()
-            });
-
-            logTrips.value = '';
-            logIncome.value = '';
-            logExpense.value = '';
-            logNote.value = '';
+            push(ref(db, 'logs'), { user: currentUser, date, trips, income, expense, note, timestamp: serverTimestamp() })
+                .then(() => {
+                    showToast('Log berjaya ditambah.');
+                    logTrips.value = '';
+                    logIncome.value = '';
+                    logExpense.value = '';
+                    logNote.value = '';
+                })
+                .catch(() => showToast('Gagal menambah log.'));
         });
 
-        // Dengar perubahan Firebase
         onValue(ref(db, 'logs'), (snapshot) => {
             allLogs = [];
-            snapshot.forEach((child) => {
-                allLogs.push({ ...child.val(), key: child.key });
-            });
+            snapshot.forEach((child) => allLogs.push({ ...child.val(), key: child.key }));
             updateUI();
         });
 
-        // Event listener untuk penapis bulan
         monthFilter.addEventListener('change', updateUI);
 
+        /* ================= TAB MOBILE ================= */
+        document.querySelectorAll('.tabs button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.target).classList.add('active');
+            });
+        });
+
+        /* ================= STATUS ================= */
         statusDiv.textContent = 'Bersambung ke Firebase...';
     </script>
 </body>
