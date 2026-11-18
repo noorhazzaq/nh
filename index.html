@@ -3,10 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@zack360 — Glass Chat</title>
+    <title>@zack360 — Log Kerja & Sembang</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Chart.js untuk Graf -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* ---------- Asas & Pemboleh Ubah ---------- */
         :root {
@@ -15,8 +17,10 @@
             --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
             --text-main: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.6);
-            --accent: #a78bfa; /* Ungu lembut */
+            --accent: #a78bfa;
             --accent-glow: rgba(167, 139, 250, 0.4);
+            --green: #34d399;
+            --red: #f87171;
         }
 
         * {
@@ -26,19 +30,18 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Latar Belakang Gradien Gelap */
         body {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #000000 100%);
             color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            padding: 20px;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* Kesan Cahaya Latar Belakang (Blob) */
         .bg-blob {
             position: absolute;
             border-radius: 50%;
@@ -46,26 +49,20 @@
             z-index: 0;
             opacity: 0.5;
         }
-        .blob-1 {
-            width: 400px;
-            height: 400px;
-            background: #4c1d95;
-            top: -10%;
-            left: -10%;
-        }
-        .blob-2 {
-            width: 500px;
-            height: 500px;
-            background: #1e3a8a;
-            bottom: -20%;
-            right: -10%;
+        .blob-1 { width: 400px; height: 400px; background: #4c1d95; top: -10%; left: -10%; }
+        .blob-2 { width: 500px; height: 500px; background: #1e3a8a; bottom: -20%; right: -10%; }
+
+        .app-wrapper {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+            height: 85vh;
+            z-index: 1;
+            flex-wrap: wrap;
         }
 
-        /* ---------- Bekas Utama (Panel Kaca) ---------- */
-        .container {
-            width: 100%;
-            max-width: 700px;
-            height: 85vh;
+        .panel {
             background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -75,15 +72,16 @@
             display: flex;
             flex-direction: column;
             box-shadow: var(--glass-shadow);
-            z-index: 1;
         }
 
+        .chat-panel { flex: 1; min-width: 300px; }
+        .log-panel { flex: 1.2; min-width: 350px; overflow-y: auto; }
+
         h1 {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: 600;
             text-align: center;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
+            margin-bottom: 15px;
             background: linear-gradient(to right, #c4b5fd, #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -97,16 +95,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--text-muted) transparent;
-        }
-        
-        #chat-box::-webkit-scrollbar {
-            width: 6px;
-        }
-        #chat-box::-webkit-scrollbar-thumb {
-            background: var(--text-muted);
-            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .message {
@@ -134,163 +123,190 @@
             margin-bottom: 4px;
         }
 
-        .message .text {
-            color: var(--text-main);
-        }
+        .message .img-container { margin-top: 10px; border-radius: 8px; overflow: hidden; max-width: 100%; }
+        .message img { max-width: 100%; display: block; border-radius: 8px; }
 
-        .message .img-container {
-            margin-top: 10px;
-            border-radius: 8px;
-            overflow: hidden;
-            max-width: 100%;
-        }
+        /* ---------- Input Umum ---------- */
+        .input-area { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; border-top: 1px solid var(--glass-border); padding-top: 15px; }
+        .input-row { display: flex; gap: 10px; }
 
-        .message img {
-            max-width: 100%;
-            display: block;
-            border-radius: 8px;
-        }
-
-        /* ---------- Kawalan Input ---------- */
-        .input-area {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 15px;
-            border-top: 1px solid var(--glass-border);
-            padding-top: 15px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-        }
-
-        input[type="text"] {
+        input[type="text"], input[type="number"], input[type="date"], select {
             flex: 1;
-            padding: 14px 16px;
+            padding: 12px 14px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid var(--glass-border);
             color: var(--text-main);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-radius: 12px;
             outline: none;
             transition: all 0.2s ease;
+            width: 100%;
         }
 
-        input[type="text"]::placeholder {
-            color: var(--text-muted);
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px var(--accent-glow);
-        }
+        input:focus, select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        input::placeholder { color: var(--text-muted); }
 
         button {
-            padding: 14px 20px;
+            padding: 12px 18px;
             background: var(--accent);
             color: #ffffff;
             border: none;
             border-radius: 12px;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
             box-shadow: 0 4px 15px var(--accent-glow);
+            white-space: nowrap;
         }
 
-        button:hover {
-            background: #9061f9;
-            transform: translateY(-1px);
+        button:hover { background: #9061f9; transform: translateY(-1px); }
+        button:active { transform: translateY(1px); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        button.danger { background: var(--red); box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3); }
+        button.danger:hover { background: #ef4444; }
+
+        /* ---------- Log Kerja & Carta ---------- */
+        .log-form { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .log-form .input-row { flex-wrap: wrap; }
+        .log-form .input-row > * { flex: 1; min-width: 120px; }
+
+        .filter-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
         }
 
-        button:active {
-            transform: translateY(1px);
+        .charts-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            height: 200px;
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        /* ---------- Muat Naik Imej ---------- */
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
-
-        .file-input-wrapper input[type="file"] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-btn {
-            padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
+        .chart-box {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
+            padding: 10px;
+            position: relative;
+        }
+
+        .summary {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            transition: all 0.2s ease;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
         }
+        .summary div { text-align: center; flex: 1; }
+        .summary .label { color: var(--text-muted); font-size: 0.7rem; display: block; margin-bottom: 4px; }
+        .summary .value { font-weight: 600; font-size: 1rem; }
+        .summary .value.green { color: var(--green); }
+        .summary .value.red { color: var(--red); }
 
-        .file-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+        #log-list { display: flex; flex-direction: column; gap: 10px; }
+        .log-item {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.85rem;
         }
+        .log-item .top-row { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .log-item .date { font-weight: 600; color: var(--accent); }
+        .log-item .income { color: var(--green); font-weight: 600; }
+        .log-item .expense { color: var(--red); font-size: 0.8rem; }
+        .log-item .note { color: var(--text-muted); font-size: 0.8rem; margin-top: 5px; font-style: italic; }
 
-        /* ---------- Status ---------- */
-        #status {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            text-align: center;
-            margin-top: 10px;
+        #status { font-size: 0.75rem; color: var(--text-muted); text-align: center; margin-top: 10px; }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .app-wrapper { flex-direction: column; height: auto; }
+            .chat-panel, .log-panel { height: 80vh; }
+            .charts-container { flex-direction: column; height: auto; }
+            .chart-box { height: 200px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Latar Belakang Blob -->
     <div class="bg-blob blob-1"></div>
     <div class="bg-blob blob-2"></div>
 
-    <div class="container">
-        <h1>@ZACK360 GLASS</h1>
-
-        <div id="chat-box"></div>
-
-        <div class="input-area">
-            <div class="input-row">
-                <input type="text" id="username" placeholder="Nama Anda" maxlength="15">
-                <button id="set-name-btn">SET</button>
+    <div class="app-wrapper">
+        <!-- PANEL SEMBANG -->
+        <div class="panel chat-panel">
+            <h1>@ZACK360 CHAT</h1>
+            <div id="chat-box"></div>
+            <div class="input-area">
+                <div class="input-row">
+                    <input type="text" id="username" placeholder="Nama Anda" maxlength="15">
+                    <button id="set-name-btn">SET</button>
+                </div>
+                <div class="input-row">
+                    <input type="text" id="message-input" placeholder="Taip mesej..." maxlength="200">
+                    <button id="send-btn">HANTAR</button>
+                </div>
             </div>
-            <div class="input-row">
-                <input type="text" id="message-input" placeholder="Taip mesej..." maxlength="200">
-                <button id="send-btn">HANTAR</button>
-            </div>
-            <div class="input-row">
-                <label class="file-input-wrapper">
-                    <span class="file-btn">MUAT NAIK IMEJ</span>
-                    <input type="file" id="image-input" accept="image/*">
-                </label>
-            </div>
+            <div id="status">Menyambung...</div>
         </div>
 
-        <div id="status">Menyambung...</div>
+        <!-- PANEL LOG KERJA -->
+        <div class="panel log-panel">
+            <h1>LOG KERJA LALAMOVE</h1>
+            
+            <div class="filter-row">
+                <input type="month" id="month-filter" style="max-width: 200px;">
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-box">
+                    <canvas id="lineChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <canvas id="pieChart"></canvas>
+                </div>
+            </div>
+
+            <div class="summary">
+                <div>
+                    <span class="label">Pendapatan</span>
+                    <span class="value green" id="sum-income">RM0</span>
+                </div>
+                <div>
+                    <span class="label">Perbelanjaan</span>
+                    <span class="value red" id="sum-expense">RM0</span>
+                </div>
+                <div>
+                    <span class="label">Baki</span>
+                    <span class="value" id="sum-balance">RM0</span>
+                </div>
+            </div>
+
+            <div class="log-form">
+                <div class="input-row">
+                    <input type="date" id="log-date">
+                    <input type="number" id="log-trips" placeholder="Bil. Trip" min="0">
+                </div>
+                <div class="input-row">
+                    <input type="number" id="log-income" placeholder="Pendapatan (RM)" min="0" step="0.01">
+                    <input type="number" id="log-expense" placeholder="Perbelanjaan (RM)" min="0" step="0.01">
+                </div>
+                <input type="text" id="log-note" placeholder="Catatan (pilihan)">
+                <button id="add-log-btn">TAMBAH LOG</button>
+            </div>
+
+            <div id="log-list"></div>
+        </div>
     </div>
 
     <script type="module">
@@ -308,23 +324,36 @@
         };
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, onValue, remove, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        /* ============================================================
-           INISIALISASI
-           ============================================================ */
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
+        /* ============================================================
+           ELEMEN DOM
+           ============================================================ */
         const chatBox = document.getElementById('chat-box');
         const msgInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
         const usernameInput = document.getElementById('username');
         const setNameBtn = document.getElementById('set-name-btn');
-        const imageInput = document.getElementById('image-input');
         const statusDiv = document.getElementById('status');
 
+        const monthFilter = document.getElementById('month-filter');
+        const logDate = document.getElementById('log-date');
+        const logTrips = document.getElementById('log-trips');
+        const logIncome = document.getElementById('log-income');
+        const logExpense = document.getElementById('log-expense');
+        const logNote = document.getElementById('log-note');
+        const addLogBtn = document.getElementById('add-log-btn');
+        const logList = document.getElementById('log-list');
+        const sumIncome = document.getElementById('sum-income');
+        const sumExpense = document.getElementById('sum-expense');
+        const sumBalance = document.getElementById('sum-balance');
+
         let currentUser = localStorage.getItem('zack360_user') || '';
+        let allLogs = []; // Simpan semua log mentah dari Firebase
+        let lineChart, pieChart;
 
         /* ============================================================
            PENGURUSAN NAMA PENGGUNA
@@ -339,146 +368,210 @@
             statusDiv.textContent = `Log masuk sebagai ${name}`;
         }
 
-        if (currentUser) {
-            setUserName(currentUser);
-        }
-
+        if (currentUser) setUserName(currentUser);
         setNameBtn.addEventListener('click', () => {
             const name = usernameInput.value.trim();
             if (name) setUserName(name);
         });
 
         /* ============================================================
-           FUNGSI BANTU: PAPAR MESEJ
+           SEMBANG
            ============================================================ */
         function renderMessage(data) {
             const msgDiv = document.createElement('div');
             msgDiv.className = 'message';
-
-            const userSpan = document.createElement('span');
-            userSpan.className = 'user';
-            userSpan.textContent = data.user;
-
-            const textSpan = document.createElement('span');
-            textSpan.className = 'text';
-            textSpan.textContent = data.text || '';
-
-            msgDiv.appendChild(userSpan);
-            msgDiv.appendChild(textSpan);
-
+            msgDiv.innerHTML = `<span class="user">${data.user}</span><span class="text">${data.text || ''}</span>`;
             if (data.imageUrl) {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'img-container';
-                const img = document.createElement('img');
-                img.src = data.imageUrl;
-                img.loading = 'lazy';
-                imgContainer.appendChild(img);
-                msgDiv.appendChild(imgContainer);
+                msgDiv.innerHTML += `<div class="img-container"><img src="${data.imageUrl}" loading="lazy"></div>`;
             }
-
             chatBox.appendChild(msgDiv);
             chatBox.scrollTop = chatBox.scrollHeight;
         }
 
-        /* ============================================================
-           SEMBANG TEKS
-           ============================================================ */
         sendBtn.addEventListener('click', () => {
             const text = msgInput.value.trim();
-            if (!currentUser) {
-                alert('Sila tetapkan nama anda dahulu.');
-                return;
-            }
+            if (!currentUser) return alert('Sila tetapkan nama anda dahulu.');
             if (!text) return;
-
-            push(ref(db, 'chats'), {
-                user: currentUser,
-                text: text,
-                timestamp: serverTimestamp()
-            });
+            push(ref(db, 'chats'), { user: currentUser, text, timestamp: serverTimestamp() });
             msgInput.value = '';
         });
 
+        onChildAdded(ref(db, 'chats'), (snap) => renderMessage(snap.val()));
+
         /* ============================================================
-           PEMAMPATAN IMEJ (Canvas)
+           LOG KERJA & CARTA
            ============================================================ */
-        function compressImage(file, maxDimension = 600, quality = 0.6) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
+        // Tetapkan tarikh & bulan semasa
+        logDate.valueAsDate = new Date();
+        const now = new Date();
+        monthFilter.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-                reader.onload = (event) => {
-                    const img = new Image();
-                    img.src = event.target.result;
+        // Fungsi Kemas Kini UI (Berdasarkan Bulan Dipilih)
+        function updateUI() {
+            const selectedMonth = monthFilter.value;
+            if (!selectedMonth) return;
 
-                    img.onload = () => {
-                        let { width, height } = img;
+            // 1. Tapis log mengikut bulan
+            const filteredLogs = allLogs.filter(log => log.date.startsWith(selectedMonth));
+            
+            // Susun ikut tarikh menaik (untuk carta)
+            filteredLogs.sort((a, b) => a.date.localeCompare(b.date));
 
-                        if (width > height && width > maxDimension) {
-                            height = Math.round((height * maxDimension) / width);
-                            width = maxDimension;
-                        } else if (height > maxDimension) {
-                            width = Math.round((width * maxDimension) / height);
-                            height = maxDimension;
-                        }
+            // 2. Kira Ringkasan
+            let totalIncome = 0;
+            let totalExpense = 0;
+            filteredLogs.forEach(log => {
+                totalIncome += log.income;
+                totalExpense += log.expense;
+            });
+            const balance = totalIncome - totalExpense;
 
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+            sumIncome.textContent = `RM${totalIncome.toFixed(2)}`;
+            sumExpense.textContent = `RM${totalExpense.toFixed(2)}`;
+            sumBalance.textContent = `RM${balance.toFixed(2)}`;
+            sumBalance.className = `value ${balance >= 0 ? 'green' : 'red'}`;
 
-                        resolve(canvas.toDataURL('image/jpeg', quality));
+            // 3. Render Senarai Log
+            logList.innerHTML = '';
+            const reversedLogs = [...filteredLogs].reverse(); // Terbaru di atas
+            reversedLogs.forEach((log, index) => {
+                const item = document.createElement('div');
+                item.className = 'log-item';
+                item.innerHTML = `
+                    <div class="top-row">
+                        <span class="date">${log.date}</span>
+                        <span class="income">+RM${log.income.toFixed(2)}</span>
+                    </div>
+                    <div class="top-row">
+                        <span>${log.trips} trip</span>
+                        <span class="expense">-RM${log.expense.toFixed(2)}</span>
+                    </div>
+                    ${log.note ? `<div class="note">"${log.note}"</div>` : ''}
+                `;
+                if (log.user === currentUser) {
+                    const delBtn = document.createElement('button');
+                    delBtn.textContent = 'PADAM';
+                    delBtn.className = 'danger';
+                    delBtn.style.marginTop = '8px';
+                    delBtn.style.padding = '6px 10px';
+                    delBtn.style.fontSize = '0.7rem';
+                    delBtn.onclick = () => {
+                        if (confirm('Padam log ini?')) remove(ref(db, 'logs/' + log.key));
                     };
+                    item.appendChild(delBtn);
+                }
+                logList.appendChild(item);
+            });
 
-                    img.onerror = reject;
-                };
+            // 4. Kemas Kini Carta
+            updateCharts(filteredLogs, totalIncome, totalExpense);
+        }
 
-                reader.onerror = reject;
+        function updateCharts(logs, totalIncome, totalExpense) {
+            // Persediaan Data Line Chart (Ikut Tarikh)
+            const dates = logs.map(log => log.date.slice(8, 10)); // Ambil hari sahaja (DD)
+            const incomeData = logs.map(log => log.income);
+            const expenseData = logs.map(log => log.expense);
+
+            if (lineChart) lineChart.destroy();
+            const ctxLine = document.getElementById('lineChart').getContext('2d');
+            lineChart = new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        {
+                            label: 'Pendapatan',
+                            data: incomeData,
+                            borderColor: '#34d399',
+                            backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Perbelanjaan',
+                            data: expenseData,
+                            borderColor: '#f87171',
+                            backgroundColor: 'rgba(248, 113, 113, 0.2)',
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#fff', font: { size: 10 } } } },
+                    scales: {
+                        x: { ticks: { color: '#aaa' }, grid: { display: false } },
+                        y: { ticks: { color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+
+            // Persediaan Data Pie Chart
+            if (pieChart) pieChart.destroy();
+            const ctxPie = document.getElementById('pieChart').getContext('2d');
+            pieChart = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Pendapatan Bersih', 'Perbelanjaan'],
+                    datasets: [{
+                        data: [totalIncome - totalExpense, totalExpense],
+                        backgroundColor: ['#a78bfa', '#f87171'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#fff', font: { size: 10 } } }
+                    }
+                }
             });
         }
 
-        /* ============================================================
-           SEMBANG IMEJ (Base64 → Realtime Database)
-           ============================================================ */
-        imageInput.addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (!file) return;
+        // Simpan log baru
+        addLogBtn.addEventListener('click', () => {
+            if (!currentUser) return alert('Sila tetapkan nama anda dahulu.');
+            const date = logDate.value;
+            const trips = parseInt(logTrips.value) || 0;
+            const income = parseFloat(logIncome.value) || 0;
+            const expense = parseFloat(logExpense.value) || 0;
+            const note = logNote.value.trim();
 
-            if (!currentUser) {
-                alert('Sila tetapkan nama anda dahulu.');
-                imageInput.value = '';
-                return;
+            if (!date || (income === 0 && expense === 0 && trips === 0)) {
+                return alert('Sila isi tarikh dan sekurang-kurangnya satu nilai.');
             }
 
-            statusDiv.textContent = 'Memproses imej...';
+            push(ref(db, 'logs'), {
+                user: currentUser,
+                date,
+                trips,
+                income,
+                expense,
+                note,
+                timestamp: serverTimestamp()
+            });
 
-            try {
-                const base64Image = await compressImage(file);
-                statusDiv.textContent = 'Menghantar ke pangkalan data...';
-
-                push(ref(db, 'chats'), {
-                    user: currentUser,
-                    text: ' [Imej]',
-                    imageUrl: base64Image,
-                    timestamp: serverTimestamp()
-                });
-
-                statusDiv.textContent = 'Imej berjaya dihantar.';
-            } catch (error) {
-                console.error('Gagal memproses imej:', error);
-                statusDiv.textContent = 'Gagal memproses imej.';
-            }
-
-            imageInput.value = '';
+            logTrips.value = '';
+            logIncome.value = '';
+            logExpense.value = '';
+            logNote.value = '';
         });
 
-        /* ============================================================
-           DENGAR SEMBANG BAHARU
-           ============================================================ */
-        const chatsRef = ref(db, 'chats');
-        onChildAdded(chatsRef, (snapshot) => {
-            renderMessage(snapshot.val());
+        // Dengar perubahan Firebase
+        onValue(ref(db, 'logs'), (snapshot) => {
+            allLogs = [];
+            snapshot.forEach((child) => {
+                allLogs.push({ ...child.val(), key: child.key });
+            });
+            updateUI();
         });
+
+        // Event listener untuk penapis bulan
+        monthFilter.addEventListener('change', updateUI);
 
         statusDiv.textContent = 'Bersambung ke Firebase...';
     </script>
